@@ -102,20 +102,22 @@ export default function Navbar() {
                     </Link>
                   </li>
                   <li>
-                    <a
-                      href="#"
-                      className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg"
-                    >
-                      {t('packages')}
-                    </a>
+                    <Link legacyBehavior href="/orders/packages">
+                      <a
+                        className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg"
+                      >
+                        {t('packages')}
+                      </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
-                      href="#"
-                      className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg"
-                    >
-                      {t('my_brands')}
-                    </a>
+                    <Link legacyBehavior href="/orders/my-brands">
+                      <a
+                        className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg"
+                      >
+                        {t('my_brands')}
+                      </a>
+                    </Link>
                   </li>
                 </ul>
               </div>

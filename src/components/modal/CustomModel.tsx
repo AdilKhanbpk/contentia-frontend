@@ -1,6 +1,6 @@
 // components/Modal.tsx
 import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useState } from 'react';
+import { Fragment } from 'react';
 import Image from 'next/image';
 
 interface ModalProps {
@@ -38,14 +38,14 @@ const Modal: React.FC<ModalProps> = ({ isOpen, closeModal, title, children }) =>
                             leaveTo="opacity-0 scale-95"
                         >
 
-                            <div className='flex justify-center items-center my-14 sm:my-14 md:my-16 lg:my-24 px-4 sm:px-6 md:px-8 lg:px-28 p-8'>
+                            <div className='flex justify-center items-center my-20 sm:my-20 md:my-16 lg:my-24 px-4 sm:px-6 md:px-8 lg:px-28 p-12 sm:p-12 md:p-12 lg:p-12'>
                                 <Dialog.Panel className=" transform overflow-hidden rounded bg-white  text-left align-middle shadow-xl transition-all">
                                     <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900 ">
                                         {title}
                                     </Dialog.Title>
                                     <div className="">
                                         {children}
-                                        <div className="absolute top-0 right-0">
+                                        <div className="absolute top-1 right-1">
                                             <Image width={20} height={20} src="/x.png" alt="Close Button" className="w-8 h-8" onClick={closeModal} />
                                         </div>
                                     </div>

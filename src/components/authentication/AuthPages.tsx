@@ -77,6 +77,16 @@ const AuthPages = () => {
                       onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
+                  <div className="flex items-start  mt-4 mb-4">
+                    <input
+                      id="iletisim"
+                      type="checkbox"
+                      className="mt-1 mr-2"
+                    />
+                    <label htmlFor="iletisim" className="text-sm text-gray-500">
+                      Beni Hatırla
+                    </label>
+                  </div>
                 </div>
 
                 <div className="flex justify-center mb-4">
@@ -133,7 +143,7 @@ const AuthPages = () => {
                   </div>
                 </div>
 
-                
+
 
                 {/* First Checkbox */}
                 <div className="flex items-start mb-2">
