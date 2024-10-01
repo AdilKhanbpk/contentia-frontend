@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import Image from 'next/image';
-import instIcon from '../../../public/BecomeCreator/Instagram_icon.png';
-import facebookIcon from "../../../public/BecomeCreator/facebook_icon..png";
-import youtubeIcon from "../../../public/BecomeCreator/youtube_iconpng.png";
-import linkdinIcon from "../../../public/BecomeCreator/linkedin_icon.png";
-import xIcon from "../../../public/BecomeCreator/x_icon.png";
-import tiktokIcon from "../../../public/BecomeCreator/tiktik_icon.png";
+import instIcon from '../../../../public/BecomeCreator/Instagram_icon.png';
+import facebookIcon from "../../../../public/BecomeCreator/facebook_icon..png";
+import youtubeIcon from "../../../../public/BecomeCreator/youtube_iconpng.png";
+import linkdinIcon from "../../../../public/BecomeCreator/linkedin_icon.png";
+import xIcon from "../../../../public/BecomeCreator/x_icon.png";
+import tiktokIcon from "../../../../public/BecomeCreator/tiktik_icon.png";
 
 const SocialMediaInformation: React.FC = () => {
   const [showPopup, setShowPopup] = useState(false)

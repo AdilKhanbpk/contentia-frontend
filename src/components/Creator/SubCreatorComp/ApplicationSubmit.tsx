@@ -1,8 +1,8 @@
 import React from 'react';
 import Image from 'next/image';
-import scannerImage1 from "../../../public/BecomeCreator/scanner1png.png";
-import appStoreImage from "../../../public/BecomeCreator/AppStore1.png";
-import googlePlayImage from "../../../public/BecomeCreator/google3.png"
+import scannerImage1 from "../../../../public/BecomeCreator/scanner1png.png";
+import appStoreImage from "../../../../public/BecomeCreator/AppStore1.png";
+import googlePlayImage from "../../../../public/BecomeCreator/google3.png"
 
 const ApplicationSubmit: React.FC = () => {
   return (

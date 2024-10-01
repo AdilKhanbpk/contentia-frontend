@@ -1,8 +1,8 @@
 
 import React from "react";
-import ContentCreatorPreferences from "./ContentCreatorPreferences";
-import SocialMediaInformation from "./SocialMediaInformation";
-import ApplicationSubmit from "./ApplicationSubmit";
+import ContentCreatorPreferences from "./SubCreatorComp/ContentCreatorPreferences";
+import SocialMediaInformation from "./SubCreatorComp/SocialMediaInformation";
+import ApplicationSubmit from "./SubCreatorComp/ApplicationSubmit";
 
 const Preferences: React.FC = () => {
 

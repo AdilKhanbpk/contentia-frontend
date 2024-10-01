@@ -94,12 +94,13 @@ export default function Navbar() {
             {/* Sidebar links aligned with the logo on large screens */}
             <ul className="hidden lg:flex lg:justify-center lg:items-center space-x-4 ms-10 font-medium">
               <li>
-                <a
-                  href="#"
-                  className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg"
-                >
-                  {t('becomeContentCreator')}
-                </a>
+                <Link legacyBehavior href="/contentiaio/become-creator">
+                  <a
+                    className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg"
+                  >
+                    {t('becomeContentCreator')}
+                  </a>
+                </Link>
               </li>
               <li>
                 <Link legacyBehavior href="/contentiaio/authentication">

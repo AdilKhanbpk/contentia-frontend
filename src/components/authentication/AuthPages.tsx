@@ -1,6 +1,9 @@
 "use client";
 import { useState } from 'react';
 import Image from 'next/image';
+import scannerImage1 from "../../../public/BecomeCreator/scanner1png.png";
+import appStoreImage from "../../../public/BecomeCreator/AppStore1.png";
+import googlePlayImage from "../../../public/BecomeCreator/google3.png"
 
 const AuthPages = () => {
   const [email, setEmail] = useState('');
@@ -196,16 +199,15 @@ const AuthPages = () => {
         <p className="font-semibold text-center mb-4">Contentia'da zaten içerik üreticisi misin?</p>
 
         <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start lg:space-x-8">
-          <div className='w-1/2 flex flex-col justify-start align-baseline items-center'>
-            <img className='' src="/QRCode.svg" alt="Facebook Icon" />
-            <img className='w-30 h-20' src="/iphonePlayButton.png" alt=" Instagram Icon" />
-
-          </div>
-          <div className='w-1/2 flex flex-col justify-start align-baseline items-center space-y-4'>
-            <img className='' src="/QRCode.svg" alt="Twitter Icon" />
-
-            <img className='w-30 h-15' src="/googlePlayButton.png" alt=" Instagram Icon" />
-
+          <div className='flex justify-center gap-5 items-center mt-6'>
+            <div className='flex flex-col items-center '>
+              <Image src={scannerImage1} alt="Scanner for mobile app download" className='w-[100px]' /> {/* Adjusted width */}
+              <Image src={appStoreImage} alt="Download on the App Store" className='w-[150px] mt-3' />
+            </div>
+            <div className='flex flex-col items-center '>
+              <Image src={scannerImage1} alt="Scanner for mobile app download" className='w-[100px]' /> {/* Adjusted width */}
+              <Image src={googlePlayImage} alt="Get it on Google Play" className='w-[150px] mt-3' />
+            </div>
           </div>
         </div>
       </div>
