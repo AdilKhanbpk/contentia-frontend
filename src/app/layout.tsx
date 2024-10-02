@@ -7,6 +7,7 @@ import './globals.css'; // Import your global CSS
 import Navbar from '@/components/navbar/Navbar';
 import CustomerNavbar from '@/components/navbar/CustomerNavbar'; // Import your CustomerNavbar component
 import { usePathname } from 'next/navigation'; // Import usePathname hook
+import Footer from '@/components/footer/Footer';
 
 
 const metadata = {
@@ -34,6 +35,7 @@ export default function RootLayout({
           {isAfterContentiaio && <Navbar />} {/* Render Navbar on landing page */}
           {isOrdersPage && <CustomerNavbar />} {/* Render CustomerNavbar on /orders */}
           {children}
+          <Footer></Footer>
         </I18nextProvider>
       </body>
     </html>
