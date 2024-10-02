@@ -9,14 +9,11 @@ const Preferences: React.FC = () => {
   return (
     <div>
       <div>
-      <ContentCreatorPreferences/>
-    </div>
-    <div className="mt-28">
-      <SocialMediaInformation/>
-    </div>
-    <div className="mt-28">
-      <ApplicationSubmit/>
-    </div>
+        <ContentCreatorPreferences />
+      </div>
+      <div className="mt-10 sm:mt-12 md:mt-16 lg:mt-20 xl:mt-28">
+        <SocialMediaInformation />
+      </div>
     </div>
   );
 };

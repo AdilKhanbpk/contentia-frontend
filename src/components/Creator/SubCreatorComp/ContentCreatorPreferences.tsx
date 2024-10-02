@@ -1,235 +1,284 @@
 "use client"
-import React, {useState} from 'react'
-import { IoMdInformationCircleOutline } from "react-icons/io";
+import React, { useState } from 'react'
+import Image from 'next/image';
 
 const ContentCreatorPreferences = () => {
-  const [socialMediaShare, setSocialMediaShare] = useState<string | null>(null);
+
   const [contentType, setContentType] = useState<string | null>(null);
-  const [showPopup, setShowPopup] = useState(false)
-  const [address, setAddress] = useState({
-    country: "",
-    district: "",
-    city: "",
-    neighborhood: "",
-    fullAddress: "",
+
+
+
+  const [showTooltipTwo, setShowTooltipTwo] = useState(false);
+  const [showTooltipThree, setShowTooltipThree] = useState(false);
+  const [place, setPlace] = useState({
+    country: '',
+    state: '',
+    city: '',
+    address: '',
+    neighborhood: ''
   });
 
-  const showPopupHandler = () => {
-    setShowPopup(!showPopup)
-  }
-
-  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setAddress((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSocialMediaShareChange = (value: string) => {
-    if (socialMediaShare === value) {
-      setSocialMediaShare(null);
-    } else {
-      setSocialMediaShare(value);
-    }
-  };
-
-  const handleContentTypeChange = (value: string) => {
-    if (contentType === value) {
-      setContentType(null);
-    } else {
-      setContentType(value);
-    }
-  };
-
-  const showAddressSection = contentType === "product" || contentType === "place";
-
   return (
-   <div>
-    <div className="shadow-md bg-white w-full md:w-[80vw] lg:w-[70vw] mx-auto p-4 md:p-6 lg:p-8">
-      <h1 className="text-xl font-bold">İçerik Üreticisi Tercihleri</h1>
-      
-      <section className="mt-5 px-5">
-        <h2 className="text-lg font-bold">Sosyal Medya Paylaşımı</h2>
-        <p>Ek ücret karşılığında, hazırladığın içerikleri kendi sosyal medya hesaplarında paylaşma ister misin?</p>
-        <div className="flex flex-col md:flex-row gap-3 mt-2">
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="socialMediaShare"
-              value="yes"
-              onChange={() => handleSocialMediaShareChange("yes")}
-              checked={socialMediaShare === "yes"}
-              className="form-radio text-green-500 border-gray-300"
-            />
-            <span className="ml-2">Evet</span>
-          </label>
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="socialMediaShare"
-              value="no"
-              onChange={() => handleSocialMediaShareChange("no")}
-              checked={socialMediaShare === "no"}
-              className="form-radio text-green-500 border-gray-300"
-            />
-            <span className="ml-2">Hayır</span>
-          </label>
-        </div>
-      </section>
+    <div className='px-4 sm:px-6 md:px-8 lg:px-28'>
+      <div className=" bg-white p-4  sm:p-5  md:p-6  lg:p-6">
+        <h1 className="text-xl font-bold">İçerik Üreticisi Tercihleri</h1>
 
-      <section className="mt-12 flex flex-col md:flex-row justify-between gap-6 relative">
-        <div className={` p-4 w-full ${showAddressSection ? "md:w-[48%]" : "md:w-full"}`}>
-          <div className='flex gap-2 items-center '>
-          <h1 className="text-lg font-bold">İçerik Türü:</h1>
-          <IoMdInformationCircleOutline size={30} className='text-blue-700 cursor-pointer' onClick={showPopupHandler}/>
+        <section className="mt-12 flex flex-col md:flex-row justify-between">
+          <div className="">
+            {/* İçerik Türü */}
+            <div className="mb-4 w-full ">
+              <div className='flex flex-row'>
+                <h2 className="text-lg font-semibold mb-4">İçerik Türü:</h2>
+                {/* Tooltip or Information section */}
+                <div className="relative mb-4 flex justify-center">
+                  <button
+                    className="text-black text-sm px-3 py-1 rounded-full"
+                    onMouseEnter={() => setShowTooltipTwo(true)}
+                    onMouseLeave={() => setShowTooltipTwo(false)}
+                  >
+                    <Image
+                      src="/tooltipIcon.png" // Placeholder for the logo next to "Brand Name"
+                      alt="brand logo"
+                      height={16}
+                      width={16}
+                      className="rounded-full"
+                    />
+                  </button>
+                  {showTooltipTwo && (
+                    <div className="absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2">
+
+                      İçerik üreticilerine ürün gönderimi sağlayacaksanız ya da üreticilerin bir fiziki lokasyona ulaşması gerekiyorsa, bu alanda içerik türünüzü belirterek lokasyona göre eşleştirme gerçekleştirme yapılması ge
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <label className="block text-sm font-medium text-gray-700 mb-2">UGC’lerinizde tanıtım gerektiren, içerik türünüzü seçin</label>
+
+              <div className="flex justify-between space-x-4">
+                <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
+                  <input
+                    type="radio" // Radio input
+                    name="contentType" // Group name
+                    value="product" // Value for 'product'
+                    checked={contentType === 'product'}
+                    onChange={() => setContentType('product')} // Set directly to 'product'
+                    className="hidden peer" // Hide default radio button
+                  />
+                  <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
+                    <div className="w-full h-full bg-white rounded-full"></div>
+                  </div>
+                  <span className="ml-1 text-sm">Ürün</span>
+                </label>
+
+                <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
+                  <input
+                    type="radio" // Radio input
+                    name="contentType" // Group name
+                    value="hizmat" // Value for 'hizmat'
+                    checked={contentType === 'hizmat'}
+                    onChange={() => setContentType('hizmat')} // Set directly to 'hizmat'
+                    className="hidden peer" // Hide default radio button
+                  />
+                  <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
+                    <div className="w-full h-full bg-white rounded-full"></div>
+                  </div>
+                  <span className="ml-1 text-sm">Hizmet</span>
+                </label>
+
+                <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
+                  <input
+                    type="radio" // Radio input
+                    name="contentType" // Group name
+                    value="place" // Value for 'place'
+                    checked={contentType === 'place'}
+                    onChange={() => setContentType('place')} // Set directly to 'place'
+                    className="hidden peer" // Hide default radio button
+                  />
+                  <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
+                    <div className="w-full h-full bg-white rounded-full"></div>
+                  </div>
+                  <span className="ml-1 text-sm">Mekan</span>
+                </label>
+              </div>
+
+            </div>
+
+
+            <div className="mt-9">
+              <h1 className="text-lg font-bold">İçerik Formatları:</h1>
+              <p className="mb-2">Profiliniz ile eşleşen içerik alanlarını belirleyin</p>
+              <div className="w-full mt-2 grid-cols-1">
+                {[
+                  "Instagram / TikTok Videosu (Dikey)",
+                  "Instagram Gönderi",
+                  "TikTok Videosu",
+                  "Linkedin Gönderisi",
+                ].map((format, index) => (
+                  <label
+                    key={index}
+                    className="whitespace-nowrap flex items-center cursor-pointer mb-2 lg:mb-6"
+                  >
+                    <input
+                      type="checkbox"
+                      name="contentFormat"
+                      id={`format${index + 1}`}
+                      className="hidden peer"
+                    />
+                    <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
+                      <div className="w-full h-full bg-white rounded-full"></div>
+                    </div>
+                    <span className="ml-1 text-sm">{format}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
 
           </div>
-          <p>UGC’lerinizde tanıtım gerektiren, içerik türünüzü seçin</p>
-          <div className="flex flex-col md:flex-row gap-3 mt-2">
-            {["product", "service", "place"].map((type) => (
-              <label key={type} className="flex items-center">
+
+          <div className='w-full lg:w-1/3'>
+            {/* If Mekan (Place) selected */}
+            {(contentType === 'place' || contentType === 'product') && (
+              <div className="">
+                <div className='flex flex-row'>
+                  <h2 className="text-lg font-semibold mb-4">Adres:</h2>
+
+                  {/* Tooltip or Information section */}
+                  <div className="relative mb-4 flex justify-center">
+                    <button
+                      className="text-black text-sm px-3 py-1 rounded-full"
+                      onMouseEnter={() => setShowTooltipThree(true)}
+                      onMouseLeave={() => setShowTooltipThree(false)}
+                    >
+                      <Image
+                        src="/tooltipIcon.png" // Placeholder for the logo next to "Brand Name"
+                        alt="brand logo"
+                        height={16}
+                        width={16}
+                        className="rounded-full"
+                      />
+                    </button>
+                    {showTooltipThree && (
+                      <div className="absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2">
+                        Adres bilgileri, tüm içerik üreticileri tarafından İl, İlçe ve Mahalle olarak gösterilecektir. Onaylanan içerik üreticiler, işletme adı ve açık adresi görüntüleyebilecektir.
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Lütfen tanıtılmasını istediğiniz mekanın adres bilgilerini belirtin
+                </label>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-8 gap-y-8">
+                  <div className="">
+                    <label className="block text-sm font-semibold mb-2">Ülke</label>
+                    <select
+                      className="w-full px-3 py-2 border rounded-md focus:outline-none"
+                      value={place.country}
+                      onChange={(e) => setPlace({ ...place, country: e.target.value })}
+                    >
+                      <option value="">Seçiniz</option>
+                      {/* Add country options here */}
+                    </select>
+                  </div>
+
+                  <div className="">
+                    <label className="block text-sm font-semibold mb-2">İl</label>
+                    <select
+                      className="w-full px-3 py-2 border rounded-md focus:outline-none"
+                      value={place.city}
+                      onChange={(e) => setPlace({ ...place, city: e.target.value })}
+                    >
+                      <option value="">Seçiniz</option>
+                      {/* Add city options here */}
+                    </select>
+                  </div>
+
+                  <div className="">
+                    <label className="block text-sm font-semibold mb-2">İlçe</label>
+                    <select
+                      className="w-full px-3 py-2 border rounded-md focus:outline-none"
+                      value={place.state}
+                      onChange={(e) => setPlace({ ...place, state: e.target.value })}
+                    >
+                      <option value="">Seçiniz</option>
+                      {/* Add state options here */}
+                    </select>
+                  </div>
+
+                  <div className="">
+                    <label className="block text-sm font-semibold mb-2">Mahalle</label>
+                    <select
+                      className="w-full px-3 py-2 border rounded-md focus:outline-none"
+                      value={place.neighborhood}
+                      onChange={(e) => setPlace({ ...place, neighborhood: e.target.value })}
+                    >
+                      <option value="">Seçiniz</option>
+                      {/* Add neighborhood options here */}
+                    </select>
+                  </div>
+
+                  <div className="col-span-2">
+                    <label className="block text-sm font-semibold mb-2">Açık Adres:</label>
+                    <textarea
+                      placeholder="Lütfen işletme adını ve açık adres bilgilerini girin."
+                      className="w-full text-sm px-3 py-2 border rounded-md focus:outline-none"
+                      rows={2} // Set the number of rows to 6
+                      value={place.address}
+                      onChange={(e) => setPlace({ ...place, address: e.target.value })}
+                    />
+
+                  </div>
+                </div>
+              </div>
+            )}
+
+
+          </div>
+        </section>
+
+
+        <section className="mt-9">
+          <h1 className="text-lg font-bold">İlgi Alanları:</h1>
+          <p className="mb-2">Profiliniz ile eşleşen içerik alanlarını belirleyin</p>
+          <div className=" w-full lg:w-2/3 mt-2  grid-cols-2 sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-4">
+            {[
+              'Spor ve Aktivite',
+              'Sanal ve El İşleri',
+              'Müzik',
+              'Eğlence ve Oyun',
+              'Yemek ve İçecek',
+              'Bilim ve Teknoloji',
+              'Seyahat ve Kültür',
+              'Kitap ve Edebiyat',
+              'Film ve Dizi',
+              'Doğa ve Hayvanlar',
+              'Gönüllülük',
+              'Moda ve Güzellik',
+              'E-Ticaret',
+              'Üretim ve Mühendislik',
+              'Sağlık',
+              'Eğitim',
+            ].map((item, index) => (
+              <label key={index} className=" w-1/2 sm:w-1/2 md:w-1/3 lg:w-1/4 inline-flex items-center cursor-pointer mb-2 lg:mb-6">
                 <input
-                  type="radio"
-                  name="contentType"
-                  value={type}
-                  onChange={() => handleContentTypeChange(type)}
-                  checked={contentType === type}
-                  className="form-radio text-green-500 border-gray-300"
+                  type="checkbox"
+                  name="customCheckbox"
+                  value={item}
+                  className="hidden peer "
                 />
-                <span className="ml-2">{type === "product" ? "Ürün" : type === "service" ? "Hizmet" : "Mekan"}</span>
+                <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9]  transition-all duration-300 ease-in-out">
+                  <div className="w-full h-full bg-white rounded-full"></div>
+                </div>
+                <span className="ml-1 text-sm">{item}</span>
               </label>
             ))}
+
           </div>
+        </section>
 
-          <div className="mt-4">
-            <h1 className="text-lg font-bold">İçerik Formatları:</h1>
-            <p className="mt-1">Profiliniz ile eşleşen içerik alanlarını belirleyin</p>
-            <div className="flex flex-col gap-2 mt-2">
-              {["Instagram / TikTok Videosu (Dikey)", "Instagram Gönderi", "TikTok Videosu", "Linkedin Gönderisi"].map((format, index) => (
-                <label key={index} className="flex items-center">
-                  <input type="radio" name="contentFormat" id={`format${index + 1}`} />
-                  <span className="ml-2">{format}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Address Section */}
-        {showAddressSection && (
-          <div className=" p-4 w-full md:w-[48%]">
-            <h1 className="text-lg font-bold">Adres:</h1>
-            <p>
-              Lütfen tanıtılmasını istediğiniz mekanın adres bilgilerini belirtin
-            </p>
-            <form>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <div>
-                    <h1 className="text-lg font-bold mb-2 mt-1">Ülke</h1>
-                    <input
-                      className="outline-none border p-2 w-full"
-                      type="text"
-                      name="country"
-                      placeholder="Seçiniz"
-                      value={address.country}
-                      onChange={handleAddressChange}
-                    />
-                  </div>
-                  <div>
-                    <h1 className="text-lg font-bold mb-2 mt-1">İlçe</h1>
-                    <input
-                      className="outline-none border p-2 w-full"
-                      type="text"
-                      name="district"
-                      placeholder="Seçiniz"
-                      value={address.district}
-                      onChange={handleAddressChange}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <div>
-                    <h1 className="text-lg font-bold mb-2 mt-1">İl</h1>
-                    <input
-                      className="outline-none border p-2 w-full"
-                      type="text"
-                      name="city"
-                      placeholder="Seçiniz"
-                      value={address.city}
-                      onChange={handleAddressChange}
-                    />
-                  </div>
-                  <div>
-                    <h1 className="text-lg font-bold mb-2 mt-1">Mahalle</h1>
-                    <input
-                      className="outline-none border p-2 w-full"
-                      type="text"
-                      name="neighborhood"
-                      value={address.neighborhood}
-                      onChange={handleAddressChange}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div>
-                <h1 className="text-lg font-bold mb-2 mt-1">Açık Adres:</h1>
-                <input
-                  className="outline-none border w-full h-[70px] p-2"
-                  type="text"
-                  name="fullAddress"
-                  placeholder="Lütfen açık adres bilgilerini girin."
-                  value={address.fullAddress}
-                  onChange={handleAddressChange}
-                />
-              </div>
-            </form>
-          </div>
-        )}
-      </section>
-
-     {
-      showPopup &&  <div className='bg-gray-400 text-white md:w-[450px] w-[300px]  text-xs p-1 py-2 absolute sm:top-72 top-[450px] right-2 flex items-center '>
-      <p className='flex flex-wrap'>Ürün tanıtımı gerçekleştiren içerik üreticilerinin belirttiği adrese ürün gönderimi yapılır. Ürün, marka tarafından içerik üreticisine hediye edilmektedir.<br/> <br/>Mekan tanıtımı gerçekleştiren içerik üreticileri, kendine yakın lokasyonda bulunan mekanlara giderek içerik üretecekleri için adres bilgileri alınmaktadır.</p>
-    </div>
-     }
-
-      <section className="mt-9">
-  <h1 className="text-lg font-bold">İlgi Alanları:</h1>
-  <p className="mb-2">Profiliniz ile eşleşen içerik alanlarını belirleyin</p>
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 w-[50vw] ">
-    {[
-      "Spor ve Aktivite",
-      "Yemek ve İçecek",
-      "Film ve Dizi",
-      "E-Ticaret",
-      "Teknoloji",
-      "Sanal ve El İşleri",
-      "Bilim ve Teknoloji",
-      "Doğa ve Hayvanlar",
-      "Üretim ve Mühendislik",
-      "Müzik",
-      "Seyahat ve Kültür",
-      "Gönüllülük",
-      "Sağlık",
-      "Eğlence ve Oyun",
-      "Kitap ve Edebiyat",
-      "Moda ve Güzellik",
-      "Eğitim"
-    ].map((interest, index) => (
-      <label key={index} className="flex  items-center">
-        <input type="radio" name="interest" id={`interest${index + 1}`} />
-        <span className="ml-2 text-sm">{interest}</span>
-      </label>
-    ))}
-  </div>
-</section>
+      </div>
 
     </div>
-    
-   </div>
   )
 }
 
