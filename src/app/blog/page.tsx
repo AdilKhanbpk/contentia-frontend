@@ -1,7 +1,7 @@
 "use client"
-import BlogButton from '@/components/Blog/BlogButton'
-import BlogCard from '@/components/Blog/BlogCard'
-import Feed from '@/components/Blog/Feed'
+import BlogButton from '@/components/blog/BlogButton'
+import BlogCard from '@/components/blog/BlogCard'
+import Feed from '@/components/blog/Feed'
 import Navbar from '@/components/navbar/Navbar'
 import React, { useState } from 'react'
 
