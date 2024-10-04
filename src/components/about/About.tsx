@@ -121,7 +121,7 @@ const About = () => {
                     </div>
 
                     <div className="pt-24 sm:pt-24 md:pt-24 lg:pt-[100px]">
-                        <div className="bg-gradient-to-r from-[#FFE2B2] to-[#F8A1B8] p-4 px-6 md:px-12 rounded-lg flex flex-col md:flex-row justify-between items-center gap-10 sm:gap-12 lg:gap-28  w-full  relative mb-6">
+                        <div className="yellowGradient p-4 px-6 md:px-12 rounded-lg flex flex-col md:flex-row justify-between items-center gap-10 sm:gap-12 lg:gap-28  w-full  relative mb-6">
                             <div className='flex-shrink-0'>
                                 <Image
                                     height={50}
