@@ -23,7 +23,7 @@ export default function RootLayout({
   const pathname = usePathname(); // Get the current path
 
   // Check if the current path is the root ("/")
-  const isAfterContentiaio = pathname === '/contentiaio' || pathname.startsWith('/contentiaio/');
+  const isAfterContentiaio = pathname === '/contentiaio' || pathname.startsWith('/contentiaio/') || pathname.startsWith('/blog') || pathname.startsWith('/blog/');
   
   // Check if the current path is "/orders"
   const isOrdersPage = pathname === '/orders' || pathname.startsWith('/orders/');
@@ -35,7 +35,8 @@ export default function RootLayout({
           {isAfterContentiaio && <Navbar />} {/* Render Navbar on landing page */}
           {isOrdersPage && <CustomerNavbar />} {/* Render CustomerNavbar on /orders */}
           {children}
-          <Footer></Footer>
+          {isAfterContentiaio && <Footer />} {/* Render Footer on landing page */}
+          {isOrdersPage && <Footer />} {/* Render Footer on /orders */}
         </I18nextProvider>
       </body>
     </html>
