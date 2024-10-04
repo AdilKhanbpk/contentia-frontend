@@ -1,11 +1,11 @@
 import React from 'react';
 import Image from 'next/image';
-import infuencerMarketingImage from '../../../public/blog/influencer-marketing.svg'
+import infuencerMarketingImage from '../../../../public/blog/influencer-marketing.svg'
 
 const Feed: React.FC = () => {
   return (
-    <div className='mx-4 md:mx-6 lg:mx-16 mt-14'>
-      <div className='text-3xl md:text-4xl font-bold text-blue-800 text-center md:text-left'>
+    <div className=' mt-14'>
+      <div className='text-3xl md:text-4xl font-bold BlueText text-center md:text-left'>
         Contentia Blog
       </div>
 
@@ -18,7 +18,7 @@ const Feed: React.FC = () => {
           <p className='font-semibold mt-2 text-sm md:text-base lg:text-lg'>
             More businesses are waking up to the power of influencer marketing. Seventy-o…
           </p>
-          <button className='bg-blue-800 text-white py-2 px-4 rounded-full mt-4 text-sm md:text-base lg:text-lg'>
+          <button className='ButtonBlue text-white py-2 px-4 rounded-full mt-4 text-sm md:text-base lg:text-lg'>
             Devamını Oku
           </button>
         </div>

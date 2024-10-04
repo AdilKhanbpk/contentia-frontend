@@ -259,12 +259,15 @@ button.cta-button {
 }
 
 .cardButton {
-  background-color: #4647B6;;
+  background-color: #4647B6;
+  ;
 }
 
 .cardBorder {
-  border: 2px solid #4647B6; /* Set border color and thickness */
-  border-radius: 27px; /* Optional: Add rounded corners if desired */
+  border: 2px solid #4647B6;
+  /* Set border color and thickness */
+  border-radius: 27px;
+  /* Optional: Add rounded corners if desired */
 }
 
 .yellowGradient {
@@ -282,7 +285,7 @@ button.cta-button {
 
 .BlueBorder {
   border-color: #4D4EC9;
-  
+
 }
 
 .BlueText {
@@ -291,21 +294,28 @@ button.cta-button {
 
 .gradient-border {
   position: relative;
-  padding: 10px; /* Adjust as needed */
-  background: #fff; /* Background color of the content area */
+  padding: 10px;
+  /* Adjust as needed */
+  background: #fff;
+  /* Background color of the content area */
   border-radius: 25px;
 }
 
 .gradient-border::before {
   content: '';
   position: absolute;
-  top: -2px; /* Adjust for border thickness */
-  left: -2px; /* Adjust for border thickness */
-  right: -2px; /* Adjust for border thickness */
-  bottom: -2px; /* Adjust for border thickness */
+  top: -2px;
+  /* Adjust for border thickness */
+  left: -2px;
+  /* Adjust for border thickness */
+  right: -2px;
+  /* Adjust for border thickness */
+  bottom: -2px;
+  /* Adjust for border thickness */
   background: linear-gradient(90deg, #FFF5AF 0%, #FFB0F2 100%);
   z-index: -1;
-  border-radius: 25px; /* Adjust as needed to match the border radius of your element */
+  border-radius: 25px;
+  /* Adjust as needed to match the border radius of your element */
 }
 
 .sectionBG {
@@ -327,7 +337,8 @@ button.cta-button {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: white; /* Tailwind's Indigo-500 color */
+  background: white;
+  /* Tailwind's Indigo-500 color */
   cursor: pointer;
   border: 3px solid #4D4EC9;
 }
@@ -337,7 +348,8 @@ button.cta-button {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: white; /* Tailwind's Indigo-500 color */
+  background: white;
+  /* Tailwind's Indigo-500 color */
   cursor: pointer;
   border: 3px solid #4D4EC9;
 }
@@ -351,4 +363,9 @@ button.cta-button {
 
 .authBG2 {
   background-color: #FAE9F2;
+}
+
+
+.blogPink {
+  background: linear-gradient(91.96deg, rgba(74, 14, 251, 0.65) 5.54%, #A487FB 85.6%);
 }
