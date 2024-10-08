@@ -1,22 +1,43 @@
 "use client";
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import Image from 'next/image';
 import scannerImage1 from "../../../public/BecomeCreator/scanner1png.png";
 import appStoreImage from "../../../public/BecomeCreator/AppStore1.png";
-import googlePlayImage from "../../../public/BecomeCreator/google3.png"
+import googlePlayImage from "../../../public/BecomeCreator/google3.png";
+import axios from 'axios';
 
 const AuthPages = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const [activeTab, setActiveTab] = useState('login');
-
-  const handleLogin = () => {
-    // Handle login logic here
-  };
 
   const handleTabChange = (tab: 'login' | 'register') => {
     setActiveTab(tab);
   };
+
+  const handleLogin = async (data: any) => {
+    try {
+      const response = await axios.post('http://localhost:3001/api/v1/users/login', data);
+      console.log("Login Response:", response.data);
+      // Handle successful login here (e.g., redirect user, store token, etc.)
+    } catch (error) {
+      console.error("Login Error:", error);
+      // Handle login error here (e.g., show error message)
+    }
+  };
+
+  const handleSignup = async (data: any) => {
+    try {
+      const response = await axios.post('http://localhost:3001/api/v1/users/signup', data);
+      console.log("Signup Response:", response.data);
+      // Handle successful signup here (e.g., redirect user, show success message, etc.)
+    } catch (error) {
+      console.error("Signup Error:", error);
+      // Handle signup error here (e.g., show error message)
+    }
+  };
+
+
 
   return (
     <div className="flex flex-col lg:flex lg:flex-row justify-center items-start my-14 sm:my-14 md:my-16 lg:my-24 px-4 sm:px-6 md:px-8 lg:px-28 ">
@@ -33,7 +54,7 @@ const AuthPages = () => {
               Giriş Yap
             </button>
             <button
-              className={`w-1/2 py-2 px-4 font-semibold text-gray-500 ${activeTab === 'register' ? 'border-b-2 border-black' : ''}`}
+              className={`w-1/2 py-2 px-4 font-semibold text-gray-900 ${activeTab === 'register' ? 'border-b-2 border-black' : ''}`}
               onClick={() => handleTabChange('register')}
             >
               Üye Ol
@@ -41,11 +62,11 @@ const AuthPages = () => {
           </div>
 
           {activeTab === 'login' ? (
-            <div className=''>
+            <form onSubmit={handleSubmit(handleLogin)}>
               <div className='px-4'>
-                <button className="flex justify-center w-full text-gray-700  mb-4 border border-gray-300">
+                <button className="flex justify-center w-full text-gray-700 mb-4 border border-gray-300">
                   <Image src='/googleIcon.svg' width={15} height={15} alt="Google Icon" className="p-1.5 w-10 h-10 border-r border-gray-300" />
-                  <div className='w-11/12 py-2  '>Google ile devam et</div>
+                  <div className='w-11/12 py-2'>Google ile devam et</div>
                 </button>
 
                 <div className="text-center mb-4 text-gray-500">veya</div>
@@ -57,13 +78,13 @@ const AuthPages = () => {
                     </div>
                     <input
                       type="email"
-                      id="email"
+                      id="loginEmail"
+                      {...register("email", { required: true })}
                       className="w-full px-4 py-2 focus:outline-none"
                       placeholder="eposta@gmail.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
+                  {errors.email && <span className="text-red-500">E-posta zorunludur</span>}
                 </div>
 
                 <div className="mb-4">
@@ -73,20 +94,21 @@ const AuthPages = () => {
                     </div>
                     <input
                       type="password"
-                      id="password"
+                      id="loginPassword"
+                      {...register("password", { required: true })}
                       className="w-full px-4 py-2 focus:outline-none"
                       placeholder="şifrenizi girin"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
-                  <div className="flex items-start  mt-4 mb-4">
+                  {errors.password && <span className="text-red-500">Şifre zorunludur</span>}
+                  <div className="flex items-start mt-4 mb-4">
                     <input
-                      id="iletisim"
+                      id="beniHatirla" // Updated ID to a more meaningful Turkish identifier
                       type="checkbox"
                       className="mt-1 mr-2"
+                      {...register("beniHatirla")} // Registering with a Turkish name
                     />
-                    <label htmlFor="iletisim" className="text-sm text-gray-500">
+                    <label htmlFor="beniHatirla" className="text-sm text-gray-500">
                       Beni Hatırla
                     </label>
                   </div>
@@ -98,18 +120,18 @@ const AuthPages = () => {
               </div>
 
               <button
-                onClick={handleLogin}
+                type="submit"
                 className="w-full ButtonBlue text-white py-2 rounded-lg font-semibold"
               >
                 Giriş Yap
               </button>
-            </div>
+            </form>
           ) : (
-            <div className=''>
+            <form onSubmit={handleSubmit(handleSignup)}>
               <div className='px-4'>
-                <button className="flex justify-center w-full text-gray-700  mb-4 border border-gray-300">
+                <button className="flex justify-center w-full text-gray-700 mb-4 border border-gray-300">
                   <Image src='/googleIcon.svg' width={15} height={15} alt="Google Icon" className="p-1.5 w-10 h-10 border-r border-gray-300" />
-                  <div className='w-11/12 py-2  '>Google ile devam et</div>
+                  <div className='w-11/12 py-2'>Google ile devam et</div>
                 </button>
 
                 <div className="text-center mb-4 text-gray-500">veya</div>
@@ -121,13 +143,13 @@ const AuthPages = () => {
                     </div>
                     <input
                       type="email"
-                      id="email"
+                      id="signupEmail"
+                      {...register("email", { required: true })}
                       className="w-full px-4 py-2 focus:outline-none"
                       placeholder="eposta@gmail.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
+                  {errors.email && <span className="text-red-500">E-posta zorunludur</span>}
                 </div>
 
                 <div className="mb-4">
@@ -137,55 +159,56 @@ const AuthPages = () => {
                     </div>
                     <input
                       type="password"
-                      id="password"
+                      id="signupPassword"
+                      {...register("password", { required: true })}
                       className="w-full px-4 py-2 focus:outline-none"
                       placeholder="şifrenizi girin"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
+                  {errors.password && <span className="text-red-500">Şifre zorunludur</span>}
                 </div>
-
-
 
                 {/* First Checkbox */}
                 <div className="flex items-start mb-2">
                   <input
-                    id="sozlesme"
+                    id="termsAgreement"
                     type="checkbox"
                     className="mt-1 mr-2"
+                    {...register("sozlesme", { required: true })}
                   />
-                  <label htmlFor="sozlesme" className="text-sm text-gray-500">
+                  <label htmlFor="termsAgreement" className="text-sm text-gray-500">
                     Kullanıcı Sözleşmesi’ni, Aydınlatma Metni’ni, Açık Rıza Metni’ni ve Ödeme Platformu Kullanım Sözleşmesi’ni okudum, onaylıyorum.
                   </label>
                 </div>
+                {errors.sozlesme && <span className="text-red-500">Kullanıcı sözleşmesi onaylanmalıdır</span>}
 
                 {/* Second Checkbox */}
                 <div className="flex items-start mb-4">
                   <input
-                    id="iletisim"
+                    id="pazarlamaIzni" // Keep the ID for the input
                     type="checkbox"
                     className="mt-1 mr-2"
+                    {...register("pazarlamaIzni", { required: true })} // Use the Turkish name
                   />
-                  <label htmlFor="iletisim" className="text-sm text-gray-500">
+                  <label htmlFor="pazarlamaIzni" className="text-sm text-gray-500">
                     Ticari Elektronik İleti ile iletişim izinlerini onaylıyorum.
                   </label>
                 </div>
+                {errors.pazarlamaIzni && <span className="text-red-500">İletişim izni onaylanmalıdır.</span>}
 
               </div>
 
               <button
-                onClick={handleLogin}
+                type="submit"
                 className="w-full ButtonBlue text-white py-2 rounded-lg font-semibold"
               >
                 Üye Ol
               </button>
-            </div>
-
+            </form>
           )}
-
         </div>
       </div>
+
       <div className="flex flex-col justify-center items-center w-full lg:w-2/5 p-8 pb-14 authBG2 lg:ml-8 rounded-sm mt-2 lg:mt-0">
         <h1 className="text-2xl font-semibold text-gray-900 mb-2">İçerik Üreticiler</h1>
         <p className="text-gray-500 mb-4">
