@@ -1,12 +1,11 @@
 import React, { useRef } from 'react';
 import Image from 'next/image';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import axios from 'axios';
 
 const TabThird = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, control, formState: { errors } } = useForm();
     const fileInputRef = useRef<HTMLInputElement | null>(null);
-
 
     const handleDivClick = () => {
         if (fileInputRef.current) {
@@ -24,8 +23,28 @@ const TabThird = () => {
     const onSubmit = async (data: any) => {
         console.log(data);
         try {
+            // Create a FormData object to send files and other data
+            const formData = new FormData();
+            
+        // Append the first file to FormData (change 'files' to 'file')
+        if (data.files && data.files.length > 0) {
+            formData.append('file', data.files[0]); // Append only the first file
+        }
+
+            // Append other form fields
+            formData.append('brand', data.brand);
+            formData.append('brief', data.brief);
+            formData.append('productName', data.productName);
+            formData.append('scenario', data.scenario);
+            formData.append('description', data.description);
+            formData.append('sampleWork', data.sampleWork);
+
             // Axios POST request to send formData
-            const response = await axios.post('http://localhost:3001/api/v1/ugc/ugcBrief', data);
+            const response = await axios.post('http://localhost:3001/api/v1/ugc/ugcBrief', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
 
             // Handle success
             console.log('Success:', response.data);
@@ -163,13 +182,22 @@ const TabThird = () => {
                                     </div>
                                 </div>
                             </div>
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                className="hidden"
-                                onChange={handleFileChange}
-                                accept=".jpg,.png,.gif,.pdf,.mp4,.mov,.wmv"
-                                multiple
+                            <Controller
+                                name="files"
+                                control={control}
+                                render={({ field: { onChange } }) => (
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        className="hidden"
+                                        onChange={(e) => {
+                                            handleFileChange(e);
+                                            onChange(e.target.files); // Update react-hook-form state
+                                        }}
+                                        accept=".jpg,.png,.gif,.pdf,.mp4,.mov,.wmv"
+                                        multiple
+                                    />
+                                )}
                             />
                         </div>
                     </div>
