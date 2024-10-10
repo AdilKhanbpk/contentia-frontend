@@ -1,8 +1,12 @@
 import React, { useRef } from 'react';
 import Image from 'next/image';
+import { useForm } from 'react-hook-form';
+import axios from 'axios';
 
 const TabThird = () => {
+    const { register, handleSubmit, formState: { errors } } = useForm();
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+
 
     const handleDivClick = () => {
         if (fileInputRef.current) {
@@ -17,10 +21,24 @@ const TabThird = () => {
         }
     };
 
+    const onSubmit = async (data: any) => {
+        console.log(data);
+        try {
+            // Axios POST request to send formData
+            const response = await axios.post('http://localhost:3001/api/v1/ugc/ugcBrief', data);
+
+            // Handle success
+            console.log('Success:', response.data);
+        } catch (error) {
+            // Handle error
+            console.error('Error:', error);
+        }
+    };
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="w-full max-w-4xl bg-white p-8 shadow-lg rounded-md">
-                <form className="space-y-6">
+                <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
                     {/* First Row - Brand Selection and Brief */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* Brand Selection */}
@@ -40,21 +58,24 @@ const TabThird = () => {
                                 </div>
                             </div>
                             <select
+                                {...register("brand", { required: false })}
                                 className="w-full px-3 py-2 border rounded-md focus:outline-none"
                                 defaultValue=""
                             >
                                 <option value="" disabled>Brand Name</option>
+                                {/* Add brand options here */}
                             </select>
+                            {errors.brand && <span className="text-red-500">Marka Seçimi zorunludur</span>}
                         </div>
 
                         {/* Brief Section */}
                         <div className=''>
                             <label className="block text-sm font-semibold">Brief:</label>
                             <textarea
+                                {...register("brief", { maxLength: 1000 })}
                                 placeholder="İçeriğinizde öne çıkarmak istediğiniz özellik, yenilik, kampanya vb. detayları girin (Maksimum 1000 karakter)"
                                 className="w-full mt-4 px-3 py-2 border rounded-md focus:outline-none resize-none overflow-auto"
-                                maxLength={1000} // Optional: Limit character count
-                                rows={3} // Optional: Initial number of visible rows
+                                rows={3}
                             />
                         </div>
                     </div>
@@ -65,22 +86,24 @@ const TabThird = () => {
                         <div>
                             <label className="block text-sm font-semibold mb-1">Ürün / Hizmet Adı:</label>
                             <input
+                                {...register("productName", { required: true })}
                                 type="text"
                                 placeholder="Ürün / Hizmet Adı"
                                 className="w-full px-3 py-2 border rounded-md focus:outline-none overflow-auto"
                             />
+                            {errors.productName && <span className="text-red-500">Ürün adı zorunludur</span>}
                         </div>
 
                         {/* Scenario */}
                         <div>
                             <label className="block text-sm font-semibold mb-1">Senaryo (Opsiyonel):</label>
                             <textarea
+                                {...register("scenario")}
                                 placeholder="Aklınızda bir video kurgusu varsa, çalışılmasını istediğiniz senaryoyu belirtin."
                                 className="w-full px-3 py-2 border rounded-md focus:outline-none resize-none overflow-auto"
-                                rows={2} // Set to 2 rows
+                                rows={2}
                             />
                         </div>
-
                     </div>
 
                     {/* Third Row - Product/Service Description and Sample Work */}
@@ -89,9 +112,10 @@ const TabThird = () => {
                         <div>
                             <label className="block text-sm font-semibold mb-1">Ürün / Hizmet Açıklaması:</label>
                             <textarea
+                                {...register("description")}
                                 placeholder="Lütfen ürününüzü veya hizmetinizi içerik üreticileri için açıklayın"
                                 className="w-full px-3 py-2 border rounded-md focus:outline-none resize-none overflow-auto"
-                                rows={3} // Optional: Initial number of visible rows
+                                rows={3}
                             />
                         </div>
 
@@ -99,22 +123,22 @@ const TabThird = () => {
                         <div>
                             <label className="block text-sm font-semibold mb-1">Örnek Çalışma (Opsiyonel):</label>
                             <textarea
-                                placeholder="Beğendiğiniz örnek bir çalışmayı veya beğendiğiniz video linkini buraya ekleyin (Örn: https://www.youtube.com/watch?v=5CODGzTDFX8)"
+                                {...register("sampleWork")}
+                                placeholder="Beğendiğiniz örnek bir çalışmayı veya beğendiğiniz video linkini buraya ekleyin"
                                 className="w-full px-3 py-2 border rounded-md focus:outline-none resize-none overflow-auto"
-                                rows={4} // Optional: Initial number of visible rows
+                                rows={4}
                             />
                         </div>
                     </div>
 
-
                     {/* File Upload */}
                     <div className="mt-6">
                         <label className="block text-sm font-semibold mb-2">Dosya Yükle (Opsiyonel):</label>
-                        <p className="text-sm text-gray-500 mb-4 ">
-                            İçerik üreticilerine iletmek istediğiniz marka, logo, ürün veya hizmet görseli, lütfen dosyanızı yükleyin. Max 5 mb yükleyebilirsiniz.
+                        <p className="text-sm text-gray-500 mb-4">
+                            İçerik üreticilerine iletmek istediğiniz marka, logo, ürün veya hizmet görseli, lütfen dosyanızı yükleyin.
                         </p>
                         <div className="sectionBG outline-2 outline-dashed outline-gray-300 rounded-sm p-4" onClick={handleDivClick}>
-                            <div className=' flex flex-col lg:flex-row justify-center lg:space-x-8'>
+                            <div className='flex flex-col lg:flex-row justify-center lg:space-x-8'>
                                 <div className='w-full lg:w-1/6 flex justify-center items-center'>
                                     <div className='mb-4 lg:mb-0'>
                                         <Image
@@ -127,7 +151,7 @@ const TabThird = () => {
                                 </div>
                                 <div className='w-full lg:w-5/6'>
                                     <p className="text-sm text-gray-500 lg:-ml-8">
-                                        Dosyalarınızı sürükleyin ya da Yükle butonuna basarak cihazınızdan seçin. (JPG, PNG, GIF, PDF, MP4, MOV ve WMV formatlarında yüklemenizi gerçekleştirebilirsiniz)
+                                        Dosyalarınızı sürükleyin ya da Yükle butonuna basarak cihazınızdan seçin.
                                     </p>
                                     <div className='flex justify-center items-center lg:-ml-32'>
                                         <button
@@ -139,7 +163,6 @@ const TabThird = () => {
                                     </div>
                                 </div>
                             </div>
-                            {/* Hidden file input */}
                             <input
                                 type="file"
                                 ref={fileInputRef}
