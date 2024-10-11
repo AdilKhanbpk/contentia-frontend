@@ -57,7 +57,13 @@ const OrdersProfile: React.FC = () => {
                 // Set initial form values if necessary
                 setValue('email', user.ordersProfile.email || ''); // Set other fields as needed
                 setValue('name', user.ordersProfile.name || ''); // Example for name field
-                // Add other fields similarly as needed
+                setValue('address', user.ordersProfile.address || '');
+                setValue('phone', user.ordersProfile.phone || '');
+                setValue('invoiceType', user.ordersProfile.invoiceType || '');
+                setValue('tcNumber', user.ordersProfile.tcNumber || '');
+                setValue('companyTitle', user.ordersProfile.companyTitle || '');
+                setValue('taxNumber', user.ordersProfile.taxNumber || '');
+                setValue('taxOffice', user.ordersProfile.taxOffice || '');
             } catch (error) {
                 console.error('Error fetching user data:', error);
             }
