@@ -20,6 +20,11 @@ const AuthPages = () => {
       const response = await axios.post('http://localhost:3001/api/v1/users/login', data);
       console.log("Login Response:", response.data);
       // Handle successful login here (e.g., redirect user, store token, etc.)
+      const token = response.data.token; // Assume the token is in the response
+
+      // Store the token in local storage
+      localStorage.setItem('your_token_key', token);
+      console.log('Token stored successfully');
     } catch (error) {
       console.error("Login Error:", error);
       // Handle login error here (e.g., show error message)
@@ -31,6 +36,11 @@ const AuthPages = () => {
       const response = await axios.post('http://localhost:3001/api/v1/users/signup', data);
       console.log("Signup Response:", response.data);
       // Handle successful signup here (e.g., redirect user, show success message, etc.)
+      const token = response.data.token; // Assume the token is in the response
+
+      // Store the token in local storage
+      localStorage.setItem('your_token_key', token);
+      console.log('Token stored successfully');
     } catch (error) {
       console.error("Signup Error:", error);
       // Handle signup error here (e.g., show error message)
