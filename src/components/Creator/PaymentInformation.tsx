@@ -1,19 +1,30 @@
+import { setPaymentInformation } from "@/store/becomeCreator/becomeCreatorSlice";
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 
 const PaymentInformation = () => {
-
   const [accountType, setAccountType] = useState("bireysel");
   const [accountTypeOne, setAccountTypeOne] = useState("bireysel");
 
+  const { register, handleSubmit } = useForm();
+  const dispatch = useDispatch(); // Initialize dispatch
+
+  const onSubmit = (data: any) => {
+    dispatch(setPaymentInformation(data));
+    console.log("Submitted Data:", data);
+  };
+
   return (
-    <div className="px-4 sm:px-6 md:px-8 lg:px-28">
-      <div className=" bg-white  p-5  sm:p-5  md:p-6  lg:p-6 ">
-        <div className="md:flex md:flex-row justify-start md:space-x-32 lg:space-x-32 flex flex-col lg:p-0 p-3">
-          <div>
-            <h1 className="text-lg font-semibold">Ödeme Bilgileri</h1>
-          </div>
-          <div>
-            <form>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="px-4 sm:px-6 md:px-8 lg:px-28">
+        <div className=" bg-white  p-5  sm:p-5  md:p-6  lg:p-6 ">
+          <div className="md:flex md:flex-row justify-start md:space-x-32 lg:space-x-32 flex flex-col lg:p-0 p-3">
+            <div>
+              <h1 className="text-lg font-semibold">Ödeme Bilgileri</h1>
+            </div>
+
+            <div>
               <div className="flex flex-col gap-4">
                 <div>
                   <p className="text-base">Hesap Türü:</p>
@@ -23,8 +34,18 @@ const PaymentInformation = () => {
                     onChange={(e) => setAccountType(e.target.value)}
                   >
                     {/* <option value="">Seçiniz</option> */}
-                    <option className="font-semibold" value="bireysel">Bireysel</option>
-                    <option className="font-semibold" value="kurumsal">Kurumsal</option>
+                    <option
+                      className="font-semibold"
+                      value="bireysel"
+                    >
+                      Bireysel
+                    </option>
+                    <option
+                      className="font-semibold"
+                      value="kurumsal"
+                    >
+                      Kurumsal
+                    </option>
                   </select>
                 </div>
 
@@ -37,14 +58,7 @@ const PaymentInformation = () => {
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
-                      />
-                    </div>
-                    <div>
-                      <p className="text-base">IBAN Numarası:</p>
-                      <input
-                        className="outline-none border w-full p-1"
-                        type="text"
-                        placeholder=""
+                        {...register("payment_information.ad_soyad")}
                       />
                     </div>
                     <div>
@@ -53,14 +67,7 @@ const PaymentInformation = () => {
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
-                      />
-                    </div>
-                    <div>
-                      <p className="text-base">Adres:</p>
-                      <input
-                        className="outline-none border w-full p-1"
-                        type="text"
-                        placeholder=""
+                        {...register("payment_information.tr_id")}
                       />
                     </div>
                   </div>
@@ -75,14 +82,7 @@ const PaymentInformation = () => {
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
-                      />
-                    </div>
-                    <div>
-                      <p className="text-base">IBAN Numarası:</p>
-                      <input
-                        className="outline-none border w-full p-1"
-                        type="text"
-                        placeholder=""
+                        {...register("payment_information.company_name")}
                       />
                     </div>
                     <div>
@@ -91,6 +91,7 @@ const PaymentInformation = () => {
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
+                        {...register("payment_information.tax_number")}
                       />
                     </div>
                     <div>
@@ -99,50 +100,70 @@ const PaymentInformation = () => {
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
-                      />
-                    </div>
-                    <div>
-                      <p className="text-base">Adres:</p>
-                      <input
-                        className="outline-none border w-full p-1"
-                        type="text"
-                        placeholder=""
+                        {...register("payment_tax_office")}
                       />
                     </div>
                   </div>
                 )}
+
+                <div>
+                  <p className="text-base">IBAN Numarası:</p>
+                  <input
+                    className="outline-none border w-full p-1"
+                    type="text"
+                    placeholder=""
+                    {...register("payment_information.iban_number")}
+                  />
+                </div>
+                <div>
+                  <p className="text-base">Adres:</p>
+                  <input
+                    className="outline-none border w-full p-1"
+                    type="text"
+                    placeholder=""
+                    {...register("payment_information.address")}
+                  />
+                </div>
               </div>
-            </form>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Section Two */}
-      <div className=" bg-white  p-5  sm:p-5  md:p-6  lg:p-6  py-6 mt-8">
-        <div className="md:flex md:flex-row justify-start lg:space-x-32 flex flex-col lg:p-0 p-3">
-          <div>
-            <h1 className="text-lg font-semibold">Fatura Bilgileri</h1>
-          </div>
+        {/* Section Two */}
+        <div className=" bg-white  p-5  sm:p-5  md:p-6  lg:p-6  py-6 mt-8">
+          <div className="md:flex md:flex-row justify-start lg:space-x-32 flex flex-col lg:p-0 p-3">
+            <div>
+              <h1 className="text-lg font-semibold">Fatura Bilgileri</h1>
+            </div>
 
-          <div>
-            <form>
+            <div>
               <div>
                 <div>
                   <h1 className="text-base">Fatura Durumu:</h1>
                   <div className="mt-2 flex gap-4">
                     <label className="flex items-center">
-                      <input type="checkbox" className="mr-1" />
+                      <input
+                        type="radio"
+                        className="mr-1"
+                        value={"true"}
+                        {...register("payment_information.invoice_status")}
+                      />
                       <span>Var</span>
                     </label>
                     <label className="flex items-center">
-                      <input type="checkbox" className="mr-1" />
+                      <input
+                        type="radio"
+                        className="mr-1"
+                        value={"false"}
+                        {...register("payment_information.invoice_status")}
+                      />
                       <span>Yok</span>
                     </label>
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-col lg:flex-row gap-12 mt-9">
+              <div className="flex flex-col gap-4 mt-9">
                 {/* Left Section: Conditional Form Fields */}
                 {accountTypeOne === "bireysel" && (
                   <div className="flex flex-col gap-4 w-full">
@@ -153,17 +174,27 @@ const PaymentInformation = () => {
                         onChange={(e) => setAccountTypeOne(e.target.value)}
                         className="outline-none border w-full p-1 rounded font-bold"
                       >
-                        <option className="font-semibold" value="bireysel">Bireysel</option>
-                        <option className="font-semibold" value="kurumsal">Kurumsal</option>
+                        <option
+                          className="font-semibold"
+                          value="bireysel"
+                        >
+                          Bireysel
+                        </option>
+                        <option
+                          className="font-semibold"
+                          value="kurumsal"
+                        >
+                          Kurumsal
+                        </option>
                       </select>
                     </div>
-
                     <div>
                       <p className="text-base">Ad Soyad:</p>
                       <input
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
+                        {...register("billing_information.ad_soyad")}
                       />
                     </div>
                     <div>
@@ -172,14 +203,7 @@ const PaymentInformation = () => {
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
-                      />
-                    </div>
-                    <div>
-                      <p className="text-base">Fatura Adresi:</p>
-                      <input
-                        className="outline-none border w-full p-1"
-                        type="text"
-                        placeholder=""
+                        {...register("billing_information.tr_id")}
                       />
                     </div>
                   </div>
@@ -206,6 +230,7 @@ const PaymentInformation = () => {
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
+                        {...register("billing_information.company_name")}
                       />
                     </div>
                     <div>
@@ -214,6 +239,7 @@ const PaymentInformation = () => {
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
+                        {...register("billing_information.tax_number")}
                       />
                     </div>
                     <div>
@@ -222,32 +248,35 @@ const PaymentInformation = () => {
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
+                        {...register("billing_information.tax_office")}
                       />
                     </div>
-                    <div>
-                      <p className="text-base">Fatura Adresi:</p>
-                      <input
-                        className="outline-none border w-full p-1"
-                        type="text"
-                        placeholder=""
-                      />
-                    </div>
-
                   </div>
-
                 )}
 
+                <div>
+                  <p className="text-base">Fatura Adresi:</p>
+                  <input
+                    className="outline-none border w-full p-1"
+                    type="text"
+                    placeholder=""
+                    {...register("billing_information.address")}
+                  />
+                </div>
               </div>
-            </form>
+            </div>
+          </div>
+          <div className="flex justify-end ">
+            <button
+              type="submit"
+              className="ButtonBlue text-white text-lg font-bold rounded-xl p-1 px-14"
+            >
+              İleri
+            </button>
           </div>
         </div>
-        <div className="flex justify-end ">
-          <button className="ButtonBlue text-white text-lg font-bold rounded-xl p-1 px-14">
-            İleri
-          </button>
-        </div>
       </div>
-    </div>
+    </form>
   );
 };
 
