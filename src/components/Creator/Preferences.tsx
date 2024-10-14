@@ -1,11 +1,9 @@
-
 import React from "react";
 import ContentCreatorPreferences from "./SubCreatorComp/ContentCreatorPreferences";
 import SocialMediaInformation from "./SubCreatorComp/SocialMediaInformation";
 import ApplicationSubmit from "./SubCreatorComp/ApplicationSubmit";
 
 const Preferences: React.FC = () => {
-
   return (
     <div>
       <div>
