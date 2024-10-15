@@ -3,16 +3,45 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 
-const PaymentInformation = () => {
+const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
+  setActiveTab,
+}) => {
   const [accountType, setAccountType] = useState("bireysel");
   const [accountTypeOne, setAccountTypeOne] = useState("bireysel");
 
-  const { register, handleSubmit } = useForm();
-  const dispatch = useDispatch(); // Initialize dispatch
+  interface PaymentInformationFormValues {
+    payment_information: {
+      ad_soyad?: string;
+      tr_id?: string;
+      company_name?: string;
+      tax_number?: string;
+      tax_office?: string;
+      iban_number?: string;
+      address?: string;
+      invoice_status: string;
+    };
+    billing_information: {
+      ad_soyad?: string;
+      tr_id?: string;
+      company_name?: string;
+      tax_number?: string;
+      tax_office?: string;
+      address?: string;
+    };
+  }
 
-  const onSubmit = (data: any) => {
-    dispatch(setPaymentInformation(data));
-    console.log("Submitted Data:", data);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<PaymentInformationFormValues>();
+  const dispatch = useDispatch();
+
+  const onSubmit = async (data: PaymentInformationFormValues) => {
+    const res = await dispatch(setPaymentInformation(data));
+    if (res) {
+      setActiveTab(3);
+    }
   };
 
   return (
@@ -33,7 +62,6 @@ const PaymentInformation = () => {
                     value={accountType}
                     onChange={(e) => setAccountType(e.target.value)}
                   >
-                    {/* <option value="">Seçiniz</option> */}
                     <option
                       className="font-semibold"
                       value="bireysel"
@@ -58,8 +86,15 @@ const PaymentInformation = () => {
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
-                        {...register("payment_information.ad_soyad")}
+                        {...register("payment_information.ad_soyad", {
+                          required: "Ad Soyad zorunludur",
+                        })}
                       />
+                      {errors.payment_information?.ad_soyad && (
+                        <span className="text-red-500">
+                          {errors.payment_information.ad_soyad.message}
+                        </span>
+                      )}
                     </div>
                     <div>
                       <p className="text-base">TC Kimlik Numarası:</p>
@@ -67,8 +102,19 @@ const PaymentInformation = () => {
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
-                        {...register("payment_information.tr_id")}
+                        {...register("payment_information.tr_id", {
+                          required: "TC Kimlik Numarası zorunludur",
+                          minLength: {
+                            value: 11,
+                            message: "TC Kimlik Numarası 11 haneli olmalıdır",
+                          },
+                        })}
                       />
+                      {errors.payment_information?.tr_id && (
+                        <span className="text-red-500">
+                          {errors.payment_information.tr_id.message}
+                        </span>
+                      )}
                     </div>
                   </div>
                 )}
@@ -82,8 +128,15 @@ const PaymentInformation = () => {
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
-                        {...register("payment_information.company_name")}
+                        {...register("payment_information.company_name", {
+                          required: "Şirket Unvanı zorunludur",
+                        })}
                       />
+                      {errors.payment_information?.company_name && (
+                        <span className="text-red-500">
+                          {errors.payment_information.company_name.message}
+                        </span>
+                      )}
                     </div>
                     <div>
                       <p className="text-base">Vergi Numarası:</p>
@@ -91,8 +144,15 @@ const PaymentInformation = () => {
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
-                        {...register("payment_information.tax_number")}
+                        {...register("payment_information.tax_number", {
+                          required: "Vergi Numarası zorunludur",
+                        })}
                       />
+                      {errors.payment_information?.tax_number && (
+                        <span className="text-red-500">
+                          {errors.payment_information.tax_number.message}
+                        </span>
+                      )}
                     </div>
                     <div>
                       <p className="text-base">Vergi Dairesi:</p>
@@ -100,8 +160,15 @@ const PaymentInformation = () => {
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
-                        {...register("payment_tax_office")}
+                        {...register("payment_information.tax_office", {
+                          required: "Vergi Dairesi zorunludur",
+                        })}
                       />
+                      {errors.payment_information?.tax_office && (
+                        <span className="text-red-500">
+                          {errors.payment_information.tax_office.message}
+                        </span>
+                      )}
                     </div>
                   </div>
                 )}
@@ -112,8 +179,15 @@ const PaymentInformation = () => {
                     className="outline-none border w-full p-1"
                     type="text"
                     placeholder=""
-                    {...register("payment_information.iban_number")}
+                    {...register("payment_information.iban_number", {
+                      required: "IBAN Numarası zorunludur",
+                    })}
                   />
+                  {errors.payment_information?.iban_number && (
+                    <span className="text-red-500">
+                      {errors.payment_information.iban_number.message}
+                    </span>
+                  )}
                 </div>
                 <div>
                   <p className="text-base">Adres:</p>
@@ -121,8 +195,15 @@ const PaymentInformation = () => {
                     className="outline-none border w-full p-1"
                     type="text"
                     placeholder=""
-                    {...register("payment_information.address")}
+                    {...register("payment_information.address", {
+                      required: "Adres zorunludur",
+                    })}
                   />
+                  {errors.payment_information?.address && (
+                    <span className="text-red-500">
+                      {errors.payment_information.address.message}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -164,7 +245,6 @@ const PaymentInformation = () => {
               </div>
 
               <div className="flex flex-col gap-4 mt-9">
-                {/* Left Section: Conditional Form Fields */}
                 {accountTypeOne === "bireysel" && (
                   <div className="flex flex-col gap-4 w-full">
                     <div>
@@ -194,8 +274,15 @@ const PaymentInformation = () => {
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
-                        {...register("billing_information.ad_soyad")}
+                        {...register("billing_information.ad_soyad", {
+                          required: "Ad Soyad zorunludur",
+                        })}
                       />
+                      {errors.billing_information?.ad_soyad && (
+                        <span className="text-red-500">
+                          {errors.billing_information.ad_soyad.message}
+                        </span>
+                      )}
                     </div>
                     <div>
                       <p className="text-base">T.C Kimlik No:</p>
@@ -203,13 +290,23 @@ const PaymentInformation = () => {
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
-                        {...register("billing_information.tr_id")}
+                        {...register("billing_information.tr_id", {
+                          required: "T.C Kimlik No zorunludur",
+                          minLength: {
+                            value: 11,
+                            message: "T.C Kimlik No 11 haneli olmalıdır",
+                          },
+                        })}
                       />
+                      {errors.billing_information?.tr_id && (
+                        <span className="text-red-500">
+                          {errors.billing_information.tr_id.message}
+                        </span>
+                      )}
                     </div>
                   </div>
                 )}
 
-                {/* Right Section: Conditional Form Fields */}
                 {accountTypeOne === "kurumsal" && (
                   <div className="flex flex-col gap-4 w-full">
                     <div>
@@ -230,8 +327,15 @@ const PaymentInformation = () => {
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
-                        {...register("billing_information.company_name")}
+                        {...register("billing_information.company_name", {
+                          required: "Şirket Unvanı zorunludur",
+                        })}
                       />
+                      {errors.billing_information?.company_name && (
+                        <span className="text-red-500">
+                          {errors.billing_information.company_name.message}
+                        </span>
+                      )}
                     </div>
                     <div>
                       <p className="text-base">Vergi Numarası / TCKN:</p>
@@ -239,8 +343,15 @@ const PaymentInformation = () => {
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
-                        {...register("billing_information.tax_number")}
+                        {...register("billing_information.tax_number", {
+                          required: "Vergi Numarası veya TCKN zorunludur",
+                        })}
                       />
+                      {errors.billing_information?.tax_number && (
+                        <span className="text-red-500">
+                          {errors.billing_information.tax_number.message}
+                        </span>
+                      )}
                     </div>
                     <div>
                       <p className="text-base">Vergi Dairesi:</p>
@@ -248,8 +359,15 @@ const PaymentInformation = () => {
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
-                        {...register("billing_information.tax_office")}
+                        {...register("billing_information.tax_office", {
+                          required: "Vergi Dairesi zorunludur",
+                        })}
                       />
+                      {errors.billing_information?.tax_office && (
+                        <span className="text-red-500">
+                          {errors.billing_information.tax_office.message}
+                        </span>
+                      )}
                     </div>
                   </div>
                 )}
@@ -260,8 +378,15 @@ const PaymentInformation = () => {
                     className="outline-none border w-full p-1"
                     type="text"
                     placeholder=""
-                    {...register("billing_information.address")}
+                    {...register("billing_information.address", {
+                      required: "Fatura Adresi zorunludur",
+                    })}
                   />
+                  {errors.billing_information?.address && (
+                    <span className="text-red-500">
+                      {errors.billing_information.address.message}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>

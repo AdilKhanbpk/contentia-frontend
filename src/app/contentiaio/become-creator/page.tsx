@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
-import Beginning from '@/components/Creator/Beginning';
-import ProfileInformation from '@/components/Creator/ProfileInformation';
-import PaymentInformation from '@/components/Creator/PaymentInformation'
-import Preferences from '@/components/Creator/Preferences';
+import React, { useState } from "react";
+import Beginning from "@/components/Creator/Beginning";
+import ProfileInformation from "@/components/Creator/ProfileInformation";
+import PaymentInformation from "@/components/Creator/PaymentInformation";
+import Preferences from "@/components/Creator/Preferences";
 
 type Step = {
   label: string;
@@ -21,34 +21,36 @@ const BecomeCreator: React.FC = () => {
     { id: 3, label: "Tercihler" },
   ];
 
-
   return (
     <>
-      <div className='sectionBackground pb-4'>
-
+      <div className="sectionBackground pb-4">
         <div className="flex px-4 sm:px-6 md:px-12 lg:px-20 space-x-8  pt-28">
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              className={`w-1/4 pt-2 pb-2 border-t-4 text-sm ${activeTab === tab.id
-                ? "BlueBorder  BlueText font-bold"
-                : "pinkBorder text-gray-400"
-                }`}
-              onClick={() => setActiveTab(tab.id)}
+              className={`w-1/4 pt-2 pb-2 border-t-4 text-sm ${
+                activeTab === tab.id
+                  ? "BlueBorder  BlueText font-bold"
+                  : "pinkBorder text-gray-400"
+              }`}
+              // onClick={() => setActiveTab(tab.id)}
             >
               {tab.label}
             </button>
           ))}
         </div>
 
-        {activeTab === 0 && (<Beginning></Beginning>)}
+        {activeTab === 0 && <Beginning setActiveTab={setActiveTab}></Beginning>}
 
-        {activeTab === 1 && (<ProfileInformation></ProfileInformation>)}
+        {activeTab === 1 && (
+          <ProfileInformation setActiveTab={setActiveTab}></ProfileInformation>
+        )}
 
-        {activeTab === 2 && (<PaymentInformation></PaymentInformation>)}
+        {activeTab === 2 && (
+          <PaymentInformation setActiveTab={setActiveTab}></PaymentInformation>
+        )}
 
-        {activeTab === 3 && (<Preferences></Preferences>)}
-
+        {activeTab === 3 && <Preferences></Preferences>}
       </div>
     </>
   );
