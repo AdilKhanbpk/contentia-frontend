@@ -3,8 +3,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface CreatorFormState {
   profileInformation: object;
   paymentInformation: object;
-  contentCreatorPreferences: object;
-  socialMediaInformation: object;
+  creatorInformation: object;
   fullObject: object;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
@@ -12,11 +11,11 @@ interface CreatorFormState {
 
 export const becomeCreatorThunk = createAsyncThunk(
   'becomeCreator/becomeCreatorThunk',
-  async (data: any, { getState, rejectWithValue }) => {
+  async (_, { getState, rejectWithValue }) => {
     try {
       const state: any = getState();
       const fullObject = state.becomeCreator.fullObject;
-      console.log("FullObject: ", fullObject);
+      // console.log("FullObject: ", fullObject);
 
       const response = await fetch('http://localhost:3001/api/v1/become-creator/create', {
         method: 'POST',
@@ -26,7 +25,7 @@ export const becomeCreatorThunk = createAsyncThunk(
         },
         body: JSON.stringify(fullObject),
       });
-      console.log(response)
+      // console.log(response)
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -43,8 +42,7 @@ export const becomeCreatorThunk = createAsyncThunk(
 const initialState: CreatorFormState = {
   profileInformation: {},
   paymentInformation: {},
-  contentCreatorPreferences: {},
-  socialMediaInformation: {},
+  creatorInformation: {},
   fullObject: {},
   status: 'idle',
   error: null,
@@ -62,20 +60,15 @@ const creatorFormSlice = createSlice({
       state.paymentInformation = action.payload;
       state.fullObject = { ...state.fullObject, ...action.payload };
     },
-    setContentCreatorPreferences: (state, action: PayloadAction<object>) => {
-      state.contentCreatorPreferences = action.payload;
-      state.fullObject = { ...state.fullObject, ...action.payload };
-    },
-    setSocialMediaInformation: (state, action: PayloadAction<object>) => {
-      state.socialMediaInformation = action.payload;
+    setCreatorInformation: (state, action: PayloadAction<object>) => {
+      state.creatorInformation = action.payload;
       state.fullObject = { ...state.fullObject, ...action.payload };
     },
     setFullObject: (state) => {
       state.fullObject = {
         ...state.profileInformation,
         ...state.paymentInformation,
-        ...state.contentCreatorPreferences,
-        ...state.socialMediaInformation,
+        ...state.creatorInformation,
       };
     },
   },
@@ -98,8 +91,7 @@ const creatorFormSlice = createSlice({
 export const {
   setProfileInformation,
   setPaymentInformation,
-  setContentCreatorPreferences,
-  setSocialMediaInformation,
+  setCreatorInformation,
   setFullObject,
 } = creatorFormSlice.actions;
 
