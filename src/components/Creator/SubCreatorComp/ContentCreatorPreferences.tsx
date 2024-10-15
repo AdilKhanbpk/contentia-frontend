@@ -10,7 +10,7 @@ const ContentCreatorPreferences = () => {
   const [showTooltipTwo, setShowTooltipTwo] = useState(false);
   const [showTooltipThree, setShowTooltipThree] = useState(false);
   const dispatch = useDispatch();
-  const contentType = watch("contentType");
+  const contentType = watch("content_information.contentType");
 
   const onSubmit = (data: any) => {
     dispatch(setContentCreatorPreferences(data));
@@ -65,7 +65,7 @@ const ContentCreatorPreferences = () => {
                     <input
                       type="radio"
                       value="product"
-                      {...register("contentType")}
+                      {...register("content_information.contentType")}
                       className="hidden peer"
                     />
                     <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
@@ -78,7 +78,7 @@ const ContentCreatorPreferences = () => {
                     <input
                       type="radio"
                       value="service"
-                      {...register("contentType")}
+                      {...register("content_information.contentType")}
                       className="hidden peer"
                     />
                     <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
@@ -91,7 +91,7 @@ const ContentCreatorPreferences = () => {
                     <input
                       type="radio"
                       value="space"
-                      {...register("contentType")}
+                      {...register("content_information.contentType")}
                       className="hidden peer"
                     />
                     <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
@@ -121,7 +121,7 @@ const ContentCreatorPreferences = () => {
                     >
                       <input
                         type="checkbox"
-                        {...register("content_formats")}
+                        {...register("content_information.content_formats")}
                         value={format}
                         // id={`format${index + 1}`}
                         className="hidden peer"
@@ -181,11 +181,14 @@ const ContentCreatorPreferences = () => {
 
                       <select
                         className="w-full px-3 py-2 border rounded-md focus:outline-none"
-                        {...register("address_details.country", {
-                          required:
-                            contentType === "place" ||
-                            contentType === "product",
-                        })}
+                        {...register(
+                          "content_information.address_details.country",
+                          {
+                            required:
+                              contentType === "place" ||
+                              contentType === "product",
+                          }
+                        )}
                       >
                         <option value="">Seçiniz</option>
                         <option value="Turkey">Turkey</option>
@@ -199,11 +202,14 @@ const ContentCreatorPreferences = () => {
                       </label>
                       <select
                         className="w-full px-3 py-2 border rounded-md focus:outline-none"
-                        {...register("address_details.state", {
-                          required:
-                            contentType === "place" ||
-                            contentType === "product",
-                        })}
+                        {...register(
+                          "content_information.address_details.state",
+                          {
+                            required:
+                              contentType === "place" ||
+                              contentType === "product",
+                          }
+                        )}
                       >
                         <option value="">Seçiniz</option>
                         <option value="Turkey">Turkey</option>
@@ -217,11 +223,14 @@ const ContentCreatorPreferences = () => {
                       </label>
                       <select
                         className="w-full px-3 py-2 border rounded-md focus:outline-none"
-                        {...register("address_details.district", {
-                          required:
-                            contentType === "place" ||
-                            contentType === "product",
-                        })}
+                        {...register(
+                          "content_information.address_details.district",
+                          {
+                            required:
+                              contentType === "place" ||
+                              contentType === "product",
+                          }
+                        )}
                       >
                         <option value="">Seçiniz</option>
                         <option value="Turkey">Turkey</option>
@@ -235,11 +244,14 @@ const ContentCreatorPreferences = () => {
                       </label>
                       <select
                         className="w-full px-3 py-2 border rounded-md focus:outline-none"
-                        {...register("address_details.neighbourhood", {
-                          required:
-                            contentType === "place" ||
-                            contentType === "product",
-                        })}
+                        {...register(
+                          "content_information.address_details.neighbourhood",
+                          {
+                            required:
+                              contentType === "place" ||
+                              contentType === "product",
+                          }
+                        )}
                       >
                         <option value="">Seçiniz</option>
                         <option value="Turkey">Turkey</option>
@@ -255,11 +267,14 @@ const ContentCreatorPreferences = () => {
                         placeholder="Lütfen işletme adını ve açık adres bilgilerini girin."
                         className="w-full text-sm px-3 py-2 border rounded-md focus:outline-none"
                         rows={2} // Set the number of rows to 6
-                        {...register("address_details.full_address", {
-                          required:
-                            contentType === "place" ||
-                            contentType === "product",
-                        })}
+                        {...register(
+                          "content_information.address_details.full_address",
+                          {
+                            required:
+                              contentType === "place" ||
+                              contentType === "product",
+                          }
+                        )}
                       />
                     </div>
                   </div>
@@ -301,7 +316,7 @@ const ContentCreatorPreferences = () => {
                     type="checkbox"
                     value={item}
                     className="hidden peer "
-                    {...register("area_of_interest")}
+                    {...register("content_information.area_of_interest")}
                   />
                   <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9]  transition-all duration-300 ease-in-out">
                     <div className="w-full h-full bg-white rounded-full"></div>
@@ -312,15 +327,6 @@ const ContentCreatorPreferences = () => {
             </div>
           </section>
         </div>
-      </div>
-      <div className="flex justify-end mt-6">
-        <button
-          // onClick={submittedSuccessfully}
-          type="submit"
-          className="ButtonBlue text-white text-lg font-bold rounded-xl p-1 px-8"
-        >
-          Tamamla
-        </button>
       </div>
     </form>
   );

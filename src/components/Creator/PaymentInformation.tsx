@@ -100,7 +100,7 @@ const PaymentInformation = () => {
                         className="outline-none border w-full p-1"
                         type="text"
                         placeholder=""
-                        {...register("payment_tax_office")}
+                        {...register("payment_information.tax_office")}
                       />
                     </div>
                   </div>

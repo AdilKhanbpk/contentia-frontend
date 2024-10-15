@@ -9,7 +9,11 @@ import xIcon from "../../../../public/BecomeCreator/x_icon.png";
 import tiktokIcon from "../../../../public/BecomeCreator/tiktik_icon.png";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { setSocialMediaInformation } from "@/store/becomeCreator/becomeCreatorSlice";
+import {
+  becomeCreatorThunk,
+  setSocialMediaInformation,
+} from "@/store/becomeCreator/becomeCreatorSlice";
+import { AppDispatch } from "@/store/store";
 
 const SocialMediaInformation: React.FC = () => {
   const {
@@ -19,12 +23,15 @@ const SocialMediaInformation: React.FC = () => {
   } = useForm(); // Initialize react-hook-form
   const [showTooltipTwo, setShowTooltipTwo] = useState(false);
   const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   // Submit handler
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     dispatch(setSocialMediaInformation(data));
     console.log(data);
+
+    await dispatch(becomeCreatorThunk(data));
+
     // router.push('/contentiaio/become-creator/submitted-successfully');
   };
 
@@ -71,7 +78,7 @@ const SocialMediaInformation: React.FC = () => {
               <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
                 <input
                   type="radio"
-                  {...register("social_media.contentType")}
+                  {...register("social_information.contentType")}
                   value="product"
                   className="hidden peer"
                 />
@@ -85,7 +92,7 @@ const SocialMediaInformation: React.FC = () => {
               <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
                 <input
                   type="radio"
-                  {...register("social_media.contentType")}
+                  {...register("social_information.contentType")}
                   value="hizmat"
                   className="hidden peer"
                 />
@@ -125,7 +132,7 @@ const SocialMediaInformation: React.FC = () => {
                 <input
                   type="text"
                   {...register(
-                    `social_media.platforms.${platform.label}.username`
+                    `social_information.platforms.${platform.label}.username`
                   )}
                   className="border px-2 py-1 rounded mt-2 sm:w-fit w-full focus:outline-none"
                   placeholder="Kullanıcı Adı"
@@ -135,7 +142,7 @@ const SocialMediaInformation: React.FC = () => {
                 <input
                   type="number"
                   {...register(
-                    `social_media.platforms.${platform.label}.followerCount`
+                    `social_information.platforms.${platform.label}.followerCount`
                   )}
                   className="border px-2 py-1 rounded mt-2 sm:w-fit w-full focus:outline-none"
                   placeholder="Takipçi Sayısı"
@@ -151,7 +158,7 @@ const SocialMediaInformation: React.FC = () => {
               </p>
               <input
                 type="url"
-                {...register("social_media.instagramLink")}
+                {...register("social_information.instagramLink")}
                 className="border focus:outline-none p-4 rounded w-full"
                 placeholder="Ör: https://www.instagram.com/contentia/reel/C5OCG4XBtFX"
               />
@@ -161,7 +168,7 @@ const SocialMediaInformation: React.FC = () => {
                 <input
                   id="sozlesme"
                   type="checkbox"
-                  {...register("social_media.user_aggrement")}
+                  {...register("social_information.user_agreement")}
                   className="mt-1 mr-2"
                 />
                 <label
@@ -177,7 +184,7 @@ const SocialMediaInformation: React.FC = () => {
                 <input
                   id="iletisim"
                   type="checkbox"
-                  {...register("social_media.approved_commercial")}
+                  {...register("social_information.approved_commercial")}
                   className="mt-1 mr-2"
                 />
                 <label
