@@ -55,9 +55,7 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
             <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
               <input
                 type="radio"
-                {...register("social_information.contentType", {
-                  required: "Bu alan zorunludur.",
-                })}
+                {...register("social_information.contentType")}
                 value="product"
                 className="hidden peer"
               />
@@ -71,9 +69,7 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
             <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
               <input
                 type="radio"
-                {...register("social_information.contentType", {
-                  required: "Bu alan zorunludur.",
-                })}
+                {...register("social_information.contentType")}
                 value="hizmat"
                 className="hidden peer"
               />
@@ -118,23 +114,11 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
               <input
                 type="text"
                 {...register(
-                  `social_information.platforms.${platform.label}.username`,
-                  {
-                    required: `${platform.label} için kullanıcı adı gereklidir.`,
-                  }
+                  `social_information.platforms.${platform.label}.username`
                 )}
                 className="border px-2 py-1 rounded mt-2 sm:w-fit w-full focus:outline-none"
                 placeholder="Kullanıcı Adı"
               />
-              {errors.social_information?.platforms?.[platform.label]
-                ?.username && (
-                <span className="text-red-500 text-sm">
-                  {
-                    errors.social_information.platforms[platform.label].username
-                      .message
-                  }
-                </span>
-              )}
 
               {/* Follower count input */}
               <input
