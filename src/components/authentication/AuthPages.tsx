@@ -19,15 +19,25 @@ const AuthPages = () => {
     try {
       const response = await axios.post('http://localhost:3001/api/v1/users/login', data);
       console.log("Login Response:", response.data);
-      // Handle successful login here (e.g., redirect user, store token, etc.)
       const token = response.data.token; // Assume the token is in the response
 
       // Store the token in local storage
       localStorage.setItem('your_token_key', token);
       console.log('Token stored successfully');
-    } catch (error) {
-      console.error("Login Error:", error);
-      // Handle login error here (e.g., show error message)
+      alert('Login successful');
+    } catch (error: any) {
+      // Default error message
+      let errorMessage = 'Something went wrong during login. Please try again.';
+
+      // Check if we have a server response and display a relevant message
+      if (error.response && error.response.data && error.response.data.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.request) {
+        errorMessage = 'Unable to connect to the server. Please check your internet connection.';
+      }
+
+      console.error("Login Error:", errorMessage);
+      alert(errorMessage);
     }
   };
 
@@ -35,15 +45,25 @@ const AuthPages = () => {
     try {
       const response = await axios.post('http://localhost:3001/api/v1/users/signup', data);
       console.log("Signup Response:", response.data);
-      // Handle successful signup here (e.g., redirect user, show success message, etc.)
       const token = response.data.token; // Assume the token is in the response
 
       // Store the token in local storage
       localStorage.setItem('your_token_key', token);
       console.log('Token stored successfully');
-    } catch (error) {
-      console.error("Signup Error:", error);
-      // Handle signup error here (e.g., show error message)
+      alert('Signup successful');
+    } catch (error: any) {
+      // Default error message
+      let errorMessage = 'Something went wrong during signup. Please try again.';
+
+      // Check if we have a server response and display a relevant message
+      if (error.response && error.response.data && error.response.data.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.request) {
+        errorMessage = 'Unable to connect to the server. Please check your internet connection.';
+      }
+
+      console.error("Signup Error:", errorMessage);
+      alert(errorMessage);
     }
   };
 
@@ -74,7 +94,7 @@ const AuthPages = () => {
           {activeTab === 'login' ? (
             <form onSubmit={handleSubmit(handleLogin)}>
               <div className='px-4'>
-                <button className="flex justify-center w-full text-gray-700 mb-4 border border-gray-300">
+                <button type='button' className="flex justify-center w-full text-gray-700 mb-4 border border-gray-300">
                   <Image src='/googleIcon.svg' width={15} height={15} alt="Google Icon" className="p-1.5 w-10 h-10 border-r border-gray-300" />
                   <div className='w-11/12 py-2'>Google ile devam et</div>
                 </button>
