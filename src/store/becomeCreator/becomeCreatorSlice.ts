@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { axiosInstance, getAuthConfig } from '../axiosInstance';
 
 interface CreatorFormState {
   profileInformation: object;
@@ -15,26 +16,21 @@ export const becomeCreatorThunk = createAsyncThunk(
     try {
       const state: any = getState();
       const fullObject = state.becomeCreator.fullObject;
-      // console.log("FullObject: ", fullObject);
+      const accessToken = state.auth.accessToken;
 
-      const response = await fetch('http://localhost:3001/api/v1/become-creator/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // 'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify(fullObject),
-      });
-      // console.log(response)
+      // Pass the access token into the config or get the access token from getState()
+      // const config = getAuthConfig(accessToken);
+      // const response = await axiosInstance.post('/become-creator/create', fullObject, config);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        return rejectWithValue(errorData);
-      }
+      const response = await axiosInstance.post('/become-creator/create', fullObject);
 
-      return await response.json();
+      return response.data; // Axios automatically parses JSON
     } catch (error: any) {
-      return rejectWithValue(error.message);
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      } else {
+        return rejectWithValue(error.message);
+      }
     }
   }
 );
