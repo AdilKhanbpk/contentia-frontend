@@ -6,6 +6,7 @@ import i18n from "../i18n";
 import "./globals.css"; // Import your global CSS
 import Navbar from "@/components/navbar/Navbar";
 import CustomerNavbar from "@/components/navbar/CustomerNavbar"; // Import your CustomerNavbar component
+import AdminNavbar from "@/components/navbar/AdminNavbar"; // Import your AdminNavbar component
 import { usePathname } from "next/navigation"; // Import usePathname hook
 import Footer from "@/components/footer/Footer";
 import store from "@/store/store";
@@ -34,6 +35,9 @@ export default function RootLayout({
   const isOrdersPage =
     pathname === "/orders" || pathname.startsWith("/orders/");
 
+  // check if the current path is "/admin"
+  const isAdminPage = pathname === "/admin" || pathname.startsWith("/admin/");
+
   return (
     <html lang="en">
       <body>
@@ -43,6 +47,8 @@ export default function RootLayout({
             {/* Render Navbar on landing page */}
             {isOrdersPage && <CustomerNavbar />}{" "}
             {/* Render CustomerNavbar on /orders */}
+            {isAdminPage && <AdminNavbar />}{" "}
+            {/* Render AdminNavbar on /orders */}
             {children}
             {isAfterContentiaio && <Footer />}{" "}
             {/* Render Footer on landing page */}
