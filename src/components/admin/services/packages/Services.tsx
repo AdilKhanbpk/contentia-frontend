@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
-import CustomModelAdmin from '../../modal/CustomModelAdmin'
+import CustomModelAdmin from '../../../modal/CustomModelAdmin'
 
 // Plan structure
 interface Plan {

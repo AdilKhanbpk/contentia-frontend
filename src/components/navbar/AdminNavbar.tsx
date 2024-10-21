@@ -142,7 +142,7 @@ export default function AdminNavbar() {
                     <ul className="space-y-2 font-medium">
 
                         <li className="mt-10">
-                            <Link legacyBehavior href="/admin/packages">
+                            <Link legacyBehavior href="/admin/services/packages">
                                 <a
                                     className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                                 >
@@ -151,28 +151,31 @@ export default function AdminNavbar() {
                             </Link>
                         </li>
                         <li>
-                            <a
-                                href="#"
-                                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                            >
-                                <span className="flex-1 ms-3 whitespace-nowrap">Pricing</span>
-                            </a>
+                            <Link legacyBehavior href="/admin/services/pricing">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">Pricing</span>
+                                </a>
+                            </Link>
                         </li>
                         <li>
-                            <a
-                                href="#"
-                                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                            >
-                                <span className="flex-1 ms-3 whitespace-nowrap">Additional Services</span>
-                            </a>
+                            <Link legacyBehavior href="/admin/services/additional-services">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">Additional Services</span>
+                                </a>
+                            </Link>
                         </li>
                         <li>
-                            <a
-                                href="#"
-                                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                            >
-                                <span className="flex-1 ms-3 whitespace-nowrap">Coupons</span>
-                            </a>
+                            <Link legacyBehavior href="/admin/services/coupons">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">Coupons</span>
+                                </a>
+                            </Link>
                         </li>
                     </ul>
                 </div>

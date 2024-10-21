@@ -1,5 +1,5 @@
 import React from 'react';
-import Services from '@/components/admin/services/Services';
+import Services from '@/components/admin/services/packages/Services';
 
 export default function Service() {
   return (
