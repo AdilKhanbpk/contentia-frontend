@@ -177,6 +177,33 @@ export default function AdminNavbar() {
                                 </a>
                             </Link>
                         </li>
+                        <li>
+                            <Link legacyBehavior href="/admin/user-management/customers">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">Customers</span>
+                                </a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link legacyBehavior href="/admin/user-management/creators">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">Creators</span>
+                                </a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link legacyBehavior href="/admin/user-management/admin">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">Admin</span>
+                                </a>
+                            </Link>
+                        </li>
                     </ul>
                 </div>
             </aside>
