@@ -3,6 +3,10 @@ import { useState } from "react";
 import Image from "next/image";
 import { useTranslation } from "react-i18next"; // Import useTranslation hook
 import Link from "next/link";
+import { IoNotificationsOutline } from 'react-icons/io5';
+import { AiOutlineSearch, AiOutlineSetting } from 'react-icons/ai';
+import { MdOutlineEmail } from 'react-icons/md';
+import { BiUserCircle } from 'react-icons/bi';
 
 export default function AdminNavbar() {
     const { t } = useTranslation(); // Initialize the translation hook
@@ -15,9 +19,8 @@ export default function AdminNavbar() {
 
     return (
         <>
-            <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200  dark:bg-gray-800 dark:border-gray-700 px-2 sm:px-4 md:px-6 lg:px-10">
+            <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700 pr-6">
                 <div className="px-3 py-3 lg:px-5 lg:pl-3">
-
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">
                             <button
@@ -41,9 +44,8 @@ export default function AdminNavbar() {
                                 </svg>
                             </button>
 
-
                             {/* Brand and Menu Links */}
-                            <div className="flex items-center space-x-8 ms-4">
+                            <div className="flex justify-between">
                                 <a href="" className="flex lg:ms-4 md:me-0 mb-3">
                                     <Image
                                         src="/contentiaLogo.png"
@@ -54,84 +56,44 @@ export default function AdminNavbar() {
                                     />
                                 </a>
 
-                                {/* Navigation Links */}
-                                <ul className="hidden lg:flex space-x-4 font-medium">
-                                    <li>
-                                        <a
-                                            href="#"
-                                            className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg"
-                                        >
-                                            {t('home')}
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <Link legacyBehavior href="/orders/profile">
-                                            <a
-                                                className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg"
-                                            >
-                                                {t('profile')}
-                                            </a>
-                                        </Link>
-
-                                    </li>
-                                    <li>
-                                        <Link legacyBehavior href="/orders/orders">
-                                            <a
-                                                className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg"
-                                            >
-                                                {t('orders')}
-                                            </a>
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link legacyBehavior href="/orders/packages">
-                                            <a
-                                                className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg"
-                                            >
-                                                {t('packages')}
-                                            </a>
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link legacyBehavior href="/orders/my-brands">
-                                            <a
-                                                className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg"
-                                            >
-                                                {t('my_brands')}
-                                            </a>
-                                        </Link>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        {/* Right Section with User Avatar */}
-                        <div className="flex items-center space-x-4">
-                            <div className="relative">
-                                <button
-                                    type="button"
-                                    className="flex items-center text-sm rounded-full focus:outline-none"
-                                    id="user-menu-button"
-                                    aria-expanded="false"
-                                    aria-haspopup="true"
-                                >
-                                    <span className="sr-only">Open user menu</span>
-                                    <span className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 text-white mr-2">
-                                        SK {/* Initials */}
-                                    </span>
-                                    <Image
-                                        src="/dropDownIcon.png" // Placeholder for the logo next to "Brand Name"
-                                        alt="brand logo"
-                                        height={20}
-                                        width={20}
-                                        className="rounded-full"
+                                {/* Search Bar */}
+                                <div className="relative ml-[52px]">
+                                    <AiOutlineSearch className="absolute left-3 top-2.5 text-gray-400" />
+                                    <input
+                                        type="text"
+                                        placeholder="Ctrl + K"
+                                        className="pl-10 pr-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     />
-                                </button>
+                                </div>
                             </div>
                         </div>
+
+                        {/* Right Section */}
+                        <ul className="flex items-center space-x-4 font-medium">
+                           
+                            <button className="relative text-gray-600 hover:text-gray-800">
+                                <IoNotificationsOutline size={24} />
+                                <span className="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+                            </button>
+                            <button className="text-gray-600 hover:text-gray-800">
+                                <MdOutlineEmail size={24} />
+                            </button>
+                            <button className="text-gray-600 hover:text-gray-800">
+                                <AiOutlineSetting size={24} />
+                            </button>
+                            
+                            
+
+                            {/* User Profile */}
+                            <div className="flex items-center space-x-2">
+                                <BiUserCircle size={32} className="text-gray-600" />
+                                <span className="text-sm text-gray-700 font-semibold">JWT User</span>
+                            </div>
+                        </ul>
                     </div>
                 </div>
             </nav>
+
 
             {/* Sidebar */}
             <aside
