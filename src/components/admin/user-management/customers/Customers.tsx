@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { FaEdit, FaTrashAlt, FaFileCsv } from "react-icons/fa";
+import { FaEdit, FaTrashAlt, FaFileCsv, FaEye  } from "react-icons/fa";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -150,18 +150,17 @@ const Customers: React.FC = () => {
         {
             name: "Actions",
             cell: (row: any) => (
-                <div className="flex space-x-2">
-                    <button
-                        className="text-blue-500 hover:text-blue-700"
-                        onClick={() => handleEdit(row)}
-                    >
-                        <FaEdit />
+                <div className="flex space-x-3">
+                    <button className="text-gray-500 hover:text-gray-700">
+                        <FaEye className="text-lg" /> {/* Adjust size here */}
                     </button>
-                    <button
-                        className="text-red-500 hover:text-red-700"
-                        onClick={() => handleDelete(row.id)}
-                    >
-                        <FaTrashAlt />
+
+                    <button className="text-blue-500 hover:text-blue-700" onClick={() => handleEdit(row)}>
+                        <FaEdit className="text-lg" /> {/* Adjust size here */}
+                    </button>
+
+                    <button className="text-red-500 hover:text-red-700" onClick={() => handleDelete(row.id)}>
+                        <FaTrashAlt className="text-md" /> {/* Adjust size here */}
                     </button>
                 </div>
             ),
