@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import { FaEdit, FaTrashAlt, FaFileCsv } from "react-icons/fa";
-import { TableColumn } from "react-data-table-component";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useForm, SubmitHandler } from "react-hook-form";
 import EditCustomerForm from "./sub-customer/EditCustomerForm"; // Import the new component
+import CustomModelAdmin from '../../../modal/CustomModelAdmin'
 
 const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
 
@@ -96,13 +96,13 @@ const Customers: React.FC = () => {
     const columns = [
         {
             name: "#",
-            selector: (row : any) => row.id,
+            selector: (row: any) => row.id,
             sortable: true,
             width: "80px",
         },
         {
             name: "User Info",
-            cell: (row : any) => (
+            cell: (row: any) => (
                 <div className="flex items-center space-x-2">
                     <Image width={10} height={10} src="/icons/avatar.png" alt="avatar" className="w-10 h-10 rounded-full" />
                     <div>
@@ -116,23 +116,23 @@ const Customers: React.FC = () => {
         },
         {
             name: "Contact",
-            selector: (row : any) => row.contact,
+            selector: (row: any) => row.contact,
             sortable: true,
         },
         {
             name: "Age",
-            selector: (row : any) => row.age,
+            selector: (row: any) => row.age,
             sortable: true,
             width: "100px",
         },
         {
             name: "Country",
-            selector: (row : any) => row.country,
+            selector: (row: any) => row.country,
             sortable: true,
         },
         {
             name: "Status",
-            cell: (row : any) => (
+            cell: (row: any) => (
                 <span
                     className={`px-3 py-1 rounded-full text-sm font-semibold ${row.status === "Verified"
                         ? "text-green-700 bg-green-100"
@@ -149,7 +149,7 @@ const Customers: React.FC = () => {
         },
         {
             name: "Actions",
-            cell: (row : any) => (
+            cell: (row: any) => (
                 <div className="flex space-x-2">
                     <button
                         className="text-blue-500 hover:text-blue-700"
@@ -169,6 +169,12 @@ const Customers: React.FC = () => {
         },
     ];
 
+    const [invoiceType, setInvoiceType] = useState('Bireysel');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
+
     return (
         <div className="p-5 bg-white rounded-lg ">
             <div className='flex flex-col px-4 sm:px-6 md:px-12 lg:pl-72 lg:mt-28'>
@@ -185,10 +191,181 @@ const Customers: React.FC = () => {
                     <div className="space-x-2">
                         <button
                             className="px-4 py-2 ButtonBlue text-white rounded-md"
-                        // onClick={openModal}
+                            onClick={openModal}
                         >
                             Add Customer
                         </button>
+                        <CustomModelAdmin isOpen={isModalOpen} closeModal={closeModal} title="">
+                            <div className="text-lg font-semibold px-4 py-2 border-b-2 border-gray-200">New Customer</div>
+                            <form onSubmit={handleSubmit(onSubmit)}>
+                                <div className="flex flex-row justify-end ">
+                                    <div className="mt-20 ml-16"><Image width={30} height={30} src="/icons/avatar.png" alt="avatar" className="w-24 h-w-24 rounded-full" /></div>
+                                    <div className="p-16">
+                                        <div>
+                                            <div className='flex flex-row col-span-2 '>
+                                                <div className='flex flex-col mb-2 sm:mb-3 lg:mb-4 w-1/2 pr-2'> {/* Add width and padding */}
+                                                    <label>Name</label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Enter Name"
+                                                        {...register('name')}
+                                                        className="font-medium border px-1 py-1 rounded-md focus:outline-none"
+                                                    />
+                                                </div>
+                                                <div className='flex flex-col sm:mb-3 w-1/2 pl-2'> {/* Add width and padding */}
+                                                    <label>Email</label>
+                                                    <input
+                                                        type="email"
+                                                        placeholder="Enter your email address"
+                                                        {...register('email')}
+                                                        className="font-medium border px-1 py-1 rounded-md focus:outline-none"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className='flex flex-row col-span-2 '>
+                                                <div className='flex flex-col w-1/2 pr-2'> {/* Add width and padding */}
+                                                    <label>Contact</label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Enter your phone number"
+                                                        {...register('contact')}
+                                                        className="font-medium border px-1 py-1 rounded-md focus:outline-none"
+                                                    />
+                                                </div>
+                                                <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4 w-1/2 pl-2'> {/* Add width and padding */}
+                                                    <label>Age</label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Enter your age"
+                                                        {...register('age')}
+                                                        className="font-medium border px-1 py-1 rounded-md focus:outline-none"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        {/* Fatura Bilgileri */}
+                                        <div className="mb-4 p-4 sm:mb-6 sm:p-6 lg:mb-6 lg:px-4 lg:py-2 flex flex-col lg:flex-row lg:space-x-16 border-2 border-gray-200">
+                                            <h2 className="text-lg font-semibold mb-4 whitespace-normal lg:whitespace-nowrap">Fatura Bilgileri</h2>
+                                            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {/* Left side for personal or corporate details */}
+                                                <div>
+                                                    <label className="block mb-2">Fatura Türü:</label>
+                                                    <select
+                                                        {...register('invoiceType')}
+                                                        value={invoiceType}
+                                                        onChange={(e) => setInvoiceType(e.target.value)}
+                                                        className=" font-medium px-1 py-0.5 border rounded-md focus:outline-none"
+                                                    >
+                                                        <option value="Bireysel">Bireysel</option>
+                                                        <option value="Kurumsal">Kurumsal</option>
+                                                    </select>
+
+                                                    {invoiceType === 'Bireysel' && (
+                                                        <>
+                                                            <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4'>
+                                                                <p className="mt-4">Ad Soyad:</p>
+                                                                <p className='font-medium'>
+                                                                    <input
+                                                                        type="text"
+                                                                        {...register('name')}
+                                                                        className="font-medium border px-1 py-0.5 rounded-md focus:outline-none"
+                                                                    />
+
+                                                                </p>
+                                                            </div>
+                                                            <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4'>
+                                                                <p>T.C. Kimlik No:</p>
+                                                                <p className='font-medium'>
+                                                                    <input
+                                                                        type="text"
+                                                                        {...register('tcNumber')}
+                                                                        className="font-medium border px-1 py-0.5 rounded-md focus:outline-none"
+                                                                    />
+                                                                </p>
+                                                            </div>
+                                                            <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4'>
+                                                                <p>Fatura Adresi:</p>
+                                                                <p className='font-medium whitespace-normal lg:whitespace-nowrap'>
+
+                                                                    <input
+                                                                        type="text"
+                                                                        {...register('address')}
+                                                                        className="font-medium border px-1 py-0.5 rounded-md focus:outline-none"
+                                                                    />
+
+                                                                </p>
+                                                            </div>
+                                                        </>
+                                                    )}
+
+                                                    {invoiceType === 'Kurumsal' && (
+                                                        <>
+                                                            <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4'>
+                                                                <p className="mt-2 sm:mt-3 md:mt-4 lg:mt-4">Şirket Ünvanı:</p>
+                                                                <p className='font-medium'>
+
+                                                                    <input
+                                                                        type="text"
+                                                                        {...register('companyTitle')}
+                                                                        className="font-medium border px-1 py-0.5 rounded-md focus:outline-none"
+                                                                    />
+
+                                                                </p>
+                                                            </div>
+                                                            <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4'>
+                                                                <p>Vergi Numarası / TCKN</p>
+                                                                <p className='font-medium'>
+
+                                                                    <input
+                                                                        type="text"
+                                                                        {...register('taxNumber')}
+                                                                        className="font-medium border px-1 py-0.5 rounded-md focus:outline-none"
+                                                                    />
+
+                                                                </p>
+                                                            </div>
+                                                            <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4'>
+                                                                <p>Vergi Dairesi:</p>
+                                                                <p className='font-medium'>
+
+                                                                    <input
+                                                                        type="text"
+                                                                        {...register('taxOffice')}
+                                                                        className="font-medium border px-1 py-0.5 rounded-md focus:outline-none"
+                                                                    />
+
+                                                                </p>
+                                                            </div>
+                                                            <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4'>
+                                                                <p>Fatura Adresi:</p>
+                                                                <p className='font-medium whitespace-normal lg:whitespace-nowrap'>
+
+                                                                    <input
+                                                                        type="text"
+                                                                        {...register('address')}
+                                                                        className="font-medium border px-1 py-0.5 rounded-md focus:outline-none"
+                                                                    />
+
+                                                                </p>
+                                                            </div>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <button
+                                            type="submit"
+                                            className="px-4 py-2 ButtonBlue text-white rounded-md mr-2"
+                                        >
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </CustomModelAdmin>
 
                         <button
                             className="px-4 py-2 bg-green-500 text-white rounded-md"
