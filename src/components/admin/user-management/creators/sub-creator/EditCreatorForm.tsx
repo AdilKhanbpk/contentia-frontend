@@ -28,6 +28,7 @@ interface EditCreatorFormProps {
     handleSubmit: any;
 }
 
+// memoization
 const MemoizedFirstTab = React.memo(FirstTab);
 const MemoizedSecondTab = React.memo(SecondTab);
 const MemoizedThirdTab = React.memo(ThirdTab);
