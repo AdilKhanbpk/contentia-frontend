@@ -5,6 +5,8 @@ import Image from 'next/image';
 import Link from "next/link";
 import FirstTab from './FirstTab';
 import SecondTab from './SecondTab';
+import ThirdTab from './ThirdTab';
+import FourthTab from './FourthTab';
 
 interface Creator {
     id: number;
@@ -28,6 +30,8 @@ interface EditCreatorFormProps {
 
 const MemoizedFirstTab = React.memo(FirstTab);
 const MemoizedSecondTab = React.memo(SecondTab);
+const MemoizedThirdTab = React.memo(ThirdTab);
+const MemoizedFourthTab = React.memo(FourthTab);
 
 const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
     editingCreator,
@@ -131,13 +135,13 @@ const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
                         </button>
 
                         <button
-                            onClick={() => handleLinkClick('change-password')}
+                            onClick={() => handleLinkClick('Preferences')}
                             className={`flex items-center space-x-6 p-2 rounded-lg 
-                                ${activeSection === 'change-password' ? 'bg-blue-100 text-blue-600' : 'text-gray-700'}
+                                ${activeSection === 'Preferences' ? 'bg-blue-100 text-blue-600' : 'text-gray-700'}
                                 hover:bg-blue-50 hover:text-blue-500`}
                         >
-                            <Image src='/icons/changePassword.png' alt="Change Password" width={20} height={20} />
-                            <span>Change Password</span>
+                            <Image src='/icons/preferences.png' alt="Change Password" width={20} height={20} />
+                            <span>Preferences</span>
                         </button>
 
                         <button
@@ -155,8 +159,8 @@ const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
                 {/* Conditional Rendering of Content */}
                 {activeSection === 'personal-info' && <MemoizedFirstTab />}
                 {activeSection === 'payment' && <MemoizedSecondTab />}
-                {activeSection === 'change-password' && <></>}
-                {activeSection === 'settings' && <></>}
+                {activeSection === 'Preferences' && <MemoizedThirdTab />}
+                {activeSection === 'settings' && <MemoizedFourthTab />}
             </div>
         </div>
     );
