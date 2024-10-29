@@ -6,6 +6,8 @@ import dynamic from "next/dynamic";
 import { useForm, SubmitHandler } from "react-hook-form";
 import CustomModelAdmin from '../../../modal/CustomModelAdmin'
 import NewModal from "../sub-order/NewModal";
+import EditModal from "../sub-order/EditModal";
+import RequestModal from "../sub-order/RequestModal";
 
 const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
 
@@ -24,7 +26,7 @@ export interface Order {
 }
 
 // Initial orders data
-const initialOrders : Order[] = [
+const initialOrders: Order[] = [
     { id: 100, name: "Earl Parrini", email: "sah@gmail.com", contact: "+1 (965) 886-4355", orderID: 1, orderDate: "2023-10-01", noOfUGC: 5, creatorsAssigned: 2, noOfUGCCompleted: 5, status: "Verified" },
     { id: 99, name: "Nora Willis", email: "ket@gmail.com", contact: "+1 (382) 858-5995", orderID: 2, orderDate: "2023-10-02", noOfUGC: 3, creatorsAssigned: 1, noOfUGCCompleted: 2, status: "Pending" },
 ];
@@ -59,110 +61,124 @@ const Orders: React.FC = () => {
         customer.contact.includes(searchTerm)
     );
 
+    const [isModalEditOpen, setIsModalEditOpen] = useState(false);
+
+    const openModalEdit = () => setIsModalEditOpen(true);
+    const closeModalEdit = () => setIsModalEditOpen(false);
+
+    const [isModalRequestsOpen, setIsModalRequestsOpen] = useState(false);
+
+    const openModalRequests = () => setIsModalRequestsOpen(true);
+    const closeModalRequests = () => setIsModalRequestsOpen(false);
+
     // Define table columns
-const columns = [
-    {
-        name: "#",
-        selector: (row: any) => row.id,
-        sortable: true,
-        width: "80px",
-    },
-    {
-        name: "Customer Name",
-        cell: (row: any) => (
-            <div className="flex items-center space-x-2">
-                <Image width={10} height={10} src="/icons/avatar.png" alt="avatar" className="w-10 h-10 rounded-full" />
-                <div>
-                    <p className="font-semibold">{row.name}</p>
-                    <p className="text-sm whitespace-nowrap text-gray-500">{row.email}</p>
+    const columns = [
+        {
+            name: "#",
+            selector: (row: any) => row.id,
+            sortable: true,
+            width: "80px",
+        },
+        {
+            name: "Customer Name",
+            cell: (row: any) => (
+                <div className="flex items-center space-x-2">
+                    <Image width={10} height={10} src="/icons/avatar.png" alt="avatar" className="w-10 h-10 rounded-full" />
+                    <div>
+                        <p className="font-semibold">{row.name}</p>
+                        <p className="text-sm whitespace-nowrap text-gray-500">{row.email}</p>
+                    </div>
                 </div>
-            </div>
-        ),
-        sortable: false,
-        width : "200px",
-    },
-    {
-        name: "Order ID",
-        selector: (row: any) => row.orderID,
-        sortable: true,
-        width : "200px",
-    },
-    {
-        name: "Order Date",
-        selector: (row: any) => row.orderDate,
-        sortable: true,
-        width : "200px",
-    },
-    {
-        name: "No of UGC",
-        selector: (row: any) => row.noOfUGC,
-        sortable: true,
-        width : "200px",
-    },
-    {
-        name: "Creators Assigned",
-        selector: (row: any) => row.creatorsAssigned,
-        sortable: true,
-        width : "200px",
-    },
-    {
-        name: "No of UGC Completed",
-        selector: (row: any) => row.noOfUGCCompleted,
-        sortable: true,
-        width : "270px",
-    },
-    {
-        name: "Status",
-        cell: (row: any) => (
-            <span
-                className={`px-3 py-1 rounded-full text-sm font-semibold ${row.status === "Verified"
-                    ? "text-green-700 bg-green-100"
-                    : row.status === "Pending"
-                        ? "text-yellow-700 bg-yellow-100"
-                        : "text-red-700 bg-red-100"
-                    }`}
-            >
-                {row.status}
-            </span>
-        ),
-        sortable: true,
-        width: "150px",
-    },
-    {
-        name: "Actions",
-        cell: (row: any) => (
-            <div className="flex space-x-3">
-                <button className="text-gray-500 hover:text-gray-700">
-                    <FaEye className="text-lg" />
-                </button>
+            ),
+            sortable: false,
+            width: "200px",
+        },
+        {
+            name: "Order ID",
+            selector: (row: any) => row.orderID,
+            sortable: true,
+            width: "200px",
+        },
+        {
+            name: "Order Date",
+            selector: (row: any) => row.orderDate,
+            sortable: true,
+            width: "200px",
+        },
+        {
+            name: "No of UGC",
+            selector: (row: any) => row.noOfUGC,
+            sortable: true,
+            width: "200px",
+        },
+        {
+            name: "Creators Assigned",
+            selector: (row: any) => row.creatorsAssigned,
+            sortable: true,
+            width: "200px",
+        },
+        {
+            name: "No of UGC Completed",
+            selector: (row: any) => row.noOfUGCCompleted,
+            sortable: true,
+            width: "270px",
+        },
+        {
+            name: "Status",
+            cell: (row: any) => (
+                <span
+                    className={`px-3 py-1 rounded-full text-sm font-semibold ${row.status === "Verified"
+                        ? "text-green-700 bg-green-100"
+                        : row.status === "Pending"
+                            ? "text-yellow-700 bg-yellow-100"
+                            : "text-red-700 bg-red-100"
+                        }`}
+                >
+                    {row.status}
+                </span>
+            ),
+            sortable: true,
+            width: "150px",
+        },
+        {
+            name: "Actions",
+            cell: (row: any) => (
+                <div className="flex space-x-3">
+                    <button className="text-gray-500 hover:text-gray-700">
+                        <FaEye className="text-lg" />
+                    </button>
 
-                <button className="text-blue-500 hover:text-blue-700" onClick={() => handleEdit(row)}>
-                    <FaEdit className="text-lg" />
-                </button>
+                    <button className="text-blue-500 hover:text-blue-700" onClick={openModalEdit}>
+                        <FaEdit className="text-lg" />
+                    </button>
 
-                <button className="text-red-500 hover:text-red-700" onClick={() => handleDelete(row.id)}>
-                    <FaTrashAlt className="text-md" />
-                </button>
-            </div>
-        ),
-        width: "150px",
-    },
-];
+                    <button className="text-red-500 hover:text-red-700" onClick={() => handleDelete(row.id)}>
+                        <FaTrashAlt className="text-md" />
+                    </button>
 
-// Function to export to CSV
-const exportToCSV = () => {
-    const csvRows = [
-        ["ID", "Name", "Email", "Contact", "Order ID", "Order Date", "No of UGC", "Creators Assigned", "No of UGC Completed", "Status"],
-        ...initialOrders.map(order => [order.id, order.name, order.email, order.contact, order.orderID, order.orderDate, order.noOfUGC, order.creatorsAssigned, order.noOfUGCCompleted, order.status]),
+                    <button onClick={openModalRequests} className="text-gray-500 hover:text-gray-700">
+                        <Image width={20} height={20} src='/icons/creatorRequest.png' alt="creator request icon" />
+                    </button>
+                </div>
+            ),
+            width: "150px",
+        },
     ];
-    const csvContent = "data:text/csv;charset=utf-8," + csvRows.map(e => e.join(",")).join("\n");
-    const link = document.createElement("a");
-    link.setAttribute("href", encodeURI(csvContent));
-    link.setAttribute("download", "orders.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-};
+
+    // Function to export to CSV
+    const exportToCSV = () => {
+        const csvRows = [
+            ["ID", "Name", "Email", "Contact", "Order ID", "Order Date", "No of UGC", "Creators Assigned", "No of UGC Completed", "Status"],
+            ...initialOrders.map(order => [order.id, order.name, order.email, order.contact, order.orderID, order.orderDate, order.noOfUGC, order.creatorsAssigned, order.noOfUGCCompleted, order.status]),
+        ];
+        const csvContent = "data:text/csv;charset=utf-8," + csvRows.map(e => e.join(",")).join("\n");
+        const link = document.createElement("a");
+        link.setAttribute("href", encodeURI(csvContent));
+        link.setAttribute("download", "orders.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -231,11 +247,16 @@ const exportToCSV = () => {
                     />
 
                 </div>
-
-
-
-
             </div>
+
+            <CustomModelAdmin isOpen={isModalEditOpen} closeModal={closeModalEdit} title="">
+                <EditModal />
+            </CustomModelAdmin>
+
+            <CustomModelAdmin isOpen={isModalRequestsOpen} closeModal={closeModalRequests} title="">
+                <RequestModal />
+            </CustomModelAdmin>
+            
         </div>
     );
 };
