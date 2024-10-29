@@ -70,7 +70,7 @@ export default function AdminNavbar() {
 
                         {/* Right Section */}
                         <ul className="flex items-center space-x-4 font-medium">
-                           
+
                             <button className="relative text-gray-600 hover:text-gray-800">
                                 <IoNotificationsOutline size={24} />
                                 <span className="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
@@ -81,8 +81,8 @@ export default function AdminNavbar() {
                             <button className="text-gray-600 hover:text-gray-800">
                                 <AiOutlineSetting size={24} />
                             </button>
-                            
-                            
+
+
 
                             {/* User Profile */}
                             <div className="flex items-center space-x-2">
@@ -184,6 +184,152 @@ export default function AdminNavbar() {
                                 </a>
                             </Link>
                         </li>
+                        <li className="mt-10">
+                            <Link legacyBehavior href="/admin/file-management/files">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">Files</span>
+                                </a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link legacyBehavior href="/admin/payments/in-payments">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">Incoming Payment</span>
+                                </a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link legacyBehavior href="/admin/payments/out-payments">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">Outgoing Payment</span>
+                                </a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link legacyBehavior href="/admin/support/order-claims">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">Order Claims</span>
+                                </a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link legacyBehavior href="/admin/notifications/push-notifications">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">Push Notifications</span>
+                                </a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link legacyBehavior href="/admin/notifications/emails">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">E-mail</span>
+                                </a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link legacyBehavior href="/admin/blogs/new-blogs">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">New Blog</span>
+                                </a>
+                            </Link>
+                        </li>
+                        <li className="mt-10">
+                            <Link legacyBehavior href="/admin/blogs/manage-blogs">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">Manage Blogs</span>
+                                </a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link legacyBehavior href="/admin/content-management/landing-page">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">Landing Page</span>
+                                </a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link legacyBehavior href="/admin/content-management/help-center">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">Help Center</span>
+                                </a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link legacyBehavior href="/admin/content-management/banners">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">Banners</span>
+                                </a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link legacyBehavior href="/admin/content-management/FAQ">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">FAQ</span>
+                                </a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link legacyBehavior href="/admin/content-management/About">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">About</span>
+                                </a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link legacyBehavior href="/admin/content-management/how-it-works">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">How it Works</span>
+                                </a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link legacyBehavior href="/admin/content-management/terms-and-conditions">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">Terms and Conditions</span>
+                                </a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link legacyBehavior href="/admin/content-management/Modals">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">Modals</span>
+                                </a>
+                            </Link>
+                        </li>
+
+
                     </ul>
                 </div>
             </aside>
