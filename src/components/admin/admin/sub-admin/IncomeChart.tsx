@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import { Props as ChartProps } from 'react-apexcharts';
