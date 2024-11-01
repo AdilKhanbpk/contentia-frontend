@@ -102,6 +102,16 @@ export default function AdminNavbar() {
             >
                 <div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
                     <ul className="space-y-2 font-medium">
+                        <span className="p-2 font-semibold flex-1 ms-3 whitespace-nowrap">Dashboard</span>
+                        <li className="mt-10">
+                            <Link legacyBehavior href="/admin">
+                                <a
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <span className="flex-1 ms-3 whitespace-nowrap">Dashboard</span>
+                                </a>
+                            </Link>
+                        </li>
                         <span className="p-2 font-semibold flex-1 ms-3 whitespace-nowrap">Services</span>
                         <li className="mt-10">
                             <Link legacyBehavior href="/admin/services/packages">
