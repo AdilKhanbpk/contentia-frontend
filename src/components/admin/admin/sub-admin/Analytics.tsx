@@ -11,6 +11,9 @@ import PageViews from './PageViews';
 import AnalyticEcommerce from './AnalyticEcommerce';
 import IncomeAreaChart from './IncomeAreaChart';
 import MonthlyBarChart from './MonthlyBarChart';
+import OrdersList from './OrdersList';
+import ReportChart from './ReportChart';
+import CircleChart from './CircleChart';
 
 const Analytics: React.FC = () => {
 
@@ -21,7 +24,7 @@ const Analytics: React.FC = () => {
         <>
             <div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                    <AnalyticsDataCard title="Total Users" count="78,250" percentage={70.5}>
+                    <AnalyticsDataCard title="Total Customers" count="78,250" percentage={70.5}>
                         <UsersCardChart />
                     </AnalyticsDataCard>
                     <AnalyticsDataCard title="Total Order" count="18,800" percentage={27.4} isLoss>
@@ -30,10 +33,15 @@ const Analytics: React.FC = () => {
                     <AnalyticsDataCard title="Total Sales" count="$35,078" percentage={27.4} isLoss>
                         <SalesCardChart />
                     </AnalyticsDataCard>
-                    <AnalyticsDataCard title="Total Marketing" count="$112,083" percentage={70.5}>
+                    <AnalyticsDataCard title="Total Creators" count="$112,083" percentage={70.5}>
                         <MarketingCardChart />
                     </AnalyticsDataCard>
                 </div>
+
+                <div className='my-4'>
+                    <CircleChart></CircleChart>
+                </div>
+                
                 <div className="my-4 flex flex-row space-x-4">
                     <div className='w-3/5 bg-white shadow-md rounded-lg'>
                         <IncomeOverview />
@@ -99,6 +107,46 @@ const Analytics: React.FC = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* Row 3 */}
+                <div className="flex flex-row space-x-4 my-4">
+                    {/* Recent Orders Section */}
+                    <div className="w-full md:w-7/12 lg:w-3/5">
+                        <div className="flex items-center justify-between">
+                            <h5 className="text-lg font-semibold">Recent Orders</h5>
+                        </div>
+                        <div className="bg-white mt-4 rounded-lg shadow">
+                            <OrdersList />
+                        </div>
+                    </div>
+
+                    {/* Analytics Report Section */}
+                    <div className="w-full md:w-5/12 lg:w-2/5">
+                        <div className="flex items-center justify-between">
+                            <h5 className="text-lg font-semibold">Analytics Report</h5>
+                        </div>
+                        <div className="bg-white mt-4 p-4 rounded-lg shadow">
+                            <ul className="divide-y">
+                                <li className="py-3 flex justify-between items-center">
+                                    <span>Company Finance Growth</span>
+                                    <h5 className="text-lg font-semibold">+45.14%</h5>
+                                </li>
+                                <li className="py-3 flex justify-between items-center">
+                                    <span>Company Expenses Ratio</span>
+                                    <h5 className="text-lg font-semibold">0.58%</h5>
+                                </li>
+                                <li className="py-3 flex justify-between items-center">
+                                    <span>Business Risk Cases</span>
+                                    <h5 className="text-lg font-semibold">Low</h5>
+                                </li>
+                            </ul>
+                            <ReportChart />
+                        </div>
+                    </div>
+                </div>
+
+                
+
             </div>
         </>
     );
