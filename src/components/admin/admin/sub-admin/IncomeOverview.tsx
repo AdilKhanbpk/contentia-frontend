@@ -13,13 +13,15 @@ const IncomeOverview = () => {
         <h2 className="text-lg font-bold">Income Overview</h2>
         <div className="flex gap-2">
           <button
-            className={`px-4 py-1 text-sm ${slot === 'week' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            className={`px-3 py-0.5 border rounded ${slot === 'week' ? 'border-blue-500 text-blue-500' : 'border-gray-300 text-gray-500'
+              }`}
             onClick={() => setSlot('week')}
           >
             Week
           </button>
           <button
-            className={`px-4 py-1 text-sm ${slot === 'month' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            className={`px-3 py-0.5 border rounded ${slot === 'month' ? 'border-blue-500 text-blue-500' : 'border-gray-300 text-gray-500'
+              }`}
             onClick={() => setSlot('month')}
           >
             Month
