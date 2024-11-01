@@ -1,3 +1,4 @@
+"use client";
 // components/Dashboard.tsx
 import React from 'react';
 import Chart from 'react-apexcharts';

@@ -1,5 +1,5 @@
+"use client";
 import { useState } from 'react';
-import NextLink from 'next/link';
 import { NumericFormat } from 'react-number-format';
 import Dot from './Dot';
 
