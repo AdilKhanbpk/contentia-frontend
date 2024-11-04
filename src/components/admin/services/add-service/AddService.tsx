@@ -1,4 +1,5 @@
 "use client";
+import Image from 'next/image';
 import React, { useState } from 'react';
 import { useForm, SubmitHandler, useFieldArray, Controller } from 'react-hook-form';
 import { FiPlus, FiEdit2, FiTrash2 } from 'react-icons/fi';
@@ -12,8 +13,8 @@ type Service = {
 type FormData = {
     platform: string;
     aspectRatio: string;
-    newServiceTitle: string; // Change for new title input
-    newServiceValue: number; // Change for new value input
+    newServiceTitle: string;
+    newServiceValue: number;
     services: Service[];
 };
 
@@ -60,31 +61,30 @@ const AddService: React.FC = () => {
         if (!newServiceTitle || !newServiceValue) return;
 
         append({ id: fields.length + 1, name: newServiceTitle, price: Number(newServiceValue) });
-        setValue('newServiceTitle', ''); // Clear title input
-        setValue('newServiceValue', 0); // Clear value input
-        setIsAddingService(false); // Hide inputs after adding service
+        setValue('newServiceTitle', '');
+        setValue('newServiceValue', 0);
+        setIsAddingService(false);
     };
 
     const handleSaveService: SubmitHandler<FormData> = (data) => {
         console.log('Saved Data:', data);
         setEditingServiceId(null);
-        reset(); // Resets the form after saving
+        reset();
     };
 
-    // Watch for updates on service prices
     const watchedServices = watch('services');
 
     return (
         <form onSubmit={handleSubmit(handleSaveService)} className="space-y-6 p-4">
             <div className='flex flex-col px-4 sm:px-6 md:px-12 lg:pl-72 lg:mt-28'>
-                <h2 className="text-lg font-semibold mb-4">Additional Services</h2>
-                <p className="mb-4">Select the price for additional services (for 1 UGC)</p>
+                <h2 className="text-xl font-semibold mb-4">Additional Services</h2>
+                <p className="mb-4 text-lg">Select the price for additional services (for 1 UGC)</p>
 
                 {/* Platform Selection */}
                 <div className="mb-4">
-                    <p className="mb-2">Add new additional service</p>
-                    <div className='flex flex-row mb-2'>
-                        <h3 className="font-semibold mr-4">Platform:</h3>
+                    <p className="mb-4 text-lg">Add new additional service</p>
+                    <div className='flex flex-row items-center mb-2'>
+                        <h3 className="font-semibold mr-4 text-lg">Platform:</h3>
                         <div className="flex space-x-4">
                             {platforms.map((platform) => (
                                 <button
@@ -92,7 +92,7 @@ const AddService: React.FC = () => {
                                     key={platform}
                                     type="button"
                                     onClick={() => handlePlatformSelect(platform)}
-                                    className={`px-2 py-1 border text-xs rounded-sm ${selectedPlatform === platform ? 'ButtonBlue text-white' : 'bg-gray-200'}`}
+                                    className={`px-3 py-1 border text-sm rounded-md ${selectedPlatform === platform ? 'ButtonBlue text-white' : 'bg-gray-200'}`}
                                 >
                                     {platform}
                                 </button>
@@ -103,8 +103,8 @@ const AddService: React.FC = () => {
 
                 {/* Aspect Ratio Selection */}
                 <div className="mb-4">
-                    <div className='flex flex-row mb-2'>
-                        <h3 className="font-semibold mr-4">Aspect Ratio:</h3>
+                    <div className='flex flex-row items-center mb-2'>
+                        <h3 className="font-semibold mr-4 text-lg">Aspect Ratio:</h3>
                         <div className="flex space-x-4">
                             {aspectRatios.map((ratio) => (
                                 <button
@@ -112,7 +112,7 @@ const AddService: React.FC = () => {
                                     key={ratio}
                                     type="button"
                                     onClick={() => handleAspectRatioSelect(ratio)}
-                                    className={`px-2 py-1 border text-xs rounded-sm ${selectedAspectRatio === ratio ? 'ButtonBlue text-white' : 'bg-gray-200'}`}
+                                    className={`px-3 py-1 border text-sm rounded-md ${selectedAspectRatio === ratio ? 'ButtonBlue text-white' : 'bg-gray-200'}`}
                                 >
                                     {ratio}
                                 </button>
@@ -123,47 +123,46 @@ const AddService: React.FC = () => {
 
                 {/* Add New Service */}
                 <div className="flex items-center space-x-2 mb-4">
-                    <div className="flex items-center">
-                        <button type='button' onClick={() => setIsAddingService(!isAddingService)} className="flex items-center bg-transparent border-none cursor-pointer mr-2">
-                            <img src="/plusIcon.png" alt="custom package icon" className="w-5 h-5" />
-                        </button>
-                    </div>
+                    <button type='button' onClick={() => setIsAddingService(!isAddingService)} className="bg-transparent border-none cursor-pointer">
+                        <Image src="/plusIcon.png" width={20} height={20} alt='plus icon' ></Image>
+                    </button>
                     <h2 className="text-lg font-semibold">Packages</h2>
                 </div>
 
                 {isAddingService && (
-                    <div className="flex flex-col w-1/2 space-y-2 mb-4">
+                    <div className="flex flex-col w-full sm:w-1/2 space-y-2 mb-4">
                         <input
                             type="text"
                             {...register('newServiceTitle')}
                             placeholder="Service Title"
-                            className="border px-2 py-1 rounded-md flex-1"
+                            className="focus:outline-none border px-3 rounded-md w-2/3 text-lg"
                         />
                         <input
                             type="number"
                             {...register('newServiceValue', { valueAsNumber: true })}
                             placeholder="Service Price"
-                            className="border px-2 py-1 rounded-md flex-1"
+                            className="focus:outline-none border px-3 rounded-md w-2/3 text-lg"
                         />
-                        <button
-                            type="button"
-                            onClick={handleAddService}
-                            className="w-28 ButtonBlue px-2 py-1 text-white rounded-md"
-                        >
-                            Add
-                        </button>
+                        <div className='flex justify-end'>
+                            <button
+                                type="button"
+                                onClick={handleAddService}
+                                className="w-32 ButtonBlue px-3 py-2 text-white rounded-md"
+                            >
+                                Add
+                            </button>
+                        </div>
                     </div>
                 )}
 
                 {/* Service List */}
                 <div className="mt-4">
-                    <h3 className="font-semibold mb-2">Edit Additional Service Price</h3>
+                    <h3 className="font-semibold mb-2 text-lg">Edit Additional Service Price</h3>
                     {fields.map((service, index) => (
-                        <div key={service.id} className="flex justify-start items-start space-x-4 mb-2">
-                            {/* Price Input or Display */}
+                        <div key={service.id} className="flex items-center space-x-4 mb-2">
                             {editingServiceId === service.id ? (
-                                <div className='flex'>
-                                    <p className='flex justify-between w-36'>{service.name}:</p>
+                                <div className='flex items-center'>
+                                    <p className='mr-8 whitespace-nowrap w-20 font-semibold text-sm'>{service.name}:</p>
                                     <Controller
                                         name={`services.${index}.price` as const}
                                         control={control}
@@ -171,33 +170,33 @@ const AddService: React.FC = () => {
                                             <input
                                                 {...field}
                                                 type="number"
-                                                className="border rounded-md w-28 px-2 py-1"
-                                                value={watchedServices[index].price} // Watch service price for updates
+                                                className="focus:outline-none border rounded-md w-48 px-3 text-lg"
+                                                value={watchedServices[index].price}
                                             />
                                         )}
                                     />
                                 </div>
                             ) : (
-                                <div className='flex flex-row'>
-                                    <p className='flex justify-between w-36'>{service.name}: </p><p className='w-28'>{service.price}</p>
+                                <div className='flex items-center'>
+                                    <p className='mr-8 whitespace-nowrap w-40 font-semibold text-sm'>{service.name}:</p>
+                                    <p className='w-28'>{service.price}</p>
                                 </div>
                             )}
 
-                            {/* Edit & Delete Buttons */}
-                            <div className="space-x-2 w-28">
+                            <div className="space-x-2">
                                 <button
                                     type="button"
                                     onClick={() => setEditingServiceId(service.id)}
-                                    className="text-blue-500"
+                                    className="text-black"
                                 >
-                                    <FiEdit2 />
+                                    <FiEdit2 size={18} />
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => remove(index)}
-                                    className="text-red-500"
+                                    className="text-black"
                                 >
-                                    <FiTrash2 />
+                                    <FiTrash2 size={18} />
                                 </button>
                             </div>
                         </div>
@@ -205,10 +204,9 @@ const AddService: React.FC = () => {
                 </div>
 
                 <div className='flex w-1/2 justify-end'>
-                    {/* Save Button */}
                     <button
                         type="submit"
-                        className="w-28 ButtonBlue text-white px-2 py-1 rounded-md mt-4"
+                        className="w-32 ButtonBlue text-white px-3 py-2 rounded-md mt-4"
                     >
                         Save
                     </button>
