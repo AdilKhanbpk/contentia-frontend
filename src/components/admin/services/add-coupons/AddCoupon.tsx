@@ -5,6 +5,8 @@ import { useState } from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import CustomModelAdmin from '../../../modal/CustomModelAdmin';
 import { useForm, Controller } from 'react-hook-form';
+import ModalCreate from "./sub-coupons/ModalCreate";
+import ModalEdit from "./sub-coupons/ModalEdit";
 
 // Unified Coupon Interface to Avoid Mismatches
 interface Coupon {
@@ -60,27 +62,32 @@ const initialCoupons: Coupon[] = [
 
 export default function AddCoupon() {
     const [data, setData] = useState<Coupon[]>(initialCoupons);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editId, setEditId] = useState<number | null>(null); // Ensure correct type
 
     const { control, handleSubmit, register, reset } = useForm<CouponForm>();
 
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => {
+    const openCreateModal = () => setIsCreateModalOpen(true);
+    const closeCreateModal = () => {
+        reset();
+        setIsCreateModalOpen(false);
+    };
+
+    const openEditModal = (coupon: Coupon) => {
+        setEditId(coupon.id || null);
+        reset(coupon);
+        setIsEditModalOpen(true);
+    };
+    const closeEditModal = () => {
         setEditId(null);
         reset();
-        setIsModalOpen(false);
+        setIsEditModalOpen(false);
     };
 
     const handleDelete = (id: number) => {
         const filtered = data.filter((item) => item.id !== id);
         setData(filtered);
-    };
-
-    const handleEdit = (coupon: Coupon) => {
-        setEditId(coupon.id || null); // Ensure editId is either number or null
-        reset(coupon);
-        openModal();
     };
 
     const onSubmit = (formData: CouponForm) => {
@@ -90,6 +97,7 @@ export default function AddCoupon() {
                 item.id === editId ? { ...item, ...formData, discount: formatDiscount(formData) } : item
             );
             setData(updatedData);
+            closeEditModal();
         } else {
             // Add new coupon
             const newCoupon: Coupon = {
@@ -100,8 +108,8 @@ export default function AddCoupon() {
                 status: "Active",
             };
             setData([...data, newCoupon]);
+            closeCreateModal();
         }
-        closeModal();
     };
 
     // Helper to format discount (handles both TL and percentage cases)
@@ -117,7 +125,7 @@ export default function AddCoupon() {
                 <div className="flex flex-row mb-4">
                     <h1 className="text-lg font-semibold">Manage Coupons</h1>
                     <button
-                        onClick={openModal}
+                        onClick={openCreateModal}
                         className="flex items-center bg-transparent border-none cursor-pointer ml-2"
                     >
                         <img src="/plusIcon.png" alt="custom package icon" className="w-5 h-5" />
@@ -125,118 +133,43 @@ export default function AddCoupon() {
                 </div>
                 <p className="mb-4">Select the price for additional services (for 1 UGC)</p>
 
-                <CustomModelAdmin isOpen={isModalOpen} closeModal={closeModal} title="">
-                    <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">
-                        <h2 className="text-lg font-semibold">
-                            {editId ? "Edit Coupon" : "Create Coupon"}
-                        </h2>
-
-                        <form onSubmit={handleSubmit(onSubmit)}>
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="block text-sm font-semibold">Code</label>
-                                    <input
-                                        type="text"
-                                        {...register('code')}
-                                        className="w-full px-3 py-0.5 border rounded-md"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-semibold">Select Customer</label>
-                                    <input
-                                        type="text"
-                                        {...register('customer')}
-                                        className="w-full px-3 py-0.5 border rounded-md"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-semibold">Discount (TL)</label>
-                                    <input
-                                        type="number"
-                                        {...register('discountTL')}
-                                        className="w-full px-3 py-0.5 border rounded-md"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-semibold">Discount (%)</label>
-                                    <input
-                                        type="number"
-                                        {...register('discountPercent')}
-                                        className="w-full px-3 py-0.5 border rounded-md"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-semibold">Use Limit</label>
-                                    <input
-                                        type="number"
-                                        {...register('useLimit')}
-                                        className="w-full px-3 py-0.5 border rounded-md"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-semibold">Ending Date</label>
-                                    <input
-                                        type="date"
-                                        {...register('endingDate')}
-                                        className="w-full px-3 py-0.5 border rounded-md"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="mt-6 text-right">
-                                <button type="submit" className="ButtonBlue text-white px-4 py-0.5 rounded">
-                                    Save
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                {/* Create Coupon Modal */}
+                <CustomModelAdmin isOpen={isCreateModalOpen} closeModal={closeCreateModal} title="">
+                    <ModalCreate></ModalCreate>
                 </CustomModelAdmin>
 
-                <table className=" min-w-full border border-gray-200">
+                {/* Edit Coupon Modal */}
+                <CustomModelAdmin isOpen={isEditModalOpen} closeModal={closeEditModal} title="">
+                    <ModalEdit></ModalEdit>
+                </CustomModelAdmin>
+
+                {/* Table of Coupons */}
+                <table className="mt-6 border border-gray-300 w-full">
                     <thead>
-                        <tr>
-                            {["No", "Code", "Customer", "Discount", "Limit", "Ending Date", "Status", "Actions"].map(
-                                (header) => (
-                                    <th key={header} className="p-3 text-left border-b border-r">
-                                        {header}
-                                    </th>
-                                )
-                            )}
+                        <tr className="bg-gray-200 text-left">
+                            <th className="p-3 ">Code</th>
+                            <th className="p-3 ">Customer</th>
+                            <th className="p-3 ">Discount</th>
+                            <th className="p-3 ">Limit</th>
+                            <th className="p-3 ">Ending Date</th>
+                            <th className="p-3 ">Status</th>
+                            <th className="p-3">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((coupon, index) => (
-                            <tr key={coupon.id}>
-                                <td className="p-3 border-b border-r">{index + 1}</td>
-                                <td className="p-3 border-b border-r">{coupon.code}</td>
-                                <td className="p-3 border-b border-r">{coupon.customer}</td>
-                                <td className="p-3 border-b border-r">{coupon.discount}</td>
-                                <td className="p-3 border-b border-r">{coupon.limit}</td>
-                                <td className="p-3 border-b border-r">{coupon.endingDate}</td>
-                                <td className="p-3 border-b border-r">
-                                    <span
-                                        className={`${coupon.status === "Active" ? "text-green-500" : "text-red-500"
-                                            } font-semibold`}
-                                    >
-                                        {coupon.status}
-                                    </span>
-                                </td>
-                                <td className="p-3 border-b border-r flex justify-center gap-2">
-                                    <button
-                                        className="text-blue-500 hover:text-blue-700"
-                                        onClick={() => handleEdit(coupon)}
-                                    >
+                        {data.map((coupon) => (
+                            <tr key={coupon.id} className="border-b border-gray-300">
+                                <td className="p-3">{coupon.code}</td>
+                                <td className="p-3">{coupon.customer}</td>
+                                <td className="p-3">{coupon.discount}</td>
+                                <td className="p-3">{coupon.limit}</td>
+                                <td className="p-3">{coupon.endingDate}</td>
+                                <td className="p-3">{coupon.status}</td>
+                                <td className="p-3 flex space-x-4">
+                                    <button onClick={() => openEditModal(coupon)}>
                                         <FaEdit />
                                     </button>
-                                    <button
-                                        className="text-red-500 hover:text-red-700"
-                                        onClick={() => handleDelete(coupon.id)}
-                                    >
+                                    <button onClick={() => handleDelete(coupon.id)}>
                                         <FaTrashAlt />
                                     </button>
                                 </td>

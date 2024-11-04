@@ -49,7 +49,7 @@ const PricingPlans = () => {
           <div
             key={plan.id}
             className={`p-6 border-2 rounded-lg shadow-md ${
-              editingPlan === plan.id ? 'border-blue-500' : 'border-transparent'
+              editingPlan === plan.id ? 'border BlueBorder' : 'border-transparent'
             }`}
           >
             {editingPlan === plan.id ? (
@@ -61,7 +61,7 @@ const PricingPlans = () => {
                   <input
                     type="text"
                     {...register('title', { required: true })}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="focus:outline-none py-0.5 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   />
                 </div>
                 <div>
@@ -71,7 +71,7 @@ const PricingPlans = () => {
                   <input
                     type="text"
                     {...register('strikethroughPrice')}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="focus:outline-none py-0.5 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   />
                 </div>
                 <div>
@@ -81,12 +81,12 @@ const PricingPlans = () => {
                   <input
                     type="text"
                     {...register('finalPrice', { required: true })}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="focus:outline-none py-0.5 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-blue-500 text-white py-2 rounded-md transition"
+                  className="w-full ButtonBlue text-white py-2 rounded-md transition"
                 >
                   Save
                 </button>
