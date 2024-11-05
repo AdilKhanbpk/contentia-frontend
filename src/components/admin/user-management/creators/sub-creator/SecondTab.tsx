@@ -18,7 +18,7 @@ export default function FirstTab() {
 
     return (
         <>
-            <div className='w-2/3 p-6'>   <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+            <div className='w-full sm:w-2/3 p-6'>   <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
                 <div>
                     <h2 className="text-xl font-semibold mb-4">Payment Information</h2>
                     <div className="grid grid-cols-2 gap-4">

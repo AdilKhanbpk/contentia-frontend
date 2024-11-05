@@ -16,9 +16,9 @@ export default function ModalCenters() {
         <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">
             <h1 className="text-lg font-semibold">Help Center</h1>
 
-            <div className="flex flex-row space-x-8">
+            <div className="flex flex-col sm:flex-row sm:space-x-8">
                 {/* Title */}
-                <div className="mt-4 w-1/2">
+                <div className="mt-4 w-full sm:w-1/2 ">
                     <label className="block text-sm font-semibold">Help Title</label>
                     <input
                         type="text"
@@ -28,7 +28,7 @@ export default function ModalCenters() {
                 </div>
 
                 {/* Category */}
-                <div className="mt-4 w-1/2">
+                <div className="mt-4 w-full sm:w-1/2 ">
                     <label className="block text-sm font-semibold">Select Category</label>
                     <select className="w-full py-2 border border-gray-400 rounded-md focus:outline-none">
                         <option value="">Select a category</option>

@@ -6,7 +6,7 @@ export default function Modal() {
 
             <div className="grid grid-cols-1 gap-8">
                 {/* Customer Information */}
-                <div className="flex flex-row space-x-9">
+                <div className="flex flex-col sm:flex-row space-x-9">
                     <h3 className="text-sm whitespace-nowrap font-semibold mb-4">Customer Information:</h3>
                     <div className="space-y-2">
                         <div className="flex justify-between space-x-4">
@@ -24,10 +24,10 @@ export default function Modal() {
                     </div>
                 </div>
 
-                <div className="flex flex-row space-x-20">
+                <div className="flex flex-col lg:flex-row lg:space-x-12">
 
                     {/* Payment Information */}
-                    <div className="flex flex-row w-1/2 space-x-4">
+                    <div className="flex flex-col sm:flex-row  w-full lg:w-1/2 space-x-9 lg:space-x-4">
                         <h3 className="text-sm whitespace-nowrap font-semibold mb-4">Payment Information:</h3>
                         <div className="space-y-2">
                             <div className="flex justify-between space-x-4">
@@ -55,7 +55,7 @@ export default function Modal() {
 
 
                     {/* Invoice Information */}
-                    <div className="flex flex-row w-1/2 space-x-4">
+                    <div className="mt-4 lg:mt-0 flex-col sm:flex-row  w-full lg:w-1/2  space-x-9 lg:space-x-4">
                         <h3 className="text-sm whitespace-nowrap font-semibold mb-4">Invoice Information:</h3>
                         <div className="space-y-2">
                             <div className="flex justify-between space-x-4">

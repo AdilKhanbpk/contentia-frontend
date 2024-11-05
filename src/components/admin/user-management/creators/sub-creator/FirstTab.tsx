@@ -19,7 +19,7 @@ export default function FirstTab() {
     return (
         <>
             {/* Personal Information and Address section */}
-            <div className="w-2/3 bg-white p-6 rounded-lg">
+            <div className="w-full sm:w-2/3 bg-white p-6 rounded-lg">
                 <form onSubmit={handleSubmit(onSubmit)}>
                     {/* Personal Information */}
                     <h2 className="text-xl font-semibold mb-4">Personal Information</h2>

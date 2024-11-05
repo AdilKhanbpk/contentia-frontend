@@ -77,9 +77,9 @@ const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
                 </div>
             </div>
 
-            <div className="flex flex-row space-x-12">
+            <div className="flex flex-col sm:flex-row sm:space-x-12">
                 {/* Profile navigation */}
-                <div className="w-1/3 bg-white rounded-lg flex flex-col space-y-8">
+                <div className="w-full sm:w-1/3 bg-white rounded-lg flex flex-col space-y-8">
                     <div className="flex flex-col items-center">
                         <Image
                             src='/icons/avatar.png'

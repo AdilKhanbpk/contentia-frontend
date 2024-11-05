@@ -197,12 +197,12 @@ const Customers: React.FC = () => {
                         <CustomModelAdmin isOpen={isModalOpen} closeModal={closeModal} title="">
                             <div className="text-lg font-semibold px-4 py-2 border-b-2 border-gray-200">New Customer</div>
                             <form onSubmit={handleSubmit(onSubmit)}>
-                                <div className="flex flex-row justify-end ">
-                                    <div className="mt-20 ml-16"><Image width={30} height={30} src="/icons/avatar.png" alt="avatar" className="w-24 h-w-24 rounded-full" /></div>
-                                    <div className="p-16">
+                                <div className="flex flex-col md:flex-row justify-end ">
+                                    <div className="mt-2 ml-2 md:mt-20 md:ml-16"><Image width={30} height={30} src="/icons/avatar.png" alt="avatar" className="w-24 h-w-24 rounded-full" /></div>
+                                    <div className="p-2 md:p-16">
                                         <div>
-                                            <div className='flex flex-row col-span-2 '>
-                                                <div className='flex flex-col mb-2 sm:mb-3 lg:mb-4 w-1/2 pr-2'> {/* Add width and padding */}
+                                            <div className='flex flex-col md:flex-row col-span-1 md:col-span-2 '>
+                                                <div className='flex flex-col mb-2 sm:mb-3 lg:mb-4 w-full md:w-1/2 pr-2'> {/* Add width and padding */}
                                                     <label>Name</label>
                                                     <input
                                                         type="text"
@@ -211,7 +211,7 @@ const Customers: React.FC = () => {
                                                         className="font-medium border px-1 py-1 rounded-md focus:outline-none"
                                                     />
                                                 </div>
-                                                <div className='flex flex-col sm:mb-3 w-1/2 pl-2'> {/* Add width and padding */}
+                                                <div className='flex flex-col sm:mb-3 w-full md:w-1/2 pl-2'> {/* Add width and padding */}
                                                     <label>Email</label>
                                                     <input
                                                         type="email"
@@ -221,8 +221,8 @@ const Customers: React.FC = () => {
                                                     />
                                                 </div>
                                             </div>
-                                            <div className='flex flex-row col-span-2 '>
-                                                <div className='flex flex-col w-1/2 pr-2'> {/* Add width and padding */}
+                                            <div className='flex flex-col md:flex-row col-span-1 md:col-span-2 '>
+                                                <div className='flex flex-col w-full md:w-1/2 md:pr-2'> {/* Add width and padding */}
                                                     <label>Contact</label>
                                                     <input
                                                         type="text"
@@ -231,7 +231,7 @@ const Customers: React.FC = () => {
                                                         className="font-medium border px-1 py-1 rounded-md focus:outline-none"
                                                     />
                                                 </div>
-                                                <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4 w-1/2 pl-2'> {/* Add width and padding */}
+                                                <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4 w-full md:w-1/2 pl-2'> {/* Add width and padding */}
                                                     <label>Age</label>
                                                     <input
                                                         type="text"
