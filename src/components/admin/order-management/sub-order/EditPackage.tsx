@@ -19,7 +19,7 @@ export default function EditPackage() {
                 </div>
 
                 <div className="flex flex-row ">
-                    <div className="flex flex-col lg:flex-row w-full space-x-16">
+                    <div className="flex flex-col lg:flex-row w-full lg:space-x-16">
                         {/* Order Information */}
                         <div className="bg-white rounded-md mb-4 sm:mb-6 md:mb-8 lg:mb-8 w-full lg:w-1/2">
                             <h3 className="text-lg font-bold mb-2 sm:mb-3 md:mb-4 lg:mb-4 BlueText">
@@ -94,7 +94,7 @@ export default function EditPackage() {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-md mb-4 sm:mb-6 md:mb-8 lg:mb-8 w-1/2">
+                <div className="mt-4 lg:mt-0 bg-white rounded-md mb-4 sm:mb-6 md:mb-8 lg:mb-8 w-full lg:w-1/2">
                     <h3 className="text-lg font-bold mb-2 sm:mb-3 md:mb-4 lg:mb-4 BlueText">
                         Package Details:
                     </h3>

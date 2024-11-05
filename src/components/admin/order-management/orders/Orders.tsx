@@ -256,7 +256,7 @@ const Orders: React.FC = () => {
             <CustomModelAdmin isOpen={isModalRequestsOpen} closeModal={closeModalRequests} title="">
                 <RequestModal />
             </CustomModelAdmin>
-            
+
         </div>
     );
 };

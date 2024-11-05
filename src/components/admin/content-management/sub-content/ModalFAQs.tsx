@@ -18,7 +18,7 @@ export default function ModalFAQs() {
 
             <div className="flex flex-row space-x-8">
                 {/* Title */}
-                <div className="mt-4 w-1/2">
+                <div className="mt-4 w-full sm:w-1/2 ">
                     <label className="block text-sm font-semibold">FAQ</label>
                     <input
                         type="text"

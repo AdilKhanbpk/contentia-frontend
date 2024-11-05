@@ -51,7 +51,7 @@ export default function Home() {
                 <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">
                     <h2 className="text-lg mb-6 font-semibold">Create Custom Package</h2>
 
-                    <div className="flex flex-col lg:flex-row justify-start items-start lg:space-x-28">
+                    <div className="flex flex-col lg:flex-row justify-start items-start space-y-4 lg:space-y-0 lg:space-x-28">
                         {/* Left Side Fields */}
                         <div className="mt-2 grid grid-cols-1 lg:grid-cols-1">
                             {/* Select Customer */}
@@ -60,7 +60,7 @@ export default function Home() {
                                 <input
                                     type="text"
                                     placeholder="Enter customer name"
-                                    className="w-full px-3 py-1 border rounded-md focus:outline-none"
+                                    className="w-full px-1 md:px-3 py-0.5 md:py-1 border rounded-md focus:outline-none"
                                     {...register('customerName')}
                                 />
                             </div>
@@ -71,7 +71,7 @@ export default function Home() {
                                 <input
                                     type="number"
                                     placeholder="Enter number of UGC"
-                                    className="w-full px-3 py-1 border rounded-md focus:outline-none"
+                                    className="w-full px-1 md:px-3 py-0.5 md:py-1 border rounded-md focus:outline-none"
                                     {...register('numberOfUGC')}
                                 />
                             </div>
@@ -82,7 +82,7 @@ export default function Home() {
                                 <input
                                     type="number"
                                     placeholder="Enter price"
-                                    className="w-full px-3 py-1 border rounded-md focus:outline-none"
+                                    className="w-full px-1 md:px-3 py-0.5 md:py-1 border rounded-md focus:outline-none"
                                     {...register('price')}
                                 />
                             </div>
@@ -96,7 +96,7 @@ export default function Home() {
 
                         <div className="bg-white rounded-md mb-4 sm:mb-6 md:mb-8 lg:mb-8">
                             <h3 className=" font-semibold mb-4 BlueText">Select Additional Services</h3>
-                            <div className="grid grid-cols-2 gap-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4">
                                 {/* Platform Radio Buttons */}
                                 <div className="text-gray-700 font-semibold">Platform:</div>
                                 <div className="flex space-x-4">

@@ -108,8 +108,8 @@ export default function NewModal() {
                         </div>
 
                         <div className="bg-white rounded-md mb-4 sm:mb-6 md:mb-8 lg:mb-8">
-                            <h3 className=" font-semibold mb-4 BlueText">Select Additional Services</h3>
-                            <div className="grid grid-cols-2 gap-y-4">
+                            <h3 className="mt-4 lg:mt-0 font-semibold mb-4 BlueText">Select Additional Services</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4">
                                 {/* Platform Radio Buttons */}
                                 <div className="text-gray-700 font-semibold">Platform:</div>
                                 <div className="flex space-x-4">

@@ -17,7 +17,7 @@ export default function ModalTerms() {
 
             <div className="flex flex-row space-x-8">
                 {/* Title */}
-                <div className="mt-4 w-1/2">
+                <div className="mt-4 w-full sm:w-1/2 ">
                     <label className="block text-sm font-semibold">Page Title</label>
                     <input
                         type="text"
@@ -41,7 +41,7 @@ export default function ModalTerms() {
 
             <div className="flex flex-row space-x-8">
                 {/* URL */}
-                <div className="mt-4 w-1/2">
+                <div className="mt-4 w-full sm:w-1/2 ">
                     <label className="block text-sm font-semibold">URL</label>
                     <input
                         type="text"

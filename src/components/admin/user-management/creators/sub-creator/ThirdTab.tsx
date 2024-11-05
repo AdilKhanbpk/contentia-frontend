@@ -23,16 +23,16 @@ const ThirdTab = () => {
     };
 
     return (
-        <div className="w-2/3 p-6">
+        <div className="w-full sm:w-2/3 p-6">
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div>
                     <h2 className="text-lg font-semibold mb-4">
                         Creator Preferences
                     </h2>
 
-                    <div className='flex flex-row justify-between space-x-8'>
+                    <div className='flex flex-col sm:flex-row justify-between sm:space-x-8'>
                         {/* Content Type */}
-                        <div className="mb-4 w-1/2">
+                        <div className="mb-4 w-full sm:w-1/2">
                             <label className="block mb-3 text-sm font-semibold text-gray-700">Content Type:</label>
                             <div className="flex space-x-4 mt-2">
                                 {['Product', 'Service', 'Location'].map((type) => (
@@ -52,7 +52,7 @@ const ThirdTab = () => {
                             </div>
                         </div>
                         {/* Creator Type (Decided by the Platform) */}
-                        <div className="mb-4 w-1/2">
+                        <div className="mb-4 w-full sm:w-1/2">
                             <label className="block text-sm font-semibold text-gray-700">Creator Type:</label>
                             <select
                                 {...register('creatorType')}
