@@ -23,7 +23,7 @@ const Analytics: React.FC = () => {
 
         <>
             <div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <AnalyticsDataCard title="Total Customers" count="78,250" percentage={70.5}>
                         <UsersCardChart />
                     </AnalyticsDataCard>
@@ -42,15 +42,15 @@ const Analytics: React.FC = () => {
                     <CircleChart></CircleChart>
                 </div>
                 
-                <div className="my-4 flex flex-row space-x-4">
-                    <div className='w-3/5 bg-white shadow-md rounded-lg'>
+                <div className="my-4 flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
+                    <div className='w-full lg:w-3/5 bg-white shadow-md rounded-lg'>
                         <IncomeOverview />
                     </div>
-                    <div className='w-2/5 bg-white shadow-md rounded-lg'>
+                    <div className='w-full lg:w-2/5 bg-white shadow-md rounded-lg'>
                         <PageViews />
                     </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="col-span-1">
                         <AnalyticEcommerce title="Total Page Views" count="4,42,236" percentage={59.3} extra="35,000" />
                     </div>
@@ -65,7 +65,7 @@ const Analytics: React.FC = () => {
                     </div>
                 </div>
                 <div className='my-4'>
-                    <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex flex-col lg:flex-row gap-4">
                         {/* Unique Visitor Card */}
                         <div className="flex-1">
                             <div className="flex justify-between items-center mb-2">
@@ -93,7 +93,7 @@ const Analytics: React.FC = () => {
                         </div>
 
                         {/* Income Overview Card */}
-                        <div className="flex-1 md:w-1/3">
+                        <div className="flex-1 lg:w-1/3">
                             <div className="flex justify-between items-center mb-2">
                                 <h5 className="text-lg font-semibold">Income Overview</h5>
                             </div>
@@ -109,9 +109,9 @@ const Analytics: React.FC = () => {
                 </div>
 
                 {/* Row 3 */}
-                <div className="flex flex-row space-x-4 my-4">
+                <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4 my-4">
                     {/* Recent Orders Section */}
-                    <div className="w-full md:w-7/12 lg:w-3/5">
+                    <div className="w-full lg:w-3/5">
                         <div className="flex items-center justify-between">
                             <h5 className="text-lg font-semibold">Recent Orders</h5>
                         </div>
@@ -121,7 +121,7 @@ const Analytics: React.FC = () => {
                     </div>
 
                     {/* Analytics Report Section */}
-                    <div className="w-full md:w-5/12 lg:w-2/5">
+                    <div className="w-full lg:w-2/5">
                         <div className="flex items-center justify-between">
                             <h5 className="text-lg font-semibold">Analytics Report</h5>
                         </div>

@@ -27,11 +27,11 @@ export default function Abouts() {
   };
 
   return (
-    <div className="flex flex-col px-4 sm:px-6 md:px-12 lg:pl-72 lg:mt-28">
+    <div className="flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72">
       <h1 className="text-lg font-semibold mb-6">About</h1>
 
       {/* About Section Title - 1 */}
-      <div className="mt-4 w-1/2">
+      <div className="mt-4 w-full md:w-1/2">
         <label className="block text-sm font-semibold">About Section Title - 1</label>
         <input
           type="text"
@@ -55,7 +55,7 @@ export default function Abouts() {
       </div>
 
       {/* Picture - 1 */}
-      <div className="mt-4 w-1/2">
+      <div className="mt-4 w-full md:w-1/2">
         <label className="block text-sm font-semibold">Picture - 1</label>
         <div
           className="relative border border-gray-400 rounded-md p-4 text-center bg-gray-200"
@@ -78,7 +78,7 @@ export default function Abouts() {
       </div>
 
       {/* About Section Title - 2 */}
-      <div className="mt-4 w-1/2">
+      <div className="mt-4 w-full md:w-1/2">
         <label className="block text-sm font-semibold">About Section Title - 2</label>
         <input
           type="text"
@@ -90,7 +90,7 @@ export default function Abouts() {
       </div>
 
       {/* Email */}
-      <div className="mt-4 w-1/2">
+      <div className="mt-4 w-full md:w-1/2">
         <label className="block text-sm font-semibold">Email</label>
         <input
           type="email"
@@ -102,7 +102,7 @@ export default function Abouts() {
       </div>
 
       {/* Phone */}
-      <div className="mt-4 w-1/2">
+      <div className="mt-4 w-full md:w-1/2">
         <label className="block text-sm font-semibold">Phone</label>
         <input
           type="text"
@@ -114,7 +114,7 @@ export default function Abouts() {
       </div>
 
       {/* Address */}
-      <div className="mt-4 w-1/2">
+      <div className="mt-4 w-full md:w-1/2">
         <label className="block text-sm font-semibold">Address</label>
         <input
           type="text"
@@ -126,7 +126,7 @@ export default function Abouts() {
       </div>
 
       {/* Button URL - 1 */}
-      <div className="mt-4 w-1/2">
+      <div className="mt-4 w-full md:w-1/2">
         <label className="block text-sm font-semibold">Button URL - 1</label>
         <input
           type="url"

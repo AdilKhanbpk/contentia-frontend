@@ -8,26 +8,26 @@ const IncomeOverview = () => {
   const [quantity, setQuantity] = useState<'By volume' | 'By margin' | 'By sales'>('By volume');
 
   return (
-    <div className="p-6 bg-white rounded-lg">
-      <div className="flex justify-between items-center">
-        <h2 className="text-lg font-bold">Income Overview</h2>
+    <div className="p-6 md:p-4 sm:p-3 xs:p-2 bg-white rounded-lg">
+      <div className="flex  flex-col md:flex-row justify-between items-center">
+        <h2 className="my-2 md:my-0 text-sm md:text-lg font-semibold md:font-bold whitespace-nowrap">Income Overview</h2>
         <div className="flex gap-2">
           <button
-            className={`px-3 py-0.5 border rounded ${slot === 'week' ? 'border-blue-500 text-blue-500' : 'border-gray-300 text-gray-500'
+            className={`px-1 md:px-3 py-0.5 border rounded ${slot === 'week' ? 'border-blue-500 text-blue-500' : 'border-gray-300 text-gray-500'
               }`}
             onClick={() => setSlot('week')}
           >
             Week
           </button>
           <button
-            className={`px-3 py-0.5 border rounded ${slot === 'month' ? 'border-blue-500 text-blue-500' : 'border-gray-300 text-gray-500'
+            className={`px-1 md:px-3 py-0.5 border rounded ${slot === 'month' ? 'border-blue-500 text-blue-500' : 'border-gray-300 text-gray-500'
               }`}
             onClick={() => setSlot('month')}
           >
             Month
           </button>
           <select
-            className="px-2 py-1 bg-gray-200 text-sm"
+            className="px-1 md:px-2 py-1 bg-gray-200 text-sm"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value as typeof quantity)}
           >

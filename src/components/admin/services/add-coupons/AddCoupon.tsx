@@ -121,7 +121,7 @@ export default function AddCoupon() {
 
     return (
         <div className="p-6">
-            <div className="flex flex-col px-4 sm:px-6 md:px-12 lg:pl-72 lg:mt-28">
+            <div className="flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72">
                 <div className="flex flex-row mb-4">
                     <h1 className="text-lg font-semibold">Manage Coupons</h1>
                     <button

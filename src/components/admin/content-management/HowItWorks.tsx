@@ -10,13 +10,13 @@ export default function HowItWorks() {
   const [stepDescriptions, setStepDescriptions] = useState<string[]>(["", "", "", ""]);
 
   return (
-    <div className="flex flex-col px-4 sm:px-6 md:px-12 lg:pl-72 lg:mt-28">
+    <div className="flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72">
 
       {/* "How It Works" fields */}
       <h2 className="text-lg font-semibold mb-6">How It Works</h2>
 
       {/* Section Title */}
-      <div className="mt-4 w-1/2">
+      <div className="mt-4 w-full md:w-1/2">
         <label className="block text-sm font-semibold">How It Works Section Title - 1</label>
         <input
           type="text"
@@ -28,7 +28,7 @@ export default function HowItWorks() {
       </div>
 
       {/* Section Subtitle */}
-      <div className="mt-4 w-1/2">
+      <div className="mt-4 w-full md:w-1/2">
         <label className="block text-sm font-semibold">How It Works Section Subtitle - 1</label>
         <input
           type="text"
@@ -41,7 +41,7 @@ export default function HowItWorks() {
 
       {/* Step Titles and Descriptions */}
       {stepTitles.map((stepTitle, index) => (
-        <div key={index} className="mt-4 w-1/2">
+        <div key={index} className="mt-4 w-full md:w-1/2">
           <label className="block text-sm font-semibold">How It Works Step Title - {index + 1}</label>
           <input
             type="text"

@@ -159,8 +159,8 @@ const Customers: React.FC = () => {
   ];
 
   return (
-    <div className="p-5 bg-white rounded-lg ">
-      <div className='flex flex-col px-4 sm:px-6 md:px-12 lg:pl-72 lg:mt-28'>
+    <div className=" bg-white rounded-lg ">
+      <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
         <div className="flex justify-between mb-4">
           <div className="flex items-center">
             <input
@@ -171,15 +171,15 @@ const Customers: React.FC = () => {
               className="p-2 border border-gray-300 rounded-lg mr-4"
             />
           </div>
-          <div className="space-x-2">
+          <div className="flex flex-col md:flex-row lg:space-x-2">
             <button
-              className="px-4 py-2 ButtonBlue text-white rounded-md"
+              className="px-1 md:px-4 py-0.5 md:py-2 ButtonBlue text-white rounded-md"
             >
               Add Customer
             </button>
 
             <button
-              className="px-4 py-2 bg-green-500 text-white rounded-md"
+              className="px-1 md:px-4 py-0.5 md:py-2 bg-green-500 text-white rounded-md"
               onClick={exportToCSV}
             >
               Export CSV <FaFileCsv className="inline ml-2" />

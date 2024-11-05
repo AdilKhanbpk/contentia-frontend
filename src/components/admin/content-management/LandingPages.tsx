@@ -14,12 +14,12 @@ export default function LandingPages() {
   };
 
   return (
-    <div className="flex flex-col px-4 sm:px-6 md:px-12 lg:pl-72 lg:mt-28">
+    <div className="flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72">
       <h1 className="text-lg font-semibold">Landing Page</h1>
 
-      <div className='flex flex-row space-x-8'>
+      <div className='flex flex-col md:flex-row md:space-x-8'>
         {/* Carousel Hero Title */}
-        <div className="mt-4 w-1/2">
+        <div className="mt-4 w-full md:w-1/2">
           <label className="block text-sm font-semibold">Carousel Hero Title</label>
           <div className="grid grid-cols-1 gap-4">
             <input
@@ -31,7 +31,7 @@ export default function LandingPages() {
         </div>
 
         {/* Static Hero Title */}
-        <div className="mt-4 w-1/2">
+        <div className="mt-4 w-full md:w-1/2">
           <label className="block text-sm font-semibold">Static Hero Title</label>
           <input
             type="text"
@@ -66,14 +66,14 @@ export default function LandingPages() {
 
       <div className="mt-6">
         <label className="block text-sm font-semibold mb-2">Video 1</label>
-        <div className="flex items-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-1">
+        <div className="flex items-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-1 md:px-2 md:py-1 sm:px-1 sm:py-0.5">
           <input
             type="file"
             accept="video/*"
-            className="flex-1 bg-gray-100 px-3 py-1 border-none outline-none focus:outline-none"
+             className="flex-1 w-full md:w-1/2  bg-gray-100 px-3 py-1 border-none outline-none focus:outline-none"
             style={{ cursor: "pointer" }} // Style to give a pointer cursor on hover
           />
-          <button className="ml-4 rounded-lg  px-4 py-1 ButtonBlue text-white font-semibold">
+          <button className="ml-4 rounded-lg  px-4 py-1 md:px-2 md:py-1 sm:px-1 sm:py-0.5 ButtonBlue text-white font-semibold">
             Upload
           </button>
         </div>
@@ -81,14 +81,14 @@ export default function LandingPages() {
 
       <div className="mt-6">
         <label className="block text-sm font-semibold mb-2">Video 2</label>
-        <div className="flex items-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-1">
+        <div className="flex items-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-1 md:px-2 md:py-1 sm:px-1 sm:py-0.5">
           <input
             type="file"
             accept="video/*"
-            className="flex-1 bg-gray-100 px-3 py-1 border-none outline-none focus:outline-none"
+             className="flex-1 w-full md:w-1/2  bg-gray-100 px-3 py-1 border-none outline-none focus:outline-none"
             style={{ cursor: "pointer" }} // Style to give a pointer cursor on hover
           />
-          <button className="ml-4 rounded-lg  px-4 py-1 ButtonBlue text-white font-semibold ">
+          <button className="ml-4 rounded-lg  px-4 py-1 md:px-2 md:py-1 sm:px-1 sm:py-0.5 ButtonBlue text-white font-semibold ">
             Upload
           </button>
         </div>
@@ -96,14 +96,14 @@ export default function LandingPages() {
 
       <div className="mt-6">
         <label className="block text-sm font-semibold mb-2">Video 3</label>
-        <div className="flex items-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-1">
+        <div className="flex items-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-1 md:px-2 md:py-1 sm:px-1 sm:py-0.5">
           <input
             type="file"
             accept="video/*"
-            className="flex-1 bg-gray-100 px-3 py-1 border-none outline-none focus:outline-none"
+             className="flex-1 w-full md:w-1/2  bg-gray-100 px-3 py-1 border-none outline-none focus:outline-none"
             style={{ cursor: "pointer" }} // Style to give a pointer cursor on hover
           />
-          <button className="ml-4 rounded-lg  px-4 py-1 ButtonBlue text-white font-semibold ">
+          <button className="ml-4 rounded-lg  px-4 py-1 md:px-2 md:py-1 sm:px-1 sm:py-0.5 ButtonBlue text-white font-semibold ">
             Upload
           </button>
         </div>
@@ -111,14 +111,14 @@ export default function LandingPages() {
 
       <div className="mt-6">
         <label className="block text-sm font-semibold mb-2">Video 4</label>
-        <div className="flex items-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-1">
+        <div className="flex items-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-1 md:px-2 md:py-1 sm:px-1 sm:py-0.5">
           <input
             type="file"
             accept="video/*"
-            className="flex-1 bg-gray-100 px-3 py-1 border-none outline-none focus:outline-none"
+             className="flex-1 w-full md:w-1/2  bg-gray-100 px-3 py-1 border-none outline-none focus:outline-none"
             style={{ cursor: "pointer" }} // Style to give a pointer cursor on hover
           />
-          <button className="ml-4 rounded-lg  px-4 py-1 ButtonBlue text-white font-semibold ">
+          <button className="ml-4 rounded-lg  px-4 py-1 md:px-2 md:py-1 sm:px-1 sm:py-0.5 ButtonBlue text-white font-semibold ">
             Upload
           </button>
         </div>
@@ -126,14 +126,14 @@ export default function LandingPages() {
 
       <div className="mt-6">
         <label className="block text-sm font-semibold mb-2">Video 5</label>
-        <div className="flex items-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-1">
+        <div className="flex items-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-1 md:px-2 md:py-1 sm:px-1 sm:py-0.5">
           <input
             type="file"
             accept="video/*"
-            className="flex-1 bg-gray-100 px-3 py-1 border-none outline-none focus:outline-none"
+             className="flex-1 w-full md:w-1/2  bg-gray-100 px-3 py-1 border-none outline-none focus:outline-none"
             style={{ cursor: "pointer" }} // Style to give a pointer cursor on hover
           />
-          <button className="ml-4 rounded-lg  px-4 py-1 ButtonBlue text-white font-semibold ">
+          <button className="ml-4 rounded-lg  px-4 py-1 md:px-2 md:py-1 sm:px-1 sm:py-0.5 ButtonBlue text-white font-semibold ">
             Upload
           </button>
         </div>
@@ -141,14 +141,14 @@ export default function LandingPages() {
 
       <div className="mt-6">
         <label className="block text-sm font-semibold mb-2">Video 6</label>
-        <div className="flex items-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-1">
+        <div className="flex items-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-1 md:px-2 md:py-1 sm:px-1 sm:py-0.5">
           <input
             type="file"
             accept="video/*"
-            className="flex-1 bg-gray-100 px-3 py-1 border-none outline-none focus:outline-none"
+             className="flex-1 w-full md:w-1/2  bg-gray-100 px-3 py-1 border-none outline-none focus:outline-none"
             style={{ cursor: "pointer" }} // Style to give a pointer cursor on hover
           />
-          <button className="ml-4 rounded-lg  px-4 py-1 ButtonBlue text-white font-semibold ">
+          <button className="ml-4 rounded-lg  px-4 py-1 md:px-2 md:py-1 sm:px-1 sm:py-0.5 ButtonBlue text-white font-semibold ">
             Upload
           </button>
         </div>
@@ -156,14 +156,14 @@ export default function LandingPages() {
 
       <div className="mt-6">
         <label className="block text-sm font-semibold mb-2">Video 7</label>
-        <div className="flex items-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-1">
+        <div className="flex items-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-1 md:px-2 md:py-1 sm:px-1 sm:py-0.5">
           <input
             type="file"
             accept="video/*"
-            className="flex-1 bg-gray-100 px-3 py-1 border-none outline-none focus:outline-none"
+             className="flex-1 w-full md:w-1/2  bg-gray-100 px-3 py-1 border-none outline-none focus:outline-none"
             style={{ cursor: "pointer" }} // Style to give a pointer cursor on hover
           />
-          <button className="ml-4 rounded-lg  px-4 py-1 ButtonBlue text-white font-semibold ">
+          <button className="ml-4 rounded-lg  px-4 py-1 md:px-2 md:py-1 sm:px-1 sm:py-0.5 ButtonBlue text-white font-semibold ">
             Upload
           </button>
         </div>
@@ -171,14 +171,14 @@ export default function LandingPages() {
 
       <div className="mt-6">
         <label className="block text-sm font-semibold mb-2">Video 8</label>
-        <div className="flex items-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-1">
+        <div className="flex items-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-1 md:px-2 md:py-1 sm:px-1 sm:py-0.5">
           <input
             type="file"
             accept="video/*"
-            className="flex-1 bg-gray-100 px-3 py-1 border-none outline-none focus:outline-none"
+             className="flex-1 w-full md:w-1/2  bg-gray-100 px-3 py-1 border-none outline-none focus:outline-none"
             style={{ cursor: "pointer" }} // Style to give a pointer cursor on hover
           />
-          <button className="ml-4 rounded-lg  px-4 py-1 ButtonBlue text-white font-semibold ">
+          <button className="ml-4 rounded-lg  px-4 py-1 md:px-2 md:py-1 sm:px-1 sm:py-0.5 ButtonBlue text-white font-semibold ">
             Upload
           </button>
         </div>
@@ -186,14 +186,14 @@ export default function LandingPages() {
 
       <div className="mt-6">
         <label className="block text-sm font-semibold mb-2">Video 9</label>
-        <div className="flex items-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-1">
+        <div className="flex items-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-1 md:px-2 md:py-1 sm:px-1 sm:py-0.5">
           <input
             type="file"
             accept="video/*"
-            className="flex-1 bg-gray-100 px-3 py-1 border-none outline-none focus:outline-none"
+             className="flex-1 w-full md:w-1/2  bg-gray-100 px-3 py-1 border-none outline-none focus:outline-none"
             style={{ cursor: "pointer" }} // Style to give a pointer cursor on hover
           />
-          <button className="ml-4 rounded-lg  px-4 py-1 ButtonBlue text-white font-semibold">
+          <button className="ml-4 rounded-lg  px-4 py-1 md:px-2 md:py-1 sm:px-1 sm:py-0.5 ButtonBlue text-white font-semibold">
             Upload
           </button>
         </div>
@@ -201,14 +201,14 @@ export default function LandingPages() {
 
       <div className="mt-6">
         <label className="block text-sm font-semibold mb-2">Video 10</label>
-        <div className="flex items-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-1">
+        <div className="flex items-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-1 md:px-2 md:py-1 sm:px-1 sm:py-0.5">
           <input
             type="file"
             accept="video/*"
-            className="flex-1 bg-gray-100 px-3 py-1 border-none outline-none focus:outline-none"
+             className="flex-1 w-full md:w-1/2  bg-gray-100 px-3 py-1 border-none outline-none focus:outline-none"
             style={{ cursor: "pointer" }} // Style to give a pointer cursor on hover
           />
-          <button className="ml-4 rounded-lg  px-4 py-1 ButtonBlue text-white font-semibold ">
+          <button className="ml-4 rounded-lg  px-4 py-1 md:px-2 md:py-1 sm:px-1 sm:py-0.5 ButtonBlue text-white font-semibold ">
             Upload
           </button>
         </div>

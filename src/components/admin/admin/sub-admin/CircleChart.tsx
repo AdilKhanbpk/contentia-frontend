@@ -19,10 +19,10 @@ const ChartCircle: React.FC = () => {
   const chartSeries = [60.2, 18.1, 12, 9.6];
 
   return (
-    <div className="flex flex-row justify-start items-center space-x-8 rounded-lg">
+    <div className="flex flex-col lg:flex-row justify-start lg:items-center space-x-8 rounded-lg">
       {/* Order Status Section */}
-      <div className="w-1/2 flex flex-col items-start space-y-4 p-4">
-        <div className="grid grid-cols-2 gap-6 text-center">
+      <div className=" w-full lg:w-1/2 flex flex-col items-start space-y-4 p-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-2 gap-6 text-center">
           <div className="border rounded-lg p-6">
             <p className="text-lg font-bold">500</p>
             <p className="text-gray-600">Active Orders</p>
@@ -43,7 +43,7 @@ const ChartCircle: React.FC = () => {
       </div>
 
       {/* Sales by Brand Category Chart */}
-      <div className="w-1/2 flex flex-col items-center">
+      <div className=" w-full lg:w-1/2 flex flex-col items-center">
         <Chart
           options={chartOptions} // No type error
           series={chartSeries}

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useTranslation } from "react-i18next"; // Import useTranslation hook
 import Link from "next/link";
@@ -11,6 +11,22 @@ import { BiUserCircle } from 'react-icons/bi';
 export default function AdminNavbar() {
     const { t } = useTranslation(); // Initialize the translation hook
     const [isSidebarOpen, setSidebarOpen] = useState(true);
+
+    // Set initial sidebar state based on screen size
+    useEffect(() => {
+        const updateSidebarState = () => {
+            if (window.innerWidth >= 1024) { // Large screens (lg breakpoint in Tailwind is 1024px and up)
+                setSidebarOpen(true);
+            } else {
+                setSidebarOpen(false);
+            }
+        };
+
+        updateSidebarState(); // Initial check
+        window.addEventListener("resize", updateSidebarState); // Update on resize
+
+        return () => window.removeEventListener("resize", updateSidebarState); // Cleanup
+    }, []);
 
     // Function to toggle sidebar visibility
     const toggleSidebar = () => {
@@ -46,7 +62,7 @@ export default function AdminNavbar() {
 
                             {/* Brand and Menu Links */}
                             <div className="flex justify-between">
-                                <a href="" className="flex lg:ms-4 md:me-0 mb-3">
+                                <a href="" className="hidden lg:flex lg:ms-4 md:me-0 mb-3">
                                     <Image
                                         src="/contentiaLogo.png"
                                         height={44}
@@ -56,8 +72,9 @@ export default function AdminNavbar() {
                                     />
                                 </a>
 
+
                                 {/* Search Bar */}
-                                <div className="relative ml-[52px]">
+                                <div className="relative hidden sm:block ml-4 lg:ml-[52px]">
                                     <AiOutlineSearch className="absolute left-3 top-2.5 text-gray-400" />
                                     <input
                                         type="text"
@@ -65,11 +82,12 @@ export default function AdminNavbar() {
                                         className="pl-10 pr-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     />
                                 </div>
+
                             </div>
                         </div>
 
                         {/* Right Section */}
-                        <ul className="flex items-center space-x-4 font-medium">
+                        <ul className="flex items-center space-x-2 md:space-x-4 font-medium">
 
                             <button className="relative text-gray-600 hover:text-gray-800">
                                 <IoNotificationsOutline size={24} />
@@ -87,7 +105,7 @@ export default function AdminNavbar() {
                             {/* User Profile */}
                             <div className="flex items-center space-x-2">
                                 <BiUserCircle size={32} className="text-gray-600" />
-                                <span className="text-sm text-gray-700 font-semibold">JWT User</span>
+                                <span className="hidden lg:inline text-sm text-gray-700 font-semibold">JWT User</span>
                             </div>
                         </ul>
                     </div>

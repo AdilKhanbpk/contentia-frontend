@@ -76,7 +76,7 @@ const AddService: React.FC = () => {
 
     return (
         <form onSubmit={handleSubmit(handleSaveService)} className="space-y-6 p-4">
-            <div className='flex flex-col px-4 sm:px-6 md:px-12 lg:pl-72 lg:mt-28'>
+            <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
                 <h2 className="text-xl font-semibold mb-4">Additional Services</h2>
                 <p className="mb-4 text-lg">Select the price for additional services (for 1 UGC)</p>
 
@@ -162,7 +162,7 @@ const AddService: React.FC = () => {
                         <div key={service.id} className="flex items-center space-x-4 mb-2">
                             {editingServiceId === service.id ? (
                                 <div className='flex items-center'>
-                                    <p className='mr-8 whitespace-nowrap w-20 font-semibold text-sm'>{service.name}:</p>
+                                    <p className='mr-8 whitespace-nowrap md:w-20 font-semibold text-sm'>{service.name}:</p>
                                     <Controller
                                         name={`services.${index}.price` as const}
                                         control={control}
@@ -170,7 +170,7 @@ const AddService: React.FC = () => {
                                             <input
                                                 {...field}
                                                 type="number"
-                                                className="focus:outline-none border rounded-md w-48 px-3 text-lg"
+                                                className="focus:outline-none border rounded-md w-20 md:w-48 px-3 text-lg"
                                                 value={watchedServices[index].price}
                                             />
                                         )}
@@ -178,8 +178,8 @@ const AddService: React.FC = () => {
                                 </div>
                             ) : (
                                 <div className='flex items-center'>
-                                    <p className='mr-8 whitespace-nowrap w-40 font-semibold text-sm'>{service.name}:</p>
-                                    <p className='w-28'>{service.price}</p>
+                                    <p className='mr-8 whitespace-nowrap md:w-40 font-semibold text-sm'>{service.name}:</p>
+                                    <p className='md:w-28'>{service.price}</p>
                                 </div>
                             )}
 
@@ -203,7 +203,7 @@ const AddService: React.FC = () => {
                     ))}
                 </div>
 
-                <div className='flex w-1/2 justify-end'>
+                <div className='flex lg:w-1/2 justify-end'>
                     <button
                         type="submit"
                         className="w-32 ButtonBlue text-white px-3 py-2 rounded-md mt-4"
