@@ -95,7 +95,7 @@ const Pricing = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-6">
-      <div className='flex flex-col px-4 sm:px-6 md:px-12 lg:pl-72 lg:mt-28'>
+      <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
         <h2 className="mb-6 text-lg font-semibold">Packages</h2>
         <div className="mb-6 flex items-center">
           <button onClick={openModal}

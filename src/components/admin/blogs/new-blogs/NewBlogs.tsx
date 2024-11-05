@@ -16,7 +16,7 @@ export default function NewBlogs() {
 
   return (
     <>
-      <div className="flex flex-col px-4 sm:px-6 md:px-12 lg:pl-72 lg:mt-28">
+      <div className="flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72">
         <h1 className="text-lg font-semibold">Add a new blog</h1>
 
         {/* Title */}
