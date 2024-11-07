@@ -21,6 +21,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "next-i18next.config.mjs", "middleware.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "next-i18next.config.mjs", "middleware.js", "src/store/features/auth/signupSlice.js"],
   "exclude": ["node_modules"]
 }
