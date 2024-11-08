@@ -31,9 +31,13 @@ const OrdersProfile: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [invoiceType, setInvoiceType] = useState("individual");
   const profile = useSelector((state: RootState) => state.profile);
-  const token = localStorage.getItem("accessToken");
+  const [token, setToken] = useState<string | null>(null);
+
 
   useEffect(() => {
+
+    setToken(localStorage.getItem('accessToken'));
+
     if (token) {
       dispatch(fetchProfile(token));
     }
