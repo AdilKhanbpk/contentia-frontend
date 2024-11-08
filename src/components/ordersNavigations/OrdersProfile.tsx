@@ -79,16 +79,24 @@ const OrdersProfile: React.FC = () => {
             token,
           })
         );
+
         if (result.meta.requestStatus === "fulfilled") {
+          // Show success message in alert
+          alert("Password change successful!");
           console.log("Password change successful:", result.payload);
         } else {
+          // Show failure message in alert
+          alert(`Password change failed: ${result.payload}`);
           console.error("Password change failed:", result.payload);
         }
       } catch (error) {
+        // Show error message in alert
+        alert(`An error occurred during password change: ${error}`);
         console.error("An error occurred during password change:", error);
       }
     }
   };
+
 
   return (
     <div className="my-14 sm:my-20 md:my-20 lg:my-24 px-4 sm:px-6 md:px-8 lg:px-28 p-4 sm:p-6 md:p-8 lg:p-8 bg-gray-50">
