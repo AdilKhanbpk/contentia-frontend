@@ -15,6 +15,7 @@ import { PasswordChange } from "./sub-profile/PasswordChange";
 import { AppDispatch } from "@/store/store";
 
 const OrdersProfile: React.FC = () => {
+
   const dispatch = useDispatch<AppDispatch>();
   const {
     register,
@@ -46,6 +47,7 @@ const OrdersProfile: React.FC = () => {
       dispatch(fetchProfile(token));
     }
   };
+
 
   useEffect(() => {
     if (profile.data) {
