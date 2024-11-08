@@ -1,3 +1,4 @@
+"use client";
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';

@@ -1,9 +1,10 @@
+"use client";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/store/store"; // Import AppDispatch and RootState types
-import { loginUser, resetLoginState } from "@/store/features/auth/loginSlice"; // Assuming your loginSlice is named like this
+import { signupUser, resetLoginState } from "@/store/features/auth/loginSlice"; // Assuming your loginSlice is named like this
 
 interface FormData {
   email: string;
@@ -17,7 +18,7 @@ const LoginForm = () => {
   const loginState = useSelector((state: RootState) => state.login); // Use RootState to type the state
 
   const onSubmit = (data: FormData) => {
-    dispatch(loginUser(data)); // Ensure correct data type passed to loginUser
+    dispatch(signupUser(data)); // Ensure correct data type passed to loginUser
   };
 
   useEffect(() => {

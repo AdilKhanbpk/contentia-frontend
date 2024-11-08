@@ -1,5 +1,6 @@
 
 
+"use client";
 import React from 'react';
 import Image from 'next/image';
 import scannerImage1 from "../../../../public/BecomeCreator/scanner1png.png";

@@ -1,3 +1,4 @@
+"use client";
 // PasswordChange.tsx
 import React from 'react';
 

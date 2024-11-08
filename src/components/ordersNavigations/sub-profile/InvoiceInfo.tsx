@@ -1,3 +1,4 @@
+"use client";
 // InvoiceInfo.tsx
 import React from 'react';
 
