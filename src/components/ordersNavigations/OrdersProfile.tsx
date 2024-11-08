@@ -20,21 +20,20 @@ const OrdersProfile: React.FC = () => {
     const [token, setToken] = useState<string | null>(null);
 
     useEffect(() => {
-        // Set the token only after the component mounts in the browser
         setToken(localStorage.getItem('accessToken'));
     }, []);
 
     useEffect(() => {
         if (token) {
           const dispatchData = dispatch(fetchProfile(token)).unwrap();
-          console.log(dispatchData)
         }
     }, [token, dispatch]);
 
     const onSubmitProfileInvoice = async (data: any) => {
         console.log(data);
-        if (token && profile.id) {
-            dispatch(updateProfile({ data, token, id: profile.id }));
+        if (token ) {
+            dispatch(updateProfile({ data, token }));
+            const dispatchData = dispatch(fetchProfile(token))
         }
     };
 
@@ -51,11 +50,11 @@ const OrdersProfile: React.FC = () => {
             setValue('taxNumber', profile.data.taxNumber || '');
             setValue('taxOffice', profile.data.taxOffice || '');
         }
-    }, [profile.data, setValue, onSubmitProfileInvoice]);
+    }, [profile.data]);
 
 
     const onSubmitPasswordChange = async (data: any) => {
-        if (token && profile.id) {
+        if (token) {
             try {
                 const result = await dispatch(changePassword({
                     currentPassword: data.currentPassword,

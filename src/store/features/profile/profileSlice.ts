@@ -5,14 +5,12 @@ import { AxiosError } from 'axios';
 
 type ProfileState = {
     data: any;
-    id: string | null;
     loading: boolean;
     error: string | null;
 };
 
 const initialState: ProfileState = {
     data: null,
-    id: null,
     loading: false,
     error: null,
 };
@@ -25,7 +23,6 @@ export const fetchProfile = createAsyncThunk(
                 headers: { Authorization: `Bearer ${token}` },
             });
             return {
-                id: response.data.data._id,
                 data: response.data.data,
             };
         } catch (error) {
@@ -37,7 +34,7 @@ export const fetchProfile = createAsyncThunk(
 export const updateProfile = createAsyncThunk(
     'profile/updateProfile',
     async (
-      { data, token, id }: { data: any; token: string; id: string },
+      { data, token, }: { data: any; token: string; },
       { rejectWithValue }
     ) => {
       try {
@@ -100,11 +97,10 @@ const profileSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchProfile.fulfilled, (state, action: PayloadAction<{ id: string; data: any }>) => {
+            .addCase(fetchProfile.fulfilled, (state, action: PayloadAction<{ data: any }>) => {
                 state.loading = false;
                 state.data = action.payload.data;
                 console.log(action.payload.data)
-                state.id = action.payload.id;
             })
             .addCase(fetchProfile.rejected, (state, action) => {
                 state.loading = false;
