@@ -32,11 +32,10 @@ export const InvoiceInfo: React.FC<InvoiceInfoProps> = ({ register, invoiceType,
                             <p className='font-semibold'>
                                 <input
                                     type="text"
-                                    {...register('fullName')}
+                                    {...register('billingInformation.fullName')}
                                     disabled={!isEditing}
                                     className="font-semibold border px-1 py-0.5 rounded-md focus:outline-none"
                                 />
-
                             </p>
                         </div>
                         <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4'>
@@ -44,7 +43,7 @@ export const InvoiceInfo: React.FC<InvoiceInfoProps> = ({ register, invoiceType,
                             <p className='font-semibold'>
                                 <input
                                     type="text"
-                                    {...register('trId')}
+                                    {...register('billingInformation.trId')}
                                     disabled={!isEditing}
                                     className="font-semibold border px-1 py-0.5 rounded-md focus:outline-none"
                                 />
@@ -53,14 +52,12 @@ export const InvoiceInfo: React.FC<InvoiceInfoProps> = ({ register, invoiceType,
                         <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4'>
                             <p className='whitespace-nowrap'>Fatura Adresi:</p>
                             <p className='font-semibold whitespace-normal lg:whitespace-nowrap'>
-
                                 <input
                                     type="text"
-                                    {...register('billingAddress')}
+                                    {...register('billingInformation.address')}
                                     disabled={!isEditing}
                                     className="font-semibold border px-1 py-0.5 rounded-md focus:outline-none"
                                 />
-
                             </p>
                         </div>
                     </>
@@ -70,53 +67,45 @@ export const InvoiceInfo: React.FC<InvoiceInfoProps> = ({ register, invoiceType,
                         <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4'>
                             <p className="mt-2 sm:mt-3 md:mt-4 lg:mt-4 whitespace-nowrap">Şirket Ünvanı:</p>
                             <p className='font-semibold'>
-
                                 <input
                                     type="text"
-                                    {...register('companyName')}
+                                    {...register('billingInformation.companyName')}
                                     disabled={!isEditing}
                                     className="font-semibold border px-1 py-0.5 rounded-md focus:outline-none"
                                 />
-
                             </p>
                         </div>
                         <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4'>
                             <p className='whitespace-nowrap'>Vergi Numarası / TCKN</p>
                             <p className='font-semibold'>
-
                                 <input
                                     type="text"
-                                    {...register('taxNumber')}
+                                    {...register('billingInformation.taxNumber')}
                                     disabled={!isEditing}
                                     className="font-semibold border px-1 py-0.5 rounded-md focus:outline-none"
                                 />
-
                             </p>
                         </div>
                         <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4'>
                             <p className='whitespace-nowrap'>Vergi Dairesi:</p>
                             <p className='font-semibold'>
-
                                 <input
                                     type="text"
-                                    {...register('taxOffice')}
+                                    {...register('billingInformation.taxOffice')}
                                     disabled={!isEditing}
                                     className="font-semibold border px-1 py-0.5 rounded-md focus:outline-none"
                                 />
-
                             </p>
                         </div>
                         <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4'>
                             <p className='whitespace-nowrap'>Fatura Adresi:</p>
                             <p className='font-semibold whitespace-normal lg:whitespace-nowrap'>
-
                                 <input
                                     type="text"
-                                    {...register('billingAddress')}
+                                    {...register('billingInformation.address')}
                                     disabled={!isEditing}
                                     className="font-semibold border px-1 py-0.5 rounded-md focus:outline-none"
                                 />
-
                             </p>
                         </div>
                     </>

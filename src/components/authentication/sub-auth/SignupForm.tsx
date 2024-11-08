@@ -22,7 +22,7 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (loginState.success) {
-      alert("Login successful!");
+      alert("Signup successful!");
       dispatch(resetLoginState());
     }
   }, [loginState.success, dispatch]);
