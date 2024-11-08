@@ -10,6 +10,8 @@ interface InvoiceInfoProps {
     isEditing: boolean;
 }
 
+console.log("this is invoice info");
+
 export const InvoiceInfo: React.FC<InvoiceInfoProps> = ({ register, invoiceType, setInvoiceType, setIsEditing, isEditing }) => (
     <>
         <h2 className="text-xl font-semibold mb-4 whitespace-normal lg:whitespace-nowrap">Fatura Bilgileri</h2>
