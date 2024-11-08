@@ -103,6 +103,7 @@ const profileSlice = createSlice({
             .addCase(fetchProfile.fulfilled, (state, action: PayloadAction<{ id: string; data: any }>) => {
                 state.loading = false;
                 state.data = action.payload.data;
+                console.log(action.payload.data)
                 state.id = action.payload.id;
             })
             .addCase(fetchProfile.rejected, (state, action) => {

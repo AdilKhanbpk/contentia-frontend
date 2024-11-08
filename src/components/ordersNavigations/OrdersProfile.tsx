@@ -17,22 +17,30 @@ const OrdersProfile: React.FC = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [invoiceType, setInvoiceType] = useState('individual');
     const profile = useSelector((state: RootState) => state.profile);
-    const token = localStorage.getItem('accessToken');
+    const [token, setToken] = useState<string | null>(null);
+
+    useEffect(() => {
+        // Set the token only after the component mounts in the browser
+        setToken(localStorage.getItem('accessToken'));
+    }, []);
 
     useEffect(() => {
         if (token) {
-            dispatch(fetchProfile(token));
+          const dispatchData = dispatch(fetchProfile(token)).unwrap();
+          console.log(dispatchData)
         }
     }, [token, dispatch]);
 
     const onSubmitProfileInvoice = async (data: any) => {
+        console.log(data);
         if (token && profile.id) {
             dispatch(updateProfile({ data, token, id: profile.id }));
         }
     };
-    
+
     useEffect(() => {
         if (profile.data) {
+            console.log(profile)
             setValue('email', profile.data.email || '');
             setValue('fullName', profile.data.fullName || '');
             setValue('billingInformation', profile.data.billingInformation || '');
