@@ -41,8 +41,8 @@ const OrdersProfile: React.FC = () => {
 
   const onSubmitProfileInvoice = async (data: any) => {
     console.log("Clicked");
-    if (token && profile.id) {
-      await dispatch(updateProfile({ data, token, id: profile.id }));
+    if (token) {
+      await dispatch(updateProfile({ data, token }));
       // Fetch profile data again after updating
       dispatch(fetchProfile(token));
     }
@@ -65,7 +65,7 @@ const OrdersProfile: React.FC = () => {
 
 
   const onSubmitPasswordChange = async (data: any) => {
-    if (token && profile.id) {
+    if (token) {
       try {
         const result = await dispatch(
           changePassword({
