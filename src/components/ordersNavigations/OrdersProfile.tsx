@@ -3,27 +3,34 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { fetchProfile, updateProfile, changePassword } from '@/store/features/profile/profileSlice'; // Import async thunks
-import { RootState } from '@/store/store';  // Import RootState for TypeScript types
+import { fetchProfile, updateProfile, changePassword } from '@/store/features/profile/profileSlice';
+import { RootState } from '@/store/store';
 import { ProfileInfo } from './sub-profile/ProfileInfo';
 import { InvoiceInfo } from './sub-profile/InvoiceInfo';
 import { PasswordChange } from './sub-profile/PasswordChange';
-import { AppDispatch } from '@/store/store'; // Import the typed dispatch
+import { AppDispatch } from '@/store/store';
 
 const OrdersProfile: React.FC = () => {
-    const dispatch = useDispatch<AppDispatch>();  // This ensures the dispatch is correctly typed
+    const dispatch = useDispatch<AppDispatch>();
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
+    const { register: registerPassword, handleSubmit: handleSubmitPassword, formState: { errors: passwordErrors } } = useForm();
     const [isEditing, setIsEditing] = useState(false);
     const [invoiceType, setInvoiceType] = useState('individual');
     const profile = useSelector((state: RootState) => state.profile);
-    const token = localStorage.getItem('accessToken');  // Replace with your actual token key
+    const token = localStorage.getItem('accessToken');
 
     useEffect(() => {
         if (token) {
-            dispatch(fetchProfile(token));  // Dispatch the fetchProfile action
+            dispatch(fetchProfile(token));
         }
     }, [token, dispatch]);
 
+    const onSubmitProfileInvoice = async (data: any) => {
+        if (token && profile.id) {
+            dispatch(updateProfile({ data, token, id: profile.id }));
+        }
+    };
+    
     useEffect(() => {
         if (profile.data) {
             setValue('email', profile.data.email || '');
@@ -36,26 +43,32 @@ const OrdersProfile: React.FC = () => {
             setValue('taxNumber', profile.data.taxNumber || '');
             setValue('taxOffice', profile.data.taxOffice || '');
         }
-    }, [profile.data, setValue]);
+    }, [profile.data, setValue, onSubmitProfileInvoice]);
 
-    const onSubmitProfileInvoice = async (data: any) => {
-        if (token && profile.id) {
-            dispatch(updateProfile({ data, token, id: profile.id }));
-        }
-    };
 
     const onSubmitPasswordChange = async (data: any) => {
         if (token && profile.id) {
-            dispatch(changePassword({
-                oldPassword: data.currentPassword,
-                newPassword: data.newPassword,
-                token
-            }));
+            try {
+                const result = await dispatch(changePassword({
+                    currentPassword: data.currentPassword,
+                    newPassword: data.newPassword,
+                    confirmNewPassword: data.confirmNewPassword,
+                    token
+                }));
+                if (result.meta.requestStatus === 'fulfilled') {
+                    console.log("Password change successful:", result.payload);
+                } else {
+                    console.error("Password change failed:", result.payload);
+                }
+            } catch (error) {
+                console.error("An error occurred during password change:", error);
+            }
         }
     };
 
     return (
         <div className="my-14 sm:my-20 md:my-20 lg:my-24 px-4 sm:px-6 md:px-8 lg:px-28 p-4 sm:p-6 md:p-8 lg:p-8 bg-gray-50">
+            {/* Profile and Invoice Information */}
             <form onSubmit={handleSubmit(onSubmitProfileInvoice)}>
                 <div className="bg-white rounded-lg shadow-lg px-4 py-3 sm:px-6 sm:py-4 lg:px-12 lg:py-6">
                     <div className="mb-4 p-4 sm:mb-6 sm:p-6 lg:mb-6 lg:p-8 border-2 border-gray-200">
@@ -77,21 +90,23 @@ const OrdersProfile: React.FC = () => {
                             <button type="submit" className="font-semibold px-8 py-0.5 ButtonBlue text-white rounded-lg">Güncelle</button>
                         </div>
                     </div>
-                    <form onSubmit={handleSubmit(onSubmitPasswordChange)}>
-                        <div className="mb-4 p-4 sm:mb-6 sm:p-6 lg:mb-6 lg:p-8 border-2 border-gray-200">
-                            <PasswordChange
-                                register={register}
-                                isEditing={isEditing}
-                            />
-                            <div className="w-full flex justify-end items-end">
-                                <button type="submit" className="font-semibold px-8 py-0.5 ButtonBlue text-white rounded-lg">Şifre Güncelle</button>
-                            </div>
-                        </div>
-                    </form>
                 </div>
             </form>
 
-
+            {/* Password Change */}
+            <form onSubmit={handleSubmitPassword(onSubmitPasswordChange)} className="mt-8">
+                <div className="bg-white rounded-lg shadow-lg px-4 py-3 sm:px-6 sm:py-4 lg:px-12 lg:py-6">
+                    <div className="mb-4 p-4 sm:mb-6 sm:p-6 lg:mb-6 lg:p-8 border-2 border-gray-200">
+                        <PasswordChange
+                            register={registerPassword}
+                            isEditing={isEditing}
+                        />
+                        <div className="w-full flex justify-end items-end">
+                            <button type="submit" className="font-semibold px-8 py-0.5 ButtonBlue text-white rounded-lg">Şifre Güncelle</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     );
 };

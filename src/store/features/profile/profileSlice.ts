@@ -56,27 +56,38 @@ export const updateProfile = createAsyncThunk(
 );
 
 export const changePassword = createAsyncThunk(
-    'profile/changePassword',
-    async (
-      { oldPassword, newPassword, token }: { oldPassword: string; newPassword: string; token: string },
-      { rejectWithValue }
-    ) => {
-      try {
-        const response = await axiosInstance.post('/users/change-password', {
-          oldPassword,
-          newPassword,
-        }, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        return response.data;
-      } catch (error) {
-        let errorMessage = 'Failed to change password';
-        if ((error as AxiosError).isAxiosError && (error as AxiosError).response) {
-          errorMessage = `Password change failed: ${(error as AxiosError).response?.data || 'Unknown error'}`;
-        }
-        return rejectWithValue(errorMessage);
+  'profile/changePassword',
+  async (
+    { currentPassword, newPassword, confirmNewPassword, token }: { currentPassword: string; newPassword: string; confirmNewPassword: string, token: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      console.log('Change Password Request:', { currentPassword, newPassword, confirmNewPassword }); // Log request payload (excluding token for security)
+      
+      const headers = { Authorization: `Bearer ${token}` };
+      console.log('Headers:', headers); // Log headers to confirm token setup
+
+      const response = await axiosInstance.patch(
+        '/users/change-password',
+        { currentPassword, newPassword, confirmNewPassword },
+        { headers }
+      );
+
+      console.log(response);
+      
+      console.log('Change Password Response:', response.data); // Log response data
+      return response.data;
+    } catch (error) {
+      let errorMessage = 'Failed to change password';
+      if ((error as AxiosError).isAxiosError && (error as AxiosError).response) {
+        console.log('Axios Error Response:', (error as AxiosError).response?.data); // Log error response data
+        errorMessage = `Password change failed: ${(error as AxiosError).response?.data || 'Unknown error'}`;
+      } else {
+        console.log('Non-Axios Error:', error); // Log non-Axios errors
       }
+      return rejectWithValue(errorMessage);
     }
+  }
 );
 
 const profileSlice = createSlice({

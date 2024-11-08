@@ -7,6 +7,12 @@ interface LoginData {
   rememberMe: boolean;
 }
 
+interface SignupData {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
+
 interface LoginState {
   loading: boolean;
   success: boolean;
@@ -26,9 +32,18 @@ export const loginUser = createAsyncThunk(
   'login/loginUser',
   async (loginData: LoginData) => {
     const response = await axiosInstance.post('/users/login', loginData);
-    // Store the token
     localStorage.setItem('accessToken', response.data.data.accessToken);
-    return response.data.token; // Assume the API returns the token on success
+    return response.data.token; 
+  }
+);
+
+// Async thunk to handle signup
+export const signupUser = createAsyncThunk(
+  'login/signupUser',
+  async (signupData: SignupData) => {
+    const response = await axiosInstance.post('/users/signup', signupData);
+    localStorage.setItem('accessToken', response.data.data.accessToken);
+    return response.data.token; 
   }
 );
 
@@ -50,12 +65,26 @@ const loginSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<string>) => {
         state.loading = false;
         state.success = true;
-        state.token = action.payload; // Store the token in the state
-        localStorage.setItem('your_token_key', action.payload); // Set token to localStorage here
+        state.token = action.payload;
+        localStorage.setItem('your_token_key', action.payload);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Login failed';
+      })
+      // Signup cases
+      .addCase(signupUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(signupUser.fulfilled, (state, action: PayloadAction<string>) => {
+        state.loading = false;
+        state.success = true;
+        state.token = action.payload;
+        localStorage.setItem('your_token_key', action.payload);
+      })
+      .addCase(signupUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Signup failed';
       });
   },
 });
