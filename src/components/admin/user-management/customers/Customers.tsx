@@ -1,24 +1,30 @@
-"use client";
-import React, { useState } from "react";
-import { FaEdit, FaTrashAlt, FaFileCsv, FaEye  } from "react-icons/fa";
+'use client';
+
+import React, { useEffect, useState } from "react";
+import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
 import Image from "next/image";
-import dynamic from "next/dynamic";
 import { useForm, SubmitHandler } from "react-hook-form";
-import CustomModelAdmin from '../../../modal/CustomModelAdmin'
-import Modal from "./sub-customer/Modal"
-import ModalTwo from "./sub-customer/ModalTwo"
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/store/store";
+import { fetchAdminCustomers } from "@/store/features/admin/customersSlice";
+import { deleteAdminCustomer } from "@/store/features/admin/customersSlice";
+import { updateAdminCustomer } from "@/store/features/admin/customersSlice";
+import CustomModelAdmin from '../../../modal/CustomModelAdmin';
+import Modal from "./sub-customer/Modal";
+import ModalTwo from "./sub-customer/ModalTwo";
+import CustomTable from "@/components/custom-table/CustomTable";
+import { exportCsvFile } from "@/utils/exportCsvFile";
 
-const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
-
+// In the file where the Customer interface is defined (e.g., Customers.tsx)
 export interface Customer {
-    id: number;
+    id: string; // or number, depending on your setup
     name: string;
     email: string;
     contact: string;
-    age: number;
+    age: string | number;
     country: string;
     status: "Verified" | "Pending" | "Rejected";
-    invoiceType: string;
+    invoiceType: string;  // Make sure invoiceType is included
     tcNumber?: string;
     companyTitle?: string;
     taxNumber?: string;
@@ -26,109 +32,168 @@ export interface Customer {
     address?: string;
 }
 
-const initialCustomers: Customer[] = [
-    { id: 100, name: "Earl Parrini", email: "sah@gmail.com", contact: "+1 (965) 886-4355", age: 55, country: "Russia", status: "Verified", invoiceType: '' },
-    { id: 99, name: "Nora Willis", email: "ket@gmail.com", contact: "+1 (382) 858-5995", age: 63, country: "Kenya", status: "Pending", invoiceType: '' },
-];
-
 const Customers: React.FC = () => {
-    const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
-    const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
-    const [showEditForm, setShowEditForm] = useState(false);
-    const [searchTerm, setSearchTerm] = useState("");
+    const dispatch = useDispatch<AppDispatch>();
+    const { data: customers = [], loading, error } = useSelector((state: RootState) => state.adminCustomers || { data: [], loading: false, error: null });
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: { errors },
-    } = useForm<Customer>();
+    const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [customer, setCustomer] = useState<Customer[]>([]);
+
+    const { register, handleSubmit, reset } = useForm<Customer>();
+
+    const [token, setToken] = useState<string | null>(null);
+
+
+    // Delete function with token retrieval
+    const handleDelete = (id: string) => {
+        console.log("Delete button clicked, customer ID:", id);
+
+        const tokenFromStorage = localStorage.getItem('accessToken'); // Get the latest token directly from storage
+        if (tokenFromStorage) {
+            console.log("Token found in localStorage:", tokenFromStorage);
+
+            dispatch(deleteAdminCustomer({ customerId: id, token: tokenFromStorage }))
+                .unwrap()
+                .then(() => {
+                    console.log("Customer deleted successfully, updating local state");
+                    // Update local state to remove customer
+                    setCustomer((prev) => prev.filter((customer) => customer.id !== id));
+                })
+                .catch((error: any) => {
+                    const errorMessage = error.message || JSON.stringify(error);
+                    console.error("Delete failed:", errorMessage);
+                    alert("Failed to delete customer: " + errorMessage);
+                });
+        } else {
+            console.warn("Authorization token is missing.");
+            alert("Authorization token is missing.");
+        }
+    };
+
+    // Fetch admin customers when the token is set
+    useEffect(() => {
+        const tokenFromStorage = localStorage.getItem('accessToken');
+        setToken(tokenFromStorage);
+
+        if (tokenFromStorage) {
+            dispatch(fetchAdminCustomers(tokenFromStorage));
+        }
+    }, [dispatch, handleDelete]);
 
     const handleEdit = (customer: Customer) => {
-        setEditingCustomer(customer);
-        setShowEditForm(true);
-        reset(customer);
-    };
+        console.log("Edit button clicked for customer:", customer);
+      
+        setEditingCustomer(customer); // Sets the customer to be edited in the form
+        openModalEdit();
+        reset(customer); // Resets form with customer data
+      };
+      
+      const handleSaveEdit = (customerId: string, updatedData: any) => {
+        const tokenFromStorage = localStorage.getItem('accessToken'); // Retrieve token directly
+      
+        console.log("Attempting to save updated data for customer:", customerId);
+        console.log("Updated data to send:", updatedData);
+      
+        if (tokenFromStorage) {
+          dispatch(updateAdminCustomer({ customerId, data: updatedData, token: tokenFromStorage }))
+            .unwrap()
+            .then((updatedCustomer:any) => {
+              console.log("Customer updated successfully:", updatedCustomer);
+              setEditingCustomer(null); // Clear editing state
+              // Update local state or trigger a re-fetch if necessary
+            })
+            .catch((error: any) => {
+              const errorMessage = error.message || JSON.stringify(error);
+              console.error("Update failed:", errorMessage);
+              alert("Failed to update customer: " + errorMessage);
+            });
+        } else {
+          console.warn("Authorization token is missing.");
+          alert("Authorization token is missing.");
+        }
+      };
 
     const onSubmit: SubmitHandler<Customer> = (data) => {
         if (editingCustomer) {
-            setCustomers((prev) =>
-                prev.map((customer) =>
+            setCustomer((prev: any) =>
+                prev.map((customer: Customer) =>
                     customer.id === editingCustomer.id ? { ...data, id: customer.id } : customer
                 )
             );
             setEditingCustomer(null);
-            setShowEditForm(false);
         } else {
-            const newCustomer: Customer = { ...data, id: Math.max(...customers.map(c => c.id)) + 1 };
-            setCustomers((prev) => [...prev, newCustomer]);
-            setShowEditForm(false);
+            const newCustomer: Customer = { ...data, id: (Math.max(...customers.map(c => parseInt(c.id))) + 1).toString() };
+            setCustomer((prev: any) => [...prev, newCustomer]);
         }
     };
 
-    const handleDelete = (id: number) => {
-        setCustomers((prev) => prev.filter((customer) => customer.id !== id));
+    
+
+
+    const handleExport = () => {
+        const headers = ["ID", "Name", "Email", "Contact", "Age", "Country", "Status"];
+        const data = customers.map(customer => ({
+            ID: customer.id,
+            Name: customer.name,
+            Email: customer.email,
+            Contact: customer.contact,
+            Age: customer.age,
+            Country: customer.country,
+            Status: customer.status
+        }));
+
+        exportCsvFile({ data, headers, filename: "customers.csv" });
     };
 
-    const exportToCSV = () => {
-        const csvRows = [
-            ["ID", "Name", "Email", "Contact", "Age", "Country", "Status"],
-            ...customers.map(c => [c.id, c.name, c.email, c.contact, c.age, c.country, c.status]),
-        ];
-        const csvContent = "data:text/csv;charset=utf-8," + csvRows.map(e => e.join(",")).join("\n");
-        const link = document.createElement("a");
-        link.setAttribute("href", encodeURI(csvContent));
-        link.setAttribute("download", "customers.csv");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
+    const filteredCustomers = customers.filter((customer) => {
+        const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
+        return (
+            (customer.Name && customer.Name.toLowerCase().includes(lowerCaseSearchTerm)) ||
+            (customer.Email && customer.Email.toLowerCase().includes(lowerCaseSearchTerm)) ||
+            (customer.Contact && customer.Contact.includes(lowerCaseSearchTerm)) ||
+            (customer.Country && customer.Country.toLowerCase().includes(lowerCaseSearchTerm))
+        );
+    });
 
-
-    // Filter customers based on search term
-    const filteredCustomers = customers.filter((customer) =>
-        customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.contact.includes(searchTerm) ||
-        customer.country.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    // Define table columns
     const columns = [
         {
             name: "#",
-            selector: (row: any) => row.id,
+            selector: (row: any) => row.ID,
             sortable: true,
             width: "80px",
         },
         {
-            name: "User Info",
+            name: "User  Info",
             cell: (row: any) => (
                 <div className="flex items-center space-x-2">
                     <Image width={10} height={10} src="/icons/avatar.png" alt="avatar" className="w-10 h-10 rounded-full" />
                     <div>
-                        <p className="font-semibold">{row.name}</p>
-                        <p className="text-sm whitespace-nowrap text-gray-500">{row.email}</p>
+                        <p className="font-semibold">{row.Name}</p>
+                        <p className="text-sm whitespace-nowrap text-gray-500">
+                            {row.Email.length > 12 ? `${row.Email.substring(0, 20)}...` : row.Email}
+                        </p>
                     </div>
                 </div>
             ),
             sortable: false,
             grow: 2,
+            width: "280px",
         },
         {
             name: "Contact",
-            selector: (row: any) => row.contact,
+            selector: (row: any) => row.Contact,
             sortable: true,
         },
         {
             name: "Age",
-            selector: (row: any) => row.age,
+            selector: (row: any) => row.Age,
             sortable: true,
             width: "100px",
         },
         {
             name: "Country",
-            selector: (row: any) => row.country,
+            selector: (row: any) => row.Country,
             sortable: true,
         },
         {
@@ -142,7 +207,7 @@ const Customers: React.FC = () => {
                             : "text-red-700 bg-red-100"
                         }`}
                 >
-                    {row.status}
+                    {row.Status}
                 </span>
             ),
             sortable: true,
@@ -153,15 +218,15 @@ const Customers: React.FC = () => {
             cell: (row: any) => (
                 <div className="flex space-x-3">
                     <button className="text-gray-500 hover:text-gray-700">
-                        <FaEye className="text-lg" /> {/* Adjust size here */}
+                        <FaEye className="text-lg" />
                     </button>
 
-                    <button className="text-blue-500 hover:text-blue-700" onClick={() => handleEdit(row)}>
-                        <FaEdit className="text-lg" /> {/* Adjust size here */}
+                    <button className="text-blue-500 hover:text-blue-700" onClick={() => handleEdit(row.ID)}>
+                        <FaEdit className="text-lg" />
                     </button>
 
-                    <button className="text-red-500 hover:text-red-700" onClick={() => handleDelete(row.id)}>
-                        <FaTrashAlt className="text-md" /> {/* Adjust size here */}
+                    <button className="text-red-500 hover:text-red-700" onClick={() => handleDelete(row.ID)}>
+                        <FaTrashAlt className="text-md" />
                     </button>
                 </div>
             ),
@@ -170,79 +235,33 @@ const Customers: React.FC = () => {
     ];
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
 
+    const [isModalEditOpen, setIsModalEditOpen] = useState(false);
+    const openModalEdit = () => setIsModalEditOpen(true);
+    const closeModalEdit = () => setIsModalEditOpen(false);
+
     return (
-        <div className=" bg-white rounded-lg ">
+        <div className="bg-white rounded-lg">
             <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
-                <div className="flex justify-between mb-4">
-                    <div className="flex items-center">
-                        <input
-                            type="text"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            placeholder="Search..."
-                            className="p-2 border border-gray-300 rounded-lg mr-4"
-                        />
-                    </div>
-                    <div className="flex flex-col md:flex-row md:space-x-2">
-                        <button
-                            className="px-1 md:px-4 py-0.5 md:py-2 ButtonBlue text-white rounded-md"
-                            onClick={openModal}
-                        >
-                            Add Customer
-                        </button>
-                        <CustomModelAdmin isOpen={isModalOpen} closeModal={closeModal} title="">
-                           <Modal></Modal>
-                        </CustomModelAdmin>
+                <CustomTable
+                    columns={columns}
+                    data={filteredCustomers}
+                    onExport={handleExport}
+                    showAddCustomerModal={openModal}
+                    showEditCustomerModal={openModalEdit}
+                    addButtonText="Add Customer"
+                    searchTerm={searchTerm}
+                    onSearchChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <CustomModelAdmin isOpen={isModalOpen} closeModal={closeModal} title="Add Customer">
+                    <Modal />
+                </CustomModelAdmin>
 
-                        <button
-                            className="px-1 md:px-4 py-0.5 md:py-2 bg-green-500 text-white rounded-md"
-                            onClick={exportToCSV}
-                        >
-                            Export CSV <FaFileCsv className="inline ml-2" />
-                        </button>
-                    </div>
-                </div>
-
-                <div className="shadow-md">
-                    <DataTable // Removed the type argument <Customer>
-                        columns={columns} // No need for type casting here
-                        data={filteredCustomers}
-                        pagination
-                        customStyles={{
-                            rows: {
-                                style: {
-                                    fontSize: "14px",
-                                    fontWeight: "500",
-                                },
-                            },
-                            headRow: {
-                                style: {
-                                    fontSize: "16px", // Optional: Set the font size for header
-                                    fontWeight: "600", // Set to '600' for font-semibold
-                                    backgroundColor: "#f8f8f8", // Optional: Background color for header
-                                },
-                            },
-                            headCells: {
-                                style: {
-                                    fontWeight: "600", // Font weight for header cells
-                                    color: "#333", // Optional: Text color for header
-                                },
-                            },
-                        }}
-                    />
-
-                </div>
-
-
-                {/* Conditional render of the edit form */}
-                {showEditForm && (
-                    <ModalTwo></ModalTwo>
-                )}
-
+                <CustomModelAdmin isOpen={isModalEditOpen} closeModal={closeModalEdit} title="Edit Customer">
+                    <ModalTwo customer={editingCustomer} onSaveEdit={handleSaveEdit} closeModal={closeModalEdit} />
+                </CustomModelAdmin>
             </div>
         </div>
     );
