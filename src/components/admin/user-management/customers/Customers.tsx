@@ -1,137 +1,172 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, memo } from "react";
 import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
 import Image from "next/image";
-import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store/store";
-import { fetchAdminCustomers } from "@/store/features/admin/customersSlice";
-import { deleteAdminCustomer } from "@/store/features/admin/customersSlice";
-import { updateAdminCustomer } from "@/store/features/admin/customersSlice";
+import {
+    fetchAdminCustomers,
+    deleteAdminCustomer,
+    createAdminCustomer,
+    updateAdminCustomer
+} from "@/store/features/admin/customersSlice";
 import CustomModelAdmin from '../../../modal/CustomModelAdmin';
-import Modal from "./sub-customer/Modal";
-import ModalTwo from "./sub-customer/ModalTwo";
+import ModalNew from "./sub-customer/ModalNew";
+import ModalEdit from "./sub-customer/ModalEdit";
+import ModalView from "./sub-customer/ModelView"; // Import view modal
 import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 
-// In the file where the Customer interface is defined (e.g., Customers.tsx)
-export interface Customer {
-    id: string; // or number, depending on your setup
-    name: string;
-    email: string;
-    contact: string;
-    age: string | number;
-    country: string;
-    status: "Verified" | "Pending" | "Rejected";
-    invoiceType: string;  // Make sure invoiceType is included
-    tcNumber?: string;
-    companyTitle?: string;
-    taxNumber?: string;
-    taxOffice?: string;
-    address?: string;
-}
+
+// Memoized SearchBar component
+const SearchBar = memo(({ onSearch }: { onSearch: (value: string) => void }) => (
+    <input
+        type="text"
+        placeholder="Search..."
+        onChange={(e) => onSearch(e.target.value)}
+        className="p-2 border border-gray-300 rounded-lg"
+    />
+));
+
+SearchBar.displayName = 'SearchBar';
+
+
+// Memoized Table Actions component
+const TableActions = memo(({ onDelete, onEdit, onView, id }: { onDelete: (id: string) => void; onEdit: (id: string) => void; onView: (id: string) => void; id: string }) => (
+    <div className="flex space-x-3">
+        <button
+            className="text-gray-500 hover:text-gray-700"
+            onClick={() => onView(id)}
+        >
+            <FaEye className="text-lg" />
+        </button>
+        <button
+            className="text-blue-500 hover:text-blue-700"
+            onClick={() => onEdit(id)}
+        >
+            <FaEdit className="text-lg" />
+        </button>
+        <button
+            className="text-red-500 hover:text-red-700"
+            onClick={() => onDelete(id)}
+        >
+            <FaTrashAlt className="text-md" />
+        </button>
+    </div>
+));
+
+TableActions.displayName = 'TableActions';
 
 const Customers: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { data: customers = [], loading, error } = useSelector((state: RootState) => state.adminCustomers || { data: [], loading: false, error: null });
+    const { data: customers = [] } = useSelector((state: RootState) => state.adminCustomers);
 
-    const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
-    const [customer, setCustomer] = useState<Customer[]>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalEditOpen, setIsModalEditOpen] = useState(false);
+    const [isModalViewOpen, setIsModalViewOpen] = useState(false);
+    const [currentCustomer, setCurrentCustomer] = useState<any>(null);
 
-    const { register, handleSubmit, reset } = useForm<Customer>();
-
-    const [token, setToken] = useState<string | null>(null);
-
-
-    // Delete function with token retrieval
-    const handleDelete = (id: string) => {
-        console.log("Delete button clicked, customer ID:", id);
-
-        const tokenFromStorage = localStorage.getItem('accessToken'); // Get the latest token directly from storage
-        if (tokenFromStorage) {
-            console.log("Token found in localStorage:", tokenFromStorage);
-
-            dispatch(deleteAdminCustomer({ customerId: id, token: tokenFromStorage }))
-                .unwrap()
-                .then(() => {
-                    console.log("Customer deleted successfully, updating local state");
-                    // Update local state to remove customer
-                    setCustomer((prev) => prev.filter((customer) => customer.id !== id));
-                })
-                .catch((error: any) => {
-                    const errorMessage = error.message || JSON.stringify(error);
-                    console.error("Delete failed:", errorMessage);
-                    alert("Failed to delete customer: " + errorMessage);
-                });
-        } else {
+    // Handler for deleting a customer
+    const handleDelete = useCallback((id: string) => {
+        const tokenFromStorage = localStorage.getItem('accessToken');
+        if (!tokenFromStorage) {
             console.warn("Authorization token is missing.");
-            alert("Authorization token is missing.");
+            return;
         }
+
+        dispatch(deleteAdminCustomer({ customerId: id, token: tokenFromStorage }))
+            .unwrap()
+            .catch((error: any) => {
+                console.error("Delete failed:", error);
+            });
+    }, [dispatch]);
+
+    // Handler for viewing a customer
+    const handleView = (id: string) => {
+        const customer = customers.find((customer) => customer.ID === id);
+        setCurrentCustomer(customer);
+        setIsModalViewOpen(true);
     };
 
-    // Fetch admin customers when the token is set
-    useEffect(() => {
+    const handleCreate = (customerData: any) => {
         const tokenFromStorage = localStorage.getItem('accessToken');
-        setToken(tokenFromStorage);
 
-        if (tokenFromStorage) {
-            dispatch(fetchAdminCustomers(tokenFromStorage));
+        // Log the token to debug if it's missing
+        console.log("Token from localStorage:", tokenFromStorage);
+
+        if (!tokenFromStorage) {
+            console.warn("Authorization token is missing.");
+            return;
         }
-    }, [dispatch, handleDelete]);
 
-    const handleEdit = (customer: Customer) => {
-        console.log("Edit button clicked for customer:", customer);
-      
-        setEditingCustomer(customer); // Sets the customer to be edited in the form
-        openModalEdit();
-        reset(customer); // Resets form with customer data
-      };
-      
-      const handleSaveEdit = (customerId: string, updatedData: any) => {
-        const tokenFromStorage = localStorage.getItem('accessToken'); // Retrieve token directly
-      
-        console.log("Attempting to save updated data for customer:", customerId);
-        console.log("Updated data to send:", updatedData);
-      
-        if (tokenFromStorage) {
-          dispatch(updateAdminCustomer({ customerId, data: updatedData, token: tokenFromStorage }))
+        // Log the customerData for debugging
+        console.log("Customer Data to be sent:", customerData);
+
+        // Dispatching the create action with the correct payload shape
+        dispatch(createAdminCustomer({ data: customerData, token: tokenFromStorage }))
             .unwrap()
-            .then((updatedCustomer:any) => {
-              console.log("Customer updated successfully:", updatedCustomer);
-              setEditingCustomer(null); // Clear editing state
-              // Update local state or trigger a re-fetch if necessary
+            .then(() => {
+                console.log("Customer created successfully");
+                setIsModalOpen(false);
             })
             .catch((error: any) => {
-              const errorMessage = error.message || JSON.stringify(error);
-              console.error("Update failed:", errorMessage);
-              alert("Failed to update customer: " + errorMessage);
+                console.error("Create failed:", error);
             });
-        } else {
-          console.warn("Authorization token is missing.");
-          alert("Authorization token is missing.");
-        }
-      };
+    };
 
-    const onSubmit: SubmitHandler<Customer> = (data) => {
-        if (editingCustomer) {
-            setCustomer((prev: any) =>
-                prev.map((customer: Customer) =>
-                    customer.id === editingCustomer.id ? { ...data, id: customer.id } : customer
-                )
-            );
-            setEditingCustomer(null);
+    const handleUpdate = async (customerData: any) => {
+        console.log('Function `handleUpdate` called with customerData: ', customerData);
+
+        const token = localStorage.getItem('accessToken');  // Assume the token is stored in localStorage
+        console.log('Retrieved token from storage: ', token);
+
+        if (token) {
+            const customerId = customerData.ID;
+            const dataToUpdate = {
+                fullName: customerData.Name,
+                email: customerData.Email,
+                phoneNumber: customerData.Contact,
+                age: customerData.Age,
+                country: customerData.Country,
+                customerStatus: customerData.CustomerStatus,
+                invoiceType: customerData.InvoiceType,
+                billingInformation: {
+                    invoiceStatus: customerData.BillingInformation.InvoiceStatus,
+                    trId: customerData.BillingInformation.TrId,
+                    address: customerData.BillingInformation.Address,
+                    fullName: customerData.BillingInformation.FullName,
+                    companyName: customerData.BillingInformation.CompanyName,
+                    taxNumber: customerData.BillingInformation.TaxNumber,
+                    taxOffice: customerData.BillingInformation.TaxOffice,
+                },
+                rememberMe: customerData.RememberMe,
+                termsAndConditionsApproved: customerData.TermsAndConditionsApproved,
+            };
+
+            // Dispatch the update action
+            dispatch(updateAdminCustomer({ customerId, data: dataToUpdate, token }));
+            console.log('Data to be sent for update: ', dataToUpdate);
         } else {
-            const newCustomer: Customer = { ...data, id: (Math.max(...customers.map(c => parseInt(c.id))) + 1).toString() };
-            setCustomer((prev: any) => [...prev, newCustomer]);
+            console.error('Authorization token is missing!');
         }
     };
 
-    
+    // Handler for editing a customer
+    const handleEdit = (id: string) => {
+        const customer = customers.find((customer) => customer.ID === id);
+        setCurrentCustomer(customer);
+        setIsModalEditOpen(true);
+    };
 
+    // Handler for search input
+    const handleSearch = useCallback((value: string) => {
+        setSearchTerm(value);
+    }, []);
 
-    const handleExport = () => {
+    // Export to CSV
+    const handleExport = useCallback(() => {
         const headers = ["ID", "Name", "Email", "Contact", "Age", "Country", "Status"];
         const data = customers.map(customer => ({
             ID: customer.id,
@@ -144,19 +179,18 @@ const Customers: React.FC = () => {
         }));
 
         exportCsvFile({ data, headers, filename: "customers.csv" });
-    };
+    }, [customers]);
 
-    const filteredCustomers = customers.filter((customer) => {
-        const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
-        return (
-            (customer.Name && customer.Name.toLowerCase().includes(lowerCaseSearchTerm)) ||
-            (customer.Email && customer.Email.toLowerCase().includes(lowerCaseSearchTerm)) ||
-            (customer.Contact && customer.Contact.includes(lowerCaseSearchTerm)) ||
-            (customer.Country && customer.Country.toLowerCase().includes(lowerCaseSearchTerm))
-        );
-    });
+    // Fetch customers on mount
+    useEffect(() => {
+        const tokenFromStorage = localStorage.getItem('accessToken');
+        if (tokenFromStorage) {
+            dispatch(fetchAdminCustomers(tokenFromStorage));
+        }
+    }, [dispatch]);
 
-    const columns = [
+    // Memoized columns configuration
+    const columns = React.useMemo(() => [
         {
             name: "#",
             selector: (row: any) => row.ID,
@@ -164,7 +198,7 @@ const Customers: React.FC = () => {
             width: "80px",
         },
         {
-            name: "User  Info",
+            name: "User Info",
             cell: (row: any) => (
                 <div className="flex items-center space-x-2">
                     <Image width={10} height={10} src="/icons/avatar.png" alt="avatar" className="w-10 h-10 rounded-full" />
@@ -216,53 +250,91 @@ const Customers: React.FC = () => {
         {
             name: "Actions",
             cell: (row: any) => (
-                <div className="flex space-x-3">
-                    <button className="text-gray-500 hover:text-gray-700">
-                        <FaEye className="text-lg" />
-                    </button>
-
-                    <button className="text-blue-500 hover:text-blue-700" onClick={() => handleEdit(row.ID)}>
-                        <FaEdit className="text-lg" />
-                    </button>
-
-                    <button className="text-red-500 hover:text-red-700" onClick={() => handleDelete(row.ID)}>
-                        <FaTrashAlt className="text-md" />
-                    </button>
-                </div>
+                <TableActions onDelete={handleDelete} onEdit={handleEdit} onView={handleView} id={row.ID} />
             ),
             width: "150px",
         },
-    ];
+    ], [handleDelete, handleEdit, handleView]);
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
-
-    const [isModalEditOpen, setIsModalEditOpen] = useState(false);
-    const openModalEdit = () => setIsModalEditOpen(true);
-    const closeModalEdit = () => setIsModalEditOpen(false);
+    // Filtered customers based on search
+    const filteredCustomers = React.useMemo(() => {
+        const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
+        return customers.filter((customer) => (
+            (customer.Name?.toLowerCase().includes(lowerCaseSearchTerm)) ||
+            (customer.Email?.toLowerCase().includes(lowerCaseSearchTerm)) ||
+            (customer.Contact?.includes(lowerCaseSearchTerm)) ||
+            (customer.Country?.toLowerCase().includes(lowerCaseSearchTerm))
+        ));
+    }, [customers, searchTerm]);
 
     return (
         <div className="bg-white rounded-lg">
             <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
+                <div className="flex flex-row justify-between items-center mb-4 space-x-2">
+                    <div className="flex justify-center items-center">
+                        <SearchBar onSearch={handleSearch} />
+                    </div>
+
+                    <div className="flex flex-row space-x-2">
+                        <button
+                            onClick={() => setIsModalOpen(true)}
+                            className="px-4 py-2 ButtonBlue text-white rounded-md"
+                        >
+                            Add Customer
+                        </button>
+                        <button
+                            onClick={handleExport}
+                            className="px-4 py-2 bg-green-500 text-white rounded-md"
+                        >
+                            Export
+                        </button>
+                    </div>
+                </div>
                 <CustomTable
                     columns={columns}
                     data={filteredCustomers}
-                    onExport={handleExport}
-                    showAddCustomerModal={openModal}
-                    showEditCustomerModal={openModalEdit}
-                    addButtonText="Add Customer"
-                    searchTerm={searchTerm}
-                    onSearchChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <CustomModelAdmin isOpen={isModalOpen} closeModal={closeModal} title="Add Customer">
-                    <Modal />
-                </CustomModelAdmin>
-
-                <CustomModelAdmin isOpen={isModalEditOpen} closeModal={closeModalEdit} title="Edit Customer">
-                    <ModalTwo customer={editingCustomer} onSaveEdit={handleSaveEdit} closeModal={closeModalEdit} />
-                </CustomModelAdmin>
             </div>
+
+            {/* Modal for adding a new customer */}
+            <CustomModelAdmin
+                isOpen={isModalOpen}
+                closeModal={() => setIsModalOpen(false)}
+                title=""
+            >
+                <ModalNew
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    onSubmit={handleCreate}
+                />
+            </CustomModelAdmin>
+
+            {/* Modal for editing a customer */}
+            <CustomModelAdmin
+                isOpen={isModalEditOpen}
+                closeModal={() => setIsModalEditOpen(false)}
+                title=""
+            >
+                <ModalEdit
+                    isOpen={isModalEditOpen}
+                    onClose={() => setIsModalEditOpen(false)}
+                    customerData={currentCustomer}
+                    onSubmit={handleUpdate}
+                />
+            </CustomModelAdmin>
+
+            {/* Modal for viewing a customer */}
+            <CustomModelAdmin
+                isOpen={isModalViewOpen}
+                closeModal={() => setIsModalViewOpen(false)}
+                title=""
+            >
+                <ModalView
+                    isOpen={isModalViewOpen}
+                    onClose={() => setIsModalViewOpen(false)}
+                    customerData={currentCustomer}
+                />
+            </CustomModelAdmin>
         </div>
     );
 };
