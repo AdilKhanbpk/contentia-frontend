@@ -44,7 +44,7 @@ const OrdersProfile: React.FC = () => {
   }, [token]);
 
   const onSubmitProfileInvoice = async (data: any) => {
-    console.log("Clicked");
+    console.log("data", data);
     if (token) {
       await dispatch(updateProfile({ data, token }));
       // Fetch profile data again after updating
