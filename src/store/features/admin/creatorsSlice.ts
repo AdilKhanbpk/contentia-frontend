@@ -2,16 +2,16 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { axiosInstance } from '@/store/axiosInstance';
 import { AxiosError } from 'axios';
 
-type Customer = { [key: string]: any }; // Define this according to your customer object structure
+type Creator = { [key: string]: any }; // Define this according to your customer object structure
 
-export interface AdminCustomersState {
-  data: Customer[];
+export interface AdminCreatorsState {
+  data: Creator[];
   loading: boolean;
   error: string | null;
-  selectedCustomer: Customer | null;
+  selectedCustomer: Creator | null;
 }
 
-const initialState: AdminCustomersState = {
+const initialState: AdminCreatorsState = {
   data: [],
   loading: false,
   error: null,
@@ -19,11 +19,11 @@ const initialState: AdminCustomersState = {
 };
 
 // Fetch all customers
-export const fetchAdminCustomers = createAsyncThunk(
-  'adminCustomers/fetchAdminCustomers',
+export const fetchAdminCreators = createAsyncThunk(
+  'adminCreators/fetchAdminCreators',
   async (token: string) => {
     try {
-      const response = await axiosInstance.get('/admin/customers', {
+      const response = await axiosInstance.get('/admin/creators', {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -66,8 +66,8 @@ export const fetchAdminCustomers = createAsyncThunk(
 
 
 // Fetch a single customer by ID
-export const fetchAdminCustomerById = createAsyncThunk(
-  'adminCustomers/fetchAdminCustomerById',
+export const fetchAdminCreatorById = createAsyncThunk(
+  'adminCreators/fetchAdminCreatorById',
   async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(`/admin/customers/${id}`, {
@@ -80,10 +80,10 @@ export const fetchAdminCustomerById = createAsyncThunk(
   }
 );
 
-export const createAdminCustomer = createAsyncThunk(
-  'adminCustomers/createAdminCustomer',
+export const createAdminCreator = createAsyncThunk(
+  'adminCreators/createAdminCreator',
   async (
-    { data, token }: { data: AdminCustomersState; token: string },
+    { data, token }: { data: AdminCreatorsState; token: string },
     { rejectWithValue }
   ) => {
     try {
@@ -128,13 +128,13 @@ export const createAdminCustomer = createAsyncThunk(
 
 
 // Update an existing customer with enhanced debugging and timeout
-export const updateAdminCustomer = createAsyncThunk(
-  'adminCustomers/updateAdminCustomer',
+export const updateAdminCreator = createAsyncThunk(
+  'adminCreators/updateAdminCreator',
   async (
     { customerId, data, token }: { customerId: string; data: any; token: string },
     { rejectWithValue }
   ) => {
-    console.group("updateAdminCustomer Thunk Debugging");
+    console.group("updateAdminCreator Thunk Debugging");
 
     console.log("Starting customer update process");
     console.log("Customer ID to update:", customerId);
@@ -188,8 +188,8 @@ export const updateAdminCustomer = createAsyncThunk(
 
 
 // Delete a customer by ID
-export const deleteAdminCustomer = createAsyncThunk(
-  'adminCustomers/deleteAdminCustomer',
+export const deleteAdminCreator = createAsyncThunk(
+  'adminCreators/deleteAdminCreator',
   async ({ customerId, token }: { customerId: string; token: string }, { rejectWithValue }) => {
     console.log("Attempting to delete customer:", customerId);
     console.log("Token provided:", token);
@@ -213,57 +213,57 @@ export const deleteAdminCustomer = createAsyncThunk(
 );
 
 
-const adminCustomersSlice = createSlice({
-  name: 'adminCustomers',
+const adminCreatorsSlice = createSlice({
+  name: 'adminCreators',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
       // Fetch all customers
-      .addCase(fetchAdminCustomers.pending, (state) => {
+      .addCase(fetchAdminCreators.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAdminCustomers.fulfilled, (state, action: PayloadAction<Customer[]>) => {
+      .addCase(fetchAdminCreators.fulfilled, (state, action: PayloadAction<Creator[]>) => {
         state.loading = false;
         state.data = action.payload;
       })
-      .addCase(fetchAdminCustomers.rejected, (state, action) => {
+      .addCase(fetchAdminCreators.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch admin customers';
       })
       // Fetch customer by ID
-      .addCase(fetchAdminCustomerById.pending, (state) => {
+      .addCase(fetchAdminCreatorById.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAdminCustomerById.fulfilled, (state, action: PayloadAction<Customer>) => {
+      .addCase(fetchAdminCreatorById.fulfilled, (state, action: PayloadAction<Creator>) => {
         state.loading = false;
         state.selectedCustomer = action.payload;
       })
-      .addCase(fetchAdminCustomerById.rejected, (state, action) => {
+      .addCase(fetchAdminCreatorById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
       // Create new customer
-      .addCase(createAdminCustomer.pending, (state) => {
+      .addCase(createAdminCreator.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(createAdminCustomer.fulfilled, (state, action: PayloadAction<Customer>) => {
+      .addCase(createAdminCreator.fulfilled, (state, action: PayloadAction<Creator>) => {
         state.loading = false;
         state.data.push(action.payload); // Add the new customer to the list
       })
-      .addCase(createAdminCustomer.rejected, (state, action) => {
+      .addCase(createAdminCreator.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
       // Update customer
-      .addCase(updateAdminCustomer.pending, (state) => {
+      .addCase(updateAdminCreator.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateAdminCustomer.fulfilled, (state, action: PayloadAction<Customer>) => {
+      .addCase(updateAdminCreator.fulfilled, (state, action: PayloadAction<Creator>) => {
         state.loading = false;
         const updatedCustomer = action.payload;
         const updatedData = state.data.map((customer) =>
@@ -271,24 +271,24 @@ const adminCustomersSlice = createSlice({
         );
         state.data = updatedData; // Create a new reference to trigger re-render
       })
-      .addCase(updateAdminCustomer.rejected, (state, action) => {
+      .addCase(updateAdminCreator.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
       // Delete customer
-      .addCase(deleteAdminCustomer.pending, (state) => {
+      .addCase(deleteAdminCreator.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteAdminCustomer.fulfilled, (state, action: PayloadAction<string>) => {
+      .addCase(deleteAdminCreator.fulfilled, (state, action: PayloadAction<string>) => {
         state.loading = false;
         state.data = state.data.filter((customer) => customer.id !== action.payload);
       })
-      .addCase(deleteAdminCustomer.rejected, (state, action) => {
+      .addCase(deleteAdminCreator.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
   },
 });
 
-export default adminCustomersSlice.reducer;
+export default adminCreatorsSlice.reducer;
