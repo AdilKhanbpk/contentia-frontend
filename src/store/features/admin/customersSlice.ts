@@ -22,48 +22,34 @@ const initialState: AdminCustomersState = {
 export const fetchAdminCustomers = createAsyncThunk(
   'adminCustomers/fetchAdminCustomers',
   async (token: string) => {
-    // console.log('Fetching admin customers...');
-    // console.log('Token:', token); // Log the token used for the request
-
     try {
-      // console.log('Making API request to /admin/customers'); // Log before API request
-
       const response = await axiosInstance.get('/admin/customers', {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      // console.log('API response received:', response); // Log the full response object
-
       if (response.data && response.data.data) {
-        // console.log('Fetched customers data:', response.data.data); // Log the actual data received
-
         const customers = response.data.data.map((customer: any) => ({
-          ID: customer._id, // Assuming "_id" is the customer ID
-          Name: customer.fullName || 'N/A',  // Replace with 'N/A' if fullName is missing or undefined
-          Email: customer.email || 'N/A',  // Replace with 'N/A' if email is missing or undefined
-          Contact: customer.phoneNumber || 'N/A',  // Replace with 'N/A' if phoneNumber is missing or undefined
-          Age: customer.age || 'N/A',  // Replace with 'N/A' if age is missing or undefined
-          Country: customer.country || 'N/A',  // Replace with 'N/A' if country is missing or undefined
-          Status: customer.status || 'N/A',  // Replace with 'N/A' if status is missing or undefined
-          InvoiceType: customer.invoiceType || 'N/A',  // Replace with 'N/A' if invoiceType is missing or undefined
-          CustomerStatus: customer.customerStatus || 'N/A',  // Replace with 'N/A' if customerStatus is missing or undefined
-          BillingInformation: {
-            // Ensure invoiceStatus is a boolean or null (not 'N/A')
-            InvoiceStatus: customer.billingInformation?.invoiceStatus === 'N/A' 
-              ? false // Default to false if 'N/A' is found
-              : customer.billingInformation?.invoiceStatus ?? false, // Fallback to false if undefined or null
-            TrId: customer.billingInformation?.trId || 'N/A',  // Replace with 'N/A' if trId is missing or undefined
-            Address: customer.billingInformation?.address || 'N/A',  // Replace with 'N/A' if address is missing or undefined
-            FullName: customer.billingInformation?.fullName || 'N/A',  // Replace with 'N/A' if fullName is missing or undefined
-            CompanyName: customer.billingInformation?.companyName || 'N/A',  // Replace with 'N/A' if companyName is missing or undefined
-            TaxNumber: customer.billingInformation?.taxNumber || 'N/A',  // Replace with 'N/A' if taxNumber is missing or undefined
-            TaxOffice: customer.billingInformation?.taxOffice || 'N/A'  // Replace with 'N/A' if taxOffice is missing or undefined
+          id: customer._id ?? null,  // Set to null if _id is missing or undefined
+          fullName: customer.fullName ?? '',  // Default to an empty string if fullName is missing or undefined
+          email: customer.email ?? '',  // Default to an empty string if email is missing or undefined
+          contact: customer.phoneNumber ?? '',  // Default to an empty string if phoneNumber is missing or undefined
+          age: customer.age ?? null,  // Set to null if age is missing or undefined
+          country: customer.country ?? '',  // Default to an empty string if country is missing or undefined
+          status: customer.status ?? '',  // Default to an empty string if status is missing or undefined
+          invoiceType: customer.invoiceType ?? '',  // Default to an empty string if invoiceType is missing or undefined
+          customerStatus: customer.customerStatus ?? '',  // Default to an empty string if customerStatus is missing or undefined
+          billingInformation: {
+            invoiceStatus: customer.billingInformation?.invoiceStatus ?? false,  // Default to false if invoiceStatus is missing or undefined
+            trId: customer.billingInformation?.trId ?? '',  // Default to an empty string if trId is missing or undefined
+            address: customer.billingInformation?.address ?? '',  // Default to an empty string if address is missing or undefined
+            fullName: customer.billingInformation?.fullName ?? '',  // Default to an empty string if fullName is missing or undefined
+            companyName: customer.billingInformation?.companyName ?? '',  // Default to an empty string if companyName is missing or undefined
+            taxNumber: customer.billingInformation?.taxNumber ?? '',  // Default to an empty string if taxNumber is missing or undefined
+            taxOffice: customer.billingInformation?.taxOffice ?? ''  // Default to an empty string if taxOffice is missing or undefined
           },
-          RememberMe: customer.rememberMe ?? 'N/A',  // Replace with 'N/A' if rememberMe is missing or undefined
-          TermsAndConditionsApproved: customer.termsAndConditionsApproved ?? 'N/A'  // Replace with 'N/A' if termsAndConditionsApproved is missing or undefined
+          rememberMe: customer.rememberMe ?? false,  // Default to false if rememberMe is missing or undefined
+          termsAndConditionsApproved: customer.termsAndConditionsApproved ?? false  // Default to false if termsAndConditionsApproved is missing or undefined
         }));
-
-        console.log(customers);
 
         return customers;
       } else {
@@ -82,9 +68,9 @@ export const fetchAdminCustomers = createAsyncThunk(
 // Fetch a single customer by ID
 export const fetchAdminCustomerById = createAsyncThunk(
   'adminCustomers/fetchAdminCustomerById',
-  async ({ ID, token }: { ID: string; token: string }, { rejectWithValue }) => {
+  async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/admin/customers/${ID}`, {
+      const response = await axiosInstance.get(`/admin/customers/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
@@ -97,21 +83,45 @@ export const fetchAdminCustomerById = createAsyncThunk(
 export const createAdminCustomer = createAsyncThunk(
   'adminCustomers/createAdminCustomer',
   async (
-    { data, token }: { data: any; token: string },
+    { data, token }: { data: AdminCustomersState; token: string },
     { rejectWithValue }
   ) => {
-    console.log("Thunks received data:", data);
-    console.log("Thunks received token:", token);
-
     try {
-      const response = await axiosInstance.post('/admin/customers', data, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      console.log("API Response:", response.data);
+      // Validate token
+      if (!token) {
+        return rejectWithValue('Authentication token is missing');
+      }
+
+      // Log request details
+      console.log('Creating customer with data:', data);
+
+      const response = await axiosInstance.post(
+        '/admin/customers',
+        data,
+        {
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+        }
+      );
+
       return response.data;
     } catch (error) {
-      console.error("Error during customer creation:", error);
-      return rejectWithValue('Failed to create admin customer');
+      const axiosError = error as AxiosError;
+      
+      // Log detailed error information
+      console.error('Customer creation failed:', {
+        status: axiosError.response?.status,
+        statusText: axiosError.response?.statusText,
+        data: axiosError.response?.data,
+        headers: axiosError.response?.headers,
+      });
+
+      return rejectWithValue(
+        axiosError.response?.data || 
+        'Failed to create admin customer. Please check server logs for details.'
+      );
     }
   }
 );
@@ -154,7 +164,7 @@ export const updateAdminCustomer = createAsyncThunk(
       if ((error as AxiosError).isAxiosError) {
         const axiosError = error as AxiosError;
         console.error("Axios error during update. Server response:", axiosError.response);
-        
+
         if (axiosError.response) {
           console.log("Server response status:", axiosError.response.status);
           console.log("Server response data:", axiosError.response.data);
@@ -162,7 +172,7 @@ export const updateAdminCustomer = createAsyncThunk(
         } else if (axiosError.request) {
           console.error("Request was made but no response was received:", axiosError.request);
         }
-        
+
         return rejectWithValue(`Update failed: ${axiosError.message}`);
       } else {
         console.error("Non-Axios error during update:", error);
@@ -256,10 +266,10 @@ const adminCustomersSlice = createSlice({
       .addCase(updateAdminCustomer.fulfilled, (state, action: PayloadAction<Customer>) => {
         state.loading = false;
         const updatedCustomer = action.payload;
-        const index = state.data.findIndex((customer) => customer._id === updatedCustomer._id);
-        if (index !== -1) {
-          state.data[index] = updatedCustomer;
-        }
+        const updatedData = state.data.map((customer) =>
+          customer.id === updatedCustomer.id ? updatedCustomer : customer
+        );
+        state.data = updatedData; // Create a new reference to trigger re-render
       })
       .addCase(updateAdminCustomer.rejected, (state, action) => {
         state.loading = false;
@@ -272,7 +282,7 @@ const adminCustomersSlice = createSlice({
       })
       .addCase(deleteAdminCustomer.fulfilled, (state, action: PayloadAction<string>) => {
         state.loading = false;
-        state.data = state.data.filter((customer) => customer.ID !== action.payload);
+        state.data = state.data.filter((customer) => customer.id !== action.payload);
       })
       .addCase(deleteAdminCustomer.rejected, (state, action) => {
         state.loading = false;

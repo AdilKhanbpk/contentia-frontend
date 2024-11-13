@@ -85,36 +85,54 @@ const Customers: React.FC = () => {
 
     // Handler for viewing a customer
     const handleView = (id: string) => {
-        const customer = customers.find((customer) => customer.ID === id);
+        const customer = customers.find((customer) => customer.id === id);
         setCurrentCustomer(customer);
         setIsModalViewOpen(true);
     };
 
-    const handleCreate = (customerData: any) => {
+    const handleCreate = async (customerData: any) => {
         const tokenFromStorage = localStorage.getItem('accessToken');
-
-        // Log the token to debug if it's missing
-        console.log("Token from localStorage:", tokenFromStorage);
-
-        if (!tokenFromStorage) {
-            console.warn("Authorization token is missing.");
+      
+        try {
+          // Validate token
+          if (!tokenFromStorage) {
+            console.error('Authorization token is missing');
+            // Handle missing token (e.g., redirect to login)
             return;
-        }
-
-        // Log the customerData for debugging
-        console.log("Customer Data to be sent:", customerData);
-
-        // Dispatching the create action with the correct payload shape
-        dispatch(createAdminCustomer({ data: customerData, token: tokenFromStorage }))
-            .unwrap()
-            .then(() => {
-                console.log("Customer created successfully");
-                setIsModalOpen(false);
+          }
+      
+          // Validate customer data
+          if (!customerData || Object.keys(customerData).length === 0) {
+            console.error('Customer data is empty');
+            return;
+          }
+      
+          // Log the request attempt
+          console.log('Attempting to create customer:', {
+            ...customerData,
+            token: tokenFromStorage ? '${token.substring(0, 10)}...' : 'missing'
+          });
+      
+          const result = await dispatch(
+            createAdminCustomer({ 
+              data: customerData, 
+              token: tokenFromStorage 
             })
-            .catch((error: any) => {
-                console.error("Create failed:", error);
-            });
-    };
+          ).unwrap();
+      
+          console.log('Customer created successfully:', result);
+          setIsModalOpen(false);
+          
+          // Optionally refresh the customer list or show success message
+          // dispatch(fetchCustomers());
+          await dispatch(fetchAdminCustomers(tokenFromStorage));
+          
+        } catch (error) {
+          console.error('Customer creation failed:', error);
+          // Handle error (e.g., show error message to user)
+        }
+        
+      };
 
     const handleUpdate = async (customerData: any) => {
         console.log('Function `handleUpdate` called with customerData: ', customerData);
@@ -123,31 +141,33 @@ const Customers: React.FC = () => {
         console.log('Retrieved token from storage: ', token);
 
         if (token) {
-            const customerId = customerData.ID;
+            const customerId = customerData.id;
             const dataToUpdate = {
-                fullName: customerData.Name,
-                email: customerData.Email,
-                phoneNumber: customerData.Contact,
-                age: customerData.Age,
-                country: customerData.Country,
-                customerStatus: customerData.CustomerStatus,
-                invoiceType: customerData.InvoiceType,
+                fullName: customerData.fullName ?? '',  // Default to empty string if fullName is missing or undefined
+                email: customerData.email ?? '',  // Default to empty string if email is missing or undefined
+                phoneNumber: customerData.contact ?? '',  // Default to empty string if contact is missing or undefined
+                age: customerData.age ?? null,  // Default to null if age is missing or undefined
+                country: customerData.country ?? '',  // Default to empty string if country is missing or undefined
+                customerStatus: customerData.customerStatus ?? '',  // Default to empty string if customerStatus is missing or undefined
+                invoiceType: customerData.invoiceType ?? '',  // Default to empty string if invoiceType is missing or undefined
                 billingInformation: {
-                    invoiceStatus: customerData.BillingInformation.InvoiceStatus,
-                    trId: customerData.BillingInformation.TrId,
-                    address: customerData.BillingInformation.Address,
-                    fullName: customerData.BillingInformation.FullName,
-                    companyName: customerData.BillingInformation.CompanyName,
-                    taxNumber: customerData.BillingInformation.TaxNumber,
-                    taxOffice: customerData.BillingInformation.TaxOffice,
+                    invoiceStatus: customerData.billingInformation?.invoiceStatus ?? false,  // Default to false if invoiceStatus is missing or undefined
+                    trId: customerData.billingInformation?.trId ?? '',  // Default to empty string if trId is missing or undefined
+                    address: customerData.billingInformation?.address ?? '',  // Default to empty string if address is missing or undefined
+                    fullName: customerData.billingInformation?.fullName ?? '',  // Default to empty string if fullName is missing or undefined
+                    companyName: customerData.billingInformation?.companyName ?? '',  // Default to empty string if companyName is missing or undefined
+                    taxNumber: customerData.billingInformation?.taxNumber ?? '',  // Default to empty string if taxNumber is missing or undefined
+                    taxOffice: customerData.billingInformation?.taxOffice ?? '',  // Default to empty string if taxOffice is missing or undefined
                 },
-                rememberMe: customerData.RememberMe,
-                termsAndConditionsApproved: customerData.TermsAndConditionsApproved,
+                rememberMe: customerData.rememberMe ?? false,  // Default to false if rememberMe is missing or undefined
+                termsAndConditionsApproved: customerData.termsAndConditionsApproved ?? false  // Default to false if termsAndConditionsApproved is missing or undefined
             };
 
             // Dispatch the update action
             dispatch(updateAdminCustomer({ customerId, data: dataToUpdate, token }));
             console.log('Data to be sent for update: ', dataToUpdate);
+            await dispatch(fetchAdminCustomers(token));
+
         } else {
             console.error('Authorization token is missing!');
         }
@@ -155,7 +175,7 @@ const Customers: React.FC = () => {
 
     // Handler for editing a customer
     const handleEdit = (id: string) => {
-        const customer = customers.find((customer) => customer.ID === id);
+        const customer = customers.find((customer) => customer.id === id);
         setCurrentCustomer(customer);
         setIsModalEditOpen(true);
     };
@@ -193,7 +213,7 @@ const Customers: React.FC = () => {
     const columns = React.useMemo(() => [
         {
             name: "#",
-            selector: (row: any) => row.ID,
+            selector: (row: any) => row.id,
             sortable: true,
             width: "80px",
         },
@@ -203,9 +223,9 @@ const Customers: React.FC = () => {
                 <div className="flex items-center space-x-2">
                     <Image width={10} height={10} src="/icons/avatar.png" alt="avatar" className="w-10 h-10 rounded-full" />
                     <div>
-                        <p className="font-semibold">{row.Name}</p>
+                        <p className="font-semibold">{row.fullName}</p>
                         <p className="text-sm whitespace-nowrap text-gray-500">
-                            {row.Email.length > 12 ? `${row.Email.substring(0, 20)}...` : row.Email}
+                            {row.email.length > 12 ? `${row.email.substring(0, 20)}...` : row.email}
                         </p>
                     </div>
                 </div>
@@ -216,32 +236,33 @@ const Customers: React.FC = () => {
         },
         {
             name: "Contact",
-            selector: (row: any) => row.Contact,
+            selector: (row: any) => row.contact,
             sortable: true,
         },
         {
             name: "Age",
-            selector: (row: any) => row.Age,
+            selector: (row: any) => row.age,
             sortable: true,
             width: "100px",
         },
         {
             name: "Country",
-            selector: (row: any) => row.Country,
+            selector: (row: any) => row.country,
             sortable: true,
         },
         {
             name: "Status",
             cell: (row: any) => (
                 <span
-                    className={`px-3 py-1 rounded-full text-sm font-semibold ${row.status === "Verified"
-                        ? "text-green-700 bg-green-100"
-                        : row.status === "Pending"
-                            ? "text-yellow-700 bg-yellow-100"
-                            : "text-red-700 bg-red-100"
-                        }`}
+                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                        row.customerStatus === "approved"
+                            ? "text-green-700 bg-green-100"
+                            : row.customerStatus === "waiting"
+                                ? "text-yellow-700 bg-yellow-100"
+                                : "text-red-700 bg-red-100"
+                    }`}
                 >
-                    {row.Status}
+                    {row.customerStatus}
                 </span>
             ),
             sortable: true,
@@ -250,7 +271,7 @@ const Customers: React.FC = () => {
         {
             name: "Actions",
             cell: (row: any) => (
-                <TableActions onDelete={handleDelete} onEdit={handleEdit} onView={handleView} id={row.ID} />
+                <TableActions onDelete={handleDelete} onEdit={handleEdit} onView={handleView} id={row.id} />
             ),
             width: "150px",
         },
@@ -260,10 +281,10 @@ const Customers: React.FC = () => {
     const filteredCustomers = React.useMemo(() => {
         const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
         return customers.filter((customer) => (
-            (customer.Name?.toLowerCase().includes(lowerCaseSearchTerm)) ||
-            (customer.Email?.toLowerCase().includes(lowerCaseSearchTerm)) ||
-            (customer.Contact?.includes(lowerCaseSearchTerm)) ||
-            (customer.Country?.toLowerCase().includes(lowerCaseSearchTerm))
+            (customer.fullName?.toLowerCase().includes(lowerCaseSearchTerm)) ||
+            (customer.email?.toLowerCase().includes(lowerCaseSearchTerm)) ||
+            (customer.contact?.includes(lowerCaseSearchTerm)) ||
+            (customer.country?.toLowerCase().includes(lowerCaseSearchTerm))
         ));
     }, [customers, searchTerm]);
 
@@ -286,7 +307,7 @@ const Customers: React.FC = () => {
                             onClick={handleExport}
                             className="px-4 py-2 bg-green-500 text-white rounded-md"
                         >
-                            Export
+                            Export CSV
                         </button>
                     </div>
                 </div>

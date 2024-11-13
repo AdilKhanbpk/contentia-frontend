@@ -4,6 +4,7 @@ import signupReducer from './features/auth/signupSlice'; // Import signup reduce
 import loginReducer from './features/auth/loginSlice'; // Assuming this is the path to your slice
 import profileReducer from './features/profile/profileSlice';
 import adminCustomersReducer from './features/admin/customersSlice'
+import adminCreatorsReducer from './features/admin/creatorsSlice'
 
 
 const store = configureStore({
@@ -13,6 +14,7 @@ const store = configureStore({
     login: loginReducer,
     profile: profileReducer,
     adminCustomers: adminCustomersReducer,
+    adminCreators: adminCreatorsReducer,
   },
 });
 

@@ -10,22 +10,77 @@ import FourthTab from './FourthTab';
 
 interface Creator {
     id: number;
-    name: string;
+    fullName: string;
+    creatorType: "individual" | "company";
+    password: string;
+    tckn: string;
     email: string;
-    contact: string;
-    totalOrders: number;
-    country: string;
-    status: "Verified" | "Pending" | "Rejected";
+    dateOfBirth: string; // Format: "YYYY-MM-DD"
+    gender: "male" | "female" | "other";
+    phoneNumber: string;
+    isVerified: boolean;
+    addressOne: string;
+    addressTwo?: string;
+    accountType: "individual" | "institutional";
+    invoiceType: "individual" | "institutional";
+    paymentInformation: {
+        ibanNumber?: string;
+        address: string;
+        fullName: string;
+        trId?: string;
+        companyName?: string;
+        taxNumber?: string;
+        taxOffice?: string;
+    };
+    billingInformation: {
+        invoiceStatus: boolean;
+        address: string;
+        fullName: string;
+        trId?: string;
+        companyName?: string;
+        taxNumber?: string;
+        taxOffice?: string;
+    };
+    preferences: {
+        contentInformation: {
+            contentType: "product" | "service" | "other";
+            contentFormats: string[]; // Example: ["video", "image"]
+            areaOfInterest: string[]; // Example: ["tech", "gadgets"]
+            addressDetails: {
+                country: string;
+                state: string;
+                district: string;
+                neighbourhood?: string;
+                fullAddress: string;
+            };
+        };
+        socialInformation: {
+            contentType: "product" | "service" | "other";
+            platforms: {
+                Instagram?: {
+                    followers: number;
+                    username: string;
+                };
+                TikTok?: {
+                    followers: number;
+                    username: string;
+                };
+                Youtube?: {
+                    followers: number;
+                    username: string;
+                };
+            };
+            portfolioLink?: string;
+        };
+    };
+    userAgreement: boolean;
+    approvedCommercial: boolean;
 }
 
+
 interface EditCreatorFormProps {
-    editingCreator: Creator | null;
-    onSubmit: SubmitHandler<Creator>;
-    setShowEditForm: React.Dispatch<React.SetStateAction<boolean>>;
-    reset: (values?: Creator) => void;
-    errors: any;
-    register: any;
-    handleSubmit: any;
+    customerData: Creator | null;
+    onSubmit: (data: Creator) => void;
 }
 
 // memoization
@@ -35,16 +90,9 @@ const MemoizedThirdTab = React.memo(ThirdTab);
 const MemoizedFourthTab = React.memo(FourthTab);
 
 const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
-    editingCreator,
-    onSubmit,
-    setShowEditForm,
-    reset,
-    errors,
-    register,
-    handleSubmit,
+    customerData, onSubmit
 }) => {
-    if (!editingCreator) return null;
-
+    console.log("data sent to editCreatorForm : ", customerData);
     const [activeSection, setActiveSection] = useState('personal-info');
 
     const handleLinkClick = (section: string) => {

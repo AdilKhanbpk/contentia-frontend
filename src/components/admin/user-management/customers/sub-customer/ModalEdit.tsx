@@ -4,31 +4,32 @@ import Image from 'next/image';
 import { useForm, SubmitHandler } from "react-hook-form";
 
 export interface Customer {
-    ID: number;
-    FullName: string;
-    Email: string;
-    Contact: string;
-    Age: number;
-    Country: string;
-    Status: "Verified" | "Pending" | "Rejected";
-    InvoiceType: string;  // Capitalized
-    TcNumber?: string;  // Capitalized
-    CompanyTitle?: string;  // Capitalized
-    TaxNumber?: string;  // Capitalized
-    TaxOffice?: string;  // Capitalized
-    Address?: string;  // Capitalized
-    BillingInformation?: {  // Capitalized
-        InvoiceStatus: boolean;  // Capitalized
-        TrId: string;  // Capitalized
-        Address: string;  // Capitalized
-        FullName: string;  // Capitalized
-        CompanyName: string;  // Capitalized
-        TaxNumber: string;  // Capitalized
-        TaxOffice: string;  // Capitalized
+    id: number;
+    fullName: string;
+    email: string;
+    contact: string;
+    age: number;
+    country: string;
+    status: "Verified" | "Pending" | "Rejected";
+    invoiceType: string;  // Capitalized to camelCase
+    tcNumber?: string;  // Capitalized to camelCase
+    companyTitle?: string;  // Capitalized to camelCase
+    taxNumber?: string;  // Capitalized to camelCase
+    taxOffice?: string;  // Capitalized to camelCase
+    address?: string;  // Capitalized to camelCase
+    billingInformation?: {  // Capitalized to camelCase
+        invoiceStatus: boolean;  // Capitalized to camelCase
+        trId: string;  // Capitalized to camelCase
+        address: string;  // Capitalized to camelCase
+        fullName: string;  // Capitalized to camelCase
+        companyName: string;  // Capitalized to camelCase
+        taxNumber: string;  // Capitalized to camelCase
+        taxOffice: string;  // Capitalized to camelCase
     };
-    RememberMe?: boolean;  // Capitalized
-    TermsAndConditionsApproved?: boolean;  // Capitalized
+    rememberMe?: boolean;  // Capitalized to camelCase
+    termsAndConditionsApproved?: boolean;  // Capitalized to camelCase
 }
+
 
 
 interface ModalEditProps {
@@ -39,7 +40,7 @@ interface ModalEditProps {
 }
 
 const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, customerData, onSubmit }) => {
-    const [invoiceType, setInvoiceType] = useState(customerData?.InvoiceType || 'individual');
+    const [invoiceType, setInvoiceType] = useState(customerData?.invoiceType || 'individual');
 
     const {
         register,
@@ -52,7 +53,7 @@ const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, customerData, on
     useEffect(() => {
         if (customerData) {
             reset(customerData);
-            setInvoiceType(customerData.InvoiceType);
+            setInvoiceType(customerData.invoiceType);
         }
     }, [customerData, reset]);
 
@@ -74,8 +75,8 @@ const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, customerData, on
                                             <input
                                                 type="text"
                                                 placeholder="Enter Name"
-                                                {...register('FullName', { required: false })}
-                                                defaultValue={customerData?.FullName || 'N/A'}
+                                                {...register('fullName', { required: false })}
+                                                defaultValue={customerData?.fullName }
                                                 className="font-medium border px-1 py-1 rounded-md focus:outline-none"
                                             />
                                         </div>
@@ -84,8 +85,8 @@ const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, customerData, on
                                             <input
                                                 type="email"
                                                 placeholder="Enter your email address"
-                                                {...register('Email', { required: false })}
-                                                defaultValue={customerData?.Email || 'N/A'}
+                                                {...register('email', { required: false })}
+                                                defaultValue={customerData?.email}
                                                 className="font-medium border px-1 py-1 rounded-md focus:outline-none"
                                             />
                                         </div>
@@ -96,8 +97,8 @@ const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, customerData, on
                                             <input
                                                 type="text"
                                                 placeholder="Enter your phone number"
-                                                {...register('Contact', { required: false })}
-                                                defaultValue={customerData?.Contact || 'N/A'}
+                                                {...register('contact', { required: false })}
+                                                defaultValue={customerData?.contact }
                                                 className="font-medium border px-1 py-1 rounded-md focus:outline-none"
                                             />
                                         </div>
@@ -106,8 +107,8 @@ const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, customerData, on
                                             <input
                                                 type="text"
                                                 placeholder="Enter your age"
-                                                {...register('Age', { required: false })}
-                                                defaultValue={customerData?.Age || 'N/A'}
+                                                {...register('age', { required: false })}
+                                                defaultValue={customerData?.age }
                                                 className="font-medium border px-1 py-1 rounded-md focus:outline-none"
                                             />
                                         </div>
@@ -118,23 +119,19 @@ const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, customerData, on
                                 <div className="mb-4 p-4 sm:mb-6 sm:p-6 lg:mb-6 lg:px-4 lg:py-2 flex flex-col lg:flex-row lg:space-x-16 border-2 border-gray-200">
                                     <h2 className="text-lg font-semibold mb-4 whitespace-normal lg:whitespace-nowrap">Invoice Information</h2>
                                     <div className="w-full grid grid-cols-1  gap-4">
+                                        <input
+                                            type="radio"
+                                            value="true"
+                                            defaultChecked={true}
+                                            {...register('billingInformation.invoiceStatus', { required: false })}
+                                            style={{ display: 'none' }} // Hides the radio button
+                                        />
+
                                         <div>
                                             <label className="block mb-2">Invoice Type:</label>
                                             <select
-                                                {...register('BillingInformation.InvoiceStatus', { required: false })}
-                                                defaultValue={customerData?.InvoiceType || 'N/A'}
-                                                onChange={(e) => setInvoiceType(e.target.value)}
-                                                className=" font-medium px-1 py-0.5 border rounded-md focus:outline-none"
-                                            >
-                                                <option value="false">false</option>
-                                                <option value="true">true</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label className="block mb-2">Invoice Type:</label>
-                                            <select
-                                                {...register('InvoiceType', { required: false })}
-                                                defaultValue={customerData?.InvoiceType || 'N/A'}
+                                                {...register('invoiceType', { required: false })}
+                                                defaultValue={customerData?.invoiceType }
                                                 onChange={(e) => setInvoiceType(e.target.value)}
                                                 className=" font-medium px-1 py-0.5 border rounded-md focus:outline-none"
                                             >
@@ -148,8 +145,8 @@ const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, customerData, on
                                                         <label>Full Name:</label>
                                                         <input
                                                             type="text"
-                                                            {...register('BillingInformation.FullName')}
-                                                            defaultValue={customerData?.BillingInformation?.FullName || 'N/A'}
+                                                            {...register('billingInformation.fullName')}
+                                                            defaultValue={customerData?.billingInformation?.fullName }
                                                             className="font-medium border px-1 py-0.5 rounded-md focus:outline-none"
                                                         />
                                                     </div>
@@ -157,8 +154,8 @@ const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, customerData, on
                                                         <label>TC Number:</label>
                                                         <input
                                                             type="text"
-                                                            {...register('BillingInformation.TaxNumber')}
-                                                            defaultValue={customerData?.BillingInformation?.TaxNumber || 'N/A'}
+                                                            {...register('billingInformation.trId')}
+                                                            defaultValue={customerData?.billingInformation?.trId }
                                                             className="font-medium border px-1 py-0.5 rounded-md focus:outline-none"
                                                         />
                                                     </div>
@@ -166,8 +163,8 @@ const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, customerData, on
                                                         <label>Invoice Address:</label>
                                                         <input
                                                             type="text"
-                                                            {...register('BillingInformation.Address')}
-                                                            defaultValue={customerData?.BillingInformation?.Address || 'N/A'}
+                                                            {...register('billingInformation.address')}
+                                                            defaultValue={customerData?.billingInformation?.address }
                                                             className="font-medium border px-1 py-0.5 rounded-md focus:outline-none"
                                                         />
                                                     </div>
@@ -180,8 +177,8 @@ const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, customerData, on
                                                         <label>Company Title:</label>
                                                         <input
                                                             type="text"
-                                                            {...register('BillingInformation.CompanyName')}
-                                                            defaultValue={customerData?.BillingInformation?.CompanyName || 'N/A'}
+                                                            {...register('billingInformation.companyName')}
+                                                            defaultValue={customerData?.billingInformation?.companyName }
                                                             className="font-medium border px-1 py-0.5 rounded-md focus:outline-none"
                                                         />
                                                     </div>
@@ -189,8 +186,8 @@ const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, customerData, on
                                                         <label>Tax Number / TCKN:</label>
                                                         <input
                                                             type="text"
-                                                            {...register('BillingInformation.TaxNumber')}
-                                                            defaultValue={customerData?.BillingInformation?.TaxNumber || 'N/A'}
+                                                            {...register('billingInformation.taxNumber')}
+                                                            defaultValue={customerData?.billingInformation?.taxNumber }
                                                             className="font-medium border px-1 py-0.5 rounded-md focus:outline-none"
                                                         />
                                                     </div>
@@ -198,8 +195,8 @@ const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, customerData, on
                                                         <label>Tax Office:</label>
                                                         <input
                                                             type="text"
-                                                            {...register('BillingInformation.TaxOffice')}
-                                                            defaultValue={customerData?.BillingInformation?.TaxOffice || 'N/A'}
+                                                            {...register('billingInformation.taxOffice')}
+                                                            defaultValue={customerData?.billingInformation?.taxOffice }
                                                             className="font-medium border px-1 py-0.5 rounded-md focus:outline-none"
                                                         />
                                                     </div>
@@ -207,8 +204,8 @@ const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, customerData, on
                                                         <label>Invoice Address:</label>
                                                         <input
                                                             type="text"
-                                                            {...register('BillingInformation.Address')}
-                                                            defaultValue={customerData?.BillingInformation?.Address || 'N/A'}
+                                                            {...register('billingInformation.address')}
+                                                            defaultValue={customerData?.billingInformation?.address }
                                                             className="font-medium border px-1 py-0.5 rounded-md focus:outline-none"
                                                         />
                                                     </div>

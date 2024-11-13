@@ -1,30 +1,30 @@
 import React from 'react';
 
 export interface Customer {
-    ID: number;
-    Name: string;
-    Email: string;
-    Contact: string;
-    Age: number;
-    Country: string;
-    Status: "Verified" | "Pending" | "Rejected";
-    InvoiceType: string;  // Capitalized
-    TcNumber?: string;  // Capitalized
-    CompanyTitle?: string;  // Capitalized
-    TaxNumber?: string;  // Capitalized
-    TaxOffice?: string;  // Capitalized
-    Address?: string;  // Capitalized
-    BillingInformation?: {  // Capitalized
-        InvoiceStatus: boolean;  // Capitalized
-        TrId: string;  // Capitalized
-        Address: string;  // Capitalized
-        FullName: string;  // Capitalized
-        CompanyName: string;  // Capitalized
-        TaxNumber: string;  // Capitalized
-        TaxOffice: string;  // Capitalized
+    id: number;
+    fullName: string;
+    email: string;
+    contact: string;
+    age: number;
+    country: string;
+    status: "Verified" | "Pending" | "Rejected";
+    invoiceType: string;  // Capitalized to camelCase
+    tcNumber?: string;  // Capitalized to camelCase
+    companyTitle?: string;  // Capitalized to camelCase
+    taxNumber?: string;  // Capitalized to camelCase
+    taxOffice?: string;  // Capitalized to camelCase
+    address?: string;  // Capitalized to camelCase
+    billingInformation?: {  // Capitalized to camelCase
+        invoiceStatus: boolean;  // Capitalized to camelCase
+        trId: string;  // Capitalized to camelCase
+        address: string;  // Capitalized to camelCase
+        fullName: string;  // Capitalized to camelCase
+        companyName: string;  // Capitalized to camelCase
+        taxNumber: string;  // Capitalized to camelCase
+        taxOffice: string;  // Capitalized to camelCase
     };
-    RememberMe?: boolean;  // Capitalized
-    TermsAndConditionsApproved?: boolean;  // Capitalized
+    rememberMe?: boolean;  // Capitalized to camelCase
+    termsAndConditionsApproved?: boolean;  // Capitalized to camelCase
 }
 
 
@@ -49,83 +49,83 @@ const ModalView: React.FC<ModalViewProps> = ({ isOpen, onClose, customerData }) 
             <div className="p-4 flex flex-col md:flex-row items-center">
                 <div className="w-full mt-4 md:mt-0 md:pl-8">
                     <div className="mb-4">
-                        <strong>Name:</strong> {getDefault(customerData.Name)}
+                        <strong>Name:</strong> {getDefault(customerData.fullName)}
                     </div>
                     <div className="mb-4">
-                        <strong>Email:</strong> {getDefault(customerData.Email)}
+                        <strong>Email:</strong> {getDefault(customerData.email)}
                     </div>
                     <div className="mb-4">
-                        <strong>Contact:</strong> {getDefault(customerData.Contact)}
+                        <strong>Contact:</strong> {getDefault(customerData.contact)}
                     </div>
                     <div className="mb-4">
-                        <strong>Age:</strong> {getDefault(customerData.Age?.toString())}
+                        <strong>Age:</strong> {getDefault(customerData.age?.toString())}
                     </div>
                     <div className="mb-4">
-                        <strong>Country:</strong> {getDefault(customerData.Country)}
+                        <strong>Country:</strong> {getDefault(customerData.country)}
                     </div>
                     <div className="mb-4">
-                        <strong>Status:</strong> {getDefault(customerData.Status)}
+                        <strong>Status:</strong> {getDefault(customerData.status)}
                     </div>
                     <div className="mb-4">
-                        <strong>Invoice Type:</strong> {getDefault(customerData.InvoiceType)}
+                        <strong>Invoice Type:</strong> {getDefault(customerData.invoiceType)}
                     </div>
                     <div className="mb-4">
-                        <strong>Customer Status:</strong> {getDefault(customerData.Status)}
+                        <strong>Customer Status:</strong> {getDefault(customerData.status)}
                     </div>
 
                     {/* Billing Information */}
                     <div className="mb-4">
-                        <strong>Invoice Status:</strong> {getDefault(customerData.BillingInformation?.InvoiceStatus?.toString())}
+                        <strong>Invoice Status:</strong> {getDefault(customerData.billingInformation?.invoiceStatus?.toString())}
                     </div>
                     <div className="mb-4">
-                        <strong>Transaction ID:</strong> {getDefault(customerData.BillingInformation?.TrId)}
+                        <strong>Transaction ID:</strong> {getDefault(customerData.billingInformation?.trId)}
                     </div>
                     <div className="mb-4">
-                        <strong>Billing Address:</strong> {getDefault(customerData.BillingInformation?.Address)}
+                        <strong>Billing Address:</strong> {getDefault(customerData.billingInformation?.address)}
                     </div>
                     <div className="mb-4">
-                        <strong>Billing Full Name:</strong> {getDefault(customerData.BillingInformation?.FullName)}
+                        <strong>Billing Full Name:</strong> {getDefault(customerData.billingInformation?.fullName)}
                     </div>
                     <div className="mb-4">
-                        <strong>Company Name:</strong> {getDefault(customerData.BillingInformation?.CompanyName)}
+                        <strong>Company Name:</strong> {getDefault(customerData.billingInformation?.companyName)}
                     </div>
                     <div className="mb-4">
-                        <strong>Tax Number:</strong> {getDefault(customerData.BillingInformation?.TaxNumber)}
+                        <strong>Tax Number:</strong> {getDefault(customerData.billingInformation?.taxNumber)}
                     </div>
                     <div className="mb-4">
-                        <strong>Tax Office:</strong> {getDefault(customerData.BillingInformation?.TaxOffice)}
+                        <strong>Tax Office:</strong> {getDefault(customerData.billingInformation?.taxOffice)}
                     </div>
 
                     {/* Conditional display based on invoice type */}
-                    {customerData.InvoiceType === 'Bireysel' && (
+                    {customerData.invoiceType === 'Bireysel' && (
                         <div className="mb-4">
-                            <strong>T.C. Kimlik No:</strong> {getDefault(customerData.TcNumber)}
+                            <strong>T.C. Kimlik No:</strong> {getDefault(customerData.tcNumber)}
                         </div>
                     )}
 
-                    {customerData.InvoiceType === 'Kurumsal' && (
+                    {customerData.invoiceType === 'Kurumsal' && (
                         <>
                             <div className="mb-4">
-                                <strong>Company Title:</strong> {getDefault(customerData.CompanyTitle)}
+                                <strong>Company Title:</strong> {getDefault(customerData.companyTitle)}
                             </div>
                             <div className="mb-4">
-                                <strong>Tax Number:</strong> {getDefault(customerData.TaxNumber)}
+                                <strong>Tax Number:</strong> {getDefault(customerData.taxNumber)}
                             </div>
                             <div className="mb-4">
-                                <strong>Tax Office:</strong> {getDefault(customerData.TaxOffice)}
+                                <strong>Tax Office:</strong> {getDefault(customerData.taxOffice)}
                             </div>
                             <div className="mb-4">
-                                <strong>Address:</strong> {getDefault(customerData.Address)}
+                                <strong>Address:</strong> {getDefault(customerData.address)}
                             </div>
                         </>
                     )}
 
                     {/* Remember Me and Terms & Conditions */}
                     <div className="mb-4">
-                        <strong>Remember Me:</strong> {getDefault(customerData.RememberMe ? 'Yes' : 'No')}
+                        <strong>Remember Me:</strong> {getDefault(customerData.rememberMe ? 'Yes' : 'No')}
                     </div>
                     <div className="mb-4">
-                        <strong>Terms & Conditions Approved:</strong> {getDefault(customerData.TermsAndConditionsApproved ? 'Yes' : 'No')}
+                        <strong>Terms & Conditions Approved:</strong> {getDefault(customerData.termsAndConditionsApproved ? 'Yes' : 'No')}
                     </div>
                 </div>
             </div>
