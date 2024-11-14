@@ -42,6 +42,8 @@ export const fetchAdminCreators = createAsyncThunk(
               id: customer._id ?? null,  // Set to null if _id is missing or undefined
               fullName: customer.fullName ?? '',  // Default to an empty string if fullName is missing or undefined
               creatorType: customer.creatorType ?? 'individual',  // Default to 'individual' if creatorType is missing or undefined
+              userType: customer.userType ?? '', // Default to 'user' if user
+              role: customer.role ?? '', // Default to ''
               password: customer.password ?? '',  // Default to empty string if password is missing or undefined
               tckn: customer.tckn ?? '',  // Default to empty string if tckn is missing or undefined
               email: customer.email ?? '',  // Default to an empty string if email is missing or undefined

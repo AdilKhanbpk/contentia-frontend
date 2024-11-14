@@ -2,38 +2,81 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { useForm, SubmitHandler } from "react-hook-form";
 
-export interface Customer {
+interface Creator {
     id: number;
     fullName: string;
-    email: string;
-    phoneNumber: string;
+    creatorType: "individual" | "company";
+    userType: "customer" | "creator";
+    role: "user" | "admin";
     password: string;
-    age: number;
-    country: string;
-    status: "Verified" | "Pending" | "Rejected";
-    invoiceType: string;  // Capitalized to camelCase
-    tcNumber?: string;  // Capitalized to camelCase
-    companyTitle?: string;  // Capitalized to camelCase
-    taxNumber?: string;  // Capitalized to camelCase
-    taxOffice?: string;  // Capitalized to camelCase
-    address?: string;  // Capitalized to camelCase
-    billingInformation?: {  // Capitalized to camelCase
-        invoiceStatus: boolean;  // Capitalized to camelCase
-        trId: string;  // Capitalized to camelCase
-        address: string;  // Capitalized to camelCase
-        fullName: string;  // Capitalized to camelCase
-        companyName: string;  // Capitalized to camelCase
-        taxNumber: string;  // Capitalized to camelCase
-        taxOffice: string;  // Capitalized to camelCase
+    tckn: string;
+    email: string;
+    dateOfBirth: string; // Format: "YYYY-MM-DD"
+    gender: "male" | "female" | "other";
+    phoneNumber: string;
+    isVerified: boolean;
+    addressOne: string;
+    addressTwo?: string;
+    accountType: "individual" | "institutional";
+    invoiceType: "individual" | "institutional";
+    paymentInformation: {
+      ibanNumber?: string;
+      address: string;
+      fullName: string;
+      trId?: string;
+      companyName?: string;
+      taxNumber?: string;
+      taxOffice?: string;
     };
-    rememberMe?: boolean;  // Capitalized to camelCase
-    termsAndConditionsApproved?: boolean;  // Capitalized to camelCase
-}
+    billingInformation: {
+      invoiceStatus: boolean;
+      address: string;
+      fullName: string;
+      trId?: string;
+      companyName?: string;
+      taxNumber?: string;
+      taxOffice?: string;
+    };
+    preferences: {
+      contentInformation: {
+        contentType: "product" | "service" | "other";
+        contentFormats: string[]; // Example: ["video", "image"]
+        areaOfInterest: string[]; // Example: ["tech", "gadgets"]
+        addressDetails: {
+          country: string;
+          state: string;
+          district: string;
+          neighbourhood?: string;
+          fullAddress: string;
+        };
+      };
+      socialInformation: {
+        contentType: "product" | "service" | "other";
+        platforms: {
+          Instagram?: {
+            followers: number;
+            username: string;
+          };
+          TikTok?: {
+            followers: number;
+            username: string;
+          };
+          Youtube?: {
+            followers: number;
+            username: string;
+          };
+        };
+        portfolioLink?: string;
+      };
+    };
+    userAgreement: boolean;
+    approvedCommercial: boolean;
+  }
 
 interface ModalNewProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: Customer) => void; // This handles form submission
+    onSubmit: (data: Creator) => void; // This handles form submission
 }
 
 export default function ModalNew({ isOpen, onClose, onSubmit }: ModalNewProps) {
@@ -44,7 +87,7 @@ export default function ModalNew({ isOpen, onClose, onSubmit }: ModalNewProps) {
         handleSubmit,
         reset,
         formState: { errors },
-    } = useForm<Customer>();
+    } = useForm<Creator>();
 
     if (!isOpen) return null;  // If the modal is closed, return null (don't render)
 
@@ -88,18 +131,6 @@ export default function ModalNew({ isOpen, onClose, onSubmit }: ModalNewProps) {
                                         className="font-medium border px-1 py-1 rounded-md focus:outline-none"
                                     />
                                 </div>
-                                <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4 w-full md:w-1/2 pl-2'>
-                                    <label>Age</label>
-                                    <input
-                                        type="text"
-                                        placeholder="Enter your age"
-                                        {...register('age', { required: false })}
-                                        className="font-medium border px-1 py-1 rounded-md focus:outline-none"
-                                    />
-                                </div>
-
-                            </div>
-                            <div className='flex flex-col md:flex-row col-span-1 md:col-span-2'>
                                 <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4 w-full md:w-1/2'>
                                     <label>Password</label>
                                     <input

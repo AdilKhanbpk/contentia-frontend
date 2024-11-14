@@ -22,6 +22,8 @@ interface Creator {
   id: number;
   fullName: string;
   creatorType: "individual" | "company";
+  userType: "customer" | "creator";
+  role: "user" | "admin";
   password: string;
   tckn: string;
   email: string;
