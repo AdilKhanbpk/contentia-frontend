@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, SubmitHandler } from "react-hook-form";
 import Image from 'next/image';
 import Link from "next/link";
@@ -12,6 +12,8 @@ interface Creator {
     id: number;
     fullName: string;
     creatorType: "individual" | "company";
+    userType: "customer" | "creator";
+    role: "user" | "admin";
     password: string;
     tckn: string;
     email: string;
@@ -99,9 +101,22 @@ const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
         setActiveSection(section);
     };
 
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm<Creator>();
+
+    // Reset the form if customerData changes
+    useEffect(() => {
+        if (customerData) {
+            reset(customerData);
+        }
+    }, [customerData, reset]);
+
     return (
         <div className="mt-10 flex flex-col space-y-8">
-            {/* Top section with avatar, user info, and progress */}
             <div className="bg-gray-100 px-6 pt-2 py-1 rounded-lg">
                 <div className="flex flex-row justify-between items-center">
                     <div className="flex flex-row">
@@ -206,7 +221,7 @@ const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
                 </div>
 
                 {/* Conditional Rendering of Content */}
-                {activeSection === 'personal-info' && <MemoizedFirstTab />}
+                {activeSection === 'personal-info' && <MemoizedFirstTab editCreatorForm={customerData} onSubmit={onSubmit} />}
                 {activeSection === 'payment' && <MemoizedSecondTab />}
                 {activeSection === 'Preferences' && <MemoizedThirdTab />}
                 {activeSection === 'settings' && <MemoizedFourthTab />}
