@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { updateAdminCreator } from '@/store/features/admin/creatorsSlice';
+import { updateAdminCreator, fetchAdminCreators, } from '@/store/features/admin/creatorsSlice';
 import { AppDispatch } from '@/store/store';
 
 interface Creator {
@@ -11,16 +11,20 @@ interface Creator {
     userType: "customer" | "creator";
     role: "user" | "admin";
     password: string;
-    tckn: string;
+    identityNo: number;
     email: string;
     dateOfBirth: string; // Format: "YYYY-MM-DD"
     gender: "male" | "female" | "other";
     phoneNumber: string;
-    isVerified: boolean;
-    addressOne: string;
-    addressTwo?: string;
+    isVerified: "pending" | "approved" | "rejected";
     accountType: "individual" | "institutional";
     invoiceType: "individual" | "institutional";
+    addressDetails: {
+        addressOne: string;
+        addressTwo: string;
+        country: string;
+        zipCode: number;
+    },
     paymentInformation: {
         ibanNumber?: string;
         address: string;
@@ -42,6 +46,7 @@ interface Creator {
     preferences: {
         contentInformation: {
             contentType: "product" | "service" | "other";
+            creatorType: "nano" | "micro"; // Updated
             contentFormats: string[]; // Example: ["video", "image"]
             areaOfInterest: string[]; // Example: ["tech", "gadgets"]
             addressDetails: {
@@ -53,7 +58,7 @@ interface Creator {
             };
         };
         socialInformation: {
-            contentType: "product" | "service" | "other";
+            contentType: "product" | "service";
             platforms: {
                 Instagram?: {
                     followers: number;
@@ -63,12 +68,24 @@ interface Creator {
                     followers: number;
                     username: string;
                 };
+                Facebook?: {
+                    followers: number;
+                    username: string;
+                };
                 Youtube?: {
                     followers: number;
                     username: string;
                 };
+                X?: {
+                    followers: number;
+                    username: string;
+                };
+                Linkedin?: {
+                    followers: number;
+                    username: string;
+                };
             };
-            portfolioLink?: string;
+            portfolioLink?: string[];
         };
     };
     userAgreement: boolean;
@@ -89,16 +106,18 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
         if (editCreatorForm) {
             reset({
                 name: editCreatorForm.fullName,
-                identityNo: editCreatorForm.tckn,
+                identityNo: editCreatorForm.identityNo?.toString() || '',
                 email: editCreatorForm.email,
                 dateOfBirth: editCreatorForm.dateOfBirth.split('T')[0],
                 contact: editCreatorForm.phoneNumber,
                 gender: editCreatorForm.gender,
-                status: editCreatorForm.isVerified ? 'Verified' : 'Pending',
-                address1: editCreatorForm.addressOne,
-                address2: editCreatorForm.addressTwo,
-                country: editCreatorForm.preferences.contentInformation.addressDetails.country,
-                zipCode: editCreatorForm.preferences.contentInformation.addressDetails.district,
+                isVerified: editCreatorForm.isVerified,
+                addressDetails: {
+                    addressOne: editCreatorForm.addressDetails?.addressOne || '',
+                    addressTwo: editCreatorForm.addressDetails?.addressTwo || '',
+                    country: editCreatorForm.addressDetails?.country || '',
+                    zipCode: editCreatorForm.addressDetails?.zipCode?.toString() || ''
+                }
             });
         }
     }, [editCreatorForm, reset]);
@@ -107,16 +126,18 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
         if (editCreatorForm) {
             reset({
                 name: editCreatorForm.fullName,
-                identityNo: editCreatorForm.tckn,
+                identityNo: editCreatorForm.identityNo?.toString() || '',
                 email: editCreatorForm.email,
                 dateOfBirth: editCreatorForm.dateOfBirth.split('T')[0],
                 contact: editCreatorForm.phoneNumber,
                 gender: editCreatorForm.gender,
-                status: editCreatorForm.isVerified ? 'Verified' : 'Pending',
-                address1: editCreatorForm.addressOne,
-                address2: editCreatorForm.addressTwo,
-                country: editCreatorForm.preferences.contentInformation.addressDetails.country,
-                zipCode: editCreatorForm.preferences.contentInformation.addressDetails.district,
+                isVerified: editCreatorForm.isVerified,
+                addressDetails: {
+                    addressOne: editCreatorForm.addressDetails?.addressOne || '',
+                    addressTwo: editCreatorForm.addressDetails?.addressTwo || '',
+                    country: editCreatorForm.addressDetails?.country || '',
+                    zipCode: editCreatorForm.addressDetails?.zipCode?.toString() || ''
+                }
             });
         }
     }, [editCreatorForm, reset]);
@@ -126,25 +147,29 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
             console.error('No creator ID found');
             return;
         }
-    
+
         // Get token from localStorage
         const token = localStorage.getItem('accessToken');
         if (!token) {
             console.error('No access token found');
             return;
         }
-    
+
         // Transform form data to match API expectations
         const updateData = {
             fullName: formData.name,
-            tckn: formData.identityNo,
+            identityNo: Number(formData.identityNo),
             email: formData.email,
             dateOfBirth: formData.dateOfBirth,
             phoneNumber: formData.contact,
             gender: formData.gender,
-            isVerified: formData.status === 'Verified',
-            addressOne: formData.address1,
-            addressTwo: formData.address2,
+            isVerified: formData.isVerified,
+            addressDetails: {
+                addressOne: formData.addressDetails.addressOne,
+                addressTwo: formData.addressDetails.addressTwo,
+                country: formData.addressDetails.country,
+                zipCode: Number(formData.addressDetails.zipCode)
+            },
             preferences: {
                 ...editCreatorForm.preferences,
                 contentInformation: {
@@ -157,7 +182,7 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                 },
             },
         };
-    
+
         try {
             // Dispatch update action with token
             const resultAction = await dispatch(
@@ -167,10 +192,11 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                     token,
                 })
             );
-    
+
             if (updateAdminCreator.fulfilled.match(resultAction)) {
                 // Handle success (e.g., show success message)
                 console.log('Update successful');
+                await dispatch(fetchAdminCreators(token));
             } else {
                 // Handle error
                 console.error('Update failed:', resultAction.error);
@@ -179,7 +205,7 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
             console.error('Error updating creator:', error);
         }
     };
-    
+
     return (
         <>
             <div className="w-full sm:w-2/3 bg-white p-6 rounded-lg">
@@ -257,10 +283,10 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                         <div>
                             <label className="block text-sm font-medium">Status</label>
                             <select
-                                {...register('status', { required: 'Status is required' })}
+                                {...register('isVerified', { required: 'Status is required' })}
                                 className="mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm"
                             >
-                                <option value="Verified">Verified</option>
+                                <option value="approved">Approved</option>
                                 <option value="Pending">Pending</option>
                                 <option value="Rejected">Rejected</option>
                             </select>
@@ -273,7 +299,7 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                             <label className="block text-sm font-medium">Address 01</label>
                             <input
                                 type="text"
-                                {...register('address1')}
+                                {...register('addressDetails.addressOne')}
                                 className="mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm"
                             />
                         </div>
@@ -281,7 +307,7 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                             <label className="block text-sm font-medium">Address 02</label>
                             <input
                                 type="text"
-                                {...register('address2')}
+                                {...register('addressDetails.addressTwo')}
                                 className="mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm"
                             />
                         </div>
@@ -289,7 +315,7 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                             <label className="block text-sm font-medium">Country</label>
                             <input
                                 type="text"
-                                {...register('country', { required: 'Country is required' })}
+                                {...register('addressDetails.country', { required: 'Country is required' })}
                                 className="mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm"
                             />
                             {errors.country && typeof errors.country.message === 'string' && (
@@ -301,7 +327,7 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                             <label className="block text-sm font-medium">Zip Code</label>
                             <input
                                 type="text"
-                                {...register('zipCode')}
+                                {...register('addressDetails.zipCode')}
                                 className="mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm"
                             />
                         </div>

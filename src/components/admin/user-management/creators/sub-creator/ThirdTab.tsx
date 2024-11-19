@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { updateAdminCreator, fetchAdminCreators } from '@/store/features/admin/creatorsSlice';
+import { AppDispatch } from '@/store/store';
 import Image from 'next/image';
 import instIcon from "../../../../../../public/BecomeCreator/Instagram_icon.png";
 import facebookIcon from "../../../../../../public/BecomeCreator/facebook_icon..png";
@@ -9,33 +11,196 @@ import linkdinIcon from "../../../../../../public/BecomeCreator/linkedin_icon.pn
 import xIcon from "../../../../../../public/BecomeCreator/x_icon.png";
 import tiktokIcon from "../../../../../../public/BecomeCreator/tiktik_icon.png";
 
-const ThirdTab = () => {
-    const { register, handleSubmit, watch } = useForm();
+interface Creator {
+    id: number;
+    fullName: string;
+    creatorType: "individual" | "company";
+    userType: "customer" | "creator";
+    role: "user" | "admin";
+    password: string;
+    identityNo: number;
+    email: string;
+    dateOfBirth: string; // Format: "YYYY-MM-DD"
+    gender: "male" | "female" | "other";
+    phoneNumber: string;
+    isVerified: "pending" | "approved" | "rejected";
+    accountType: "individual" | "institutional";
+    invoiceType: "individual" | "institutional";
+    addressDetails: {
+        addressOne: string;
+        addressTwo: string;
+        country: string;
+        zipCode: number;
+    },
+    paymentInformation: {
+        ibanNumber?: string;
+        address: string;
+        fullName: string;
+        trId?: string;
+        companyName?: string;
+        taxNumber?: string;
+        taxOffice?: string;
+    };
+    billingInformation: {
+        invoiceStatus: boolean;
+        address: string;
+        fullName: string;
+        trId?: string;
+        companyName?: string;
+        taxNumber?: string;
+        taxOffice?: string;
+    };
+    preferences: {
+        contentInformation: {
+            contentType: "product" | "service" | "other";
+            creatorType: "nano" | "micro"; // Updated
+            contentFormats: string[]; // Example: ["video", "image"]
+            areaOfInterest: string[]; // Example: ["tech", "gadgets"]
+            addressDetails: {
+                country: string;
+                state: string;
+                district: string;
+                neighbourhood?: string;
+                fullAddress: string;
+            };
+        };
+        socialInformation: {
+            contentType: "product" | "service";
+            platforms: {
+                Instagram?: {
+                    followers: number;
+                    username: string;
+                };
+                TikTok?: {
+                    followers: number;
+                    username: string;
+                };
+                Facebook?: {
+                    followers: number;
+                    username: string;
+                };
+                Youtube?: {
+                    followers: number;
+                    username: string;
+                };
+                X?: {
+                    followers: number;
+                    username: string;
+                };
+                Linkedin?: {
+                    followers: number;
+                    username: string;
+                };
+            };
+            portfolioLink?: string[];
+        };
+    };
+    userAgreement: boolean;
+    approvedCommercial: boolean;
+}
 
-    const onSubmit = async (data: any) => {
-        console.log(data); // Logs the selected preferences
+interface ThirdTabProps {
+    editCreatorForm: Creator | null;
+    onSubmit?: (data: Creator) => void;
+}
+
+const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
+    const dispatch = useDispatch<AppDispatch>();
+    const { register, handleSubmit, reset } = useForm();
+
+    useEffect(() => {
+        if (editCreatorForm) {
+            reset({
+                contentType: editCreatorForm.preferences.contentInformation.contentType,
+                creatorType: editCreatorForm.preferences.contentInformation.creatorType,
+                contentFormats: editCreatorForm.preferences.contentInformation.contentFormats,
+                interests: editCreatorForm.preferences.contentInformation.areaOfInterest,
+                social_information: {
+                    contentType: editCreatorForm.preferences.socialInformation.contentType,
+                    platforms: {
+                        Instagram: editCreatorForm.preferences.socialInformation.platforms.Instagram || {},
+                        TikTok: editCreatorForm.preferences.socialInformation.platforms.TikTok || {},
+                        Facebook: editCreatorForm.preferences.socialInformation.platforms.Facebook || {},
+                        Youtube: editCreatorForm.preferences.socialInformation.platforms.Youtube || {},
+                        X: editCreatorForm.preferences.socialInformation.platforms.X || {},
+                        Linkedin: editCreatorForm.preferences.socialInformation.platforms.Linkedin || {},
+                    },
+                    portfolioLink: editCreatorForm.preferences.socialInformation.portfolioLink || []
+                }
+            });
+        }
+    }, [editCreatorForm, reset]);
+
+    const onSubmit = async (formData: any) => {
+        console.log('data from the third tab', formData);
+        if (!editCreatorForm?.id) {
+            console.error('No creator ID found');
+            return;
+        }
+
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+            console.error('No access token found');
+            return;
+        }
+
         try {
-            const response = await axios.post('http://localhost:3001/api/v1/preferences/preferencesRoute', data);
-            console.log('Response from server:', response.data);
+            const transformedData = {
+                preferences: {
+                    contentInformation: {
+                        contentType: formData.contentType,
+                        creatorType: formData.creatorType, contentFormats: formData.contentFormats || [],
+                        areaOfInterest: formData.interests || []
+                    },
+                    socialInformation: {
+                        contentType: formData.social_information.contentType,
+                        platforms: formData.social_information.platforms,
+                        portfolioLink: formData.social_information.portfolioLink
+                    }
+                }
+            };
+
+            const resultAction = await dispatch(
+                updateAdminCreator({
+                    customerId: editCreatorForm.id.toString(),
+                    data: transformedData,
+                    token,
+                })
+            );
+
+            if (updateAdminCreator.fulfilled.match(resultAction)) {
+                console.log('Update successful');
+                await dispatch(fetchAdminCreators(token));
+            } else {
+                console.error('Update failed:', resultAction.error);
+            }
         } catch (error) {
-            console.error('Error submitting form data:', error);
+            console.error('Error updating creator:', error);
         }
     };
 
+    const socialPlatforms = [
+        { icon: instIcon, label: "Instagram" },
+        { icon: tiktokIcon, label: "TikTok" },
+        { icon: facebookIcon, label: "Facebook" },
+        { icon: youtubeIcon, label: "Youtube" },
+        { icon: xIcon, label: "X" },
+        { icon: linkdinIcon, label: "Linkedin" }
+    ];
+
     return (
-        <div className="w-full sm:w-2/3 p-6">
+        <div className="w-full sm:w-2/3 bg-white p-6 rounded-lg">
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div>
-                    <h2 className="text-lg font-semibold mb-4">
+                    <h2 className="text-xl font-semibold mb-4">
                         Creator Preferences
                     </h2>
 
                     <div className='flex flex-col sm:flex-row justify-between sm:space-x-8'>
-                        {/* Content Type */}
                         <div className="mb-4 w-full sm:w-1/2">
                             <label className="block mb-3 text-sm font-semibold text-gray-700">Content Type:</label>
                             <div className="flex space-x-4 mt-2">
-                                {['Product', 'Service', 'Location'].map((type) => (
+                                {['product', 'service', 'other'].map((type) => (
                                     <label key={type} className="inline-flex items-center cursor-pointer">
                                         <input
                                             type="radio"
@@ -46,25 +211,23 @@ const ThirdTab = () => {
                                         <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
                                             <div className="w-full h-full bg-white rounded-full"></div>
                                         </div>
-                                        <span className="ml-1 text-sm">{type}</span>
+                                        <span className="ml-1 text-sm capitalize">{type}</span>
                                     </label>
                                 ))}
                             </div>
                         </div>
-                        {/* Creator Type (Decided by the Platform) */}
                         <div className="mb-4 w-full sm:w-1/2">
                             <label className="block text-sm font-semibold text-gray-700">Creator Type:</label>
                             <select
-                                {...register('creatorType')}
+                                {...register('creatorType')} // Updated
                                 className="border px-2 py-1 rounded mt-2 w-full focus:outline-none"
                             >
-                                <option value="Nano">Nano</option>
-                                <option value="Nano">Micro</option>
+                                <option value="nano">Nano</option>
+                                <option value="micro">Micro</option>
                             </select>
                         </div>
-
                     </div>
-                    {/* Content Formats */}
+
                     <div className="mb-4">
                         <label className="block text-sm font-semibold text-gray-700">Content Formats:</label>
                         <div className="grid grid-cols-1 gap-4 mt-2">
@@ -85,9 +248,6 @@ const ThirdTab = () => {
                         </div>
                     </div>
 
-
-
-                    {/* Interests */}
                     <div className="mb-4">
                         <label className="block text-sm font-semibold text-gray-700">Interests:</label>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-2">
@@ -96,7 +256,7 @@ const ThirdTab = () => {
                                 'Sanal ve El İşleri',
                                 'Müzik',
                                 'Eğlence ve Oyun',
-                                'Yemek ve İçecek',
+                                'Yemek ve İçecek ',
                                 'Bilim ve Teknoloji',
                                 'Seyahat ve Kültür',
                                 'Kitap ve Edebiyat',
@@ -108,8 +268,8 @@ const ThirdTab = () => {
                                 'Üretim ve Mühendislik',
                                 'Sağlık',
                                 'Eğitim',
-                            ].map((interest, index) => (
-                                <label key={index} className="inline-flex items-center cursor-pointer">
+                            ].map((interest) => (
+                                <label key={interest} className="inline-flex items-center cursor-pointer">
                                     <input
                                         type="checkbox"
                                         {...register('interests')}
@@ -125,121 +285,90 @@ const ThirdTab = () => {
                         </div>
                     </div>
 
-                    <div className='mb-4'>
-                        <div className="">
-                            <div className="bg-white">
-                                <div>
-                                    <span className="text-lg font-semibold">Social Media Information</span>
-                                    <div className="flex gap-2 items-center mt-3">
-                                        <h2 className="text-sm font-semibold mb-2 text-gray-700">Social Media Share</h2>
+                    <div>
+                        <span className="text-lg font-semibold">Social Media Information</span>
+                        <div className="flex gap-2 items-center mt-3">
+                            <h2 className="text-sm font-semibold mb-2 text-gray-700">Social Media Share</h2>
+                        </div>
 
-                                    </div>
-
-                                    <div className="flex justify-start space-x-4">
-                                        {/* Product Radio Button */}
-                                        <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
-                                            <input
-                                                type="radio"
-                                                {...register("social_information.contentType")}
-                                                value="product"
-                                                className="hidden peer"
-                                            />
-                                            <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
-                                                <div className="w-full h-full bg-white rounded-full"></div>
-                                            </div>
-                                            <span className="ml-1 text-sm">Yes</span>
-                                        </label>
-
-                                        {/* Hizmet Radio Button */}
-                                        <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
-                                            <input
-                                                type="radio"
-                                                {...register("social_information.contentType")}
-                                                value="hizmat"
-                                                className="hidden peer"
-                                            />
-                                            <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
-                                                <div className="w-full h-full bg-white rounded-full"></div>
-                                            </div>
-                                            <span className="ml-1 text-sm">No</span>
-                                        </label>
-                                    </div>
-
+                        <div className="flex justify-start space-x-4">
+                            <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
+                                <input
+                                    type="radio"
+                                    {...register("social_information.contentType")}
+                                    value="product"
+                                    className="hidden peer"
+                                />
+                                <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
+                                    <div className="w-full h-full bg-white rounded-full"></div>
                                 </div>
+                                <span className="ml-1 text-sm">Product</span>
+                            </label>
 
-                                {/* Social media section */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1">
-                                    {[
-                                        { icon: instIcon, label: "Instagram" },
-                                        { icon: tiktokIcon, label: "TikTok" },
-                                        { icon: facebookIcon, label: "Facebook" },
-                                        { icon: youtubeIcon, label: "Youtube" },
-                                        { icon: xIcon, label: "X" },
-                                        { icon: linkdinIcon, label: "Linkedin" },
-                                    ].map((platform) => (
-                                        <div key={platform.label} className="flex flex-col mb-4">
-                                            <div className="flex items-center mt-4">
-                                                <Image
-                                                    src={platform.icon}
-                                                    alt={`${platform.label} Icon`}
-                                                    width={24}
-                                                    height={24}
-                                                />
-                                                <h1 className="text-sm font-bold ml-2 text-gray-700">{platform.label}:</h1>
-                                            </div>
-
-                                            {/* Username input */}
-                                            <input
-                                                type="text"
-                                                {...register(`social_information.platforms.${platform.label}.username`)}
-                                                className="border px-2 py-1 rounded mt-2 w-full focus:outline-none"
-                                                placeholder="Username"
-                                            />
-
-                                            {/* Follower count input */}
-                                            <input
-                                                type="number"
-                                                {...register(`social_information.platforms.${platform.label}.followerCount`, {
-                                                    valueAsNumber: true,
-                                                    min: {
-                                                        value: 0,
-                                                        message: "Takipçi sayısı 0'dan büyük olmalıdır.",
-                                                    },
-                                                })}
-                                                className="border px-2 py-1 rounded mt-2 w-full focus:outline-none"
-                                                placeholder="Followers"
-                                            />
-                                        </div>
-                                    ))}
-
-                                    <div className="mt-2 col-span-full">
-                                        <h2 className="text-sm mb-2 font-semibold text-gray-700">Portfolio : </h2>
-
-                                        <input
-                                            type="url"
-                                            {...register("social_information.instagramLink", {
-                                                required: "Instagram linki gereklidir.",
-                                                pattern: {
-                                                    value: /https?:\/\/.+/,
-                                                    message: "Geçerli bir URL girin.",
-                                                },
-                                            })}
-                                            className="border focus:outline-none p-4 rounded w-full text-sm"
-                                            placeholder="Ör: https://www.instagram.com/contentia/reel/C5OCG4XBtFX"
-                                        />
-                                    </div>
+                            <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
+                                <input
+                                    type="radio"
+                                    {...register("social_information.contentType")}
+                                    value="service"
+                                    className="hidden peer"
+                                />
+                                <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
+                                    <div className="w-full h-full bg-white rounded-full"></div>
                                 </div>
-                            </div>
-
+                                <span className="ml-1 text-sm">Service</span>
+                            </label>
                         </div>
                     </div>
 
-                    <div className='flex justify-end'>
-                        <button
-                            type="submit"
-                            className="mt-4 px-4 py-2 ButtonBlue text-white rounded-md "
-                        >
-                            Save
+                    <div className="mb-4">
+                        <h2 className="text-xl font-semibold mb-4">Social Media Information</h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1">
+                            {socialPlatforms.map((platform) => (
+                                <div key={platform.label} className="flex flex-col mb-4">
+                                    <div className="flex items-center mt-4">
+                                        <Image
+                                            src={platform.icon}
+                                            alt={`${platform.label} Icon`}
+                                            width={24}
+                                            height={24}
+                                        />
+                                        <h1 className="text-sm font-bold ml-2 text-gray-700">{platform.label}:</h1>
+                                    </div>
+
+                                    <input
+                                        type="text"
+                                        {...register(`social_information.platforms.${platform.label}.username`)}
+                                        className="mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm"
+                                        placeholder="Username"
+                                    />
+
+                                    <input
+                                        type="number"
+                                        {...register(`social_information.platforms.${platform.label}.followers`, {
+                                            valueAsNumber: true,
+                                            min: 0
+                                        })}
+                                        className="mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm"
+                                        placeholder="Followers"
+                                    />
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="mt-4">
+                            <label className="block text-sm font-semibold text-gray-700">Portfolio Link:</label>
+                            <input
+                                type="url"
+                                {...register("social_information.portfolioLink")}
+                                className="mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm"
+                                placeholder="Enter your portfolio URL"
+                            />
+                        </div>
+                    </div>
+
+                    <div className=" flex justify-end mt-6">
+                        <button type="submit" className="ButtonBlue text-white px-4 py-2 rounded-md">
+                            Save Changes
                         </button>
                     </div>
                 </div>

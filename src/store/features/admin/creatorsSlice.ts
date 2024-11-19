@@ -45,16 +45,20 @@ export const fetchAdminCreators = createAsyncThunk(
               userType: customer.userType ?? '', // Default to 'user' if user
               role: customer.role ?? '', // Default to ''
               password: customer.password ?? '',  // Default to empty string if password is missing or undefined
-              tckn: customer.tckn ?? '',  // Default to empty string if tckn is missing or undefined
+              identityNo: customer.identityNo ?? '',  // Default to empty string if tckn is missing or undefined
               email: customer.email ?? '',  // Default to an empty string if email is missing or undefined
               dateOfBirth: customer.dateOfBirth ?? '',  // Default to an empty string if dateOfBirth is missing or undefined
               gender: customer.gender ?? 'other',  // Default to 'other' if gender is missing or undefined
               phoneNumber: customer.phoneNumber ?? '',  // Default to empty string if phoneNumber is missing or undefined
-              isVerified: customer.isVerified ?? false,  // Default to false if isVerified is missing or undefined
-              addressOne: customer.addressOne ?? '',  // Default to empty string if addressOne is missing or undefined
-              addressTwo: customer.addressTwo ?? '',  // Default to empty string if addressTwo is missing or undefined
+              isVerified: customer.isVerified ?? 'pending',  // Default to false if isVerified is missing or undefined
               accountType: customer.accountType ?? 'individual',  // Default to 'individual' if accountType is missing or undefined
               invoiceType: customer.invoiceType ?? 'individual',  // Default to 'individual' if invoiceType is missing or undefined
+              addressDetails: {
+                addressOne: customer.addressDetails?.addressOne ?? '',
+                addressTwo: customer.addressDetails?.addressTwo ?? '',
+                country: customer.addressDetails?.country ?? '',
+                zipCode: customer.addressDetails?.zipCode ?? '',
+              },
               paymentInformation: {
                 ibanNumber: customer.paymentInformation?.ibanNumber ?? '',  // Default to empty string if ibanNumber is missing or undefined
                 address: customer.paymentInformation?.address ?? '',  // Default to empty string if address is missing or undefined
@@ -101,6 +105,18 @@ export const fetchAdminCreators = createAsyncThunk(
                       followers: customer.preferences?.socialInformation?.platforms?.Youtube?.followers ?? 0,  // Default to 0 if followers count is missing
                       username: customer.preferences?.socialInformation?.platforms?.Youtube?.username ?? '',  // Default to empty string if username is missing
                     },
+                    X: {
+                      followers: customer.preferences?.socialInformation?.platforms?.Instagram?.followers ?? 0,  // Default to 0 if followers count is missing
+                      username: customer.preferences?.socialInformation?.platforms?.Instagram?.username ?? '',  // Default to empty string if username is missing
+                    },
+                    Facebook: {
+                      followers: customer.preferences?.socialInformation?.platforms?.TikTok?.followers ?? 0,  // Default to 0 if followers count is missing
+                      username: customer.preferences?.socialInformation?.platforms?.TikTok?.username ?? '',  // Default to empty string if username is missing
+                    },
+                    Linkedin: {
+                      followers: customer.preferences?.socialInformation?.platforms?.Youtube?.followers ?? 0,  // Default to 0 if followers count is missing
+                      username: customer.preferences?.socialInformation?.platforms?.Youtube?.username ?? '',  // Default to empty string if username is missing
+                    },
                   },
                   portfolioLink: customer.preferences?.socialInformation?.portfolioLink ?? '',  // Default to empty string if portfolioLink is missing or undefined
                 },
@@ -135,6 +151,7 @@ export const fetchAdminCreatorById = createAsyncThunk(
       const response = await axiosInstance.get(`/admin/creators/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log("fetching creator in fetchCreator : ", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue('Failed to fetch admin customer by ID');
