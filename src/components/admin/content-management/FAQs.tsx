@@ -1,134 +1,314 @@
 "use client";
-import React, { useState } from "react";
-import { FaFileCsv } from "react-icons/fa";
-import Image from "next/image";
-import dynamic from "next/dynamic";
-import { useForm } from "react-hook-form";
+
+import React, { useEffect, useState, useCallback, memo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import {
+  fetchFaqs,
+  createFaq,
+  updateFaq,
+  deleteFaq,
+} from "@/store/features/admin/faqSlice";
+import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
 import CustomModelAdmin from "../../modal/CustomModelAdmin";
-import ModalFAQs from "./sub-content/ModalFAQs";
+import CustomTable from "@/components/custom-table/CustomTable";
+import { exportCsvFile } from "@/utils/exportCsvFile";
+import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css";
 
-const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-// Define the FAQ interface
+// Types
 export interface FAQ {
-  id: number;
-  number: number;
+  _id?: string;
   question: string;
   answer: string;
 }
 
-// Initial FAQs data
-const initialFAQs: FAQ[] = [
-  { id: 1, number: 1, question: "Contentia.io Nedir?", answer: "Contentia.io kullanıcıların içerik üreticilerle..." },
-  { id: 2, number: 2, question: "FAQ 2", answer: "Answer 2" },
-  { id: 3, number: 3, question: "FAQ 3", answer: "Answer 3" },
-  { id: 4, number: 4, question: "FAQ 4", answer: "Answer 4" },
-  { id: 5, number: 5, question: "FAQ 5", answer: "Answer 5" },
-];
+// Memoized SearchBar component
+const SearchBar = memo(({ onSearch }: { onSearch: (value: string) => void }) => (
+  <input
+    type="text"
+    placeholder="Search..."
+    onChange={(e) => onSearch(e.target.value)}
+    className="p-2 border border-gray-300 rounded-lg"
+  />
+));
+
+SearchBar.displayName = 'SearchBar';
+
+// Memoized TableActions component
+const TableActions = memo(({ onDelete, onEdit, onView, id }: {
+  onDelete: (id: string) => void;
+  onEdit: (id: string) => void;
+  onView: (id: string) => void;
+  id: string;
+}) => (
+  <div className="flex space-x-3">
+    <button
+      className="text-gray-500 hover:text-gray-700"
+      onClick={() => onView(id)}
+    >
+      <FaEye className="text-lg" />
+    </button>
+    <button
+      className="text-blue-500 hover:text-blue-700"
+      onClick={() => onEdit(id)}
+    >
+      <FaEdit className="text-lg" />
+    </button>
+    <button
+      className="text-red-500 hover:text-red-700"
+      onClick={() => onDelete(id)}
+    >
+      <FaTrashAlt className="text-md" />
+    </button>
+  </div>
+));
+
+TableActions.displayName = 'TableActions';
+
+// Updated ModalFAQs component
+const ModalFAQs = memo(({
+  initialData,
+  onSubmit,
+  onClose,
+  mode
+}: {
+  initialData?: FAQ;
+  onSubmit: (data: FAQ) => void;
+  onClose: () => void;
+  mode: 'create' | 'edit' | 'view';
+}) => {
+  const [question, setQuestion] = useState(initialData?.question || "");
+  const [answer, setAnswer] = useState(initialData?.answer || "");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit({
+      _id: initialData?._id,
+      question,
+      answer
+    });
+  };
+
+  const isViewMode = mode === 'view';
+
+  return (
+    <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">
+      <h1 className="text-lg font-semibold">FAQ</h1>
+
+      <form onSubmit={handleSubmit}>
+        <div className="flex flex-row space-x-8">
+          <div className="mt-4 w-full">
+            <label className="block text-sm font-semibold">Question</label>
+            {isViewMode ? (
+              <p className="mt-2">{question}</p>
+            ) : (
+              <input
+                type="text"
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                placeholder="Enter question"
+                className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none"
+                required
+              />
+            )}
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <label className="block text-sm font-semibold">Answer</label>
+          {isViewMode ? (
+            <div className="mt-2" dangerouslySetInnerHTML={{ __html: answer }} />
+          ) : (
+            <ReactQuill
+              value={answer}
+              onChange={setAnswer}
+              placeholder="Write answer..."
+              theme="snow"
+              className="w-full border border-gray-400 rounded-lg focus:outline-none"
+            />
+          )}
+        </div>
+
+        {!isViewMode && (
+          <div className="flex justify-end mt-6 space-x-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 bg-gray-500 text-white rounded-md"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="ButtonBlue text-white px-8 py-2 rounded-md"
+            >
+              {mode === 'edit' ? 'Update' : 'Save'}
+            </button>
+          </div>
+        )}
+      </form>
+    </div>
+  );
+});
+
+ModalFAQs.displayName = 'ModalFAQs';
 
 const FAQs: React.FC = () => {
-  const [faqs, setFAQs] = useState(initialFAQs);
+  const dispatch = useDispatch<AppDispatch>();
+  const { faqs, loading } = useSelector((state: RootState) => state.faq);
+  
   const [searchTerm, setSearchTerm] = useState("");
-
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<FAQ>();
-
-  const filteredFAQs = faqs.filter((faq) =>
-    faq.question.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<'create' | 'edit' | 'view'>('create');
+  const [currentFAQ, setCurrentFAQ] = useState<FAQ | null>(null);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  useEffect(() => {
+    const tokenFromStorage = localStorage.getItem('accessToken');
+    if (tokenFromStorage) {
+      dispatch(fetchFaqs(tokenFromStorage));
+    }
+  }, [dispatch]);
 
-  // Define table columns
-  const columns = [
+  const handleSearch = useCallback((value: string) => {
+    setSearchTerm(value);
+  }, []);
+
+  const handleModalOpen = useCallback((mode: 'create' | 'edit' | 'view', faq?: FAQ) => {
+    setModalMode(mode);
+    setCurrentFAQ(faq || null);
+    setIsModalOpen(true);
+  }, []);
+
+  const handleModalClose = useCallback(() => {
+    setIsModalOpen(false);
+    setCurrentFAQ(null);
+  }, []);
+
+  const handleSubmit = useCallback(async (data: FAQ) => {
+    const tokenFromStorage = localStorage.getItem('accessToken');
+    if (!tokenFromStorage) return;
+
+    try {
+      if (modalMode === 'edit' && currentFAQ?._id) {
+        await dispatch(updateFaq({ faqId: currentFAQ._id, data, token: tokenFromStorage })).unwrap();
+      } else {
+        await dispatch(createFaq({ data, token: tokenFromStorage })).unwrap();
+      }
+      handleModalClose();
+      dispatch(fetchFaqs(tokenFromStorage));
+    } catch (error) {
+      console.error("FAQ operation failed:", error);
+    }
+  }, [dispatch, modalMode, currentFAQ, handleModalClose]);
+
+  const handleDelete = useCallback(async (id: string) => {
+    const tokenFromStorage = localStorage.getItem('accessToken');
+    if (!tokenFromStorage) return;
+    
+    try {
+      await dispatch(deleteFaq({ faqId: id, token: tokenFromStorage })).unwrap();
+      dispatch(fetchFaqs(tokenFromStorage));
+    } catch (error) {
+      console.error("Error deleting FAQ:", error);
+    }
+  }, [dispatch]);
+
+  const handleExport = useCallback(() => {
+    const headers = ["ID", "Question", "Answer"];
+    const data = faqs.map(faq => ({
+      ID: faq._id,
+      Question: faq.question,
+      Answer: faq.answer
+    }));
+    exportCsvFile({ data, headers, filename: "faqs.csv" });
+  }, [faqs]);
+
+  const columns = React.useMemo(() => [
     {
       name: "#",
-      selector: (row: any) => row.number,
+      selector: (_row: any, index: number) => index + 1,
       sortable: true,
-      width: "100px",
+      width: "80px",
     },
     {
-      name: "FAQ",
-      selector: (row: any) => row.question,
+      name: "Question",
+      selector: (row: FAQ) => row.question,
       sortable: true,
-      width: "300px",
+      grow: 2,
     },
     {
       name: "Answer",
-      selector: (row: any) => row.answer,
+      selector: (row: FAQ) => row.answer,
       sortable: true,
-      width: "400px",
+      grow: 2,
     },
     {
       name: "Actions",
-      cell: (row: any) => (
-        <button className="ml-6 text-gray-500 hover:text-gray-700">
-          <Image width={16} height={16} src='/pencil.png' alt="Edit Icon" />
-        </button>
+      cell: (row: FAQ) => (
+        <TableActions
+          onDelete={() => handleDelete(row._id!)}
+          onEdit={() => handleModalOpen('edit', row)}
+          onView={() => handleModalOpen('view', row)}
+          id={row._id!}
+        />
       ),
-      width: "100px",
+      width: "150px",
     },
-  ];
+  ], [handleDelete, handleModalOpen]);
 
-  // Function to export to CSV
-  const exportToCSV = () => {
-    const csvRows = [
-      ["#", "FAQ", "Answer"],
-      ...initialFAQs.map(faq => [faq.number, faq.question, faq.answer]),
-    ];
-    const csvContent = "data:text/csv;charset=utf-8," + csvRows.map(e => e.join(",")).join("\n");
-    const link = document.createElement("a");
-    link.setAttribute("href", encodeURI(csvContent));
-    link.setAttribute("download", "faqs.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  const filteredFAQs = React.useMemo(() => {
+    const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
+    return faqs.filter((faq) => (
+      faq.question.toLowerCase().includes(lowerCaseSearchTerm) ||
+      faq.answer.toLowerCase().includes(lowerCaseSearchTerm)
+    ));
+  }, [faqs, searchTerm]);
 
   return (
-    <div className=" bg-white rounded-lg">
+    <div className="bg-white rounded-lg">
       <div className="flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72">
-        <div className="flex justify-between mb-4">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search..."
-            className="p-2 border border-gray-300 rounded-lg"
-          />
-          <div className="flex flex-col md:flex-row lg:space-x-2">
-            <button onClick={openModal} className="px-1 md:px-4 py-0.5 md:py-2 ButtonBlue text-white rounded-md">
-              Add
+        <div className="flex flex-row justify-between items-center mb-4 space-x-2">
+          <div className="flex justify-center items-center">
+            <SearchBar onSearch={handleSearch} />
+          </div>
+
+          <div className="flex flex-row space-x-2">
+            <button
+              onClick={() => handleModalOpen('create')}
+              className="px-4 py-2 ButtonBlue text-white rounded-md"
+            >
+              Add FAQ
             </button>
             <button
-              className="px-1 md:px-4 py-0.5 md:py-2 bg-green-500 text-white rounded-md"
-              onClick={exportToCSV}
+              onClick={handleExport}
+              className="px-4 py-2 bg-green-500 text-white rounded-md"
             >
-              Export CSV <FaFileCsv className="inline ml-2" />
+              Export CSV
             </button>
           </div>
         </div>
 
-        <div className="shadow-md">
-          <DataTable
-            columns={columns}
-            data={filteredFAQs}
-            pagination
-            customStyles={{
-              rows: { style: { fontSize: "14px", fontWeight: "500" } },
-              headRow: { style: { fontSize: "16px", fontWeight: "600", backgroundColor: "#f8f8f8" } },
-              headCells: { style: { fontWeight: "600", color: "#333" } },
-            }}
-          />
-        </div>
+        <CustomTable
+          columns={columns}
+          data={filteredFAQs}
+        />
       </div>
 
-      <CustomModelAdmin isOpen={isModalOpen} closeModal={closeModal} title="">
-        <ModalFAQs />
+      <CustomModelAdmin 
+        isOpen={isModalOpen} 
+        closeModal={handleModalClose} 
+        title=""
+      >
+        <ModalFAQs
+          initialData={currentFAQ || undefined}
+          onSubmit={handleSubmit}
+          onClose={handleModalClose}
+          mode={modalMode}
+        />
       </CustomModelAdmin>
-
     </div>
   );
 };

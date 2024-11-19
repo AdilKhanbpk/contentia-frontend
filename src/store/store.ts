@@ -6,6 +6,7 @@ import profileReducer from './features/profile/profileSlice';
 import adminCustomersReducer from './features/admin/customersSlice'
 import adminCreatorsReducer from './features/admin/creatorsSlice'
 import lanPageSlice from './features/admin/lanPageSlice'
+import faqReducer from './features/admin/faqSlice'; // Import the faqSlice
 
 
 const store = configureStore({
@@ -17,6 +18,7 @@ const store = configureStore({
     adminCustomers: adminCustomersReducer,
     adminCreators: adminCreatorsReducer,
     landingPage: lanPageSlice, // Add landing page reducer
+    faq: faqReducer, // Add the FAQ reducer here
   },
 });
 
