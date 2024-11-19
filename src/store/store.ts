@@ -5,6 +5,7 @@ import loginReducer from './features/auth/loginSlice'; // Assuming this is the p
 import profileReducer from './features/profile/profileSlice';
 import adminCustomersReducer from './features/admin/customersSlice'
 import adminCreatorsReducer from './features/admin/creatorsSlice'
+import lanPageSlice from './features/admin/lanPageSlice'
 
 
 const store = configureStore({
@@ -15,6 +16,7 @@ const store = configureStore({
     profile: profileReducer,
     adminCustomers: adminCustomersReducer,
     adminCreators: adminCreatorsReducer,
+    landingPage: lanPageSlice, // Add landing page reducer
   },
 });
 

@@ -15,16 +15,20 @@ interface Creator {
     userType: "customer" | "creator";
     role: "user" | "admin";
     password: string;
-    tckn: string;
+    identityNo: number;
     email: string;
     dateOfBirth: string; // Format: "YYYY-MM-DD"
     gender: "male" | "female" | "other";
     phoneNumber: string;
-    isVerified: boolean;
-    addressOne: string;
-    addressTwo?: string;
+    isVerified: "pending" | "approved" | "rejected";
     accountType: "individual" | "institutional";
     invoiceType: "individual" | "institutional";
+    addressDetails: {
+        addressOne: string;
+        addressTwo: string;
+        country: string;
+        zipCode: number;
+    },
     paymentInformation: {
         ibanNumber?: string;
         address: string;
@@ -46,6 +50,7 @@ interface Creator {
     preferences: {
         contentInformation: {
             contentType: "product" | "service" | "other";
+            creatorType: "nano" | "micro"; // Updated
             contentFormats: string[]; // Example: ["video", "image"]
             areaOfInterest: string[]; // Example: ["tech", "gadgets"]
             addressDetails: {
@@ -57,7 +62,7 @@ interface Creator {
             };
         };
         socialInformation: {
-            contentType: "product" | "service" | "other";
+            contentType: "product" | "service";
             platforms: {
                 Instagram?: {
                     followers: number;
@@ -67,12 +72,24 @@ interface Creator {
                     followers: number;
                     username: string;
                 };
+                Facebook?: {
+                    followers: number;
+                    username: string;
+                };
                 Youtube?: {
                     followers: number;
                     username: string;
                 };
+                X?: {
+                    followers: number;
+                    username: string;
+                };
+                Linkedin?: {
+                    followers: number;
+                    username: string;
+                };
             };
-            portfolioLink?: string;
+            portfolioLink?: string[];
         };
     };
     userAgreement: boolean;
@@ -222,8 +239,8 @@ const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
 
                 {/* Conditional Rendering of Content */}
                 {activeSection === 'personal-info' && <MemoizedFirstTab editCreatorForm={customerData} onSubmit={onSubmit} />}
-                {activeSection === 'payment' && <MemoizedSecondTab />}
-                {activeSection === 'Preferences' && <MemoizedThirdTab />}
+                {activeSection === 'payment' && <MemoizedSecondTab editCreatorForm={customerData} onSubmit={onSubmit} />}
+                {activeSection === 'Preferences' && <MemoizedThirdTab editCreatorForm={customerData} onSubmit={onSubmit} />}
                 {activeSection === 'settings' && <MemoizedFourthTab />}
             </div>
         </div>

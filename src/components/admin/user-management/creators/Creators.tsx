@@ -25,65 +25,82 @@ interface Creator {
   userType: "customer" | "creator";
   role: "user" | "admin";
   password: string;
-  tckn: string;
+  identityNo: number;
   email: string;
   dateOfBirth: string; // Format: "YYYY-MM-DD"
   gender: "male" | "female" | "other";
   phoneNumber: string;
-  isVerified: boolean;
-  addressOne: string;
-  addressTwo?: string;
+  isVerified: "pending" | "approved" | "rejected";
   accountType: "individual" | "institutional";
   invoiceType: "individual" | "institutional";
+  addressDetails: {
+      addressOne: string;
+      addressTwo: string;
+      country: string;
+      zipCode: number;
+  },
   paymentInformation: {
-    ibanNumber?: string;
-    address: string;
-    fullName: string;
-    trId?: string;
-    companyName?: string;
-    taxNumber?: string;
-    taxOffice?: string;
+      ibanNumber?: string;
+      address: string;
+      fullName: string;
+      trId?: string;
+      companyName?: string;
+      taxNumber?: string;
+      taxOffice?: string;
   };
   billingInformation: {
-    invoiceStatus: boolean;
-    address: string;
-    fullName: string;
-    trId?: string;
-    companyName?: string;
-    taxNumber?: string;
-    taxOffice?: string;
+      invoiceStatus: boolean;
+      address: string;
+      fullName: string;
+      trId?: string;
+      companyName?: string;
+      taxNumber?: string;
+      taxOffice?: string;
   };
   preferences: {
-    contentInformation: {
-      contentType: "product" | "service" | "other";
-      contentFormats: string[]; // Example: ["video", "image"]
-      areaOfInterest: string[]; // Example: ["tech", "gadgets"]
-      addressDetails: {
-        country: string;
-        state: string;
-        district: string;
-        neighbourhood?: string;
-        fullAddress: string;
+      contentInformation: {
+          contentType: "product" | "service" | "other";
+          creatorType: "nano" | "micro"; // Updated
+          contentFormats: string[]; // Example: ["video", "image"]
+          areaOfInterest: string[]; // Example: ["tech", "gadgets"]
+          addressDetails: {
+              country: string;
+              state: string;
+              district: string;
+              neighbourhood?: string;
+              fullAddress: string;
+          };
       };
-    };
-    socialInformation: {
-      contentType: "product" | "service" | "other";
-      platforms: {
-        Instagram?: {
-          followers: number;
-          username: string;
-        };
-        TikTok?: {
-          followers: number;
-          username: string;
-        };
-        Youtube?: {
-          followers: number;
-          username: string;
-        };
+      socialInformation: {
+          contentType: "product" | "service";
+          platforms: {
+              Instagram?: {
+                  followers: number;
+                  username: string;
+              };
+              TikTok?: {
+                  followers: number;
+                  username: string;
+              };
+              Facebook?: {
+                  followers: number;
+                  username: string;
+              };
+              Youtube?: {
+                  followers: number;
+                  username: string;
+              };
+              X?: {
+                  followers: number;
+                  username: string;
+              };
+              Linkedin?: {
+                  followers: number;
+                  username: string;
+              };
+          };
+          portfolioLink?: string[];
       };
-      portfolioLink?: string;
-    };
   };
   userAgreement: boolean;
   approvedCommercial: boolean;
@@ -161,6 +178,7 @@ const Customers: React.FC = () => {
   };
 
   const handleCreate = async (customerData: any) => {
+    console.log('customerData from create handler', customerData);
     const tokenFromStorage = localStorage.getItem('accessToken');
 
     try {
@@ -217,16 +235,20 @@ const Customers: React.FC = () => {
         fullName: customerData.fullName ?? '', // Default to empty string if missing
         creatorType: customerData.creatorType ?? 'individual', // Default to "individual"
         password: customerData.password ?? '', // Default to empty string if missing
-        tckn: customerData.tckn ?? '', // Default to empty string if missing
+        indentityNo: customerData.identityNo ?? '', // Default to empty string if missing
         email: customerData.email ?? '', // Default to empty string if missing
         dateOfBirth: customerData.dateOfBirth ?? '', // Default to empty string if missing
         gender: customerData.gender ?? 'other', // Default to "other"
         phoneNumber: customerData.contact ?? '', // Default to empty string if missing
-        isVerified: customerData.isVerified ?? false, // Default to false if missing
-        addressOne: customerData.addressOne ?? '', // Default to empty string if missing
-        addressTwo: customerData.addressTwo ?? '', // Optional, default to empty string if missing
+        isVerified: customerData.isVerified ?? 'pending', // Default to false if missing
         accountType: customerData.accountType ?? 'individual', // Default to "individual"
         invoiceType: customerData.invoiceType ?? 'individual', // Default to "individual"
+        addressDetails: {
+          addressOne: customerData.addressDetails?.addressOne ?? '',
+          addressTwo: customerData.addressDetails?.addressTwo ?? '',
+          country: customerData.addressDetails?.country ?? '',
+          zipCode: customerData.addressDetails?.zipCode ?? '',
+      },
 
         paymentInformation: {
           ibanNumber: customerData.paymentInformation?.ibanNumber ?? '', // Default to empty string if missing
@@ -273,6 +295,18 @@ const Customers: React.FC = () => {
                 username: '',
               },
               Youtube: customerData.preferences?.socialInformation?.platforms?.Youtube ?? {
+                followers: 0,
+                username: '',
+              },
+              X: customerData.preferences?.socialInformation?.platforms?.X ?? {
+                followers: 0,
+                username: '',
+              },
+              Facebook: customerData.preferences?.socialInformation?.platforms?.Facebook ?? {
+                followers: 0,
+                username: '',
+              },
+              Linkedin: customerData.preferences?.socialInformation?.platforms?.Linkedin ?? {
                 followers: 0,
                 username: '',
               },
@@ -370,16 +404,16 @@ const Customers: React.FC = () => {
     },
     {
       name: "Country",
-      selector: (row: any) => row.country || '-',
+      selector: (row: any) => row.addressDetails?.country || '-',
       sortable: true,
     },
     {
       name: "Status",
       cell: (row: any) => {
-        let status = row.isVerified ? "Verified" : "Pending";
+        let status = row.isVerified || "pending";
         return (
           <span
-            className={`px-3 py-1 rounded-full text-sm font-semibold ${status === "Verified"
+            className={`px-3 py-1 rounded-full text-sm font-semibold ${status === "approved"
                 ? "text-green-700 bg-green-100"
                 : status === "Pending"
                   ? "text-yellow-700 bg-yellow-100"
