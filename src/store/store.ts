@@ -9,6 +9,7 @@ import lanPageSlice from './features/admin/lanPageSlice'
 import faqReducer from './features/admin/faqSlice'; // Import the faqSlice
 import bannerSlice from './features/admin/bannerSlice';
 import howWorkSlice from './features/admin/howWorkSlice';
+import aboutSlice from './features/admin/aboutSlice';
 
 
 const store = configureStore({
@@ -22,7 +23,8 @@ const store = configureStore({
     landingPage: lanPageSlice, // Add landing page reducer
     faq: faqReducer, // Add the FAQ reducer here
     banner: bannerSlice,
-    howWork: howWorkSlice
+    howWork: howWorkSlice,
+    about: aboutSlice
   },
 });
 
