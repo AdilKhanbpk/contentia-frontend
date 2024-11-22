@@ -1,106 +1,138 @@
 "use client";
-import React, { useState } from "react";
-import { FaFileCsv } from "react-icons/fa";
-import Image from "next/image";
-import dynamic from "next/dynamic";
-import { useForm } from "react-hook-form";
+
+import React, { useState, useMemo, useEffect } from "react";
+import { FaFileCsv, FaEdit, FaTrashAlt } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/store/store";
+import {
+  fetchHelpSupports,
+  deleteHelpSupport,
+  setCurrentHelpSupport,
+  HelpSupport // Import the type
+} from "@/store/features/admin/helpSlice";
 import CustomModelAdmin from '../../modal/CustomModelAdmin';
-import ModalCenters from "./sub-content/ModalCenters";
-
-const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
-
-// Define the Claim interface
-export interface Claim {
-  id: number;
-  number: number;
-  title: string;
-  category: string;
-}
-
-// Initial claims data
-const initialClaims: Claim[] = [
-  { id: 1, number: 1, title: "UGC Siparişi", category: "Sipariş Oluşturma" },
-  { id: 2, number: 2, title: "Paket Seçimi", category: "Sipariş Oluşturma" },
-  { id: 3, number: 3, title: "Marka Yönetimi", category: "Sipariş Oluşturma" },
-  { id: 4, number: 4, title: "İçer", category: "Sipariş Oluşturma" },
-  { id: 5, number: 5, title: "Paket Seçimi", category: "Sipariş Oluşturma" },
-  { id: 6, number: 6, title: "Paket Seçimi", category: "Sipariş Oluşturma" },
-];
+import { ModalCenters } from './sub-content/ModalCenters';
+import CustomTable from "@/components/custom-table/CustomTable";
+import { exportCsvFile } from "@/utils/exportCsvFile";
 
 const HelpCenters: React.FC = () => {
-  const [claims, setClaims] = useState(initialClaims);
+  const dispatch = useDispatch<AppDispatch>();
+  const { helpSupports, loading } = useSelector((state: RootState) => state.help); // Change from helpSupport to help
+
   const [searchTerm, setSearchTerm] = useState("");
-
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<Claim>();
-
-  const filteredClaims = claims.filter((claim) =>
-    claim.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  // Fetch help supports on component mount
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      console.log("Fetching help supports...");
+      dispatch(fetchHelpSupports(token));
+    } else {
+      console.log("No token found.");
+    }
+  }, [dispatch]);
 
-  // Define table columns
-  const columns = [
-    {
-      name: "#",
-      selector: (row: any) => row.number,
-      sortable: true,
-      width: "100px",
-    },
-    {
-      name: "Title",
-      selector: (row: any) => row.title,
-      sortable: true,
-      width: "250px",
-    },
-    {
-      name: "Category",
-      selector: (row: any) => row.category,
-      sortable: true,
-      width: "250px",
-    },
-    {
-      name: "Actions",
-      cell: (row: any) => (
-        <button className="ml-6 text-gray-500 hover:text-gray-700">
-          <Image width={16} height={16} src='/pencil.png' alt="Edit Icon" />
-        </button>
-      ),
-      width: "100px",
-    },
-  ];
-
-  // Function to export to CSV
+  // Export to CSV functionality
   const exportToCSV = () => {
-    const csvRows = [
-      ["#", "Title", "Category"],
-      ...initialClaims.map(claim => [claim.number, claim.title, claim.category]),
-    ];
-    const csvContent = "data:text/csv;charset=utf-8," + csvRows.map(e => e.join(",")).join("\n");
-    const link = document.createElement("a");
-    link.setAttribute("href", encodeURI(csvContent));
-    link.setAttribute("download", "claims.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    console.log("Exporting to CSV...");
+    const headers = ["ID", "Title", "Category", "Content"];
+    const data = helpSupports.map(support => ({
+      ID: support._id,
+      Title: support.title,
+      Category: support.category,
+      Content: support.content
+    }));
+
+    exportCsvFile({ data, headers, filename: "help_supports.csv" });
   };
 
+  // Handle delete
+  const handleDelete = (id: string) => {
+    const token = localStorage.getItem('accessToken');
+    console.log(`Deleting help support with ID: ${id}`);
+    if (token) {
+      dispatch(deleteHelpSupport({ helpSupportId: id, token }));
+    } else {
+      console.log("No token found for delete action.");
+    }
+  };
+
+  // Filtered help supports
+  const filteredHelpSupports = useMemo(() => {
+    console.log("Filtering help supports...");
+    return helpSupports.filter((support: HelpSupport) =>
+      support.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      support.category.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [helpSupports, searchTerm]);
+
+  // Define table columns
+  const columns = useMemo(() => {
+    console.log("Defining table columns...");
+    return [
+      {
+        name: "Title",
+        selector: (row: HelpSupport) => row.title, // Add type annotation
+        sortable: true,
+        width: "250px",
+      },
+      {
+        name: "Category",
+        selector: (row: HelpSupport) => row.category, // Add type annotation
+        sortable: true,
+        width: "200px",
+      },
+      {
+        name: "Actions",
+        cell: (row: HelpSupport) => ( // Add type annotation
+          <div className="flex space-x-3">
+            <button
+              className="text-blue-500 hover:text-blue-700"
+              onClick={() => {
+                console.log("Setting current help support:", row);
+                dispatch(setCurrentHelpSupport(row));
+                setIsModalOpen(true);
+              }}
+            >
+              <FaEdit className="text-lg" />
+            </button>
+            <button
+              className="text-red-500 hover:text-red-700"
+              onClick={() => handleDelete(row._id)}
+            >
+              <FaTrashAlt className="text-md" />
+            </button>
+          </div>
+        ),
+        width: "150px",
+      },
+    ];
+  }, [dispatch]);
+
   return (
-    <div className=" bg-white rounded-lg">
-      <div className="flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72">
+    <div className="bg-white rounded-lg">
+      <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
         <div className="flex justify-between mb-4">
           <input
             type="text"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              console.log("Updating search term:", e.target.value);
+              setSearchTerm(e.target.value);
+            }}
             placeholder="Search..."
             className="p-2 border border-gray-300 rounded-lg"
           />
           <div className="flex flex-col md:flex-row lg:space-x-2">
-            <button onClick={openModal} className="px-1 md:px-4 py-0.5 md:py-2 ButtonBlue text-white rounded-md">
+            <button
+              onClick={() => {
+                console.log("Opening modal to add a new help support...");
+                dispatch(setCurrentHelpSupport(null));
+                setIsModalOpen(true);
+              }}
+              className="px-1 md:px-4 py-0.5 md:py-2 ButtonBlue text-white rounded-md"
+            >
               Add
             </button>
             <button
@@ -113,23 +145,29 @@ const HelpCenters: React.FC = () => {
         </div>
 
         <div className="shadow-md">
-          <DataTable
+          <CustomTable
             columns={columns}
-            data={filteredClaims}
-            pagination
-            customStyles={{
-              rows: { style: { fontSize: "14px", fontWeight: "500" } },
-              headRow: { style: { fontSize: "16px", fontWeight: "600", backgroundColor: "#f8f8f8" } },
-              headCells: { style: { fontWeight: "600", color: "#333" } },
-            }}
+            data={filteredHelpSupports}
           />
         </div>
       </div>
 
-      <CustomModelAdmin isOpen={isModalOpen} closeModal={closeModal} title="">
-        <ModalCenters />
+      {/* Modal for adding/editing help supports */}
+      <CustomModelAdmin
+        isOpen={isModalOpen}
+        closeModal={() => {
+          console.log("Closing modal...");
+          setIsModalOpen(false);
+        }}
+        title=""
+      >
+        <ModalCenters
+          onClose={() => {
+            console.log("Closing modal inside ModalCenters...");
+            setIsModalOpen(false);
+          }}
+        />
       </CustomModelAdmin>
-
     </div>
   );
 };

@@ -10,6 +10,7 @@ import faqReducer from './features/admin/faqSlice'; // Import the faqSlice
 import bannerSlice from './features/admin/bannerSlice';
 import howWorkSlice from './features/admin/howWorkSlice';
 import aboutSlice from './features/admin/aboutSlice';
+import helpSlice from './features/admin/helpSlice';
 
 
 const store = configureStore({
@@ -24,7 +25,8 @@ const store = configureStore({
     faq: faqReducer, // Add the FAQ reducer here
     banner: bannerSlice,
     howWork: howWorkSlice,
-    about: aboutSlice
+    about: aboutSlice,
+    help: helpSlice,
   },
 });
 
