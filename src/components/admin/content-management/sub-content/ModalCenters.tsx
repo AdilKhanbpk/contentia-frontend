@@ -9,7 +9,6 @@ import {
 } from "@/store/features/admin/helpSlice";
 import "react-quill/dist/quill.snow.css";
 
-// Dynamically import ReactQuill to avoid SSR issues
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 interface HelpSupportFormData {
@@ -33,7 +32,7 @@ export const ModalCenters: React.FC<ModalCentersProps> = ({ onClose }) => {
         control,
         reset,
         watch,
-        setValue,
+        formState: { errors },
     } = useForm<HelpSupportFormData>({
         defaultValues: {
             title: "",
@@ -42,74 +41,76 @@ export const ModalCenters: React.FC<ModalCentersProps> = ({ onClose }) => {
         },
     });
 
-    const watchedFields = watch();
+    const iconField = watch("icon");
 
     useEffect(() => {
-        console.log("useEffect triggered");
         if (currentHelpSupport) {
-            console.log("Editing existing help support:", currentHelpSupport);
             reset({
-                title: currentHelpSupport.title,
-                category: currentHelpSupport.category,
-                content: currentHelpSupport.content,
-            });
-        } else {
-            console.log("Creating new help support, resetting form fields.");
-            reset({
-                title: "",
-                category: "",
-                content: "",
+                title: currentHelpSupport.title || "",
+                category: currentHelpSupport.category || "",
+                content: currentHelpSupport.content || "",
             });
         }
+        console.log("currentHelpSupport:", currentHelpSupport);
     }, [currentHelpSupport, reset]);
 
-    const onSubmit = async (data: HelpSupportFormData) => {
-        console.log("Form data submitted:", data);
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            console.error("No access token found");
-            return;
-        }
-    
-        // Create FormData with all fields
-        const formData = new FormData();
-        formData.append("title", data.title);
-        formData.append("category", data.category);
-        formData.append("content", data.content || '');  
-    
-        // Append icon if present
-        if (data.icon && data.icon.length > 0) {
-            formData.append("icon", data.icon[0]);
-        }
-    
-        // Log FormData contents to verify
-        const formDataEntries = Array.from(formData.entries());
-        formDataEntries.forEach(([key, value]) => {
-            console.log(`FormData - ${key}:`, value);
-        });
-    
+    const onSubmit = async (formData: HelpSupportFormData) => {
         try {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                console.error("No access token found");
+                return;
+            }
+
+            console.log("Original formData:", formData);
+
+            // Create FormData
+            const submitData = new FormData();
+            submitData.append("title", formData.title.trim());
+            submitData.append("category", formData.category.trim());
+            submitData.append("content", formData.content.trim());
+
+            if (iconField && iconField instanceof FileList && iconField.length > 0) {
+                submitData.append("icon", iconField[0]);
+            }
+
+            console.log("FormData contents before submission:");
+            Array.from(submitData.entries()).forEach(([key, value]) => {
+                console.log(`FormData - ${key}:`, value);
+            });
+
             if (currentHelpSupport) {
-                await dispatch(
+                console.log("Attempting to update Help Support...");
+                console.log("Help Support ID:", currentHelpSupport._id);
+                console.log("Data being sent to update (FormData):", submitData);
+
+                const result = await dispatch(
                     updateHelpSupport({
                         helpSupportId: currentHelpSupport._id,
-                        data: formData,
+                        data: submitData,
                         token,
                     })
                 ).unwrap();
+                console.log("Update successful:", result);
             } else {
-                await dispatch(
+                console.log("Attempting to create new Help Support...");
+                console.log("Data being sent to create (FormData):", submitData);
+
+                const result = await dispatch(
                     createHelpSupport({
-                        data: formData,
+                        data: submitData,
                         token,
                     })
                 ).unwrap();
+                console.log("Creation successful:", result);
             }
+
             onClose();
         } catch (error) {
-            console.error("Operation failed:", error);
+            console.error("Form submission failed:", error);
         }
     };
+
 
     return (
         <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">
@@ -117,7 +118,7 @@ export const ModalCenters: React.FC<ModalCentersProps> = ({ onClose }) => {
                 {currentHelpSupport ? "Edit Help Support" : "Create Help Support"}
             </h1>
 
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
                 {/* Title */}
                 <div className="mt-4">
                     <label className="block text-sm font-semibold">Help Title</label>
@@ -127,6 +128,9 @@ export const ModalCenters: React.FC<ModalCentersProps> = ({ onClose }) => {
                         placeholder="Enter help title"
                         className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none"
                     />
+                    {errors.title && (
+                        <span className="text-red-500 text-sm">{errors.title.message}</span>
+                    )}
                 </div>
 
                 {/* Category */}
@@ -134,13 +138,16 @@ export const ModalCenters: React.FC<ModalCentersProps> = ({ onClose }) => {
                     <label className="block text-sm font-semibold">Select Category</label>
                     <select
                         {...register("category", { required: "Category is required" })}
-                        className="w-full py-2 border border-gray-400 rounded-md focus:outline-none"
+                        className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none"
                     >
                         <option value="">Select a category</option>
                         <option value="tech">Tech</option>
                         <option value="support">Support</option>
                         <option value="general">General</option>
                     </select>
+                    {errors.category && (
+                        <span className="text-red-500 text-sm">{errors.category.message}</span>
+                    )}
                 </div>
 
                 {/* Content */}
@@ -150,16 +157,18 @@ export const ModalCenters: React.FC<ModalCentersProps> = ({ onClose }) => {
                         name="content"
                         control={control}
                         rules={{ required: "Content is required" }}
-                        render={({ field }) => (
+                        render={({ field: { onChange, value } }) => (
                             <ReactQuill
-                                value={field.value}
-                                onChange={(value) => field.onChange(value)}
-                                placeholder="Write something..."
+                                value={value || ''}
+                                onChange={onChange}
                                 theme="snow"
                                 className="w-full border border-gray-400 rounded-lg mt-2"
                             />
                         )}
                     />
+                    {errors.content && (
+                        <span className="text-red-500 text-sm">{errors.content.message}</span>
+                    )}
                 </div>
 
                 {/* Icon Upload */}
@@ -167,8 +176,8 @@ export const ModalCenters: React.FC<ModalCentersProps> = ({ onClose }) => {
                     <label className="block text-sm font-semibold">Upload Icon</label>
                     <input
                         type="file"
-                        {...register("icon")}
                         accept="image/*"
+                        {...register("icon")}
                         className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none"
                     />
                 </div>

@@ -17,12 +17,76 @@ export interface Creator {
   status: "Verified" | "Pending" | "Rejected";
 }
 
+// Define the Order interface based on your model
+interface Order {
+  _id: string;
+  coupon?: string;
+  orderOwner: string;
+  assignedCreators: string[];
+  appliedCreators: string[];
+  noOfUgc: number;
+  totalPrice: number;
+  orderStatus: 'pending' | 'active' | 'completed' | 'cancelled' | 'revision';
+  paymentStatus: 'paid' | 'pending' | 'refunded' | 'cancelled';
+  contentsDelivered?: number;
+  additionalServices: {
+    platform: string;
+    duration: string;
+    edit: boolean;
+    aspectRatio: string;
+    share?: boolean;
+    coverPicture?: boolean;
+    creatorType?: string;
+    productShipping?: boolean;
+  };
+  preferences?: {
+    creatorGender?: string;
+    minCreatorAge?: number;
+    maxCreatorAge?: number;
+    interests?: string[];
+    contentType?: string;
+    locationAddress?: {
+      country?: string;
+      city?: string;
+      district?: string;
+      street?: string;
+      fullAddress?: string;
+    };
+  };
+  briefContent?: {
+    brandName?: string;
+    brief?: string;
+    productServiceName?: string;
+    productServiceDesc?: string;
+    scenario?: string;
+    caseStudy?: string;
+    uploadFiles?: string;
+    uploadFileDate?: string;
+  };
+  numberOfRequests?: number;
+  orderQuota?: number;
+  quotaLeft?: number;
+  uploadFiles?: Array<{
+    uploadedBy: string;
+    fileUrls: string[];
+    uploadedDate: Date;
+  }>;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
 const initialCreators: Creator[] = [
   { id: 100, name: "Earl Parrini", email: "sah@gmail.com", contact: "+1 (965) 886-4355", totalOrders: 55, country: "Russia", status: "Verified" },
   { id: 99, name: "Nora Willis", email: "ket@gmail.com", contact: "+1 (382) 858-5995", totalOrders: 63, country: "Kenya", status: "Pending" },
 ];
 
-const RequestModal: React.FC = () => {
+interface RequestModalProps {
+  order: Order | null;  // Add type definition for Order if not already defined
+  onApprove: (orderId: string, creatorId: string) => Promise<void>;
+  onReject: (orderId: string, creatorId: string) => Promise<void>;
+}
+
+const RequestModal: React.FC<RequestModalProps> = ({ order, onApprove, onReject }) => {
   const [customers, setCustomers] = useState<Creator[]>(initialCreators);
   const [editingCreator, setEditingCreator] = useState<Creator | null>(null);
   const [showEditForm, setShowEditForm] = useState(false);
