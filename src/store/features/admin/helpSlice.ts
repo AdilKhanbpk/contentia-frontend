@@ -104,7 +104,6 @@ export const fetchHelpSupportById = createAsyncThunk(
     }
 );
 
-// Update a help support
 export const updateHelpSupport = createAsyncThunk(
     "helpSupport/updateHelpSupport",
     async (
@@ -114,8 +113,13 @@ export const updateHelpSupport = createAsyncThunk(
         try {
             console.log("Initiating update for help support...");
             console.log("Help Support ID:", helpSupportId);
-            console.log("Data being sent:", data);
             console.log("Token provided:", token);
+
+            // Log FormData content
+            console.log("Logging FormData contents:");
+            Array.from(data.entries()).forEach(([key, value]) => {
+                console.log(`Thunk FormData - ${key}:`, value);
+            });
 
             axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             console.log("Authorization header set.");

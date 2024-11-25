@@ -11,6 +11,9 @@ import bannerSlice from './features/admin/bannerSlice';
 import howWorkSlice from './features/admin/howWorkSlice';
 import aboutSlice from './features/admin/aboutSlice';
 import helpSlice from './features/admin/helpSlice';
+import blogSlice from './features/admin/blogSlice';
+import couponSlice from './features/admin/couponSlice';
+import ordersSlice from './features/admin/ordersSlice';
 
 
 const store = configureStore({
@@ -27,6 +30,9 @@ const store = configureStore({
     howWork: howWorkSlice,
     about: aboutSlice,
     help: helpSlice,
+    blog: blogSlice,
+    coupon: couponSlice,
+    orders: ordersSlice,
   },
 });
 

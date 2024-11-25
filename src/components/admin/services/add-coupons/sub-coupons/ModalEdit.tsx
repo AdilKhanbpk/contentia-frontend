@@ -1,169 +1,158 @@
-import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+"use client";
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCouponById, updateCoupon } from '@/store/features/admin/couponSlice';
+import { RootState } from '@/store/store';
 
-// Unified Coupon Interface to Avoid Mismatches
-interface Coupon {
-    id: number;
-    code: string;
-    customer: string;
-    discount: string;
-    limit: string;
-    endingDate: string;
-    status: string;
+interface ModalEditProps {
+    closeModal: () => void;
+    token: string;
+    couponId: string | null;
 }
 
-// Initial Coupons Array
-const initialCoupons: Coupon[] = [
-    {
-        id: 1,
-        code: "HELLO1",
-        customer: "All",
-        discount: "20%",
-        limit: "Limitless",
-        endingDate: "23/09/2024",
-        status: "Active",
-    },
-    {
-        id: 2,
-        code: "WELCOME3",
-        customer: "Saud Khan",
-        discount: "500TL",
-        limit: "1",
-        endingDate: "28/09/2024",
-        status: "Active",
-    },
-    {
-        id: 3,
-        code: "BLACKFRIDAY",
-        customer: "All",
-        discount: "10%",
-        limit: "1,000",
-        endingDate: "30/09/2024",
-        status: "Cancelled",
-    },
-];
-
 interface CouponForm {
-    id?: number;
     code: string;
     customer: string;
     discountTL?: number;
     discountPercent?: number;
     useLimit: number;
     endingDate: string;
+    isActive: boolean;
 }
 
-export default function ModalEdit() {
-    const [data, setData] = useState<Coupon[]>(initialCoupons);
-    const [editId, setEditId] = useState<number | null>(null); // Ensure correct type
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+export default function ModalEdit({ closeModal, token, couponId }: ModalEditProps) {
+    const dispatch = useDispatch();
+    const { selectedCoupon, loading } = useSelector((state: RootState) => state.coupon);
+    
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm<CouponForm>();
 
-    const { control, handleSubmit, register, reset } = useForm<CouponForm>();
+    // Fetch coupon data when component mounts or couponId changes
+    useEffect(() => {
+        if (couponId && token) {
+            dispatch(getCouponById({ id: couponId, token }) as any);
+        }
+    }, [couponId, token, dispatch]);
 
-    // Helper to format discount (handles both TL and percentage cases)
-    const formatDiscount = (formData: CouponForm) => {
-        return formData.discountTL
-            ? `${formData.discountTL} TL`
-            : `${formData.discountPercent || 0}%`;
-    };
+    // Populate form when selectedCoupon changes
+    useEffect(() => {
+        if (selectedCoupon) {
+            setValue('code', selectedCoupon.code);
+            setValue('customer', selectedCoupon.customer);
+            setValue('discountTL', selectedCoupon.discountTl ? parseFloat(selectedCoupon.discountTl) : undefined);
+            setValue('discountPercent', selectedCoupon.discountPercentage);
+            setValue('useLimit', selectedCoupon.usageLimit || 0);
+            setValue('endingDate', new Date(selectedCoupon.expiryDate).toISOString().split('T')[0]);
+            setValue('isActive', selectedCoupon.isActive);
+        }
+    }, [selectedCoupon, setValue]);
 
-    const closeEditModal = () => {
-        setEditId(null);
-        reset();
-        setIsEditModalOpen(false);
-    };
+    const onSubmit = async (formData: CouponForm) => {
+        if (!couponId) return;
 
-    const openCreateModal = () => setIsCreateModalOpen(true);
-    const closeCreateModal = () => {
-        reset();
-        setIsCreateModalOpen(false);
-    };
-
-    const onSubmit = (formData: CouponForm) => {
-        if (editId !== null) {
-            // Update existing coupon
-            const updatedData = data.map((item) =>
-                item.id === editId ? { ...item, ...formData, discount: formatDiscount(formData) } : item
-            );
-            setData(updatedData);
-            closeEditModal();
-        } else {
-            // Add new coupon
-            const newCoupon: Coupon = {
-                ...formData,
-                id: data.length + 1,
-                discount: formatDiscount(formData),
-                limit: formData.useLimit.toString(),
-                status: "Active",
+        try {
+            const couponData = {
+                code: formData.code,
+                customer: formData.customer,
+                discountTl: formData.discountTL?.toString(),
+                discountPercentage: formData.discountPercent,
+                usageLimit: formData.useLimit === 0 ? null : formData.useLimit,
+                expiryDate: new Date(formData.endingDate).toISOString(),
+                isActive: formData.isActive
             };
-            setData([...data, newCoupon]);
-            closeCreateModal();
+
+            console.log("formData in model edit before saving", formData);
+
+            await dispatch(updateCoupon({ id: couponId, data: couponData, token }) as any);
+            closeModal();
+        } catch (error) {
+            console.error('Failed to update coupon:', error);
         }
     };
 
+    if (loading) {
+        return <div className="p-4">Loading...</div>;
+    }
+
     return (
-        <>
-            <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:px-16 lg:py-8">
-                <h2 className="text-lg font-semibold mb-4">Edit Coupon</h2>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-semibold">Code</label>
-                            <input
-                                type="text"
-                                {...register('code')}
-                                className="w-full px-6 py-2 focus:outline-none  border rounded-md"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-semibold">Select Customer</label>
-                            <input
-                                type="text"
-                                {...register('customer')}
-                                className="w-full px-6 py-2 focus:outline-none  border rounded-md"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-semibold">Discount (TL)</label>
-                            <input
-                                type="number"
-                                {...register('discountTL')}
-                                className="w-full px-6 py-2 focus:outline-none  border rounded-md"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-semibold">Discount (%)</label>
-                            <input
-                                type="number"
-                                {...register('discountPercent')}
-                                className="w-full px-6 py-2 focus:outline-none  border rounded-md"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-semibold">Use Limit</label>
-                            <input
-                                type="number"
-                                {...register('useLimit')}
-                                className="w-full px-6 py-2 focus:outline-none  border rounded-md"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-semibold">Ending Date</label>
-                            <input
-                                type="date"
-                                {...register('endingDate')}
-                                className="w-full px-6 py-2 focus:outline-none  border rounded-md"
-                            />
-                        </div>
+        <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:px-16 lg:py-8">
+            <h2 className="text-lg font-semibold mb-4">Edit Coupon</h2>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-semibold">Code</label>
+                        <input
+                            type="text"
+                            {...register('code', { required: 'Code is required' })}
+                            className="w-full px-6 py-2 focus:outline-none border rounded-md"
+                        />
+                        {errors.code && <span className="text-red-500 text-sm">{errors.code.message}</span>}
                     </div>
-                    <div className="mt-6 text-right">
-                        <button type="submit" className="ButtonBlue text-white px-5 py-2 rounded">
-                            Save
-                        </button>
+                    <div>
+                        <label className="block text-sm font-semibold">Select Customer</label>
+                        <input
+                            type="text"
+                            {...register('customer', { required: 'Customer is required' })}
+                            className="w-full px-6 py-2 focus:outline-none border rounded-md"
+                        />
+                        {errors.customer && <span className="text-red-500 text-sm">{errors.customer.message}</span>}
                     </div>
-                </form>
-            </div>
-        </>
+                    <div>
+                        <label className="block text-sm font-semibold">Discount (TL)</label>
+                        <input
+                            type="number"
+                            {...register('discountTL', {
+                                validate: (value, formValues) => 
+                                    (value === undefined && formValues.discountPercent === undefined) ? 
+                                    'Either TL or Percentage discount is required' : true
+                            })}
+                            className="w-full px-6 py-2 focus:outline-none border rounded-md"
+                        />
+                        {errors.discountTL && <span className="text-red-500 text-sm">{errors.discountTL.message}</span>}
+                    </div>
+                    <div>
+                        <label className="block text-sm font-semibold">Discount (%)</label>
+                        <input
+                            type="number"
+                            {...register('discountPercent')}
+                            className="w-full px-6 py-2 focus:outline-none border rounded-md"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-semibold">Use Limit</label>
+                        <input
+                            type="number"
+                            {...register('useLimit', { required: 'Use limit is required' })}
+                            className="w-full px-6 py-2 focus:outline-none border rounded-md"
+                        />
+                        {errors.useLimit && <span className="text-red-500 text-sm">{errors.useLimit.message}</span>}
+                    </div>
+                    <div>
+                        <label className="block text-sm font-semibold">Ending Date</label>
+                        <input
+                            type="date"
+                            {...register('endingDate', { required: 'Ending date is required' })}
+                            className="w-full px-6 py-2 focus:outline-none border rounded-md"
+                        />
+                        {errors.endingDate && <span className="text-red-500 text-sm">{errors.endingDate.message}</span>}
+                    </div>
+                    <div>
+                        <label className="block text-sm font-semibold">
+                            <input
+                                type="checkbox"
+                                {...register('isActive')}
+                                className="mr-2"
+                            />
+                            Active
+                        </label>
+                    </div>
+                </div>
+                <div className="mt-6 text-right">
+                    <button type="submit" className="ButtonBlue text-white px-5 py-2 rounded">
+                        Update
+                    </button>
+                </div>
+            </form>
+        </div>
     );
 }

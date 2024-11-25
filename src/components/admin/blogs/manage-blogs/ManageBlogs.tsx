@@ -1,176 +1,275 @@
 "use client";
-import React, { useState } from "react";
-import { FaCheck, FaTimes, FaEye, FaFileCsv } from "react-icons/fa";
-import dynamic from "next/dynamic";
-import { useForm } from "react-hook-form";
-import CustomModelAdmin from '../../../modal/CustomModelAdmin';
+
+import React, { useEffect, useState, useCallback, memo } from "react";
+import { FaCheck, FaTimes, FaEye } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/store/store";
+import {
+  fetchBlogs,
+  deleteBlog,
+  createBlog,
+  updateBlog,
+  Blog,
+} from "@/store/features/admin/blogSlice";
+import CustomModelAdmin from "../../../modal/CustomModelAdmin";
 import Modal from "./sub-blogs/Modal";
-import Image from "next/image";
+import { ModalEdit } from "./sub-blogs/ModalEdit";
+import { ModalView } from "./sub-blogs/ModalView";
+import CustomTable from "@/components/custom-table/CustomTable";
+import { exportCsvFile } from "@/utils/exportCsvFile";
 
-const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
-
-// Define the Blog interface
-export interface Blog {
-  id: number;
-  number: number;
-  creator: string;
-  title: string;
-  category: string;
-  status: string;
-  email: string;
+// Extended Blog interface to include missing properties
+interface ExtendedBlog extends Blog {
+  number?: string;
+  creator?: string;
+  status?: string;
 }
 
-// Initial blogs data
-const initialBlogs: Blog[] = [
-  { id: 1, number: 1, creator: "Earl Parrini", email: "sah@gmail.com", title: "Blog Title 1", category: "Tech", status: "Published" },
-  { id: 2, number: 2, creator: "Earl Parrini", email: "sah@gmail.com", title: "Blog Title 2", category: "Health", status: "Draft" },
-  { id: 3, number: 3, creator: "Earl Parrini", email: "sah@gmail.com", title: "Blog Title 3", category: "Finance", status: "Pending" },
-];
+const SearchBar = memo(({ onSearch }: { onSearch: (value: string) => void }) => (
+  <input
+    type="text"
+    placeholder="Search..."
+    onChange={(e) => onSearch(e.target.value)}
+    className="p-2 border border-gray-300 rounded-lg"
+  />
+));
+
+SearchBar.displayName = "SearchBar";
+
+const TableActions = memo(
+  ({
+    onApprove,
+    onReject,
+    onView,
+    id,
+  }: {
+    onApprove: (id: string) => void;
+    onReject: (id: string) => void;
+    onView: (id: string) => void;
+    id: string;
+  }) => (
+    <div className="flex space-x-3">
+      <button
+        className="text-green-500 hover:text-green-700"
+        onClick={() => onApprove(id)}
+      >
+        <FaCheck className="text-lg" />
+      </button>
+      <button
+        className="text-red-500 hover:text-red-700"
+        onClick={() => onReject(id)}
+      >
+        <FaTimes className="text-lg" />
+      </button>
+      <button
+        className="text-gray-500 hover:text-gray-700"
+        onClick={() => onView(id)}
+      >
+        <FaEye className="text-lg" />
+      </button>
+    </div>
+  )
+);
+
+TableActions.displayName = "TableActions";
 
 const ManageBlogs: React.FC = () => {
-  const [blogs, setBlogs] = useState(initialBlogs);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<Blog>();
-
-  const filteredBlogs = blogs.filter((blog) =>
-    blog.title.toLowerCase().includes(searchTerm.toLowerCase())
+  const dispatch = useDispatch<AppDispatch>();
+  const blogs = useSelector((state: RootState) =>
+    state.blog.data as ExtendedBlog[] || []
   );
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [currentBlog, setCurrentBlog] = useState<ExtendedBlog | null>(null);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const handleApprove = useCallback(
+    async (id: string) => {
+      const token = localStorage.getItem("accessToken");
+      if (!token) return;
 
-  const [isModalTwoOpen, setIsModalTwoOpen] = useState(false);
+      const formData = new FormData();
+      formData.append("status", "Published");
 
-  const openModalTwo = () => setIsModalTwoOpen(true);
-  const closeModalTwo = () => setIsModalTwoOpen(false);
+      try {
+        await dispatch(
+          updateBlog({
+            blogId: id,
+            data: formData,
+            token,
+          })
+        ).unwrap();
+      } catch (error) {
+        console.error("Approval failed:", error);
+      }
+    },
+    [dispatch]
+  );
 
-  // Define table columns
-  const columns = [
-    {
-      name: "#",
-      selector: (row: any) => row.number,
-      sortable: true,
-      width: "80px",
-    },
-    {
-      name: "Creator",
-      cell: (row: any) => (
-        <div className="flex items-center space-x-2">
-          <Image width={10} height={10} src="/icons/avatar.png" alt="avatar" className="w-10 h-10 rounded-full" />
-          <div>
-            <p className="font-semibold">{row.creator}</p>
-            <p className="text-sm whitespace-nowrap text-gray-500">{row.email}</p>
-          </div>
-        </div>
-      ),
-      sortable: false,
-      width: "200px",
-    },
-    {
-      name: "Title",
-      selector: (row: any) => row.title,
-      sortable: true,
-      width: "200px",
-    },
-    {
-      name: "Category",
-      selector: (row: any) => row.category,
-      sortable: true,
-      width: "150px",
-    },
-    {
-      name: "Status",
-      cell: (row: any) => (
-        <span
-          className={`px-2 py-1 rounded-lg text-sm font-semibold ${row.status === "Published" ? "bg-green-100 text-green-600" :
-            row.status === "Draft" ? "bg-yellow-100 text-yellow-600" :
-              "bg-blue-100 text-blue-600"
-            }`}
-        >
-          {row.status}
-        </span>
-      ),
-      sortable: true,
-      width: "150px",
-    },
-    {
-      name: "Actions",
-      cell: (row: any) => (
-        <div className="flex space-x-3">
-          <button className="text-green-500 hover:text-green-700">
-            <FaCheck className="text-lg" />
-          </button>
-          <button className="text-red-500 hover:text-red-700">
-            <FaTimes className="text-lg" />
-          </button>
-          <button className="text-gray-500 hover:text-gray-700">
-            <FaEye className="text-lg" onClick={openModalTwo} />
-          </button>
-        </div>
-      ),
-      width: "150px",
-    },
-  ];
+  const handleReject = useCallback(
+    async (id: string) => {
+      const token = localStorage.getItem("accessToken");
+      if (!token) return;
 
-  // Function to export to CSV
-  const exportToCSV = () => {
-    const csvRows = [
-      ["#", "Creator", "Title", "Category", "Status"],
-      ...initialBlogs.map(blog => [blog.number, blog.creator, blog.title, blog.category, blog.status]),
-    ];
-    const csvContent = "data:text/csv;charset=utf-8," + csvRows.map(e => e.join(",")).join("\n");
-    const link = document.createElement("a");
-    link.setAttribute("href", encodeURI(csvContent));
-    link.setAttribute("download", "blogs.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+      const formData = new FormData();
+      formData.append("status", "Rejected");
+
+      try {
+        await dispatch(
+          updateBlog({
+            blogId: id,
+            data: formData,
+            token,
+          })
+        ).unwrap();
+      } catch (error) {
+        console.error("Rejection failed:", error);
+      }
+    },
+    [dispatch]
+  );
+
+  const handleView = useCallback(
+    (id: string) => {
+      const blog = blogs.find((blog) => blog._id === id);
+      setCurrentBlog(blog || null);
+      setIsViewModalOpen(true);
+    },
+    [blogs]
+  );
+
+  const handleCreate = async (blogData: Partial<ExtendedBlog>) => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) return;
+
+    try {
+      const formData = new FormData();
+      Object.entries(blogData).forEach(([key, value]: [string, any]) => {
+        if (key === "keywords" && Array.isArray(value)) {
+          formData.append("metaKeywords", JSON.stringify(value));
+        } else if (key === "bannerImage" && value instanceof File) {
+          formData.append("bannerImage", value);
+        } else if (value) {
+          formData.append(key, value.toString());
+        }
+      });
+
+      await dispatch(createBlog({ data: formData, token })).unwrap();
+      setIsCreateModalOpen(false);
+      await dispatch(fetchBlogs(token));
+    } catch (error) {
+      console.error("Blog creation failed:", error);
+    }
   };
 
+  const handleEdit = async (blogData: Partial<ExtendedBlog>) => {
+    const token = localStorage.getItem("accessToken");
+    if (!token || !currentBlog) return;
+
+    try {
+      const formData = new FormData();
+      Object.entries(blogData).forEach(([key, value]) => {
+        if (value) formData.append(key, value.toString());
+      });
+
+      await dispatch(
+        updateBlog({
+          blogId: currentBlog._id,
+          data: formData,
+          token,
+        })
+      ).unwrap();
+      setIsEditModalOpen(false);
+      await dispatch(fetchBlogs(token));
+    } catch (error) {
+      console.error("Blog update failed:", error);
+    }
+  };
+
+  const handleSearch = useCallback((value: string) => {
+    setSearchTerm(value);
+  }, []);
+
+  const handleExport = useCallback(() => {
+    const headers = ["#", "Creator", "Title", "Category", "Status"];
+    const data = blogs.map((blog) => ({
+      "#": blog.number || "",
+      Creator: blog.creator || "",
+      Title: blog.title || "",
+      Category: blog.category || "",
+      Status: blog.status || "",
+    }));
+
+    exportCsvFile({ data, headers, filename: "blogs.csv" });
+  }, [blogs]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      dispatch(fetchBlogs(token));
+    }
+  }, [dispatch]);
+
+  const filteredBlogs = blogs.filter((blog) =>
+    [blog.title, blog.creator, blog.category]
+      .filter(Boolean)
+      .some((field) =>
+        field?.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+  );
+
   return (
-    <div className=" bg-white rounded-lg">
-      <div className="flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72">
-        <div className="flex justify-between mb-4">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search..."
-            className="p-2 border border-gray-300 rounded-lg"
-          />
-          <div className="flex flex-col md:flex-row lg:space-x-2">
-            <button onClick={openModal} className="px-1 md:px-4 py-0.5 md:py-2 ButtonBlue text-white rounded-md">
+    <div className="bg-white rounded-lg">
+      <div className="flex flex-col py-24 px-4">
+        <div className="flex justify-between items-center mb-4">
+          <SearchBar onSearch={handleSearch} />
+          <div className="flex space-x-2">
+            <button
+              onClick={() => setIsCreateModalOpen(true)}
+              className="px-4 py-2 ButtonBlue text-white rounded-md"
+            >
               New Blog
             </button>
             <button
-              className="px-1 md:px-4 py-0.5 md:py-2 bg-green-500 text-white rounded-md"
-              onClick={exportToCSV}
+              onClick={handleExport}
+              className="px-4 py-2 bg-green-500 text-white rounded-md"
             >
-              Export CSV <FaFileCsv className="inline ml-2" />
+              Export CSV
             </button>
           </div>
         </div>
-
-        <div className="shadow-md">
-          <DataTable
-            columns={columns}
-            data={filteredBlogs}
-            pagination
-            customStyles={{
-              rows: { style: { fontSize: "14px", fontWeight: "500" } },
-              headRow: { style: { fontSize: "16px", fontWeight: "600", backgroundColor: "#f8f8f8" } },
-              headCells: { style: { fontWeight: "600", color: "#333" } },
-            }}
-          />
-        </div>
+        <CustomTable columns={[]} data={filteredBlogs} />
       </div>
 
-      <CustomModelAdmin isOpen={isModalOpen} closeModal={closeModal} title="">
-        <Modal />
-      </CustomModelAdmin>
+      {isCreateModalOpen && (
+        <CustomModelAdmin isOpen={isCreateModalOpen} closeModal={() => setIsCreateModalOpen(false)} title="">
+          <Modal
+            onSubmit={handleCreate}
+            onClose={() => setIsCreateModalOpen(false)}
+          />
+        </CustomModelAdmin>
+      )}
+
+      {isEditModalOpen && currentBlog && (
+        <CustomModelAdmin isOpen={isEditModalOpen} closeModal={() => setIsEditModalOpen(false)} title="">
+          <ModalEdit
+            blogData={currentBlog}
+            onSubmit={handleEdit}
+            onClose={() => setIsEditModalOpen(false)}
+          />
+        </CustomModelAdmin>
+      )}
+
+      {isViewModalOpen && currentBlog && (
+        <CustomModelAdmin isOpen={isViewModalOpen} closeModal={() => setIsViewModalOpen(false)} title="">
+          <ModalView
+            blogData={currentBlog}
+            onClose={() => setIsViewModalOpen(false)}
+          />
+        </CustomModelAdmin>
+      )}
     </div>
   );
 };

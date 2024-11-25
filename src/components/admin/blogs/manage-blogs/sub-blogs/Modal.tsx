@@ -1,15 +1,64 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css"; // Import the Quill editor CSS
+import "react-quill/dist/quill.snow.css";
+
+// Define props interface
+interface ModalProps {
+    onSubmit?: (blogData: BlogData) => void;
+    onClose: () => void;
+}
+
+interface BlogData {
+    title: string;
+    category: string;
+    keywords: string;
+    description: string;
+    banner?: File;
+    metaDescription: string;
+}
 
 // Dynamically import the Quill editor to avoid SSR issues
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-export default function Modal() {
-    const [description, setDescription] = useState("");
+export default function Modal({ onSubmit, onClose }: ModalProps) {
+    const [blogData, setBlogData] = useState<BlogData>({
+        title: "",
+        category: "",
+        keywords: "",
+        description: "",
+        metaDescription: ""
+    });
+    const [banner, setBanner] = useState<File | null>(null);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setBlogData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
 
     const handleDescriptionChange = (value: string) => {
-        setDescription(value);
+        setBlogData(prev => ({
+            ...prev,
+            description: value
+        }));
+    };
+
+    const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setBanner(file);
+            setBlogData(prev => ({
+                ...prev,
+                banner: file
+            }));
+        }
+    };
+
+    const handleSubmit = () => {
+        onSubmit?.(blogData);
+        onClose();
     };
 
     return (
@@ -21,6 +70,9 @@ export default function Modal() {
                 <label className="block text-sm font-semibold">Title</label>
                 <input
                     type="text"
+                    name="title"
+                    value={blogData.title}
+                    onChange={handleInputChange}
                     placeholder="Enter blog title"
                     className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none"
                 />
@@ -29,12 +81,16 @@ export default function Modal() {
             {/* Category */}
             <div className="mt-4">
                 <label className="block text-sm font-semibold">Category</label>
-                <select className="w-full py-2 border border-gray-400 rounded-md focus:outline-none">
+                <select 
+                    name="category"
+                    value={blogData.category}
+                    onChange={handleInputChange}
+                    className="w-full py-2 border border-gray-400 rounded-md focus:outline-none"
+                >
                     <option value="">Select a category</option>
                     <option value="tech">Tech</option>
                     <option value="health">Health</option>
                     <option value="finance">Finance</option>
-                    {/* Add other categories as needed */}
                 </select>
             </div>
 
@@ -43,6 +99,9 @@ export default function Modal() {
                 <label className="block text-sm font-semibold">Keywords</label>
                 <input
                     type="text"
+                    name="keywords"
+                    value={blogData.keywords}
+                    onChange={handleInputChange}
                     placeholder="Click the enter button after writing your keyword"
                     className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none"
                 />
@@ -52,7 +111,7 @@ export default function Modal() {
             <div className="mt-4">
                 <label className="block text-sm font-semibold">Description</label>
                 <ReactQuill
-                    value={description}
+                    value={blogData.description}
                     onChange={handleDescriptionChange}
                     placeholder="Write something..."
                     theme="snow"
@@ -66,6 +125,7 @@ export default function Modal() {
                 <div className="relative border border-gray-400 rounded-md p-4 text-center bg-gray-200" style={{ width: '100%', maxWidth: '500px', height: '125px' }}>
                     <input
                         type="file"
+                        onChange={handleBannerChange}
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                         accept="image/*"
                     />
@@ -75,19 +135,30 @@ export default function Modal() {
                 </div>
             </div>
 
-
             {/* Meta Description */}
             <div className="mt-4">
                 <label className="block text-sm font-semibold">Meta Description</label>
                 <input
                     type="text"
+                    name="metaDescription"
+                    value={blogData.metaDescription}
+                    onChange={handleInputChange}
                     placeholder="Enter meta description"
                     className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none"
                 />
             </div>
 
-            <div className="flex justify-end mt-6">
-                <button className="ButtonBlue text-white px-8 py-1 rounded-lg font-semibold">
+            <div className="flex justify-end mt-6 space-x-4">
+                <button 
+                    onClick={onClose}
+                    className="px-6 py-1 rounded-lg font-semibold border border-gray-300"
+                >
+                    Cancel
+                </button>
+                <button 
+                    onClick={handleSubmit}
+                    className="ButtonBlue text-white px-8 py-1 rounded-lg font-semibold"
+                >
                     Save
                 </button>
             </div>
