@@ -15,6 +15,7 @@ import blogSlice from './features/admin/blogSlice';
 import couponSlice from './features/admin/couponSlice';
 import ordersSlice from './features/admin/ordersSlice';
 import pricingSlice from './features/admin/pricingSlice';
+import addPriceSlice from './features/admin/addPriceSlice';
 
 
 const store = configureStore({
@@ -35,6 +36,7 @@ const store = configureStore({
     coupon: couponSlice,
     orders: ordersSlice,
     pricing: pricingSlice,
+    addPrice: addPriceSlice,
   },
 });
 
