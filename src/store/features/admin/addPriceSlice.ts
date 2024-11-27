@@ -2,12 +2,8 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { axiosInstance } from '@/store/axiosInstance';
 import { AxiosError } from 'axios';
 
-// Define the type for Additional Service
 export interface AdditionalService {
   _id?: string;
-  name?: string;
-  price?: number;
-  image?: string;
   platform?: string;
   aspectRatio?: string;
   editPrice?: number;
@@ -19,7 +15,6 @@ export interface AdditionalService {
   sixtySecondDurationPrice?: number;
 }
 
-// State interface
 export interface AdditionalServiceState {
   data: AdditionalService | null;
   list: AdditionalService[];
@@ -27,7 +22,6 @@ export interface AdditionalServiceState {
   error: string | null;
 }
 
-// Initial state
 const initialState: AdditionalServiceState = {
   data: null,
   list: [],
@@ -35,35 +29,6 @@ const initialState: AdditionalServiceState = {
   error: null,
 };
 
-// Create Additional Service
-export const createAdditionalService = createAsyncThunk(
-  'additionalService/createAdditionalService',
-  async (
-    { data, token }: { data: AdditionalService; token: string },
-    { rejectWithValue }
-  ) => {
-    try {
-      console.log("[Debug] Creating Additional Service:", data);
-      const response = await axiosInstance.post('/admin/additionalServices', data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      console.log("[Debug] Create Additional Service Response:", response.data);
-      return response.data.data;
-    } catch (error) {
-      const axiosError = error as AxiosError;
-      console.error("[Error] Failed to create additional service:", axiosError.response?.data || error);
-      return rejectWithValue(
-        axiosError.response?.data || 'Failed to create additional service'
-      );
-    }
-  }
-);
-
-// Fetch Additional Services
 export const fetchAdditionalServices = createAsyncThunk(
   'additionalService/fetchAdditionalServices',
   async (token: string, { rejectWithValue }) => {
@@ -74,7 +39,12 @@ export const fetchAdditionalServices = createAsyncThunk(
       });
       
       console.log("[Debug] Fetch Additional Services Response:", response.data);
-      return response.data.data;
+      
+      // Specifically access the data from the response
+      const serviceData = response.data.data;
+      console.log("[Debug] Extracted Service Data:", serviceData);
+      
+      return serviceData;
     } catch (error) {
       const axiosError = error as AxiosError;
       console.error("[Error] Failed to fetch additional services:", axiosError.response?.data || error);
@@ -85,32 +55,6 @@ export const fetchAdditionalServices = createAsyncThunk(
   }
 );
 
-// Fetch Additional Service by ID
-export const fetchAdditionalServiceById = createAsyncThunk(
-  'additionalService/fetchAdditionalServiceById',
-  async (
-    { id, token }: { id: string; token: string },
-    { rejectWithValue }
-  ) => {
-    try {
-      console.log("[Debug] Fetching Additional Service by ID:", id);
-      const response = await axiosInstance.get(`/admin/additionalServices/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      
-      console.log("[Debug] Fetch Additional Service by ID Response:", response.data);
-      return response.data.data;
-    } catch (error) {
-      const axiosError = error as AxiosError;
-      console.error("[Error] Failed to fetch additional service by ID:", axiosError.response?.data || error);
-      return rejectWithValue(
-        axiosError.response?.data || 'Failed to fetch additional service'
-      );
-    }
-  }
-);
-
-// Update Additional Service
 export const updateAdditionalService = createAsyncThunk(
   'additionalService/updateAdditionalService',
   async (
@@ -146,6 +90,59 @@ export const updateAdditionalService = createAsyncThunk(
   }
 );
 
+// Create Additional Service
+export const createAdditionalService = createAsyncThunk(
+  'additionalService/createAdditionalService',
+  async (
+    { data, token }: { data: AdditionalService; token: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      console.log("[Debug] Creating Additional Service:", data);
+      const response = await axiosInstance.post('/admin/additionalServices', data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      console.log("[Debug] Create Additional Service Response:", response.data);
+      return response.data.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      console.error("[Error] Failed to create additional service:", axiosError.response?.data || error);
+      return rejectWithValue(
+        axiosError.response?.data || 'Failed to create additional service'
+      );
+    }
+  }
+);
+
+// Fetch Additional Service by ID
+export const fetchAdditionalServiceById = createAsyncThunk(
+  'additionalService/fetchAdditionalServiceById',
+  async (
+    { id, token }: { id: string; token: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      console.log("[Debug] Fetching Additional Service by ID:", id);
+      const response = await axiosInstance.get(`/admin/additionalServices/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      console.log("[Debug] Fetch Additional Service by ID Response:", response.data);
+      return response.data.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      console.error("[Error] Failed to fetch additional service by ID:", axiosError.response?.data || error);
+      return rejectWithValue(
+        axiosError.response?.data || 'Failed to fetch additional service'
+      );
+    }
+  }
+);
+
 // Delete Additional Service
 export const deleteAdditionalService = createAsyncThunk(
   'additionalService/deleteAdditionalService',
@@ -176,7 +173,6 @@ const additionalServiceSlice = createSlice({
   name: 'additionalService',
   initialState,
   reducers: {
-    // Optional: Clear error state
     clearError: (state) => {
       state.error = null;
     }
@@ -208,29 +204,15 @@ const additionalServiceSlice = createSlice({
       })
       .addCase(
         fetchAdditionalServices.fulfilled,
-        (state, action: PayloadAction<AdditionalService[]>) => {
+        (state, action: PayloadAction<AdditionalService>) => {
           state.loading = false;
-          state.list = action.payload;
+          // Directly set the fetched service as data
+          state.data = action.payload;
+          // Also update the list
+          state.list = action.payload ? [action.payload] : [];
         }
       )
       .addCase(fetchAdditionalServices.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
-      
-      // Fetch Additional Service by ID
-      .addCase(fetchAdditionalServiceById.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(
-        fetchAdditionalServiceById.fulfilled,
-        (state, action: PayloadAction<AdditionalService>) => {
-          state.loading = false;
-          state.data = action.payload;
-        }
-      )
-      .addCase(fetchAdditionalServiceById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
@@ -254,6 +236,23 @@ const additionalServiceSlice = createSlice({
         }
       )
       .addCase(updateAdditionalService.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      
+      // Fetch Additional Service by ID
+      .addCase(fetchAdditionalServiceById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        fetchAdditionalServiceById.fulfilled,
+        (state, action: PayloadAction<AdditionalService>) => {
+          state.loading = false;
+          state.data = action.payload;
+        }
+      )
+      .addCase(fetchAdditionalServiceById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
