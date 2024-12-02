@@ -2,19 +2,51 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { axiosInstance } from '@/store/axiosInstance';
 import { AxiosError } from 'axios';
 
+export interface BillingInformation {
+    invoiceStatus: boolean;
+    trId: string;
+    address: string;
+    fullName: string;
+    companyName: string;
+    taxNumber: string;
+    taxOffice: string;
+}
+
+export interface Customer {
+    _id: string;
+    billingInformation: BillingInformation;
+    authProvider: string;
+    status: string;
+    userType: string;
+    role: string;
+    email: string;
+    customerStatus: string;
+    password: string; // Should be omitted if not needed
+    rememberMe: boolean;
+    termsAndConditionsApproved: boolean;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+    age: number;
+    fullName: string;
+    invoiceType: string;
+    phoneNumber: string;
+}
+
 export interface Coupon {
     _id: string;
-    customer: string;
+    customer: Customer; // Updated to include customer details
     code: string;
     discountTl?: string;
     discountPercentage?: number;
-    expiryDate: Date;
+    expiryDate: string;
     isActive: boolean;
     usageLimit: number | null;
     usedCount: number;
     createdAt: string;
     updatedAt: string;
 }
+
 
 export interface CouponState {
     data: Coupon[] | null;
@@ -148,9 +180,9 @@ export const deleteCoupon = createAsyncThunk(
         { id, token }: { id: string; token: string },
         { rejectWithValue }
     ) => {
-        console.log(`Deleting coupon with ID: ${id}`);
+        console.log(`Deletinnnng coupon with ID: ${id}`);
         try {
-            const response = await axiosInstance.delete(`/admin/coupon/${id}`, {
+            const response = await axiosInstance.delete(`/admin/coupons/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             console.log('Coupon deleted successfully:', response.data);
