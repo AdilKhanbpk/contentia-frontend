@@ -11,17 +11,22 @@ import {
     getCoupons,
     deleteCoupon,
     Coupon as ReduxCoupon,
+    Customer,
 } from "@/store/features/admin/couponSlice";
 import { RootState } from "@/store/store";
 
-interface CouponForm {
-    id?: number;
+export interface CouponForm {
+    _id: string;
+    customer?: Customer; // Make customer optional
     code: string;
-    customer: string;
-    discountTL?: number;
-    discountPercent?: number;
-    useLimit: number;
-    endingDate: string;
+    discountTl?: string;
+    discountPercentage?: number;
+    expiryDate: string;
+    isActive: boolean;
+    usageLimit: number | null;
+    usedCount: number;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export default function AddCoupon() {
@@ -59,12 +64,17 @@ export default function AddCoupon() {
     const openEditModal = (coupon: ReduxCoupon) => {
         setEditId(coupon._id);
         reset({
+            _id: coupon._id,
             code: coupon.code,
-            customer: coupon.customer,
-            discountTL: coupon.discountTl ? parseFloat(coupon.discountTl) : undefined,
-            discountPercent: coupon.discountPercentage,
-            useLimit: coupon.usageLimit || 0,
-            endingDate: new Date(coupon.expiryDate).toISOString().split("T")[0],
+            customer: coupon.customer, // Use the full customer object if available
+            discountTl: coupon.discountTl,
+            discountPercentage: coupon.discountPercentage,
+            expiryDate: new Date(coupon.expiryDate).toISOString().split("T")[0],
+            isActive: coupon.isActive,
+            usageLimit: coupon.usageLimit,
+            usedCount: coupon.usedCount,
+            createdAt: coupon.createdAt,
+            updatedAt: coupon.updatedAt,
         });
         setIsEditModalOpen(true);
     };
@@ -76,18 +86,31 @@ export default function AddCoupon() {
     };
 
     const handleDelete = async (id: string) => {
+        console.log("Delete button clicked for coupon ID:", id);
+
         if (window.confirm("Are you sure you want to delete this coupon?")) {
+            console.log("User confirmed deletion for coupon ID:", id);
+
             try {
+                console.log("Dispatching deleteCoupon action with ID and token:", { id, token });
                 await dispatch(deleteCoupon({ id, token }) as any);
+                console.log("Coupon deleted successfully:", id);
             } catch (err) {
-                setErrorMessage(err instanceof Error ? err.message : "Failed to delete coupon");
+                console.error("Error occurred while deleting coupon:", err);
+                const errorMessage =
+                    err instanceof Error ? err.message : "Failed to delete coupon";
+                setErrorMessage(errorMessage);
+                console.error("Error message set:", errorMessage);
             }
+        } else {
+            console.log("User cancelled the deletion process for coupon ID:", id);
         }
     };
 
+
     const formatDiscount = (coupon: ReduxCoupon): string => {
         if (coupon.discountTl) {
-            return `${coupon.discountTl}TL`;
+            return `${coupon.discountTl} TL`;
         }
         if (coupon.discountPercentage) {
             return `${coupon.discountPercentage}%`;
@@ -110,7 +133,7 @@ export default function AddCoupon() {
                     />
                 </button>
             </div>
-            
+
             {errorMessage && (
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                     {errorMessage}
@@ -147,19 +170,19 @@ export default function AddCoupon() {
                             {coupons?.map((coupon: ReduxCoupon) => (
                                 <tr key={coupon._id} className="border-b border-gray-300">
                                     <td className="p-3">{coupon.code}</td>
-                                    <td className="p-3">{coupon.customer}</td>
+                                    <td className="p-3">{coupon.customer?.fullName || "Unknown"}</td>
                                     <td className="p-3">{formatDiscount(coupon)}</td>
                                     <td className="p-3">{coupon.usageLimit === null ? "Limitless" : coupon.usageLimit}</td>
                                     <td className="p-3">{new Date(coupon.expiryDate).toLocaleDateString()}</td>
                                     <td className="p-3">{coupon.isActive ? "Active" : "Inactive"}</td>
                                     <td className="p-3 flex space-x-4">
-                                        <button 
+                                        <button
                                             onClick={() => openEditModal(coupon)}
                                             className="text-blue-600 hover:text-blue-800"
                                         >
                                             <FaEdit />
                                         </button>
-                                        <button 
+                                        <button
                                             onClick={() => handleDelete(coupon._id)}
                                             className="text-red-600 hover:text-red-800"
                                         >
