@@ -11,6 +11,7 @@ import { usePathname } from "next/navigation"; // Import usePathname hook
 import Footer from "@/components/footer/Footer";
 import store from "@/store/store";
 import { Provider } from "react-redux";
+import InitializeSocket from "@/socket/InitializeSocket";
 
 const metadata = {
   title: "Your Site Title",
@@ -43,6 +44,7 @@ export default function RootLayout({
       <body>
         <Provider store={store}>
           <I18nextProvider i18n={i18n}>
+            <InitializeSocket />
             {isAfterContentiaio && <Navbar />}{" "}
             {/* Render Navbar on landing page */}
             {isOrdersPage && <CustomerNavbar />}{" "}
