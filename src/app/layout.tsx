@@ -27,7 +27,7 @@ export default function RootLayout({
 
   // Check if the current path is the root ("/")
   const isAfterContentiaio =
-    pathname === "/contentiaio" ||
+    pathname === "/" ||
     pathname.startsWith("/contentiaio/") ||
     pathname.startsWith("/blog") ||
     pathname.startsWith("/blog/");

@@ -1,3 +1,4 @@
+import { Package } from './features/admin/packageSlice';
 import { configureStore } from '@reduxjs/toolkit';
 import becomeCreatorReducer from './becomeCreator/becomeCreatorSlice';
 import signupReducer from './features/auth/signupSlice';
@@ -17,8 +18,13 @@ import ordersSlice from './features/admin/ordersSlice';
 import pricingSlice from './features/admin/pricingSlice';
 import addPriceSlice from './features/admin/addPriceSlice';
 import claimSlice from './features/admin/claimSlice';
+<<<<<<< HEAD
 import notificationSlice from './features/admin/notificationSlice';
 import socketSlice from './socket/socketSlice';
+=======
+import packageSlice from './features/admin/packageSlice';
+
+>>>>>>> 0d8a760fdac502a610009d9c1c5c6d5d2da0acbf
 
 const store = configureStore({
   reducer: {
@@ -40,8 +46,12 @@ const store = configureStore({
     pricing: pricingSlice,
     addPrice: addPriceSlice,
     claim: claimSlice,
+<<<<<<< HEAD
     notification: notificationSlice,
     socket: socketSlice,
+=======
+    package: packageSlice,
+>>>>>>> 0d8a760fdac502a610009d9c1c5c6d5d2da0acbf
   },
 });
 
