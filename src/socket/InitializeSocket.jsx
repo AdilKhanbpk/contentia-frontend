@@ -1,53 +1,55 @@
+// src/components/InitializeSocket.tsx
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  setSocket,
-  setLoading,
-  setError,
-  clearSocket,
-  selectSocket,
+  setSocketLoading,
+  setSocketConnected,
+  setSocketDisconnected,
+  setSocketError,
 } from "../store/socket/socketSlice";
-import { createSocket } from "./socket";
+import { initializeSocket, disconnectSocket } from "./socket";
 import {
-  selectSocketLoading,
-  selectSocketError,
-} from "../store/socket/socketSlice";
+  selectNotifications,
+  setNotifications,
+} from "@/store/features/admin/notificationSlice";
 
 function InitializeSocket() {
   const dispatch = useDispatch();
-  const socket = useSelector(selectSocket);
-  const loading = useSelector(selectSocketLoading);
-  const error = useSelector(selectSocketError);
-  const token = localStorage.getItem("accessToken");
-  console.log(token);
-
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+  const notifications = useSelector(selectNotifications);
+  console.log(notifications);
   useEffect(() => {
     if (token) {
-      dispatch(setLoading());
+      dispatch(setSocketLoading());
       try {
-        const newSocket = createSocket();
-        console.log(newSocket);
-        dispatch(setSocket(newSocket));
-      } catch (err) {
-        dispatch(setError("Failed to connect to the socket."));
+        const socket = initializeSocket(token);
+        socket.on("connect", () => {
+          console.log("Connected to the socket.", socket.id);
+          dispatch(setSocketConnected());
+        });
+
+        socket.on("newNotification", (notifications) => {
+          dispatch(setNotifications(notifications));
+        });
+
+        socket.on("disconnect", () => {
+          dispatch(setSocketDisconnected());
+        });
+        socket.on("error", (error) => {
+          dispatch(setSocketError(`Failed to connect to the socket. ${error}`));
+        });
+      } catch (error) {
+        dispatch(setSocketError("Failed to connect to the socket."));
       }
     }
 
     return () => {
-      if (socket) {
-        socket.disconnect();
-        dispatch(clearSocket());
-      }
+      disconnectSocket();
     };
   }, [dispatch, token]);
 
-  return (
-    <div>
-      {loading && <p>Loading socket connection...</p>}
-      {error && <p>Error: {error}</p>}
-      {!loading && !error && <h1>Socket Initialized</h1>}
-    </div>
-  );
+  return <></>;
 }
 
 export default InitializeSocket;
