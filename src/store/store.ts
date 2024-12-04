@@ -1,3 +1,4 @@
+import { Package } from './features/admin/packageSlice';
 import { configureStore } from '@reduxjs/toolkit';
 import becomeCreatorReducer from './becomeCreator/becomeCreatorSlice';
 import signupReducer from './features/auth/signupSlice'; 
@@ -17,6 +18,7 @@ import ordersSlice from './features/admin/ordersSlice';
 import pricingSlice from './features/admin/pricingSlice';
 import addPriceSlice from './features/admin/addPriceSlice';
 import claimSlice from './features/admin/claimSlice';
+import packageSlice from './features/admin/packageSlice';
 
 
 const store = configureStore({
@@ -39,6 +41,7 @@ const store = configureStore({
     pricing: pricingSlice,
     addPrice: addPriceSlice,
     claim: claimSlice,
+    package: packageSlice,
   },
 });
 

@@ -2,54 +2,114 @@
 
 import { useState } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { createOrder } from '@/store/features/admin/ordersSlice'; // Adjust the import path
+import { AppDispatch } from '@/store/store';
 
-// TypeScript type for form data
-interface PlanFormData {
-    title: string;
-    description: string;
-    price: number;
-    platform: string; // Add this field
-    edit: string;    // Add this field
-    duration: string; // Add this field
-    aspectRatio: string; // Add this field
-    share: string; // Add this field
-    coverPicture: string; // Add this field
-    creatorType: string; // Add this field
-    shipping: string; // Add this field
-    customerName: string;
-    numberOfUGC: number;
-    assignCreators: string; // Add this field
+// Define the Order interface based on your model
+interface Order {
+    orderOwner: {
+        id: string; // User's ID
+        fullName: string; // User's full name
+    };
+    assignedCreators: string[];
+    noOfUgc: number;
+    totalPrice: number;
+    additionalServices: {
+        platform: string;
+        duration: string;
+        edit: boolean;
+        aspectRatio: string;
+        share?: boolean;
+        coverPicture?: boolean;
+        creatorType?: string;
+        productShipping?: boolean;
+    };
 }
 
-
 export default function NewModal() {
+    const dispatch = useDispatch<AppDispatch>();
 
     const [selectedPlatform, setSelectedPlatform] = useState('');
-    // State for the edit option (Yes/No)
-    const [isEdit, setIsEdit] = useState(''); // Default is true for 'Yes' or false for 'No'
+    const [isEdit, setIsEdit] = useState(false);
     const [aspectRatio, setAspectRatio] = useState('');
-    const [isShare, setIsShare] = useState('');
-    const [isCoverPicture, setIsCoverPicture] = useState('');
+    const [isShare, setIsShare] = useState(false);
+    const [isCoverPicture, setIsCoverPicture] = useState(false);
     const [creatorType, setCreatorType] = useState('');
-    const [isShipping, setIsShipping] = useState('');
+    const [isShipping, setIsShipping] = useState(false);
     const [duration, setDuration] = useState('');
 
-    const { register, handleSubmit, reset, control, watch } = useForm<PlanFormData>();
+    const { register, handleSubmit, reset, control, watch } = useForm<Order>();
 
-    const onSubmitForm: SubmitHandler<PlanFormData> = (data) => {
-        console.log('Form Data:', data);
+    const onSubmitForm: SubmitHandler<Order> = async (data) => {
+        console.group("onSubmitForm Debugging");
+        console.log("Form submission started");
+        console.log("Form data received:", data);
+
+        const token = localStorage.getItem("accessToken");
+        console.log("Token extracted from localStorage:", token);
+
+        if (!token) {
+            console.error("No token found in localStorage. Aborting request.");
+            console.groupEnd();
+            return;
+        }
+
+        const orderData = {
+            orderOwner: {
+                id: data.orderOwner.id,
+                fullName: data.orderOwner.fullName,
+            },
+            assignedCreators: data.assignedCreators,
+            noOfUgc: data.noOfUgc,
+            totalPrice: data.totalPrice,
+            additionalServices: {
+                platform: selectedPlatform,
+                duration: duration,
+                edit: isEdit, // Now a boolean
+                aspectRatio: aspectRatio,
+                share: isShare, // Now a boolean
+                coverPicture: isCoverPicture, // Now a boolean
+                creatorType: creatorType,
+                productShipping: isShipping, // Now a boolean
+            },
+        };
+
+        console.log("Prepared order data:", orderData);
+
+        try {
+            console.log("Dispatching createOrder thunk...");
+            const result = await dispatch(
+                createOrder({
+                    data: orderData,
+                    token: token,
+                })
+            ).unwrap();
+
+            console.log("Order created successfully:", result);
+
+            // Reset form and clear states
+            reset();
+            setSelectedPlatform("");
+            setIsEdit(false);
+            setAspectRatio("");
+            setIsShare(false);
+            setIsCoverPicture(false);
+            setCreatorType("");
+            setIsShipping(false);
+            setDuration("");
+
+            console.log("Form and states reset successfully");
+        } catch (error) {
+            console.error("Error during order creation:", error);
+        } finally {
+            console.groupEnd();
+        }
     };
-
-    // Watch the fields to update the total price in real-time
-    const numberOfUGC = watch('numberOfUGC');
-    const price = watch('price');
-    const totalPrice = (numberOfUGC || 0) * (price || 0);
-
 
     return (
         <>
             <form onSubmit={handleSubmit(onSubmitForm)}>
-
                 <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">
                     <h2 className="text-lg mb-6 font-semibold">Create Custom Order</h2>
 
@@ -63,7 +123,7 @@ export default function NewModal() {
                                     type="text"
                                     placeholder="Enter customer name"
                                     className="w-full px-3 py-1 border rounded-md focus:outline-none"
-                                    {...register('customerName')}
+                                    {...register('orderOwner.fullName')}
                                 />
                             </div>
 
@@ -74,7 +134,7 @@ export default function NewModal() {
                                     type="number"
                                     placeholder="Enter number of UGC"
                                     className="w-full px-3 py-1 border rounded-md focus:outline-none"
-                                    {...register('numberOfUGC')}
+                                    {...register('noOfUgc')}
                                 />
                             </div>
 
@@ -85,7 +145,7 @@ export default function NewModal() {
                                     type="number"
                                     placeholder="Enter price"
                                     className="w-full px-3 py-1 border rounded-md focus:outline-none"
-                                    {...register('price')}
+                                    {...register('totalPrice')}
                                 />
                             </div>
 
@@ -93,17 +153,11 @@ export default function NewModal() {
                             <div>
                                 <label className="block text-sm font-semibold mt-2">Assign Creators:</label>
                                 <input
-                                    type="number"
-                                    placeholder="Assign Creators"
+                                    type="text"
+                                    placeholder="Enter creator IDs"
                                     className="w-full px-3 py-1 border rounded-md focus:outline-none"
-                                    {...register('assignCreators')}
+                                    {...register('assignedCreators')}
                                 />
-                            </div>
-
-                            {/* Total Price Display */}
-                            <div className="mt-4">
-                                <span className="block text-sm font-semibold">Total Price:</span>
-                                <span className="text-lg BlueText font-semibold">{totalPrice.toFixed(2)} TL</span>
                             </div>
                         </div>
 
@@ -114,7 +168,7 @@ export default function NewModal() {
                                 <div className="text-gray-700 font-semibold">Platform:</div>
                                 <div className="flex space-x-4">
                                     <Controller
-                                        name="platform"
+                                        name="additionalServices.platform"
                                         control={control}
                                         defaultValue="TikTok"
                                         render={({ field }) => (
@@ -141,7 +195,7 @@ export default function NewModal() {
                                 <div className="text-gray-700 font-semibold">Duration:</div>
                                 <div className="flex space-x-4">
                                     <Controller
-                                        name="duration"
+                                        name="additionalServices.duration"
                                         control={control}
                                         defaultValue="15s"
                                         render={({ field }) => (
@@ -168,18 +222,20 @@ export default function NewModal() {
                                 <div className="text-gray-700 font-semibold">Edit:</div>
                                 <div className="flex space-x-4">
                                     <Controller
-                                        name="edit"
+                                        name="additionalServices.edit"
                                         control={control}
+                                       
                                         render={({ field }) => (
                                             <>
                                                 {['Yes', 'No'].map((option) => (
                                                     <button
                                                         key={option}
                                                         type="button"
-                                                        className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${isEdit === option ? 'ButtonBlue text-white' : 'bg-gray-200'}`}
+                                                        className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${(isEdit && option === 'Yes') || (!isEdit && option === 'No') ? 'ButtonBlue text-white' : 'bg-gray-200'}`}
                                                         onClick={() => {
-                                                            setIsEdit(option);
-                                                            field.onChange(option);
+                                                            const newValue = option === 'Yes';
+                                                            setIsEdit(newValue);
+                                                            field.onChange(newValue);
                                                         }}
                                                     >
                                                         {option}
@@ -194,7 +250,7 @@ export default function NewModal() {
                                 <div className="text-gray-700 font-semibold">Aspect Ratio:</div>
                                 <div className="flex space-x-4">
                                     <Controller
-                                        name="aspectRatio"
+                                        name="additionalServices.aspectRatio"
                                         control={control}
                                         defaultValue="9:16"
                                         render={({ field }) => (
@@ -221,18 +277,20 @@ export default function NewModal() {
                                 <div className="text-gray-700 font-semibold">Share:</div>
                                 <div className="flex space-x-4">
                                     <Controller
-                                        name="share"
+                                        name="additionalServices.share"
                                         control={control}
+                                       
                                         render={({ field }) => (
                                             <>
                                                 {['Yes', 'No'].map((option) => (
                                                     <button
                                                         key={option}
                                                         type="button"
-                                                        className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${isShare === option ? 'ButtonBlue text-white' : 'bg-gray-200'}`}
+                                                        className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${(isShare && option === 'Yes') || (!isShare && option === 'No') ? 'ButtonBlue text-white' : 'bg-gray-200'}`}
                                                         onClick={() => {
-                                                            setIsShare(option);
-                                                            field.onChange(option);
+                                                            const newValue = option === 'Yes';
+                                                            setIsShare(newValue);
+                                                            field.onChange(newValue);
                                                         }}
                                                     >
                                                         {option}
@@ -247,18 +305,20 @@ export default function NewModal() {
                                 <div className="text-gray-700 font-semibold">Cover Picture:</div>
                                 <div className="flex space-x-4">
                                     <Controller
-                                        name="coverPicture"
+                                        name="additionalServices.coverPicture"
                                         control={control}
+                                       
                                         render={({ field }) => (
                                             <>
                                                 {['Yes', 'No'].map((option) => (
                                                     <button
                                                         key={option}
                                                         type="button"
-                                                        className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${isCoverPicture == option ? 'ButtonBlue text-white' : 'bg-gray-200'}`}
+                                                        className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${(isCoverPicture && option === 'Yes') || (!isCoverPicture && option === 'No') ? 'ButtonBlue text-white' : 'bg-gray-200'}`}
                                                         onClick={() => {
-                                                            setIsCoverPicture(option);
-                                                            field.onChange(option);
+                                                            const newValue = option === 'Yes';
+                                                            setIsCoverPicture(newValue);
+                                                            field.onChange(newValue);
                                                         }}
                                                     >
                                                         {option}
@@ -273,7 +333,7 @@ export default function NewModal() {
                                 <div className="text-gray-700 font-semibold">Creator Type:</div>
                                 <div className="flex space-x-4">
                                     <Controller
-                                        name="creatorType"
+                                        name="additionalServices.creatorType"
                                         control={control}
                                         defaultValue="Nano"
                                         render={({ field }) => (
@@ -300,18 +360,20 @@ export default function NewModal() {
                                 <div className="text-gray-700 font-semibold">Shipping:</div>
                                 <div className="flex space-x-4">
                                     <Controller
-                                        name="shipping"
+                                        name="additionalServices.productShipping"
                                         control={control}
+                                       
                                         render={({ field }) => (
                                             <>
                                                 {['Yes', 'No'].map((option) => (
                                                     <button
                                                         key={option}
                                                         type="button"
-                                                        className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${isShipping === option ? 'ButtonBlue text-white' : 'bg-gray-200'}`}
+                                                        className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${(isShipping && option === 'Yes') || (!isShipping && option === 'No') ? 'ButtonBlue text-white' : 'bg-gray-200'}`}
                                                         onClick={() => {
-                                                            setIsShipping(option);
-                                                            field.onChange(option);
+                                                            const newValue = option === 'Yes';
+                                                            setIsShipping(newValue);
+                                                            field.onChange(newValue);
                                                         }}
                                                     >
                                                         {option}

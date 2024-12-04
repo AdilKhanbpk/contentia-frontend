@@ -21,7 +21,10 @@ export interface Creator {
 interface Order {
   _id: string;
   coupon?: string;
-  orderOwner: string;
+  orderOwner: {
+    id: string; // User's ID
+    fullName: string; // User's full name
+  };
   assignedCreators: string[];
   appliedCreators: string[];
   noOfUgc: number;
