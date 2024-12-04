@@ -26,7 +26,10 @@ import { RootState } from '@/store/store';
 interface Order {
     _id: string;
     coupon?: string;
-    orderOwner: string;
+    orderOwner: {
+        id: string; // User's ID
+        fullName: string; // User's full name
+      };
     assignedCreators: string[];
     appliedCreators: string[];
     noOfUgc: number;
@@ -158,18 +161,29 @@ const Orders: React.FC = () => {
     // Fetch orders on component mount
     useEffect(() => {
         const fetchOrdersData = async () => {
+            console.log('Starting fetchOrdersData'); // Log at the start of the function
+
             const token = localStorage.getItem('accessToken');
+            console.log('Token retrieved from localStorage:', token); // Log the token value
+
             if (token) {
+                console.log('Token is valid, proceeding to dispatch fetchOrders'); // Log if the token is present
                 try {
-                    await dispatch(fetchOrders(token)).unwrap();
+                    const response = await dispatch(fetchOrders(token)).unwrap();
+                    console.log('Orders fetched successfully:', response); // Log the successful response
                 } catch (error) {
-                    console.error('Error fetching orders:', error);
+                    console.error('Error occurred while fetching orders:', error); // Log error details
                 }
+            } else {
+                console.warn('No token found in localStorage, skipping fetchOrders'); // Log if the token is absent
             }
         };
 
         fetchOrdersData();
+
+        console.log('fetchOrdersData invoked on component mount'); // Log after invoking the function
     }, [dispatch]);
+
 
     // Handler for deleting an order
     const handleDelete = useCallback(async (id: string) => {
@@ -293,7 +307,7 @@ const Orders: React.FC = () => {
                 <div className="flex items-center space-x-2">
                     <Image width={10} height={10} src="/icons/avatar.png" alt="avatar" className="w-10 h-10 rounded-full" />
                     <div>
-                        <p className="font-semibold">{row.orderOwner}</p>
+                        <p className="font-semibold">{row.orderOwner.fullName}</p>
                     </div>
                 </div>
             ),
@@ -323,10 +337,10 @@ const Orders: React.FC = () => {
             cell: (row: Order) => (
                 <span
                     className={`px-3 py-1 rounded-full text-sm font-semibold ${row.orderStatus === "completed"
-                            ? "text-green-700 bg-green-100"
-                            : row.orderStatus === "pending"
-                                ? "text-yellow-700 bg-yellow-100"
-                                : "text-red-700 bg-red-100"
+                        ? "text-green-700 bg-green-100"
+                        : row.orderStatus === "pending"
+                            ? "text-yellow-700 bg-yellow-100"
+                            : "text-red-700 bg-red-100"
                         }`}
                 >
                     {row.orderStatus.charAt(0).toUpperCase() + row.orderStatus.slice(1)}
@@ -350,15 +364,18 @@ const Orders: React.FC = () => {
         },
     ], [handleDelete, handleEdit, handleView, handleRequest]);
 
-    // Filtered orders based on search     
     const filteredOrders = React.useMemo(() => {
         const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
-        return orders.filter((order) => (
-            (order.orderOwner?.toLowerCase().includes(lowerCaseSearchTerm)) ||
-            (order._id?.toLowerCase().includes(lowerCaseSearchTerm))
-        ));
+        return orders.filter((order) => {
+            // Safely check if orderOwner and fullName exist before calling toLowerCase
+            const fullNameMatch = order.orderOwner?.fullName?.toLowerCase().includes(lowerCaseSearchTerm) ?? false;
+            // Safely check if _id exists before calling toLowerCase
+            const idMatch = order._id?.toLowerCase().includes(lowerCaseSearchTerm) ?? false;
+    
+            return fullNameMatch || idMatch;
+        });
     }, [orders, searchTerm]);
-
+    
     // Loading state
     if (loading) {
         return <div className="flex justify-center items-center h-screen">Loading...</div>;

@@ -4,7 +4,10 @@ import React from 'react';
 interface Order {
     _id: string;
     coupon?: string;
-    orderOwner: string;
+    orderOwner: {
+        id: string; // User's ID
+        fullName: string; // User's full name
+      };
     assignedCreators: string[];
     appliedCreators: string[];
     noOfUgc: number;
@@ -13,50 +16,50 @@ interface Order {
     paymentStatus: 'paid' | 'pending' | 'refunded' | 'cancelled';
     contentsDelivered?: number;
     additionalServices: {
-      platform: string;
-      duration: string;
-      edit: boolean;
-      aspectRatio: string;
-      share?: boolean;
-      coverPicture?: boolean;
-      creatorType?: string;
-      productShipping?: boolean;
+        platform: string;
+        duration: string;
+        edit: boolean;
+        aspectRatio: string;
+        share?: boolean;
+        coverPicture?: boolean;
+        creatorType?: string;
+        productShipping?: boolean;
     };
     preferences?: {
-      creatorGender?: string;
-      minCreatorAge?: number;
-      maxCreatorAge?: number;
-      interests?: string[];
-      contentType?: string;
-      locationAddress?: {
-        country?: string;
-        city?: string;
-        district?: string;
-        street?: string;
-        fullAddress?: string;
-      };
+        creatorGender?: string;
+        minCreatorAge?: number;
+        maxCreatorAge?: number;
+        interests?: string[];
+        contentType?: string;
+        locationAddress?: {
+            country?: string;
+            city?: string;
+            district?: string;
+            street?: string;
+            fullAddress?: string;
+        };
     };
     briefContent?: {
-      brandName?: string;
-      brief?: string;
-      productServiceName?: string;
-      productServiceDesc?: string;
-      scenario?: string;
-      caseStudy?: string;
-      uploadFiles?: string;
-      uploadFileDate?: string;
+        brandName?: string;
+        brief?: string;
+        productServiceName?: string;
+        productServiceDesc?: string;
+        scenario?: string;
+        caseStudy?: string;
+        uploadFiles?: string;
+        uploadFileDate?: string;
     };
     numberOfRequests?: number;
     orderQuota?: number;
     quotaLeft?: number;
     uploadFiles?: Array<{
-      uploadedBy: string;
-      fileUrls: string[];
-      uploadedDate: Date;
+        uploadedBy: string;
+        fileUrls: string[];
+        uploadedDate: Date;
     }>;
     createdAt?: Date;
     updatedAt?: Date;
-  }
+}
 
 // Define props interface for the EditModal component
 interface EditModalProps {

@@ -12,7 +12,10 @@ interface ErrorResponse {
 interface Order {
   _id: string;
   coupon?: string;
-  orderOwner: string;
+  orderOwner: {
+    id: string; // User's ID
+    fullName: string; // User's full name
+  };
   assignedCreators: string[];
   appliedCreators: string[];
   noOfUgc: number;
@@ -96,7 +99,27 @@ export const createOrder = createAsyncThunk(
         return rejectWithValue('Authentication token is missing');
       }
 
-      const response = await axiosInstance.post('/admin/orders', data, {
+      // Mapping data to the expected format
+      const transformedData = {
+        customer: data.orderOwner?.fullName || '',  // Mapping customer field to id
+        assignedCreators: Array.isArray(data.assignedCreators) ? data.assignedCreators : [data.assignedCreators],  // Ensure it's an array
+        totalPrice: parseFloat(data.totalPrice?.toString() || '0'),  // Ensure totalPrice is a float
+        noOfUgc: parseInt(data.noOfUgc?.toString() || '0', 10),  // Ensure noOfUgc is an integer
+        additionalServices: {
+          platform: data.additionalServices?.platform?.toLowerCase() || '',  // Normalize platform to lowercase
+          duration: data.additionalServices?.duration || '',  // Ensure duration is a string
+          edit: data.additionalServices?.edit || false,  // Default edit to false
+          aspectRatio: data.additionalServices?.aspectRatio || '',  // Ensure aspectRatio is a string
+          share: data.additionalServices?.share || false,  // Default share to false
+          coverPicture: data.additionalServices?.coverPicture || false,  // Default coverPicture to false
+          creatorType: data.additionalServices?.creatorType || '',  // Ensure creatorType is a string
+          productShipping: data.additionalServices?.productShipping || false,  // Default productShipping to false
+        },
+      };
+
+      console.log('Prepared transformed order data:', transformedData);
+
+      const response = await axiosInstance.post('/admin/orders', transformedData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
