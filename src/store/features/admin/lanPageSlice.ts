@@ -52,19 +52,24 @@ export const createLandingPage = createAsyncThunk(
 export const fetchLandingPage = createAsyncThunk(
   'landingPage/fetchLandingPage',
   async (token: string, { rejectWithValue }) => {
+    console.log("fetchLandingPage initiated with token:", token); // Log token
     try {
+      console.log("Sending GET request to /admin/landingPage...");
       const response = await axiosInstance.get('/admin/landingPage', {
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log("Response received:", response.data); // Log response
       return response.data.data; // Assuming API response includes `data` field
     } catch (error) {
+      console.error("Error occurred while fetching landing page:", error); // Log error details
       const axiosError = error as AxiosError;
-      return rejectWithValue(
-        axiosError.response?.data || 'Failed to fetch landing page'
-      );
+      const errorData = axiosError.response?.data || 'Failed to fetch landing page';
+      console.error("Error response data:", errorData); // Log error response
+      return rejectWithValue(errorData);
     }
   }
 );
+
 
 // Update the landing page
 export const updateLandingPage = createAsyncThunk(
