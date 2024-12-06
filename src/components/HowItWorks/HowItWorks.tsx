@@ -1,8 +1,16 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import SmallCard from '../customCard/SmallCard';
 import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import {
+    fetchFaqs,
+} from "@/store/features/admin/faqSlice";
+import {
+    fetchHowItWorks,
+} from "@/store/features/admin/howWorkSlice";
 
 
 
@@ -49,118 +57,110 @@ const cards = [
 export default function HowItWorks() {
 
     const [openIndex, setOpenIndex] = useState<number | null>(null);
+    const dispatch = useDispatch<AppDispatch>();
+    const { faqs, loading } = useSelector((state: RootState) => state.faq);
+    console.log("faq from the component", faqs);
+
+    const { sections } = useSelector(
+        (state: RootState) => state.howWork
+    );
+
+    console.log("sections from the component", sections);
 
     const toggleFAQ = (index: number) => {
         setOpenIndex(openIndex === index ? null : index);
     };
 
-    const faqs: FAQProps[] = [
-        { question: 'Contentia.io Nedir?', answer: 'Contentia.io, kullanıcıların içerik üreticilerle eşleştiği ve içeriklerini talep ettiği bir platformdur.' },
-        { question: 'Contentia.io Nedir?', answer: 'Contentia.io, kullanıcıların içerik üreticilerle eşleştiği ve içeriklerini talep ettiği bir platformdur.' },
-        { question: 'Contentia.io Nedir?', answer: 'Contentia.io, kullanıcıların içerik üreticilerle eşleştiği ve içeriklerini talep ettiği bir platformdur.' },
-        { question: 'Contentia.io Nedir?', answer: 'Contentia.io, kullanıcıların içerik üreticilerle eşleştiği ve içeriklerini talep ettiği bir platformdur.' },
-    ];
-
     const { t } = useTranslation();
+
+    useEffect(() => {
+        console.log("useEffect triggered");
+
+        const tokenFromStorage = localStorage.getItem('accessToken');
+        console.log("Token from localStorage:", tokenFromStorage);
+
+        if (tokenFromStorage) {
+            console.log("Token exists. Dispatching fetchFaqs...");
+            dispatch(fetchFaqs(tokenFromStorage));
+        } else {
+            console.log("No token found in localStorage.");
+        }
+    }, [dispatch]);
+
+    // Fetch data on mount
+    useEffect(() => {
+        console.log("Initialization - Component Mounted");
+
+        const token = localStorage.getItem("accessToken");
+        console.log("Token from localStorage:", token);
+
+        if (token) {
+            console.log("Token found. Fetching data with token...");
+            dispatch(fetchHowItWorks(token) as any);
+        } else {
+            console.log("No token found in localStorage.");
+        }
+
+        return () => {
+            console.log("Cleanup - Component Unmounted");
+        };
+    }, [dispatch]);
 
     return (
         <>
             <div className='px-4 sm:px-6 md:px-8 lg:px-[38px] '>
                 {/* /////////////// */}
 
-                <div className=' pt-24 sm:pt-24 md:pt-24 lg:pt-[180px]'>
-                    <div className='flex flex-col justify-center items-center'>
-                        <h1 className='headingText BlueText mb-3'>Nasıl Çalışır?</h1>
-                        <div className='imageRotate'>
-                            <Image
-                                src="/borderImage.svg"
-                                height={300}
-                                width={270}
-                                alt="border image"
-                                className="object-contain" // Use object-contain to maintain aspect ratio
-                            />
+                <div className="pt-24 sm:pt-24 md:pt-24 lg:pt-[180px]">
+                    <div className="flex flex-col justify-center items-center">
+                        <div className="flex flex-col justify-center items-center">
+                            <h1 className="headingText mb-3">{sections[0]?.sectionTitle || "Nasıl Çalışır?"}</h1>
+                            <div className="imageRotate">
+                                <Image
+                                    src="/borderImage.svg"
+                                    height={300}
+                                    width={270}
+                                    alt="border image"
+                                    className="h-100 w-100"
+                                />
+                            </div>
                         </div>
-                        <p className='paraTextTwo mb-14'>Tek bir platformda, UGC içeriklerine kolayca erişin</p>
+                        <p className="paraTextTwo mb-14">
+                            {sections[0]?.sectionDescription}
+                        </p>
                     </div>
-                    {/* Updated container for 2x2 grid */}
-                    <div className='grid grid-cols-1 sm:grid-cols-2 gap-8'>
-                        {/* First Box */}
-                        <div className=''>
-                            <div className='flex flex-col'>
-                                <div className='flex flex-row items-center'>
-                                    <h1 className='headingTextBlue mr-2'>1</h1>
-                                    <div className='headingTextTwo'>İhtiyacınızı belirleyin</div>
-                                </div>
-                                <div>
-                                    <p className='paraTextTwo'>
-                                        Tanıtmak istediğiniz marka, ürün, hizmet, yenilik veya kampanya gibi içerik üreticilere neden ihtiyacınız olduğunu belirleyin
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Second Box */}
-                        <div className=''>
-                            <div className='flex flex-col'>
-                                <div className='flex flex-row items-center'>
-                                    <h1 className='headingTextBlue mr-2'>2</h1>
-                                    <div className='headingTextTwo'>Paketinizi Seçin</div>
-                                </div>
-                                <div>
-                                    <p className='paraTextTwo'>
-                                        Amacınızı belirledikten sonra içerik üretimine ihtiyaç duyduğunuz içerik sayısına göre seçim yapın ve istediğiniz UGC'leri detaylandırın
-                                    </p>
+                    {/* Updated container for dynamic steps */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                        {sections[0]?.steps?.map((step: any, index: number) => (
+                            <div key={index}>
+                                <div className="flex flex-col">
+                                    <div className="flex flex-row items-center">
+                                        <h1 className="headingTextBlue mr-2">{index + 1}</h1>
+                                        <div className="headingTextTwo">{step.title}</div>
+                                    </div>
+                                    <div>
+                                        <p className="paraTextTwo">{step.description}</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
-                        {/* Third Box */}
-                        <div className=''>
-                            <div className='flex flex-col'>
-                                <div className='flex flex-row items-center'>
-                                    <h1 className='headingTextBlue mr-2'>3</h1>
-                                    <div className='headingTextTwo'>İçerik Üreticilerle Eşleşin</div>
-                                </div>
-                                <div>
-                                    <p className='paraTextTwo'>
-                                        İhtiyacınıza yönelik içerik üreticilerle eşleşin ve talepleriniz doğrultusunda içeriklerinizi üretelim
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Fourth Box */}
-                        <div className=''>
-                            <div className='flex flex-col'>
-                                <div className='flex flex-row items-center'>
-                                    <h1 className='headingTextBlue mr-2'>4</h1>
-                                    <div className='headingTextTwo'>Kaliteli ve güvenilir UGC'lere erişin</div>
-                                </div>
-                                <div>
-                                    <p className='paraTextTwo'>
-                                        Ürün ve hizmetlerinize özel hazırlanmış UGC'lere Contentia üzerinden erişin ve dilediğiniz platformda kullanın
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
-
 
 
 
                 {/* //////////// */}
 
                 <div className='mt-8 sm:mt-12 md:mt-16 lg:mt-20'>
-                    <div className='flex flex-col justify-center items-center'>
-                        <h1 className='headingText BlueText mb-3'>Sıkça Sorulan Sorular</h1>
-                        <div className='imageRotate'>
+                    <div className="flex flex-col justify-center items-center">
+                        <h1 className="headingText mb-3">Sıkça Sorulan Sorular</h1>
+                        <div className="imageRotate">
                             <Image
                                 src="/borderImage.svg"
                                 height={300}
                                 width={270}
                                 alt="border image"
-                                className="object-contain" // Use object-contain to maintain aspect ratio
+                                className="h-100 w-100"
                             />
                         </div>
                     </div>
@@ -200,16 +200,15 @@ export default function HowItWorks() {
 
                 <div className='w-full ml-2  mt-10 sm:mt-10 md:mt-16 lg:mt-20'>
                     <div>
-                        <div className='flex flex-col justify-center items-center'>
-                            <h1 className='headingText BlueText mb-3'>
-                                Sağlanan Faydalar</h1>
-                            <div className='imageRotate'>
+                        <div className="flex flex-col justify-center items-center">
+                            <h1 className="headingText mb-3">Sağlanan Faydalar</h1>
+                            <div className="imageRotate">
                                 <Image
                                     src="/borderImage.svg"
                                     height={300}
                                     width={270}
                                     alt="border image"
-                                    className="object-contain" // Use object-contain to maintain aspect ratio
+                                    className="h-100 w-100"
                                 />
                             </div>
                         </div>
