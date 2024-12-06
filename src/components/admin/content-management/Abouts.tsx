@@ -32,7 +32,7 @@ export default function Abouts() {
   const { sections, loading, error } = useSelector(
     (state: RootState) => state.about
   );
-  console.log("sections from component:", sections);
+  console.log("sections from the component:", sections);
 
   const {
     register,

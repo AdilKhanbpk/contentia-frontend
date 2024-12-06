@@ -8,7 +8,7 @@ import {
 } from "@/store/features/admin/howWorkSlice";
 import { RootState } from "@/store/store";
 
-// Enhanced Debug Logger
+// Enhanced Debug Loggers
 const logDebug = (action: string, details?: any, error?: any) => {
   if (process.env.NODE_ENV === "development") {
     console.groupCollapsed(`🛠️ Debug - ${action}`);
