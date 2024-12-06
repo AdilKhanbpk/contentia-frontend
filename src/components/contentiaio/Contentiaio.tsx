@@ -1,11 +1,16 @@
 "use client";
-import React from 'react';
+import React, { useEffect } from 'react';
 import Image from 'next/image';
 import MyCarousel from '@/components/carousel/MyCarousel';
 import CustomCard from '@/components/customCard/CustomCard';
 import { useTranslation } from 'react-i18next';
 import SmallCard from '@/components/customCard/SmallCard';
 import { useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import {
+    fetchLandingPage,
+} from "@/store/features/admin/lanPageSlice";
 
 const videos = [
     '/videos/firstVideo.mp4',
@@ -53,9 +58,30 @@ const cards = [
 
 
 export default function Contentiaio() {
+    const dispatch = useDispatch<AppDispatch>();
+    const { data: landingPage, loading, error } = useSelector(
+        (state: RootState) => state.landingPage
+    );
+    console.log("landingPage data:", landingPage);
 
     const { t } = useTranslation();
     const router = useRouter(); // Initialize the router
+
+    // Access token from localStorage
+    const token = typeof window !== 'undefined' ? localStorage.getItem("accessToken") : null;
+
+    // Fetch the landing page data on mount
+    useEffect(() => {
+        console.log("useEffect triggered");
+        if (token) {
+            console.log("Token is available:", token);
+            dispatch(fetchLandingPage(token));
+            console.log("Dispatching fetchLandingPage with token");
+        } else {
+            console.log("Token is not available");
+        }
+    }, [dispatch, token]);
+
 
 
 
@@ -66,26 +92,60 @@ export default function Contentiaio() {
     return (
         <>
             <div className='px-4 sm:px-6 md:px-8 lg:px-[38px] '>
-                <div className='flex flex-col lg:flex-row lg:justify-between pt-12 sm:pt-16 md:pt-24 lg:pt-[180px]'>
-                    <div className='flex flex-col lg:w-1/2 w-full lg:mt-0 mt-9 mx-auto'>
-                        <h1 className='headingText mb-3' dangerouslySetInnerHTML={{ __html: t('header') }} />
-                        <div className='mx-3'>
-                            <p className='paraText mb-5'>{t('promoText1')}</p>
-                            <p className='paraText mb-14'>{t('promoText2')}</p>
-                        </div>
-                        <div className="">
-                            <div>
-                                <button className="Button text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                    {t('buttonText')}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div className='lg:w-1/2 w-full lg:ml-2 mx-auto'>
-                        <MyCarousel videos={videos} />
+                <div className='flex flex-col lg:flex-row lg:justify-between pt-12 sm:pt-16 md:pt-24 lg:pt-[180px]'>
+                    <div className='flex flex-col lg:flex-row w-full lg:mt-0 mt-9 mx-auto'>
+                        {loading ? (
+                            <div className='flex flex-col lg:flex-row'>
+                                <div>
+                                    {/* Skeleton for carouselHeroTitle */}
+                                    <div className="h-8 bg-gray-200 animate-pulse w-2/3 mb-3"></div>
+                                    {/* Skeleton for staticHeroTitle */}
+                                    <div className="h-8 bg-gray-200 animate-pulse w-1/2 mb-5"></div>
+                                    {/* Skeleton for heroSubTitle */}
+                                    <div className="h-6 bg-gray-200 animate-pulse w-4/5 mb-5"></div>
+                                    {/* Skeleton for button */}
+                                    <div className="h-10 bg-gray-200 animate-pulse w-32 rounded-md mb-6"></div>
+                                </div>
+                                {/* Skeleton for carousel */}
+                                <div className="flex justify-center space-x-4">
+                                    {[...Array(3)].map((_, index) => (
+                                        <div key={index} className="w-36 h-36 bg-gray-300 animate-pulse rounded-xl" />
+                                    ))}
+                                </div>
+                            </div>
+                        ) : error ? (
+                            <p className="text-red-500">Error: {error}</p>
+                        ) : (
+                            <>
+                                <div className='flex flex-col'>
+                                    {/* Render content after successful data fetch */}
+                                    <h1 className='headingText mb-3'>
+                                        <span className='headingTextBlue'>{landingPage?.carouselHeroTitle}</span>
+                                        <span className="ml-2">{landingPage?.staticHeroTitle}</span>
+                                    </h1>
+                                    <div className='mx-3'>
+                                        <p className='paraText mb-5'>{landingPage?.heroSubTitle}</p>
+                                    </div>
+                                    {/* Button is only shown after successful data fetch */}
+                                    {landingPage && (
+                                        <div>
+                                            <button className="Button text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                                {t('buttonText')}
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Carousel Section */}
+                                <div className='lg:w-1/2 w-full lg:ml-2 mx-auto'>
+                                    <MyCarousel videos={landingPage?.videos || []} />
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
+
 
 
                 {/* /////////////////// */}
@@ -106,7 +166,22 @@ export default function Contentiaio() {
 
                     <div className='flex flex-col lg:flex-row lg:justify-between lg:mx-0 mx-auto mt-6 sm:mt-8 md:mt-10 lg:mt-10'>
                         <div className='w-full mb-8 sm:mb-8 md:mb-0 lg:mb-0 lg:w-1/2 mx-auto lg:ml-2'>
-                            <MyCarousel videos={videos} />
+                            {loading ? (
+                                <div>
+                                    {/* Skeleton for carousal */}
+                                    <div className="flex justify-center space-x-4">
+                                        {[...Array(3)].map((_, index) => (
+                                            <div key={index} className="w-36 h-36 bg-gray-300 animate-pulse rounded-xl" />
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : error ? (
+                                <p className="text-red-500">Error: {error}</p>
+                            ) : (
+                                <>
+                                    <MyCarousel videos={landingPage?.videos || []} />
+                                </>
+                            )}
                         </div>
 
                         <div className='flex flex-col w-full lg:w-1/2 sm:mt-28 md:mt-28 lg:mt-9 lg:ml-8 mx-auto'>
@@ -426,7 +501,7 @@ export default function Contentiaio() {
                 </div>
 
 
-            </div>
+            </div >
 
         </>
     );
