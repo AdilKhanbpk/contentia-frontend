@@ -12,6 +12,10 @@ import Footer from "@/components/footer/Footer";
 import store from "@/store/store";
 import { Provider } from "react-redux";
 import InitializeSocket from "@/socket/InitializeSocket";
+// Import the ToastContainer and toast styles
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const metadata = {
   title: "Your Site Title",
@@ -55,6 +59,8 @@ export default function RootLayout({
             {isAfterContentiaio && <Footer />}{" "}
             {/* Render Footer on landing page */}
             {isOrdersPage && <Footer />} {/* Render Footer on /orders */}
+            {/* Add the ToastContainer to render toasts */}
+            <ToastContainer />
           </I18nextProvider>
         </Provider>
       </body>

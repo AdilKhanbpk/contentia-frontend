@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { fetchAbout } from "@/store/features/admin/aboutSlice";
+import { toast } from "react-toastify";
 
 const About = () => {
     const dispatch = useDispatch();
@@ -19,9 +20,11 @@ const About = () => {
             dispatch(fetchAbout(token) as any)
                 .then((action: any) => {
                     console.log("Action Dispatched Successfully:", action);
+                    toast.success("Data fetched successfully!");
                 })
                 .catch((error: any) => {
                     console.log("Dispatch failed with error:", error);
+                    toast.error("Failed to fetch data!");
                 });
         } else {
             console.log("No Token Found in Local Storage");

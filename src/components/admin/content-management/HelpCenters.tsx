@@ -14,6 +14,7 @@ import CustomModelAdmin from '../../modal/CustomModelAdmin';
 import { ModalCenters } from './sub-content/ModalCenters';
 import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
+import { toast } from "react-toastify";
 
 const HelpCenters: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -22,13 +23,17 @@ const HelpCenters: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Fetch help supports on component mount
   useEffect(() => {
+    // Retrieve the token from localStorage
     const token = localStorage.getItem('accessToken');
+  
     if (token) {
       console.log("Fetching help supports...");
+      // Dispatch the action to fetch help supports
       dispatch(fetchHelpSupports(token));
     } else {
+      // Show an error toast if no token is found
+      toast.error("No token found. Please log in.");
       console.log("No token found.");
     }
   }, [dispatch]);
