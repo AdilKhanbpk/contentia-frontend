@@ -2,11 +2,12 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import { 
-  fetchHowItWorks, 
-  updateHowItWorks 
+import {
+  fetchHowItWorks,
+  updateHowItWorks
 } from "@/store/features/admin/howWorkSlice";
 import { RootState } from "@/store/store";
+import { toast } from "react-toastify";
 
 // Enhanced Debug Loggers
 const logDebug = (action: string, details?: any, error?: any) => {
@@ -44,9 +45,9 @@ export default function HowItWorks() {
     }
   });
 
-  // Fetch data on mount
   useEffect(() => {
     logDebug("Initialization - Component Mounted");
+
     const token = localStorage.getItem("accessToken");
 
     if (token) {
@@ -54,6 +55,8 @@ export default function HowItWorks() {
       dispatch(fetchHowItWorks(token) as any);
     } else {
       logDebug("No Token Found in Local Storage");
+      // Show error toast if no token is found
+      toast.error("No token found. Please log in to fetch the data.");
     }
 
     return () => {
@@ -87,6 +90,7 @@ export default function HowItWorks() {
     const token = localStorage.getItem("accessToken");
     if (!token) {
       logDebug("Submit Error - No Token Found");
+      toast.error("No token found. Please log in to submit the form."); // Show error toast
       return;
     }
 
@@ -105,6 +109,7 @@ export default function HowItWorks() {
       dispatch(updateHowItWorks({ sectionId, data: formattedData, token }) as any);
     } else {
       logDebug("Update Failed - No Sections Available");
+      toast.error("Update failed: No sections available."); // Show error toast if no sections are found
     }
   };
 

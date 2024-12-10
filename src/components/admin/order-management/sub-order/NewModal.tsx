@@ -5,6 +5,7 @@ import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { createOrder } from '@/store/features/admin/ordersSlice'; // Adjust the import path
 import { AppDispatch } from '@/store/store';
+import { toast } from "react-toastify";
 
 // Define the Order interface based on your model
 interface Order {
@@ -51,6 +52,7 @@ export default function NewModal() {
 
         if (!token) {
             console.error("No token found in localStorage. Aborting request.");
+            toast.error("No token found. Please log in again.");
             console.groupEnd();
             return;
         }
@@ -87,6 +89,7 @@ export default function NewModal() {
             ).unwrap();
 
             console.log("Order created successfully:", result);
+            toast.success("Order created successfully!");
 
             // Reset form and clear states
             reset();
@@ -102,10 +105,12 @@ export default function NewModal() {
             console.log("Form and states reset successfully");
         } catch (error) {
             console.error("Error during order creation:", error);
+            toast.error("Error creating order.");
         } finally {
             console.groupEnd();
         }
     };
+
 
     return (
         <>
@@ -224,7 +229,7 @@ export default function NewModal() {
                                     <Controller
                                         name="additionalServices.edit"
                                         control={control}
-                                       
+
                                         render={({ field }) => (
                                             <>
                                                 {['Yes', 'No'].map((option) => (
@@ -279,7 +284,7 @@ export default function NewModal() {
                                     <Controller
                                         name="additionalServices.share"
                                         control={control}
-                                       
+
                                         render={({ field }) => (
                                             <>
                                                 {['Yes', 'No'].map((option) => (
@@ -307,7 +312,7 @@ export default function NewModal() {
                                     <Controller
                                         name="additionalServices.coverPicture"
                                         control={control}
-                                       
+
                                         render={({ field }) => (
                                             <>
                                                 {['Yes', 'No'].map((option) => (
@@ -362,7 +367,7 @@ export default function NewModal() {
                                     <Controller
                                         name="additionalServices.productShipping"
                                         control={control}
-                                       
+
                                         render={({ field }) => (
                                             <>
                                                 {['Yes', 'No'].map((option) => (

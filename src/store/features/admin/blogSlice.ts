@@ -35,15 +35,32 @@ export const createBlog = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.post('/admin/blog', data, {
+      console.log("createBlog called.");
+      console.log("Token:", token);
+
+      console.log("Sending POST request to /admin/blogs...");
+      const response = await axiosInstance.post('/admin/blogs', data, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
+
+      console.log("POST request successful. Response data:", response.data);
       return response.data.data;
     } catch (error) {
+      console.error("Error occurred while creating the blog:", error);
+
       const axiosError = error as AxiosError;
+      if (axiosError.response) {
+        console.error("Server responded with status:", axiosError.response.status);
+        console.error("Error response data:", axiosError.response.data);
+      } else if (axiosError.request) {
+        console.error("No response received. Request details:", axiosError.request);
+      } else {
+        console.error("Unexpected error:", axiosError.message);
+      }
+
       return rejectWithValue(
         axiosError.response?.data || 'Failed to create blog'
       );
@@ -51,12 +68,13 @@ export const createBlog = createAsyncThunk(
   }
 );
 
+
 // Fetch all blogs
 export const fetchBlogs = createAsyncThunk(
   'blog/fetchBlogs',
   async (token: string, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/admin/blogs', {
+      const response = await axiosInstance.get('/admin/blogss', {
         headers: { Authorization: `Bearer ${token}` },
       });
       return response.data.data;
@@ -77,7 +95,7 @@ export const fetchBlogById = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.get(`/admin/blog/${blogId}`, {
+      const response = await axiosInstance.get(`/admin/blogs/${blogId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return response.data.data;
@@ -99,7 +117,7 @@ export const updateBlog = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.patch(
-        `/admin/blog/${blogId}`,
+        `/admin/blogs/${blogId}`,
         data,
         {
           headers: {
@@ -127,7 +145,7 @@ export const updateBlogBannerImage = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.patch(
-        `/admin/blog/${blogId}/banner-image`,
+        `/admin/blogs/${blogId}/banner-image`,
         data,
         {
           headers: {
@@ -146,7 +164,7 @@ export const updateBlogBannerImage = createAsyncThunk(
   }
 );
 
-// Delete blog
+// Delete a blog
 export const deleteBlog = createAsyncThunk(
   'blog/deleteBlog',
   async (
@@ -154,7 +172,7 @@ export const deleteBlog = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.delete(`/admin/blog/${blogId}`, {
+      const response = await axiosInstance.delete(`/admin/blogs/${blogId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return response.data.data;
@@ -252,7 +270,7 @@ const blogSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      // Delete blog
+      // Delete a blog
       .addCase(deleteBlog.pending, (state) => {
         state.loading = true;
         state.error = null;

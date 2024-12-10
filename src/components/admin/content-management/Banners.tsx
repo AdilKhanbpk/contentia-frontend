@@ -10,6 +10,7 @@ import {
   Banner
 } from "@/store/features/admin/bannerSlice";
 import CustomModelAdmin from "../../modal/CustomModelAdmin";
+import { toast } from "react-toastify";
 
 // Memoized Banner Card Component
 const BannerCard = memo(({
@@ -192,7 +193,17 @@ const Banners: React.FC = () => {
   useEffect(() => {
     const tokenFromStorage = localStorage.getItem("accessToken");
     if (tokenFromStorage) {
-      dispatch(fetchBanners(tokenFromStorage));
+      // Dispatch action to fetch banners
+      dispatch(fetchBanners(tokenFromStorage))
+        .then(() => {
+          toast.success("Banners fetched successfully!");  // Success toast on successful fetch
+        })
+        .catch((error: any) => {
+          console.log("Error fetching banners:", error);
+          toast.error("Failed to fetch banners!");  // Error toast on failure
+        });
+    } else {
+      toast.error("No token found in local storage!");  // Error toast if no token found
     }
   }, [dispatch]);
 
@@ -210,8 +221,11 @@ const Banners: React.FC = () => {
   const handleSubmit = useCallback(
     async (formData: FormData) => {
       const tokenFromStorage = localStorage.getItem("accessToken");
-      if (!tokenFromStorage) return;
-
+      if (!tokenFromStorage) {
+        toast.error("No token found in local storage!");  // Error toast if no token found
+        return;
+      }
+  
       try {
         if (modalMode === "edit" && currentBanner?._id) {
           await dispatch(
@@ -221,6 +235,7 @@ const Banners: React.FC = () => {
               token: tokenFromStorage,
             })
           ).unwrap();
+          toast.success("Banner updated successfully!");  // Success toast on successful update
         } else {
           await dispatch(
             createBanner({ 
@@ -228,10 +243,12 @@ const Banners: React.FC = () => {
               token: tokenFromStorage 
             })
           ).unwrap();
+          toast.success("Banner created successfully!");  // Success toast on successful create
         }
         handleModalClose();
       } catch (error) {
         console.error("Banner operation failed:", error);
+        toast.error("Failed to save banner!");  // Error toast on failure
       }
     },
     [dispatch, modalMode, currentBanner, handleModalClose]

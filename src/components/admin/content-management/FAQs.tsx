@@ -15,6 +15,7 @@ import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
+import { toast } from "react-toastify";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -168,7 +169,17 @@ const FAQs: React.FC = () => {
   useEffect(() => {
     const tokenFromStorage = localStorage.getItem('accessToken');
     if (tokenFromStorage) {
-      dispatch(fetchFaqs(tokenFromStorage));
+      // Dispatch action to fetch FAQs
+      dispatch(fetchFaqs(tokenFromStorage))
+        .then(() => {
+          toast.success("FAQs fetched successfully!");  // Success toast on successful fetch
+        })
+        .catch((error: any) => {
+          console.log("Error fetching FAQs:", error);
+          toast.error("Failed to fetch FAQs!");  // Error toast on failure
+        });
+    } else {
+      toast.error("No token found in local storage!");  // Error toast if no token found
     }
   }, [dispatch]);
 
@@ -188,30 +199,62 @@ const FAQs: React.FC = () => {
   }, []);
 
   const handleSubmit = useCallback(async (data: FAQ) => {
+    // Retrieve the access token from localStorage
     const tokenFromStorage = localStorage.getItem('accessToken');
-    if (!tokenFromStorage) return;
-
+    
+    // If no token is found, show a toast notification
+    if (!tokenFromStorage) {
+      toast.error("No token found. Please log in.");
+      return; // Exit the function if no token is found
+    }
+  
     try {
+      // If in edit mode and there's an existing FAQ to update
       if (modalMode === 'edit' && currentFAQ?._id) {
         await dispatch(updateFaq({ faqId: currentFAQ._id, data, token: tokenFromStorage })).unwrap();
+        toast.success('FAQ updated successfully!'); // Success toast for update
       } else {
+        // If creating a new FAQ
         await dispatch(createFaq({ data, token: tokenFromStorage })).unwrap();
+        toast.success('FAQ created successfully!'); // Success toast for creation
       }
+  
+      // Close the modal after the operation is complete
       handleModalClose();
+  
+      // Fetch the updated FAQs after the operation
       dispatch(fetchFaqs(tokenFromStorage));
+  
     } catch (error) {
+      // Show error toast in case of failure
+      toast.error("Something went wrong while processing your request.");
       console.error("FAQ operation failed:", error);
     }
   }, [dispatch, modalMode, currentFAQ, handleModalClose]);
 
   const handleDelete = useCallback(async (id: string) => {
+    // Retrieve the access token from localStorage
     const tokenFromStorage = localStorage.getItem('accessToken');
-    if (!tokenFromStorage) return;
     
+    // If no token is found, show a toast notification
+    if (!tokenFromStorage) {
+      toast.error("No token found. Please log in.");
+      return; // Exit the function if no token is found
+    }
+  
     try {
+      // Dispatch the delete FAQ action
       await dispatch(deleteFaq({ faqId: id, token: tokenFromStorage })).unwrap();
+  
+      // Show success toast after successful deletion
+      toast.success("FAQ deleted successfully!");
+  
+      // Fetch the updated FAQs after the delete operation
       dispatch(fetchFaqs(tokenFromStorage));
+  
     } catch (error) {
+      // Show error toast in case of failure
+      toast.error("Something went wrong while deleting the FAQ.");
       console.error("Error deleting FAQ:", error);
     }
   }, [dispatch]);

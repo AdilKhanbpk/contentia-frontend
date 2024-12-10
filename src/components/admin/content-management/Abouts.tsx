@@ -12,6 +12,7 @@ import {
   updateAbout
 } from "@/store/features/admin/aboutSlice";
 import ImageUploader from "./sub-content/ImageUploader";
+import { toast } from "react-toastify";
 
 // Dynamically import the Quill editor to avoid SSR issues
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -56,23 +57,26 @@ export default function Abouts() {
   useEffect(() => {
     console.log("Component Mounted");
     const token = localStorage.getItem("accessToken");
-
+  
     if (token) {
       console.log("Fetching Data", { token });
-
+  
       // Log when the dispatch function is called
       dispatch(fetchAbout(token) as any)
         .then((action: any) => {
           // If the dispatch returns a successful result
           console.log("Action Dispatched Successfully:", action);
+          toast.success("Data fetched successfully!");  // Success toast
         })
         .catch((error: any) => {
           // Log if there was an error in dispatch
           console.log("Dispatch failed with error:", error);
+          toast.error("Failed to fetch data!");  // Error toast
         });
-
+  
     } else {
       console.log("No Token Found in Local Storage");
+      toast.error("No token found in local storage!");  // Error toast for missing token
     }
   }, [dispatch]);
 
@@ -90,29 +94,46 @@ export default function Abouts() {
 
   const onSubmit = (data: AboutFormData) => {
     console.log("Form Submitted", data);
-
+  
     const token = localStorage.getItem("accessToken");
     if (!token) {
       console.log("Submit Error - No Token Found");
+      toast.error("No token found in local storage!");  // Error toast for missing token
       return;
     }
-
+  
     // If a section exists, update; otherwise, create
     if (sections) {
       const sectionId = sections._id;
       console.log("Dispatching Update", { sectionId, data });
-
+  
       dispatch(updateAbout({
         aboutId: sectionId!,
         data,
         token
-      }) as any);
+      }) as any)
+        .then(() => {
+          toast.success("Section updated successfully!");  // Success toast for update
+        })
+        .catch((error: any) => {
+          console.log("Update failed with error:", error);
+          toast.error("Failed to update section!");  // Error toast for update failure
+        });
+  
     } else {
       console.log("Dispatching Create", { data });
+  
       dispatch(createAbout({
         data,
         token
-      }) as any);
+      }) as any)
+        .then(() => {
+          toast.success("Section created successfully!");  // Success toast for create
+        })
+        .catch((error: any) => {
+          console.log("Create failed with error:", error);
+          toast.error("Failed to create section!");  // Error toast for create failure
+        });
     }
   };
 
