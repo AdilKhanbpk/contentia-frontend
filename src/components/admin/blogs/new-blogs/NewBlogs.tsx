@@ -13,12 +13,18 @@ const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 // Interface for form data
 interface BlogFormData {
+  _id: string;
+  status: string;
+  author: string;
   title: string;
   category: string;
-  metaKeywords: string;
+  bannerImage: FileList | null;
   content: string;
   metaDescription: string;
-  bannerImage: File | null;
+  metaKeywords: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
 
 export default function NewBlogs() {
@@ -35,57 +41,46 @@ export default function NewBlogs() {
 
   const onSubmit = async (data: BlogFormData) => {
     try {
-      console.log("onSubmit called with data:", data);
-
+      console.log("Full form data:", data);
+  
       // Get token from localStorage
       const token = localStorage.getItem('accessToken');
-      console.log("Retrieved token from localStorage:", token);
-
       if (!token) {
         toast.error('No access token found. Please log in.');
-        console.warn("No token found. Redirecting to login.");
         return;
       }
-
+  
       // Create FormData for file upload
       const formData = new FormData();
+      
+      // Explicitly append each field
       formData.append('title', data.title);
       formData.append('category', data.category);
       formData.append('metaKeywords', data.metaKeywords);
       formData.append('content', data.content);
       formData.append('metaDescription', data.metaDescription);
-      console.log("FormData created with provided data:", {
-        title: data.title,
-        category: data.category,
-        metaKeywords: data.metaKeywords,
-        content: data.content,
-        metaDescription: data.metaDescription,
-      });
-
-      // Append banner image if selected
-      if (data.bannerImage) {
-        formData.append('bannerImage', data.bannerImage);
-        console.log("Banner image added to FormData:", data.bannerImage);
+  
+      // Handle banner image specifically
+      if (data.bannerImage && data.bannerImage.length > 0) {
+        formData.append('bannerImage', data.bannerImage[0]);
       }
 
+      console.log("form data to be sent", formData);
+  
       // Dispatch create blog action
-      console.log("Dispatching createBlog action...");
       const result = await dispatch(createBlog({ data: formData, token }));
-
+  
       if (createBlog.fulfilled.match(result)) {
-        console.log("createBlog fulfilled with result:", result.payload);
         toast.success('Blog created successfully!');
-        reset(); // Reset form
-        console.log("Form reset.");
+        reset();
         setBannerImagePreview(null);
-        console.log("Banner image preview cleared.");
       } else {
-        console.warn("createBlog rejected with result:", result);
+        console.error('createBlog rejected:', result);
         toast.error('Failed to create blog');
       }
     } catch (error) {
       console.error('Blog creation error:', error);
-
+      toast.error('An unexpected error occurred');
     }
   };
 
@@ -180,7 +175,12 @@ export default function NewBlogs() {
               type="file"
               {...register('bannerImage', {
                 required: 'Banner image is required',
-                onChange: handleBannerImageChange
+                validate: (value) => {
+                  if (!value || value.length === 0) {
+                    return 'Please select an image';
+                  }
+                  return true;
+                }
               })}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               accept="image/*"

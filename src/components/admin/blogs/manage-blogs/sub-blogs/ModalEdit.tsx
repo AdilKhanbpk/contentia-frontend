@@ -1,4 +1,3 @@
-// BlogEditModel.tsx
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
@@ -6,12 +5,18 @@ import "react-quill/dist/quill.snow.css";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 interface BlogData {
-    title?: string;
-    category?: string;
-    keywords?: string[];
-    description?: string;
-    banner?: string;
-    metaDescription?: string;
+    _id: string;
+    status: string;
+    author: string;
+    title: string;
+    category: string;
+    bannerImage: FileList | null;
+    content: string;
+    metaDescription: string;
+    metaKeywords: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
 }
 
 interface BlogEditModelProps {
@@ -24,15 +29,17 @@ export function ModalEdit({ blogData, onClose, onSubmit }: BlogEditModelProps) {
     const [formData, setFormData] = useState<BlogData>({
         title: '',
         category: '',
-        keywords: [],
-        description: '',
-        banner: '',
-        metaDescription: ''
+        metaDescription: '',
+        metaKeywords: [],
+        description: ''
     });
 
     useEffect(() => {
         if (blogData) {
-            setFormData(blogData);
+            setFormData({
+                ...blogData,
+                keywords: blogData.metaKeywords || []
+            });
         }
     }, [blogData]);
 
@@ -42,12 +49,19 @@ export function ModalEdit({ blogData, onClose, onSubmit }: BlogEditModelProps) {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setFormData(prev => ({ 
+            ...prev, 
+            [name]: name === 'keywords' ? value.split(',').map(k => k.trim()) : value 
+        }));
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(formData);
+        const dataToSubmit: BlogData = {
+            ...formData,
+            metaKeywords: formData.keywords
+        };
+        onSubmit(dataToSubmit);
         onClose();
     };
 

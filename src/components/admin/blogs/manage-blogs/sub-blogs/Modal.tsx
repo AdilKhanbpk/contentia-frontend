@@ -9,12 +9,18 @@ interface ModalProps {
 }
 
 interface BlogData {
+    _id: string;
+    status: string;
+    author: string;
     title: string;
     category: string;
-    keywords: string;
-    description: string;
-    banner?: File;
+    bannerImage: FileList | null;
+    content: string;
     metaDescription: string;
+    metaKeywords: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
 }
 
 // Dynamically import the Quill editor to avoid SSR issues
@@ -24,9 +30,9 @@ export default function Modal({ onSubmit, onClose }: ModalProps) {
     const [blogData, setBlogData] = useState<BlogData>({
         title: "",
         category: "",
-        keywords: "",
-        description: "",
-        metaDescription: ""
+        metaDescription: "",
+        metaKeywords: "",
+        description: ""
     });
     const [banner, setBanner] = useState<File | null>(null);
 
@@ -34,7 +40,7 @@ export default function Modal({ onSubmit, onClose }: ModalProps) {
         const { name, value } = e.target;
         setBlogData(prev => ({
             ...prev,
-            [name]: value
+            [name]: name === 'keywords' ? value.split(',').map(k => k.trim()) : value
         }));
     };
 
@@ -51,13 +57,21 @@ export default function Modal({ onSubmit, onClose }: ModalProps) {
             setBanner(file);
             setBlogData(prev => ({
                 ...prev,
+                bannerImage: e.target.files,
                 banner: file
             }));
         }
     };
 
     const handleSubmit = () => {
-        onSubmit?.(blogData);
+        const dataToSubmit: BlogData = {
+            ...blogData,
+            metaKeywords: blogData.keywords?.length ? blogData.keywords : []
+        };
+        
+        if (onSubmit) {
+            onSubmit(dataToSubmit);
+        }
         onClose();
     };
 
@@ -100,7 +114,7 @@ export default function Modal({ onSubmit, onClose }: ModalProps) {
                 <input
                     type="text"
                     name="keywords"
-                    value={blogData.keywords}
+                    value={blogData.keywords?.join(', ')}
                     onChange={handleInputChange}
                     placeholder="Click the enter button after writing your keyword"
                     className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none"

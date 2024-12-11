@@ -10,6 +10,7 @@ import youtubeIcon from "../../../../../../public/BecomeCreator/youtube_iconpng.
 import linkdinIcon from "../../../../../../public/BecomeCreator/linkedin_icon.png";
 import xIcon from "../../../../../../public/BecomeCreator/x_icon.png";
 import tiktokIcon from "../../../../../../public/BecomeCreator/tiktik_icon.png";
+import { toast } from 'react-toastify';
 
 interface Creator {
     id: number;
@@ -132,50 +133,63 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
     }, [editCreatorForm, reset]);
 
     const onSubmit = async (formData: any) => {
-        console.log('data from the third tab', formData);
+        console.log('Data from the third tab:', formData);
+
+        // Ensure creator ID exists before updating
         if (!editCreatorForm?.id) {
             console.error('No creator ID found');
+            toast.error('No creator ID found. Please ensure a creator is selected.');
             return;
         }
 
+        // Retrieve access token from localStorage
         const token = localStorage.getItem('accessToken');
         if (!token) {
             console.error('No access token found');
+            toast.error('No access token found. Please log in again.');
             return;
         }
 
         try {
+            // Data transformation to match API expectations
             const transformedData = {
                 preferences: {
                     contentInformation: {
                         contentType: formData.contentType,
-                        creatorType: formData.creatorType, contentFormats: formData.contentFormats || [],
+                        creatorType: formData.creatorType,
+                        contentFormats: formData.contentFormats || [],
                         areaOfInterest: formData.interests || []
                     },
                     socialInformation: {
                         contentType: formData.social_information.contentType,
-                        platforms: formData.social_information.platforms,
-                        portfolioLink: formData.social_information.portfolioLink
+                        platforms: formData.social_information.platforms || [],
+                        portfolioLink: formData.social_information.portfolioLink || ''
                     }
                 }
             };
 
+            // Dispatch the update action
             const resultAction = await dispatch(
                 updateAdminCreator({
-                    customerId: editCreatorForm.id.toString(),
-                    data: transformedData,
-                    token,
+                    customerId: editCreatorForm.id.toString(),  // Convert ID to string for API
+                    data: transformedData,  // Send the transformed data
+                    token,  // Provide the token for authentication
                 })
             );
 
+            // Handle the result of the update action
             if (updateAdminCreator.fulfilled.match(resultAction)) {
                 console.log('Update successful');
+                toast.success('Creator updated successfully.');
+                // Fetch the updated list of creators
                 await dispatch(fetchAdminCreators(token));
             } else {
                 console.error('Update failed:', resultAction.error);
+                toast.error('Failed to update creator. Please try again.');
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error updating creator:', error);
+            toast.error(`Error updating creator: ${error.message || 'Unknown error'}`);
         }
     };
 

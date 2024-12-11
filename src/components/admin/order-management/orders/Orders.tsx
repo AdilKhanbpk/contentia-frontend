@@ -21,6 +21,7 @@ import {
     clearCurrentOrder
 } from '@/store/features/admin/ordersSlice';
 import { RootState } from '@/store/store';
+import { toast } from "react-toastify";
 
 // Define the Order interface based on your model
 interface Order {
@@ -29,7 +30,7 @@ interface Order {
     orderOwner: {
         id: string; // User's ID
         fullName: string; // User's full name
-      };
+    };
     assignedCreators: string[];
     appliedCreators: string[];
     noOfUgc: number;
@@ -158,7 +159,6 @@ const Orders: React.FC = () => {
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
     const [isModalRequestsOpen, setIsModalRequestsOpen] = useState(false);
 
-    // Fetch orders on component mount
     useEffect(() => {
         const fetchOrdersData = async () => {
             console.log('Starting fetchOrdersData'); // Log at the start of the function
@@ -166,98 +166,141 @@ const Orders: React.FC = () => {
             const token = localStorage.getItem('accessToken');
             console.log('Token retrieved from localStorage:', token); // Log the token value
 
-            if (token) {
-                console.log('Token is valid, proceeding to dispatch fetchOrders'); // Log if the token is present
-                try {
-                    const response = await dispatch(fetchOrders(token)).unwrap();
-                    console.log('Orders fetched successfully:', response); // Log the successful response
-                } catch (error) {
-                    console.error('Error occurred while fetching orders:', error); // Log error details
-                }
-            } else {
+            if (!token) {
                 console.warn('No token found in localStorage, skipping fetchOrders'); // Log if the token is absent
+                toast.error("No token found. Please log in again.");
+                return; // Early return if no token is found
+            }
+
+            console.log('Token is valid, proceeding to dispatch fetchOrders'); // Log if the token is present
+
+            try {
+                const response = await dispatch(fetchOrders(token)).unwrap();
+                console.log('Orders fetched successfully:', response); // Log the successful response
+                toast.success("Orders fetched successfully!");
+            } catch (error) {
+                console.error('Error occurred while fetching orders:', error); // Log error details
+                toast.error("Error occurred while fetching orders.");
             }
         };
 
-        fetchOrdersData();
+        fetchOrdersData(); // Invoking the async function
 
-        console.log('fetchOrdersData invoked on component mount'); // Log after invoking the function
+        return () => {
+            // Optionally cleanup or reset state if needed when the component unmounts
+            console.log('Component unmounted, cleanup if necessary');
+        };
     }, [dispatch]);
 
 
     // Handler for deleting an order
     const handleDelete = useCallback(async (id: string) => {
         const token = localStorage.getItem('accessToken');
-        if (!token) return;
+        if (!token) {
+            toast.error("No token found. Please log in again.");
+            return;
+        }
 
         try {
             await dispatch(deleteOrder({ orderId: id, token })).unwrap();
+            toast.success("Order deleted successfully!");
         } catch (error) {
             console.error('Error deleting order:', error);
+            toast.error("Error deleting order.");
         }
     }, [dispatch]);
 
     // Handler for viewing order details
     const handleView = useCallback(async (id: string) => {
         const token = localStorage.getItem('accessToken');
-        if (!token) return;
+        if (!token) {
+            toast.error("No token found. Please log in again.");
+            return;
+        }
 
         try {
             await dispatch(fetchOrderById({ orderId: id, token })).unwrap();
+            toast.success("Order details fetched successfully!");
         } catch (error) {
             console.error('Error fetching order details:', error);
+            toast.error("Error fetching order details.");
         }
     }, [dispatch]);
+
 
     // Handler for editing order
     const handleEdit = useCallback(async (id: string) => {
         const token = localStorage.getItem('accessToken');
-        if (!token) return;
+        if (!token) {
+            toast.error("No token found. Please log in again.");
+            return;
+        }
 
         try {
             await dispatch(fetchOrderById({ orderId: id, token })).unwrap();
             setIsModalEditOpen(true);
+            toast.success("Order fetched successfully for editing.");
         } catch (error) {
             console.error('Error fetching order for edit:', error);
+            toast.error("Error fetching order for editing.");
         }
     }, [dispatch]);
+
 
     // Handler for creator requests
     const handleRequest = useCallback(async (id: string) => {
         const token = localStorage.getItem('accessToken');
-        if (!token) return;
+        if (!token) {
+            toast.error("No token found. Please log in again.");
+            return;
+        }
 
         try {
             await dispatch(fetchOrderById({ orderId: id, token })).unwrap();
             setIsModalRequestsOpen(true);
+            toast.success("Order fetched successfully for creator requests.");
         } catch (error) {
             console.error('Error fetching order for creator requests:', error);
+            toast.error("Error fetching order for creator requests.");
         }
     }, [dispatch]);
+
 
     // Handler for approving creator
     const handleApproveCreator = useCallback(async (orderId: string, creatorId: string) => {
         const token = localStorage.getItem('accessToken');
-        if (!token) return;
+        if (!token) {
+            toast.error("No token found. Please log in again.");
+            return;
+        }
 
         try {
             await dispatch(approveCreator({ orderId, creatorId, token })).unwrap();
+            toast.success("Creator approved successfully.");
         } catch (error) {
             console.error('Error approving creator:', error);
+            toast.error("Error approving creator.");
         }
     }, [dispatch]);
+
 
     // Handler for rejecting creator
     const handleRejectCreator = useCallback(async (orderId: string, creatorId: string) => {
         const token = localStorage.getItem('accessToken');
-        if (!token) return;
+        if (!token) {
+            toast.error("No token found. Please log in again.");
+            return;
+        }
 
         try {
             await dispatch(rejectCreator({ orderId, creatorId, token })).unwrap();
+            toast.success("Creator rejected successfully.");
         } catch (error) {
             console.error('Error rejecting creator:', error);
+            toast.error("Error rejecting creator.");
         }
     }, [dispatch]);
+
 
     // Handler for search input
     const handleSearch = useCallback((value: string) => {
@@ -371,11 +414,11 @@ const Orders: React.FC = () => {
             const fullNameMatch = order.orderOwner?.fullName?.toLowerCase().includes(lowerCaseSearchTerm) ?? false;
             // Safely check if _id exists before calling toLowerCase
             const idMatch = order._id?.toLowerCase().includes(lowerCaseSearchTerm) ?? false;
-    
+
             return fullNameMatch || idMatch;
         });
     }, [orders, searchTerm]);
-    
+
     // Loading state
     if (loading) {
         return <div className="flex justify-center items-center h-screen">Loading...</div>;

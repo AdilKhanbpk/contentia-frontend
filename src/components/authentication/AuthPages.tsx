@@ -36,7 +36,7 @@ const AuthPages = () => {
           {activeTab === 'login' ? <LoginForm /> : <SignupForm />}
         </div>
       </div>
-      
+
       <SideSec></SideSec>
 
     </div>

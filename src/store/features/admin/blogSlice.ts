@@ -4,13 +4,17 @@ import { AxiosError } from 'axios';
 
 export interface Blog {
   _id: string;
+  status: string;
   author: string;
   title: string;
   category: string;
-  metaKeywords: string;
-  metaDescription: string;
+  bannerImage: FileList | null;
   content: string;
-  bannerImage: string;
+  metaDescription: string;
+  metaKeywords: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
 
 export interface BlogState {
@@ -39,6 +43,7 @@ export const createBlog = createAsyncThunk(
       console.log("Token:", token);
 
       console.log("Sending POST request to /admin/blogs...");
+      console.log("data send to the create thunk", data);
       const response = await axiosInstance.post('/admin/blogs', data, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -74,7 +79,7 @@ export const fetchBlogs = createAsyncThunk(
   'blog/fetchBlogs',
   async (token: string, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/admin/blogss', {
+      const response = await axiosInstance.get('/admin/blogs', {
         headers: { Authorization: `Bearer ${token}` },
       });
       return response.data.data;

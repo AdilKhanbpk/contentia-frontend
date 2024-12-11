@@ -3,6 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import { Claim, updateAdminClaim } from "@/store/features/admin/claimSlice"; // Adjust import based on file structure
+import { toast } from 'react-toastify';
 
 interface ModalTwoProps {
   claim: Claim | null; // Accept a Claim object or null
@@ -35,10 +36,14 @@ export default function ModalTwo({ claim }: ModalTwoProps) {
       ).unwrap()
         .then(() => {
           console.log("Claim content updated:", data.claimContent);
+          toast.success("Claim content updated successfully!"); // Success toast
         })
         .catch((error) => {
           console.error("Failed to update claim:", error);
+          toast.error(`Failed to update claim: ${error.message || "Unknown error"}`); // Error toast
         });
+    } else {
+      toast.error("Missing claim ID or access token!"); // Error toast for missing claim or token
     }
   };
 

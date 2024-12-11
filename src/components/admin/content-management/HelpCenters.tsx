@@ -52,13 +52,16 @@ const HelpCenters: React.FC = () => {
     exportCsvFile({ data, headers, filename: "help_supports.csv" });
   };
 
-  // Handle delete
   const handleDelete = (id: string) => {
     const token = localStorage.getItem('accessToken');
     console.log(`Deleting help support with ID: ${id}`);
+  
     if (token) {
+      // If token is found, dispatch delete action
       dispatch(deleteHelpSupport({ helpSupportId: id, token }));
     } else {
+      // Show error toast if no token is found
+      toast.error("No token found. Please log in to perform this action.");
       console.log("No token found for delete action.");
     }
   };

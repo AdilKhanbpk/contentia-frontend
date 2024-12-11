@@ -3,6 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import { createAdminClaim } from "@/store/features/admin/claimSlice";
+import { toast } from 'react-toastify';
 
 // Define interface to match backend expected structure
 interface ClaimFormData {
@@ -52,13 +53,17 @@ export default function Modal() {
         .then(() => {
           console.log("Claim created:", data);
           reset(); // Reset form after successful submission
+          toast.success("Claim created successfully!"); // Success toast
         })
         .catch((error) => {
           console.error("Failed to create claim:", error);
-          alert(`Error: ${error.message || "Unknown error"}`);
+          toast.error(`Failed to create claim: ${error.message || "Unknown error"}`); // Error toast
         });
+    } else {
+      toast.error("No access token found! Please log in again."); // Error toast for missing token
     }
   };
+
 
   return (
     <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">
@@ -70,8 +75,8 @@ export default function Modal() {
             <label className="block text-sm font-semibold mt-2 sm:mt-3 md:mt-4 lg:mt-4">Customer ID</label>
             <input
               type="text"
-              {...register("customerId", { 
-                required: "Customer ID is required" 
+              {...register("customerId", {
+                required: "Customer ID is required"
               })}
               placeholder=""
               className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none overflow-auto"
@@ -87,8 +92,8 @@ export default function Modal() {
             <label className="block text-sm font-semibold mt-2 sm:mt-3 md:mt-4 lg:mt-4">Claim Date</label>
             <input
               type="date"
-              {...register("claimDate", { 
-                required: "Claim Date is required" 
+              {...register("claimDate", {
+                required: "Claim Date is required"
               })}
               className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none overflow-auto"
             />
@@ -105,8 +110,8 @@ export default function Modal() {
             <label className="block text-sm font-semibold mt-2 sm:mt-3 md:mt-4 lg:mt-4">Order ID</label>
             <input
               type="text"
-              {...register("orderId", { 
-                required: "Order ID is required" 
+              {...register("orderId", {
+                required: "Order ID is required"
               })}
               placeholder=""
               className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none overflow-auto"
@@ -124,8 +129,8 @@ export default function Modal() {
             <h2 className="text-base font-semibold mb-1">Claim Content</h2>
             <div className="mb-2 sm:mb-3 md:mb-3 lg:mb-4">
               <textarea
-                {...register("claimContent", { 
-                  required: "Claim content is required" 
+                {...register("claimContent", {
+                  required: "Claim content is required"
                 })}
                 className="w-full p-2 sm:p-3 md:p-4 lg:p-4 border border-gray-400 rounded-lg focus:outline-none"
                 rows={3}

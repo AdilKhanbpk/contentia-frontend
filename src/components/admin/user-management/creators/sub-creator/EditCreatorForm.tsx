@@ -1,8 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import Image from 'next/image';
-import Link from "next/link";
 import FirstTab from './FirstTab';
 import SecondTab from './SecondTab';
 import ThirdTab from './ThirdTab';

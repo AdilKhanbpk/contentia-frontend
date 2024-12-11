@@ -1,8 +1,10 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { updateAdminCreator, fetchAdminCreators } from '@/store/features/admin/creatorsSlice';
 import { AppDispatch } from '@/store/store';
+import { toast } from 'react-toastify';
+
 
 interface Creator {
     id: number;
@@ -132,35 +134,46 @@ export default function SecondTab({ editCreatorForm }: SecondTabProps) {
     }, [editCreatorForm, reset]);
 
     const onSubmit: SubmitHandler<any> = async (formData) => {
-        console.log("form update data second tab", formData);
+        console.log("Form update data (second tab):", formData);
+
+        // Check if editCreatorForm has an id to ensure you're updating an existing creator
         if (!editCreatorForm?.id) {
             console.error('No creator ID found');
+            toast.error("Error: No creator ID found. Please ensure the creator is selected.");
             return;
         }
 
+        // Retrieve the access token from localStorage
         const token = localStorage.getItem('accessToken');
         if (!token) {
             console.error('No access token found');
+            toast.error("Error: No access token found. Please log in again.");
             return;
         }
 
         try {
+            // Dispatch the updateAdminCreator action with the necessary data
             const resultAction = await dispatch(
                 updateAdminCreator({
-                    customerId: editCreatorForm.id.toString(),
-                    data: formData,
-                    token,
+                    customerId: editCreatorForm.id.toString(),  // Ensure ID is a string for API compatibility
+                    data: formData,  // Form data to be sent for the update
+                    token,  // Authentication token to be sent in the request
                 })
             );
 
+            // Check if the action was fulfilled (successful update)
             if (updateAdminCreator.fulfilled.match(resultAction)) {
                 console.log('Update successful');
+                toast.success("Update successful");
+                // After successful update, fetch the updated list of creators
                 await dispatch(fetchAdminCreators(token));
             } else {
                 console.error('Update failed:', resultAction.error);
+                toast.error("Update failed. Please try again later.");  // Provide feedback for failure
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error updating creator:', error);
+            toast.error(`Error updating creator: ${error.message || "Unknown error"}`);  // Show the error message to the user
         }
     };
 

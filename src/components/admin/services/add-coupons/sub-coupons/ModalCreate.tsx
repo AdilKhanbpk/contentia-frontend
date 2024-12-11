@@ -3,6 +3,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { createCoupon } from "@/store/features/admin/couponSlice";
+import { toast } from 'react-toastify';
 
 interface ModalCreateProps {
   closeModal: () => void;
@@ -33,8 +34,8 @@ export default function ModalCreate({ closeModal, token }: ModalCreateProps) {
   const onSubmit = async (formData: CouponForm) => {
     try {
       // Validate that only one discount type is provided
-      if ((formData.discountTL && formData.discountPercent) || 
-          (!formData.discountTL && !formData.discountPercent)) {
+      if ((formData.discountTL && formData.discountPercent) ||
+        (!formData.discountTL && !formData.discountPercent)) {
         throw new Error(
           "You must provide either a discount in TL or a discount percentage, but not both."
         );
@@ -57,15 +58,20 @@ export default function ModalCreate({ closeModal, token }: ModalCreateProps) {
 
       console.log("coupon data in modal create before create", couponData);
 
+      // Dispatch the action to create the coupon
       await dispatch(createCoupon({ data: couponData, token }) as any);
+
+      // Display success message
+      toast.success("Coupon created successfully!");
+
+      // Close the modal after success
       closeModal();
     } catch (error) {
       console.error("Failed to create coupon:", error);
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error("Unknown error occurred", error);
-      }
+
+      // Display error message
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      toast.error(errorMessage);
     }
   };
 
