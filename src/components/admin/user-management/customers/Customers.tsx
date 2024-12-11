@@ -17,6 +17,8 @@ import ModalEdit from "./sub-customer/ModalEdit";
 import ModalView from "./sub-customer/ModelView"; // Import view modal
 import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
+import { toast } from 'react-toastify';
+
 
 
 // Memoized SearchBar component
@@ -68,20 +70,25 @@ const Customers: React.FC = () => {
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
     const [currentCustomer, setCurrentCustomer] = useState<any>(null);
 
-    // Handler for deleting a customer
     const handleDelete = useCallback((id: string) => {
         const tokenFromStorage = localStorage.getItem('accessToken');
         if (!tokenFromStorage) {
             console.warn("Authorization token is missing.");
+            toast.error('Authorization token is missing. Please log in again.');
             return;
         }
 
         dispatch(deleteAdminCustomer({ customerId: id, token: tokenFromStorage }))
             .unwrap()
+            .then(() => {
+                toast.success('Customer deleted successfully!');
+            })
             .catch((error: any) => {
                 console.error("Delete failed:", error);
+                toast.error('Failed to delete customer. Please try again.');
             });
     }, [dispatch]);
+
 
     // Handler for viewing a customer
     const handleView = (id: string) => {
@@ -92,47 +99,47 @@ const Customers: React.FC = () => {
 
     const handleCreate = async (customerData: any) => {
         const tokenFromStorage = localStorage.getItem('accessToken');
-      
+
         try {
-          // Validate token
-          if (!tokenFromStorage) {
-            console.error('Authorization token is missing');
-            // Handle missing token (e.g., redirect to login)
-            return;
-          }
-      
-          // Validate customer data
-          if (!customerData || Object.keys(customerData).length === 0) {
-            console.error('Customer data is empty');
-            return;
-          }
-      
-          // Log the request attempt
-          console.log('Attempting to create customer:', {
-            ...customerData,
-            token: tokenFromStorage ? '${token.substring(0, 10)}...' : 'missing'
-          });
-      
-          const result = await dispatch(
-            createAdminCustomer({ 
-              data: customerData, 
-              token: tokenFromStorage 
-            })
-          ).unwrap();
-      
-          console.log('Customer created successfully:', result);
-          setIsModalOpen(false);
-          
-          // Optionally refresh the customer list or show success message
-          // dispatch(fetchCustomers());
-          await dispatch(fetchAdminCustomers(tokenFromStorage));
-          
+            // Validate token
+            if (!tokenFromStorage) {
+                console.error('Authorization token is missing');
+                toast.error('Authorization token is missing. Please log in again.');
+                return;
+            }
+
+            // Validate customer data
+            if (!customerData || Object.keys(customerData).length === 0) {
+                console.error('Customer data is empty');
+                toast.error('Customer data is missing or empty.');
+                return;
+            }
+
+            // Log the request attempt
+            console.log('Attempting to create customer:', {
+                ...customerData,
+                token: tokenFromStorage ? `${tokenFromStorage.substring(0, 10)}...` : 'missing'
+            });
+
+            const result = await dispatch(
+                createAdminCustomer({
+                    data: customerData,
+                    token: tokenFromStorage
+                })
+            ).unwrap();
+
+            console.log('Customer created successfully:', result);
+            setIsModalOpen(false);
+
+            // Refresh customer list and show success message
+            await dispatch(fetchAdminCustomers(tokenFromStorage));
+            toast.success('Customer created successfully!');
+
         } catch (error) {
-          console.error('Customer creation failed:', error);
-          // Handle error (e.g., show error message to user)
+            console.error('Customer creation failed:', error);
+            toast.error('Failed to create customer. Please try again.');
         }
-        
-      };
+    };
 
     const handleUpdate = async (customerData: any) => {
         console.log('Function `handleUpdate` called with customerData: ', customerData);
@@ -163,13 +170,22 @@ const Customers: React.FC = () => {
                 termsAndConditionsApproved: customerData.termsAndConditionsApproved ?? false  // Default to false if termsAndConditionsApproved is missing or undefined
             };
 
-            // Dispatch the update action
-            dispatch(updateAdminCustomer({ customerId, data: dataToUpdate, token }));
-            console.log('Data to be sent for update: ', dataToUpdate);
-            await dispatch(fetchAdminCustomers(token));
+            try {
+                // Dispatch the update action
+                await dispatch(updateAdminCustomer({ customerId, data: dataToUpdate, token }));
+                console.log('Data to be sent for update: ', dataToUpdate);
+
+                // Refresh customer list and show success message
+                await dispatch(fetchAdminCustomers(token));
+                toast.success('Customer updated successfully!');
+            } catch (error) {
+                console.error('Customer update failed:', error);
+                toast.error('Failed to update customer. Please try again.');
+            }
 
         } else {
             console.error('Authorization token is missing!');
+            toast.error('Authorization token is missing. Please log in again.');
         }
     };
 
@@ -254,13 +270,12 @@ const Customers: React.FC = () => {
             name: "Status",
             cell: (row: any) => (
                 <span
-                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                        row.customerStatus === "approved"
-                            ? "text-green-700 bg-green-100"
-                            : row.customerStatus === "waiting"
-                                ? "text-yellow-700 bg-yellow-100"
-                                : "text-red-700 bg-red-100"
-                    }`}
+                    className={`px-3 py-1 rounded-full text-sm font-semibold ${row.customerStatus === "approved"
+                        ? "text-green-700 bg-green-100"
+                        : row.customerStatus === "waiting"
+                            ? "text-yellow-700 bg-yellow-100"
+                            : "text-red-700 bg-red-100"
+                        }`}
                 >
                     {row.customerStatus}
                 </span>

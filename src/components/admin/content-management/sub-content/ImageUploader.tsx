@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { updateAboutImage } from "@/store/features/admin/aboutSlice";
+import { toast } from "react-toastify";
 
 interface ImageUploaderProps {
     aboutId: string;
@@ -45,24 +46,38 @@ export default function ImageUploader({ aboutId, currentImage }: ImageUploaderPr
     };
 
     const handleImageUpload = () => {
+        // Check if there is an image to upload
         if (!imageFile) {
             console.log("No image to upload.");
+            toast.error("No image selected. Please choose an image to upload.");
             return;
         }
 
+        // Check for access token in local storage
         const token = localStorage.getItem("accessToken");
         if (!token) {
             console.log("No token found.");
+            toast.error("No token found. Please log in to upload the image.");
             return;
         }
 
         console.log("Uploading image:", { aboutId, imageFileName: imageFile.name });
 
-        dispatch(updateAboutImage({
-            aboutId,
-            imageFile,
-            token
-        }) as any);
+        // Dispatch the update action for image upload
+        try {
+            dispatch(updateAboutImage({
+                aboutId,
+                imageFile,
+                token
+            }) as any);
+
+            // Show a success message once the upload is initiated or completed
+            toast.success("Image upload started successfully!");
+        } catch (error) {
+            console.error("Error uploading image:", error);
+            // Show error notification if there’s an issue with the upload
+            toast.error("Error uploading the image. Please try again.");
+        }
     };
 
     return (

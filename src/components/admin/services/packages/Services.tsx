@@ -3,14 +3,15 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { 
-  fetchPackages, 
-  updatePackage, 
-  Package 
+import {
+  fetchPackages,
+  updatePackage,
+  Package
 } from "@/store/features/admin/packageSlice";
 import { RootState } from "@/store/store";
 import CustomModelAdmin from '../../../modal/CustomModelAdmin';
 import Modal from "./sub-packages/Modal";
+import { toast } from 'react-toastify';
 
 // Icon placeholders for packages
 const PackageIcon = () => <img src="/icons/package.png" alt="Package Icon" className="w-10 h-8" />;
@@ -28,25 +29,34 @@ const Packages = () => {
   const { data: serverPackages, loading, error } = useSelector((state: RootState) => {
     return state.package;
   });
-  
+
   const [packages, setPackages] = useState<PackageFormData[]>([]);
   const [editingPackage, setEditingPackage] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { register, handleSubmit, reset, formState: { errors } } = useForm<PackageFormData>();
   const [token, setToken] = useState<string>("");
 
-  // Fetch token and packages on component mount
+
   useEffect(() => {
     const storedToken = localStorage.getItem("accessToken") || "";
     setToken(storedToken);
 
     if (storedToken) {
       console.log("[Debug] Dispatching fetchPackages with token:", storedToken);
-      dispatch(fetchPackages(storedToken) as any);
+
+      dispatch(fetchPackages(storedToken) as any)
+        .then(() => {
+          toast.success("Packages fetched successfully!");
+        })
+        .catch((err: Error) => {
+          toast.error(err.message || "Failed to fetch packages.");
+        });
     } else {
       console.warn("[Warning] No token available in localStorage!");
+      toast.error("No access token found!");
     }
   }, [dispatch]);
+
 
   // Sync local packages with server packages when they load
   useEffect(() => {
@@ -65,7 +75,7 @@ const Packages = () => {
     } else {
       console.log("No server packages available or empty data.");
     }
-  }, [serverPackages]); 
+  }, [serverPackages]);
 
   // Open and close modal handlers
   const openModal = () => setIsModalOpen(true);
@@ -77,7 +87,6 @@ const Packages = () => {
     reset(pkg);
   };
 
-  // Handle save and update the specific package
   const handleSave = (data: PackageFormData) => {
     const packageToUpdate = serverPackages?.find((pkg: Package) => pkg._id === editingPackage);
 
@@ -92,7 +101,13 @@ const Packages = () => {
           },
           token,
         }) as any
-      );
+      )
+        .then(() => {
+          toast.success("Package updated successfully!");
+        })
+        .catch((err: Error) => {
+          toast.error(err.message || "Failed to update package.");
+        });
     }
 
     setPackages((prevPackages) =>
@@ -102,6 +117,7 @@ const Packages = () => {
     setEditingPackage(null);
     reset();
   };
+
 
   // Render loading state
   if (loading) {
@@ -124,9 +140,9 @@ const Packages = () => {
   return (
     <div className="flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72">
       <h2 className="mb-6 text-lg font-semibold">Packages</h2>
-      
+
       <div className="mb-6 flex items-center">
-        <button 
+        <button
           onClick={openModal}
           className="flex items-center bg-transparent border-none cursor-pointer mr-2"
         >
@@ -136,7 +152,7 @@ const Packages = () => {
             className="w-5 h-5"
           />
         </button>
-        
+
         <CustomModelAdmin isOpen={isModalOpen} closeModal={closeModal} title="">
           <Modal />
         </CustomModelAdmin>
@@ -177,14 +193,14 @@ const Packages = () => {
                   />
                 </div>
                 <div className="flex space-x-2">
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className="w-full ButtonBlue text-white py-2 rounded-md transition"
                   >
                     Save
                   </button>
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={() => setEditingPackage(null)}
                     className="w-full bg-gray-200 text-gray-700 py-2 rounded-md transition"
                   >
@@ -198,8 +214,8 @@ const Packages = () => {
                   <PackageIcon />
                   <h3 className="text-lg font-semibold">{pkg.title}</h3>
                   <div className="flex space-x-2">
-                    <button 
-                      onClick={() => handleEditClick(pkg)} 
+                    <button
+                      onClick={() => handleEditClick(pkg)}
                       className="p-1 focus:outline-none"
                     >
                       <img src="/pencil.png" alt="edit icon" className="w-4 h-4" />

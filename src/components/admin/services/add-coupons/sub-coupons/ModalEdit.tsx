@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCouponById, updateCoupon } from '@/store/features/admin/couponSlice';
 import { RootState } from '@/store/store';
+import { toast } from 'react-toastify';
 
 interface ModalEditProps {
   closeModal: () => void;
@@ -31,11 +32,26 @@ export default function ModalEdit({ closeModal, token, couponId }: ModalEditProp
   const discountTL = watch("discountTL");
   const discountPercent = watch("discountPercent");
 
-  // Fetch coupon data when component mounts or couponId changes
   useEffect(() => {
-    if (couponId && token) {
-      dispatch(getCouponById({ id: couponId, token }) as any);
-    }
+    const fetchCouponData = async () => {
+      try {
+        if (couponId && token) {
+          // Dispatch action to fetch coupon by ID
+          await dispatch(getCouponById({ id: couponId, token }) as any);
+
+          // Success toast notification
+          toast.success("Coupon data fetched successfully!");
+        }
+      } catch (error) {
+        console.error("Failed to fetch coupon:", error);
+
+        // Error toast notification
+        const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+        toast.error(errorMessage);
+      }
+    };
+
+    fetchCouponData();
   }, [couponId, token, dispatch]);
 
   // Populate form when selectedCoupon changes
@@ -59,8 +75,8 @@ export default function ModalEdit({ closeModal, token, couponId }: ModalEditProp
 
     try {
       // Validate that only one discount type is provided
-      if ((formData.discountTL && formData.discountPercent) || 
-          (!formData.discountTL && !formData.discountPercent)) {
+      if ((formData.discountTL && formData.discountPercent) ||
+        (!formData.discountTL && !formData.discountPercent)) {
         throw new Error(
           "You must provide either a discount in TL or a discount percentage, but not both."
         );
@@ -83,15 +99,20 @@ export default function ModalEdit({ closeModal, token, couponId }: ModalEditProp
 
       console.log("Coupon data in modal edit before update", couponData);
 
+      // Dispatch action to update coupon
       await dispatch(updateCoupon({ id: couponId, data: couponData, token }) as any);
+
+      // Show success toast notification
+      toast.success("Coupon updated successfully!");
+
+      // Close modal after successful submission
       closeModal();
     } catch (error) {
       console.error('Failed to update coupon:', error);
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error("Unknown error occurred", error);
-      }
+
+      // Error toast notification
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      toast.error(errorMessage);
     }
   };
 

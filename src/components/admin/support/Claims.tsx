@@ -10,13 +10,14 @@ import CustomModelAdmin from '../../modal/CustomModelAdmin';
 import Modal from "./sub-support/Modal";
 import ModalTwo from "./sub-support/ModalTwo";
 import { exportCsvFile } from "@/utils/exportCsvFile";
+import { toast } from 'react-toastify'; // Import Toastify
+
 
 // Import Redux actions
 import {
   fetchAdminClaims,
   updateAdminClaim,
   fetchAdminClaimById,
-  createAdminClaim
 } from "@/store/features/admin/claimSlice";
 
 // Define the Claim interface to match the slice structure
@@ -97,42 +98,58 @@ const Claims: React.FC = () => {
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
     if (token) {
-      dispatch(fetchAdminClaims(token));
+      dispatch(fetchAdminClaims(token))
+        .then(() => {
+          toast.success("Claims fetched successfully!");
+        })
+        .catch((error) => {
+          console.error("[Error] Failed to fetch claims:", error);
+          toast.error("Failed to fetch claims. Please try again.");
+        });
+    } else {
+      console.warn("[Warning] No token available in localStorage!");
+      toast.error("No token available!");
     }
   }, [dispatch]);
 
+
   const handleView = (id: string) => {
     console.log(`handleView called with id: ${id}`);
-  
+
     const token = localStorage.getItem('accessToken');
     if (!token) {
       console.log('No access token found in localStorage.');
+      toast.error('No access token found!'); // Error toast
       return;
     }
-  
+
     console.log('Access token retrieved from localStorage:', token);
-  
+
     dispatch(fetchAdminClaimById({ id, token }))
       .then((response) => {
         console.log('Response received from fetchAdminClaimById:', response);
-  
+
         if (response.payload) {
           console.log('Response payload:', response.payload);
-  
+
           setCurrentClaim(response.payload as Claim);
           console.log('Current claim set:', response.payload);
-  
+
           setIsModalTwoOpen(true);
           console.log('Modal state updated to open.');
+          toast.success('Claim details fetched successfully!'); // Success toast
         } else {
           console.log('No payload found in the response.');
+          toast.error('No claim data found for this ID!'); // Error toast
         }
       })
       .catch((error) => {
         console.error('Error occurred while fetching claim:', error);
+        toast.error('Failed to fetch claim details. Please try again!'); // Error toast
       });
   };
-  
+
+
 
   const handleApprove = (id: string) => {
     const token = localStorage.getItem('accessToken');
@@ -141,15 +158,20 @@ const Claims: React.FC = () => {
         claimId: id,
         data: { status: 'approved' },
         token
-      })).then((response: any) => {
-        if (response.meta.requestStatus === 'fulfilled') { // Check if the update was successful
-          dispatch(fetchAdminClaims(token)); // Fetch claims again
-        }
-      }).catch((error: any) => {
-        console.error("Failed to update claim status:", error); // Optional: handle errors
-      });
+      }))
+        .then((response: any) => {
+          if (response.meta.requestStatus === 'fulfilled') { // Check if the update was successful
+            dispatch(fetchAdminClaims(token)); // Fetch claims again
+            toast.success("Claim approved successfully!"); // Success toast
+          }
+        })
+        .catch((error: any) => {
+          console.error("Failed to update claim status:", error);
+          toast.error("Failed to approve claim. Please try again."); // Error toast
+        });
     }
   };
+
 
   const handleReject = (id: string) => {
     const token = localStorage.getItem('accessToken');
@@ -158,15 +180,20 @@ const Claims: React.FC = () => {
         claimId: id,
         data: { status: 'rejected' },
         token
-      })).then((response: any) => {
-        if (response.meta.requestStatus === 'fulfilled') { // Check if the update was successful
-          dispatch(fetchAdminClaims(token)); // Fetch claims again
-        }
-      }).catch((error: any) => {
-        console.error("Failed to update claim status:", error); // Optional: handle errors
-      });
+      }))
+        .then((response: any) => {
+          if (response.meta.requestStatus === 'fulfilled') { // Check if the update was successful
+            dispatch(fetchAdminClaims(token)); // Fetch claims again
+            toast.success("Claim rejected successfully!"); // Success toast
+          }
+        })
+        .catch((error: any) => {
+          console.error("Failed to update claim status:", error);
+          toast.error("Failed to reject claim. Please try again."); // Error toast
+        });
     }
   };
+
 
   // Handler for search input
   const handleSearch = useCallback((value: string) => {
@@ -241,10 +268,10 @@ const Claims: React.FC = () => {
       cell: (row: Claim) => (
         <span
           className={`px-3 py-1 rounded-full text-sm font-semibold ${row.status === "approved"
-              ? "text-green-700 bg-green-100"
-              : row.status === "pending"
-                ? "text-yellow-700 bg-yellow-100"
-                : "text-red-700 bg-red-100"
+            ? "text-green-700 bg-green-100"
+            : row.status === "pending"
+              ? "text-yellow-700 bg-yellow-100"
+              : "text-red-700 bg-red-100"
             }`}
         >
           {row.status || 'N/A'}

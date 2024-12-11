@@ -15,8 +15,8 @@ import ModalNew from "./sub-creator/ModalNew";
 import ModalView from "./sub-creator/ModelView"; // Import view modal
 import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
-import { useForm, SubmitHandler } from "react-hook-form";
 import EditCreatorForm from "./sub-creator/EditCreatorForm";
+import { toast } from 'react-toastify';
 
 interface Creator {
   id: number;
@@ -34,73 +34,73 @@ interface Creator {
   accountType: "individual" | "institutional";
   invoiceType: "individual" | "institutional";
   addressDetails: {
-      addressOne: string;
-      addressTwo: string;
-      country: string;
-      zipCode: number;
+    addressOne: string;
+    addressTwo: string;
+    country: string;
+    zipCode: number;
   },
   paymentInformation: {
-      ibanNumber?: string;
-      address: string;
-      fullName: string;
-      trId?: string;
-      companyName?: string;
-      taxNumber?: string;
-      taxOffice?: string;
+    ibanNumber?: string;
+    address: string;
+    fullName: string;
+    trId?: string;
+    companyName?: string;
+    taxNumber?: string;
+    taxOffice?: string;
   };
   billingInformation: {
-      invoiceStatus: boolean;
-      address: string;
-      fullName: string;
-      trId?: string;
-      companyName?: string;
-      taxNumber?: string;
-      taxOffice?: string;
+    invoiceStatus: boolean;
+    address: string;
+    fullName: string;
+    trId?: string;
+    companyName?: string;
+    taxNumber?: string;
+    taxOffice?: string;
   };
   preferences: {
-      contentInformation: {
-          contentType: "product" | "service" | "other";
-          creatorType: "nano" | "micro"; // Updated
-          contentFormats: string[]; // Example: ["video", "image"]
-          areaOfInterest: string[]; // Example: ["tech", "gadgets"]
-          addressDetails: {
-              country: string;
-              state: string;
-              district: string;
-              neighbourhood?: string;
-              fullAddress: string;
-          };
+    contentInformation: {
+      contentType: "product" | "service" | "other";
+      creatorType: "nano" | "micro"; // Updated
+      contentFormats: string[]; // Example: ["video", "image"]
+      areaOfInterest: string[]; // Example: ["tech", "gadgets"]
+      addressDetails: {
+        country: string;
+        state: string;
+        district: string;
+        neighbourhood?: string;
+        fullAddress: string;
       };
-      socialInformation: {
-          contentType: "product" | "service";
-          platforms: {
-              Instagram?: {
-                  followers: number;
-                  username: string;
-              };
-              TikTok?: {
-                  followers: number;
-                  username: string;
-              };
-              Facebook?: {
-                  followers: number;
-                  username: string;
-              };
-              Youtube?: {
-                  followers: number;
-                  username: string;
-              };
-              X?: {
-                  followers: number;
-                  username: string;
-              };
-              Linkedin?: {
-                  followers: number;
-                  username: string;
-              };
-          };
-          portfolioLink?: string[];
+    };
+    socialInformation: {
+      contentType: "product" | "service";
+      platforms: {
+        Instagram?: {
+          followers: number;
+          username: string;
+        };
+        TikTok?: {
+          followers: number;
+          username: string;
+        };
+        Facebook?: {
+          followers: number;
+          username: string;
+        };
+        Youtube?: {
+          followers: number;
+          username: string;
+        };
+        X?: {
+          followers: number;
+          username: string;
+        };
+        Linkedin?: {
+          followers: number;
+          username: string;
+        };
       };
+      portfolioLink?: string[];
+    };
   };
   userAgreement: boolean;
   approvedCommercial: boolean;
@@ -155,18 +155,22 @@ const Customers: React.FC = () => {
   const [editingCreator, setEditingCreator] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
 
-  // Handler for deleting a customer
   const handleDelete = useCallback((id: string) => {
     const tokenFromStorage = localStorage.getItem('accessToken');
     if (!tokenFromStorage) {
       console.warn("Authorization token is missing.");
+      toast.error('Authorization token is missing. Please log in again.');
       return;
     }
 
     dispatch(deleteAdminCreator({ customerId: id, token: tokenFromStorage }))
       .unwrap()
+      .then(() => {
+        toast.success('Customer deleted successfully!');
+      })
       .catch((error: any) => {
         console.error("Delete failed:", error);
+        toast.error(`Error deleting customer: ${error?.message || 'Unknown error'}`);
       });
   }, [dispatch]);
 
@@ -185,20 +189,21 @@ const Customers: React.FC = () => {
       // Validate token
       if (!tokenFromStorage) {
         console.error('Authorization token is missing');
-        // Handle missing token (e.g., redirect to login)
+        toast.error('Authorization token is missing. Please log in again.');
         return;
       }
 
       // Validate customer data
       if (!customerData || Object.keys(customerData).length === 0) {
         console.error('Customer data is empty');
+        toast.error('Please provide valid customer data.');
         return;
       }
 
       // Log the request attempt
       console.log('Attempting to create customer:', {
         ...customerData,
-        token: tokenFromStorage ? '${token.substring(0, 10)}...' : 'missing'
+        token: tokenFromStorage ? `${tokenFromStorage.substring(0, 10)}...` : 'missing'
       });
 
       const result = await dispatch(
@@ -212,14 +217,13 @@ const Customers: React.FC = () => {
       setIsModalOpen(false);
 
       // Optionally refresh the customer list or show success message
-      // dispatch(fetchCustomers());
+      toast.success('Customer created successfully!');
       await dispatch(fetchAdminCreators(tokenFromStorage));
 
     } catch (error) {
       console.error('Customer creation failed:', error);
-      // Handle error (e.g., show error message to user)
+      toast.error(`Error creating customer: 'Unknown error'}`);
     }
-
   };
 
   const handleUpdate = async (customerData: any) => {
@@ -248,7 +252,7 @@ const Customers: React.FC = () => {
           addressTwo: customerData.addressDetails?.addressTwo ?? '',
           country: customerData.addressDetails?.country ?? '',
           zipCode: customerData.addressDetails?.zipCode ?? '',
-      },
+        },
 
         paymentInformation: {
           ibanNumber: customerData.paymentInformation?.ibanNumber ?? '', // Default to empty string if missing
@@ -319,16 +323,23 @@ const Customers: React.FC = () => {
         approvedCommercial: customerData.approvedCommercial ?? false, // Default to false if missing
       };
 
+      try {
+        // Dispatch the update action
+        console.log('Data to be sent for update: ', dataToUpdate);
+        await dispatch(updateAdminCreator({ customerId, data: dataToUpdate, token }));
+        await dispatch(fetchAdminCreators(token));
 
-      // Dispatch the update action
-      dispatch(updateAdminCreator({ customerId, data: dataToUpdate, token }));
-      console.log('Data to be sent for update: ', dataToUpdate);
-      await dispatch(fetchAdminCreators(token));
-
+        toast.success('Customer updated successfully!');
+      } catch (error) {
+        console.error('Update failed:', error);
+        toast.error('Failed to update customer. Please try again.');
+      }
     } else {
       console.error('Authorization token is missing!');
+      toast.error('Authorization token is missing! Please log in again.');
     }
   };
+
 
   // Handler for editing a customer
   const handleEdit = (id: string) => {
@@ -414,10 +425,10 @@ const Customers: React.FC = () => {
         return (
           <span
             className={`px-3 py-1 rounded-full text-sm font-semibold ${status === "approved"
-                ? "text-green-700 bg-green-100"
-                : status === "Pending"
-                  ? "text-yellow-700 bg-yellow-100"
-                  : "text-red-700 bg-red-100"
+              ? "text-green-700 bg-green-100"
+              : status === "Pending"
+                ? "text-yellow-700 bg-yellow-100"
+                : "text-red-700 bg-red-100"
               }`}
           >
             {status}

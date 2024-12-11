@@ -7,6 +7,8 @@ import {
     fetchAdditionalServices,
     updateAdditionalService,
 } from "@/store/features/admin/addPriceSlice";
+import { toast } from 'react-toastify';
+
 
 type FormData = {
     platform: string;
@@ -34,14 +36,24 @@ const AddService: React.FC = () => {
 
     const { register, handleSubmit, setValue, reset } = useForm<FormData>();
 
+
     useEffect(() => {
         const storedToken = localStorage.getItem("accessToken") || "";
         setToken(storedToken);
 
         if (storedToken) {
-            dispatch(fetchAdditionalServices(storedToken) as any);
+            dispatch(fetchAdditionalServices(storedToken) as any)
+                .then(() => {
+                    // Success message after fetching services
+                    toast.success("Services fetched successfully!");
+                })
+                .catch((err: Error) => {
+                    // Error message in case of failure
+                    toast.error(err.message || "Failed to fetch services");
+                });
         }
     }, [dispatch]);
+
 
     useEffect(() => {
         if (additionalService) {
@@ -101,7 +113,13 @@ const AddService: React.FC = () => {
                     data: updatedService,
                     token,
                 }) as any
-            );
+            )
+                .then(() => {
+                    toast.success("Service updated successfully!");
+                })
+                .catch((err: Error) => {
+                    toast.error(err.message || "Failed to update service.");
+                });
         }
     };
 

@@ -14,6 +14,7 @@ import {
     Customer,
 } from "@/store/features/admin/couponSlice";
 import { RootState } from "@/store/store";
+import { toast } from 'react-toastify';
 
 export interface CouponForm {
     _id: string;
@@ -49,8 +50,12 @@ export default function AddCoupon() {
 
         if (storedToken) {
             dispatch(getCoupons(storedToken) as any)
+                .then(() => {
+                    toast.success("Coupons fetched successfully!");
+                })
                 .catch((err: Error) => {
                     setErrorMessage(err.message || "Failed to fetch coupons");
+                    toast.error(err.message || "Failed to fetch coupons");
                 });
         }
     }, [dispatch]);
@@ -95,12 +100,14 @@ export default function AddCoupon() {
                 console.log("Dispatching deleteCoupon action with ID and token:", { id, token });
                 await dispatch(deleteCoupon({ id, token }) as any);
                 console.log("Coupon deleted successfully:", id);
+                toast.success("Coupon deleted successfully!");
             } catch (err) {
                 console.error("Error occurred while deleting coupon:", err);
                 const errorMessage =
                     err instanceof Error ? err.message : "Failed to delete coupon";
                 setErrorMessage(errorMessage);
                 console.error("Error message set:", errorMessage);
+                toast.error(errorMessage || "Failed to delete coupon");
             }
         } else {
             console.log("User cancelled the deletion process for coupon ID:", id);

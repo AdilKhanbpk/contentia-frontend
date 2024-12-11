@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { updatePricePlan, fetchPricePlans } from "@/store/features/admin/pricingSlice";
 import { RootState } from "@/store/store";
 import { PricePlan } from "@/store/features/admin/pricingSlice"; // Import the PricePlan type
+import { toast } from 'react-toastify';
+
 
 // Icon placeholders for plans
 const VideoIcon = () => <span>📹</span>;
@@ -24,7 +26,7 @@ const PricingPlans = () => {
   const { data: serverPlans, loading, error } = useSelector((state: RootState) => {
     return state.pricing;
   });
-  
+
   const [plans, setPlans] = useState<Plan[]>([]);
   const [editingPlan, setEditingPlan] = useState<number | null>(null);
   const { register, handleSubmit, reset, formState: { errors } } = useForm<Plan>();
@@ -37,11 +39,20 @@ const PricingPlans = () => {
 
     if (storedToken) {
       console.log("[Debug] Dispatching fetchPricePlans with token:", storedToken);
-      dispatch(fetchPricePlans(storedToken) as any);
+      dispatch(fetchPricePlans(storedToken) as any)
+        .then(() => {
+          toast.success("Plans fetched successfully!");
+        })
+        .catch((error:any) => {
+          console.error("[Error] Failed to fetch plans:", error);
+          toast.error("Failed to fetch price plans! Please try again.");
+        });
     } else {
       console.warn("[Warning] No token available in localStorage!");
+      toast.error("No token available!");
     }
   }, [dispatch]);
+
 
   // Sync local plans with server plans when they load
   useEffect(() => {
@@ -64,7 +75,7 @@ const PricingPlans = () => {
     } else {
       console.log("No server plans available or empty data."); // Log empty state
     }
-  }, [serverPlans]); 
+  }, [serverPlans]);
 
   // Handle edit click and pre-populate form fields
   const handleEditClick = (plan: Plan) => {
@@ -72,7 +83,7 @@ const PricingPlans = () => {
     reset(plan);
   };
 
-  // Handle save and update the specific plan
+
   const handleSave = (data: Plan) => {
     const serverPlan = serverPlans?.find((plan: PricePlan, index: number) => index + 1 === editingPlan);
 
@@ -87,7 +98,13 @@ const PricingPlans = () => {
           },
           token,
         }) as any
-      );
+      )
+        .then(() => {
+          toast.success("Price plan updated successfully!");
+        })
+        .catch((err: Error) => {
+          toast.error(err.message || "Failed to update price plan.");
+        });
     }
 
     setPlans((prevPlans) =>
@@ -97,6 +114,7 @@ const PricingPlans = () => {
     setEditingPlan(null);
     reset();
   };
+
 
   // Render loading state
   if (loading) {

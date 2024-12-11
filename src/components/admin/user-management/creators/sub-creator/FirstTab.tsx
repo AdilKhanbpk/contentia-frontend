@@ -3,6 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { updateAdminCreator, fetchAdminCreators, } from '@/store/features/admin/creatorsSlice';
 import { AppDispatch } from '@/store/store';
+import { toast } from 'react-toastify';
 
 interface Creator {
     id: number;
@@ -145,6 +146,7 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
     const onSubmit: SubmitHandler<any> = async (formData) => {
         if (!editCreatorForm?.id) {
             console.error('No creator ID found');
+            toast.error("Creator ID not found!"); // Error toast for missing creator ID
             return;
         }
 
@@ -152,6 +154,7 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
         const token = localStorage.getItem('accessToken');
         if (!token) {
             console.error('No access token found');
+            toast.error("No access token found!"); // Error toast for missing token
             return;
         }
 
@@ -196,13 +199,16 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
             if (updateAdminCreator.fulfilled.match(resultAction)) {
                 // Handle success (e.g., show success message)
                 console.log('Update successful');
+                toast.success("Creator updated successfully!"); // Success toast
                 await dispatch(fetchAdminCreators(token));
             } else {
                 // Handle error
                 console.error('Update failed:', resultAction.error);
+                toast.error("Failed to update creator. Please try again!"); // Error toast
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error updating creator:', error);
+            toast.error(`Error updating creator: ${error.message || "Unknown error"}`); // Error toast
         }
     };
 
