@@ -1,7 +1,7 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 export interface Customer {
     id: number;
@@ -11,26 +11,24 @@ export interface Customer {
     age: number;
     country: string;
     status: "Verified" | "Pending" | "Rejected";
-    invoiceType: string;  // Capitalized to camelCase
-    tcNumber?: string;  // Capitalized to camelCase
-    companyTitle?: string;  // Capitalized to camelCase
-    taxNumber?: string;  // Capitalized to camelCase
-    taxOffice?: string;  // Capitalized to camelCase
-    address?: string;  // Capitalized to camelCase
-    billingInformation?: {  // Capitalized to camelCase
-        invoiceStatus: boolean;  // Capitalized to camelCase
-        trId: string;  // Capitalized to camelCase
-        address: string;  // Capitalized to camelCase
-        fullName: string;  // Capitalized to camelCase
-        companyName: string;  // Capitalized to camelCase
-        taxNumber: string;  // Capitalized to camelCase
-        taxOffice: string;  // Capitalized to camelCase
+    invoiceType: string;
+    tcNumber?: string;
+    companyTitle?: string;
+    taxNumber?: string;
+    taxOffice?: string;
+    address?: string;
+    billingInformation?: {
+        invoiceStatus: boolean;
+        trId: string;
+        address: string;
+        fullName: string;
+        companyName: string;
+        taxNumber: string;
+        taxOffice: string;
     };
-    rememberMe?: boolean;  // Capitalized to camelCase
-    termsAndConditionsApproved?: boolean;  // Capitalized to camelCase
+    rememberMe?: boolean;
+    termsAndConditionsApproved?: boolean;
 }
-
-
 
 interface ModalEditProps {
     isOpen: boolean;
@@ -46,10 +44,8 @@ const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, customerData, on
         register,
         handleSubmit,
         reset,
-        formState: { errors },
     } = useForm<Customer>();
 
-    // Reset the form if customerData changes
     useEffect(() => {
         if (customerData) {
             reset(customerData);
@@ -124,7 +120,7 @@ const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, customerData, on
                                             value="true"
                                             defaultChecked={true}
                                             {...register('billingInformation.invoiceStatus', { required: false })}
-                                            style={{ display: 'none' }} // Hides the radio button
+                                            style={{ display: 'none' }}
                                         />
 
                                         <div>

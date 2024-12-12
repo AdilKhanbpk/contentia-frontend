@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css"; // Import the Quill editor CSS
-
-// Dynamically import the Quill editor to avoid SSR issues
+import "react-quill/dist/quill.snow.css";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 export default function Modal() {
@@ -16,7 +14,6 @@ export default function Modal() {
         <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">
             <h1 className="text-lg font-semibold">Email Notification</h1>
 
-            {/* Three InputFields */}
             <div className="mt-4 sm:mt-6 md:mt-8 lg:mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6 lg:gap-6">
                 {/* Product/Service Description */}
                 <div>
@@ -42,7 +39,7 @@ export default function Modal() {
                 </div>
             </div>
 
-            {/* Third Row - Brief and Examples */}
+            {/* Brief and Examples */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6 lg:gap-6">
                 {/* Brief */}
                 <div>

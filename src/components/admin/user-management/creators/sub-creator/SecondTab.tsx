@@ -15,7 +15,7 @@ interface Creator {
     password: string;
     identityNo: number;
     email: string;
-    dateOfBirth: string; // Format: "YYYY-MM-DD"
+    dateOfBirth: string;
     gender: "male" | "female" | "other";
     phoneNumber: string;
     isVerified: "pending" | "approved" | "rejected";
@@ -48,9 +48,9 @@ interface Creator {
     preferences: {
         contentInformation: {
             contentType: "product" | "service" | "other";
-            creatorType: "nano" | "micro"; // Updated
-            contentFormats: string[]; // Example: ["video", "image"]
-            areaOfInterest: string[]; // Example: ["tech", "gadgets"]
+            creatorType: "nano" | "micro";
+            contentFormats: string[];
+            areaOfInterest: string[];
             addressDetails: {
                 country: string;
                 state: string;
@@ -101,7 +101,7 @@ interface SecondTabProps {
 
 export default function SecondTab({ editCreatorForm }: SecondTabProps) {
     const dispatch = useDispatch<AppDispatch>();
-    const { register, handleSubmit, reset, formState: { errors }, watch } = useForm();
+    const { register, handleSubmit, reset, watch } = useForm();
     const accountType = watch('accountType', 'individual');
     const invoiceType = watch('invoiceType', 'individual');
     const hasInvoice = watch('billingInformation.invoiceStatus', false);
@@ -134,46 +134,34 @@ export default function SecondTab({ editCreatorForm }: SecondTabProps) {
     }, [editCreatorForm, reset]);
 
     const onSubmit: SubmitHandler<any> = async (formData) => {
-        console.log("Form update data (second tab):", formData);
-
-        // Check if editCreatorForm has an id to ensure you're updating an existing creator
         if (!editCreatorForm?.id) {
-            console.error('No creator ID found');
             toast.error("Error: No creator ID found. Please ensure the creator is selected.");
             return;
         }
 
-        // Retrieve the access token from localStorage
         const token = localStorage.getItem('accessToken');
         if (!token) {
-            console.error('No access token found');
             toast.error("Error: No access token found. Please log in again.");
             return;
         }
 
         try {
-            // Dispatch the updateAdminCreator action with the necessary data
             const resultAction = await dispatch(
                 updateAdminCreator({
-                    customerId: editCreatorForm.id.toString(),  // Ensure ID is a string for API compatibility
-                    data: formData,  // Form data to be sent for the update
-                    token,  // Authentication token to be sent in the request
+                    customerId: editCreatorForm.id.toString(),
+                    data: formData,
+                    token,
                 })
             );
 
-            // Check if the action was fulfilled (successful update)
             if (updateAdminCreator.fulfilled.match(resultAction)) {
-                console.log('Update successful');
                 toast.success("Update successful");
-                // After successful update, fetch the updated list of creators
                 await dispatch(fetchAdminCreators(token));
             } else {
-                console.error('Update failed:', resultAction.error);
-                toast.error("Update failed. Please try again later.");  // Provide feedback for failure
+                toast.error("Update failed. Please try again later.");
             }
         } catch (error: any) {
-            console.error('Error updating creator:', error);
-            toast.error(`Error updating creator: ${error.message || "Unknown error"}`);  // Show the error message to the user
+            toast.error(`Error updating creator: ${error.message || "Unknown error"}`);
         }
     };
 

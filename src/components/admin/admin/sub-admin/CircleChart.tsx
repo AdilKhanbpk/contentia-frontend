@@ -1,15 +1,13 @@
 "use client";
-// components/Dashboard.tsx
-import React from 'react';
 import Chart from 'react-apexcharts';
-import { ApexOptions } from 'apexcharts'; // Import ApexOptions type
+import { ApexOptions } from 'apexcharts'; 
 
 const ChartCircle: React.FC = () => {
-  const chartOptions: ApexOptions = { // Set type explicitly
+  const chartOptions: ApexOptions = { 
     labels: ['E-Commerce', 'Cosmetics', 'Fashion', 'Healthcare/Sports'],
     colors: ['#2ec4b6', '#0f4c75', '#3282b8', '#1b262c'],
     chart: {
-      type: 'donut', // Type is now explicitly set to 'donut'
+      type: 'donut', 
     },
     legend: {
       position: 'bottom',
@@ -45,7 +43,7 @@ const ChartCircle: React.FC = () => {
       {/* Sales by Brand Category Chart */}
       <div className=" w-full lg:w-1/2 flex flex-col items-center">
         <Chart
-          options={chartOptions} // No type error
+          options={chartOptions} 
           series={chartSeries}
           type="donut"
           width="350"

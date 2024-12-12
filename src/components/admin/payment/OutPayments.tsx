@@ -1,16 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaCheck, FaTimes, FaEye, FaFileCsv } from "react-icons/fa";
-import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useForm } from "react-hook-form";
 import CustomModelAdmin from '../../modal/CustomModelAdmin'
 import ModalTwo from "./sub-payment/ModelTwo";
-
-
 const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
 
-// Define the Order interface
 export interface Order {
   id: number;
   creatorName: string;
@@ -22,7 +18,6 @@ export interface Order {
   cancelRefund: string;
 }
 
-// Initial orders data
 const initialOrders: Order[] = [
   { id: 1, creatorName: "Saud", creatorSurname: "Khan", paymentID: 9080124, paymentDate: "19/09/2024", amountPaid: "25,000 TL", paymentStatus: "Success", cancelRefund: "Not Refunded" },
   { id: 2, creatorName: "Kagan", creatorSurname: "Sahin", paymentID: 9193824, paymentDate: "22/08/2024", amountPaid: "100,000 TL", paymentStatus: "Success", cancelRefund: "Refunded" },
@@ -35,7 +30,6 @@ const OutPayments: React.FC = () => {
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<Order>();
 
-  // Filter customers based on search term
   const filteredCustomers = creators.filter((creator) =>
     creator.creatorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     creator.creatorSurname.toLowerCase().includes(searchTerm.toLowerCase())
@@ -46,7 +40,6 @@ const OutPayments: React.FC = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  // Define table columns
   const columns = [
     {
       name: "Order ID",
@@ -115,7 +108,6 @@ const OutPayments: React.FC = () => {
     },
   ];
 
-  // Function to export to CSV
   const exportToCSV = () => {
     const csvRows = [
       ["Order ID", "Customer Name", "Customer Surname", "Payment ID", "Payment Date", "Amount Paid", "Payment Status", "Cancel / Refund"],

@@ -1,12 +1,8 @@
 'use client';
-
 import { useState, useEffect } from 'react';
-
-// third-party
 import ReactApexChart from 'react-apexcharts';
 import { Props as ChartProps } from 'react-apexcharts';
 
-// chart options
 const areaChartOptions = {
   chart: {
     height: 450,
@@ -26,8 +22,6 @@ const areaChartOptions = {
     strokeDashArray: 0
   }
 };
-
-// ==============================|| INCOME AREA CHART ||============================== //
 
 interface Props {
   slot: string;

@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css"; // Import the Quill editor CSS
-
-// Dynamically import the Quill editor to avoid SSR issues
+import "react-quill/dist/quill.snow.css"; 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 export default function ModalFAQs() {

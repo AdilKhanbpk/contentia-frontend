@@ -1,6 +1,5 @@
 "use client";
-// components/Analytics.tsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import AnalyticsDataCard from './AnalyticsDataCard';
 import UsersCardChart from './UsersCardChart';
 import OrdersCardChart from './OrdersCardChart';
@@ -41,7 +40,7 @@ const Analytics: React.FC = () => {
                 <div className='my-4'>
                     <CircleChart></CircleChart>
                 </div>
-                
+
                 <div className="my-4 flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
                     <div className='w-full lg:w-3/5 bg-white shadow-md rounded-lg'>
                         <IncomeOverview />
@@ -108,7 +107,6 @@ const Analytics: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Row 3 */}
                 <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4 my-4">
                     {/* Recent Orders Section */}
                     <div className="w-full lg:w-3/5">
@@ -144,9 +142,6 @@ const Analytics: React.FC = () => {
                         </div>
                     </div>
                 </div>
-
-                
-
             </div>
         </>
     );

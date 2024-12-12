@@ -21,7 +21,7 @@ interface Creator {
     password: string;
     identityNo: number;
     email: string;
-    dateOfBirth: string; // Format: "YYYY-MM-DD"
+    dateOfBirth: string;
     gender: "male" | "female" | "other";
     phoneNumber: string;
     isVerified: "pending" | "approved" | "rejected";
@@ -54,9 +54,9 @@ interface Creator {
     preferences: {
         contentInformation: {
             contentType: "product" | "service" | "other";
-            creatorType: "nano" | "micro"; // Updated
-            contentFormats: string[]; // Example: ["video", "image"]
-            areaOfInterest: string[]; // Example: ["tech", "gadgets"]
+            creatorType: "nano" | "micro";
+            contentFormats: string[];
+            areaOfInterest: string[];
             addressDetails: {
                 country: string;
                 state: string;
@@ -133,25 +133,18 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
     }, [editCreatorForm, reset]);
 
     const onSubmit = async (formData: any) => {
-        console.log('Data from the third tab:', formData);
-
-        // Ensure creator ID exists before updating
         if (!editCreatorForm?.id) {
-            console.error('No creator ID found');
             toast.error('No creator ID found. Please ensure a creator is selected.');
             return;
         }
 
-        // Retrieve access token from localStorage
         const token = localStorage.getItem('accessToken');
         if (!token) {
-            console.error('No access token found');
             toast.error('No access token found. Please log in again.');
             return;
         }
 
         try {
-            // Data transformation to match API expectations
             const transformedData = {
                 preferences: {
                     contentInformation: {
@@ -168,27 +161,21 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
                 }
             };
 
-            // Dispatch the update action
             const resultAction = await dispatch(
                 updateAdminCreator({
-                    customerId: editCreatorForm.id.toString(),  // Convert ID to string for API
-                    data: transformedData,  // Send the transformed data
-                    token,  // Provide the token for authentication
+                    customerId: editCreatorForm.id.toString(),
+                    data: transformedData,
+                    token,
                 })
             );
 
-            // Handle the result of the update action
             if (updateAdminCreator.fulfilled.match(resultAction)) {
-                console.log('Update successful');
                 toast.success('Creator updated successfully.');
-                // Fetch the updated list of creators
                 await dispatch(fetchAdminCreators(token));
             } else {
-                console.error('Update failed:', resultAction.error);
                 toast.error('Failed to update creator. Please try again.');
             }
         } catch (error: any) {
-            console.error('Error updating creator:', error);
             toast.error(`Error updating creator: ${error.message || 'Unknown error'}`);
         }
     };

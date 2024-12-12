@@ -3,14 +3,12 @@ import React, { useState } from "react";
 import { FaEdit, FaTrashAlt, FaFileCsv, FaEye } from "react-icons/fa";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import CustomModelAdmin from '../../../modal/CustomModelAdmin'
 import NewPackage from "../sub-order/NewPackage";
 import EditPackage from "../sub-order/EditPackage";
-
 const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
 
-// Define the Order interface
 export interface Order {
     id: number;
     customerName: string;
@@ -23,7 +21,6 @@ export interface Order {
     packageStatus: "Verified" | "Pending" | "Rejected";
 }
 
-// Initial orders data
 const initialOrders: Order[] = [
     { id: 100, customerName: "Earl Parrini", customerID: 12412904, packageID: 901481, paymentID: 9284221, paymentDate: "21/10/2024", packageType: 3, contentsLeft: 2, packageStatus: "Verified" },
     { id: 99, customerName: "Nora Willis", customerID: 1903790, packageID: 201435, paymentID: 4254210, paymentDate: "14/09/2024", packageType: 12, contentsLeft: 8, packageStatus: "Pending" },
@@ -38,23 +35,13 @@ const initialOrders: Order[] = [
     const [activeTab, setActiveTab] = useState("All");
 
     const {
-        register,
-        handleSubmit,
         reset,
-        formState: { errors },
     } = useForm<Order>();
-
-    const handleEdit = (customer: Order) => {
-        setEditingCustomer(customer);
-        setShowEditForm(true);
-        reset(customer);
-    };
 
     const handleDelete = (id: number) => {
         setCustomers((prev) => prev.filter((customer) => customer.id !== id));
     };
 
-    // Filter customers based on search term
     const filteredCustomers = customers.filter((customer) =>
         customer.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         customer.customerID.toString().includes(searchTerm) ||
@@ -66,7 +53,6 @@ const initialOrders: Order[] = [
     const openModalEdit = () => setIsModalEditOpen(true);
     const closeModalEdit = () => setIsModalEditOpen(false);
 
-    // Define table columns
     const columns = [
         {
             name: "#",
@@ -157,7 +143,6 @@ const initialOrders: Order[] = [
         },
     ];
 
-    // Function to export to CSV
     const exportToCSV = () => {
         const csvRows = [
             ["ID", "Customer Name", "Customer ID", "Package ID", " Payment ID", "Payment Date", "Package Type", "Contents Left", "Package Status"],
@@ -267,15 +252,15 @@ const initialOrders: Order[] = [
                             },
                             headRow: {
                                 style: {
-                                    fontSize: "16px", // Optional: Set the font size for header
-                                    fontWeight: "600", // Set to '600' for font-semibold
-                                    backgroundColor: "#f8f8f8", // Optional: Background color for header
+                                    fontSize: "16px",
+                                    fontWeight: "600",
+                                    backgroundColor: "#f8f8f8",
                                 },
                             },
                             headCells: {
                                 style: {
-                                    fontWeight: "600", // Font weight for header cells
-                                    color: "#333", // Optional: Text color for header
+                                    fontWeight: "600",
+                                    color: "#333",
                                 },
                             },
                         }}

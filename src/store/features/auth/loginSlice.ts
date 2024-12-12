@@ -30,20 +30,32 @@ const initialState: LoginState = {
 // Async thunk to handle login
 export const loginUser = createAsyncThunk(
   'login/loginUser',
-  async (loginData: LoginData) => {
-    const response = await axiosInstance.post('/users/login', loginData);
-    localStorage.setItem('accessToken', response.data.data.accessToken);
-    return response.data.token; 
+  async (loginData: LoginData, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post('/users/login', loginData);
+      const token = response.data.data.accessToken; // Adjust this according to your API's response structure
+      localStorage.setItem('accessToken', token); // Store token under a consistent key
+      return token; // Return the token to the fulfilled action
+    } catch (error: any) {
+      // If the login fails, use rejectWithValue to pass the error message
+      return rejectWithValue(error.response?.data?.message || 'Login failed');
+    }
   }
 );
 
 // Async thunk to handle signup
 export const signupUser = createAsyncThunk(
   'login/signupUser',
-  async (signupData: SignupData) => {
-    const response = await axiosInstance.post('/users/signup', signupData);
-    localStorage.setItem('accessToken', response.data.data.accessToken);
-    return response.data.token; 
+  async (signupData: SignupData, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post('/users/signup', signupData);
+      const token = response.data.data.accessToken; // Adjust this according to your API's response structure
+      localStorage.setItem('accessToken', token); // Store token under a consistent key
+      return token; // Return the token to the fulfilled action
+    } catch (error: any) {
+      // If the signup fails, use rejectWithValue to pass the error message
+      return rejectWithValue(error.response?.data?.message || 'Signup failed');
+    }
   }
 );
 
@@ -66,11 +78,11 @@ const loginSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.token = action.payload;
-        localStorage.setItem('your_token_key', action.payload);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Login failed';
+        state.success = false;
+        state.error = action.payload as string; // Access the error message from rejectedWithValue
       })
       // Signup cases
       .addCase(signupUser.pending, (state) => {
@@ -80,11 +92,11 @@ const loginSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.token = action.payload;
-        localStorage.setItem('your_token_key', action.payload);
       })
       .addCase(signupUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Signup failed';
+        state.success = false;
+        state.error = action.payload as string; // Access the error message from rejectedWithValue
       });
   },
 });

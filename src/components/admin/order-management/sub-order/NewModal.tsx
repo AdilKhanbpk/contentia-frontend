@@ -3,15 +3,14 @@
 import { useState } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { createOrder } from '@/store/features/admin/ordersSlice'; // Adjust the import path
+import { createOrder } from '@/store/features/admin/ordersSlice';
 import { AppDispatch } from '@/store/store';
 import { toast } from "react-toastify";
 
-// Define the Order interface based on your model
 interface Order {
     orderOwner: {
-        id: string; // User's ID
-        fullName: string; // User's full name
+        id: string;
+        fullName: string;
     };
     assignedCreators: string[];
     noOfUgc: number;
@@ -30,7 +29,6 @@ interface Order {
 
 export default function NewModal() {
     const dispatch = useDispatch<AppDispatch>();
-
     const [selectedPlatform, setSelectedPlatform] = useState('');
     const [isEdit, setIsEdit] = useState(false);
     const [aspectRatio, setAspectRatio] = useState('');
@@ -39,21 +37,12 @@ export default function NewModal() {
     const [creatorType, setCreatorType] = useState('');
     const [isShipping, setIsShipping] = useState(false);
     const [duration, setDuration] = useState('');
-
-    const { register, handleSubmit, reset, control, watch } = useForm<Order>();
+    const { register, handleSubmit, reset, control } = useForm<Order>();
 
     const onSubmitForm: SubmitHandler<Order> = async (data) => {
-        console.group("onSubmitForm Debugging");
-        console.log("Form submission started");
-        console.log("Form data received:", data);
-
         const token = localStorage.getItem("accessToken");
-        console.log("Token extracted from localStorage:", token);
-
         if (!token) {
-            console.error("No token found in localStorage. Aborting request.");
             toast.error("No token found. Please log in again.");
-            console.groupEnd();
             return;
         }
 
@@ -68,19 +57,16 @@ export default function NewModal() {
             additionalServices: {
                 platform: selectedPlatform,
                 duration: duration,
-                edit: isEdit, // Now a boolean
+                edit: isEdit,
                 aspectRatio: aspectRatio,
-                share: isShare, // Now a boolean
-                coverPicture: isCoverPicture, // Now a boolean
+                share: isShare,
+                coverPicture: isCoverPicture,
                 creatorType: creatorType,
-                productShipping: isShipping, // Now a boolean
+                productShipping: isShipping,
             },
         };
 
-        console.log("Prepared order data:", orderData);
-
         try {
-            console.log("Dispatching createOrder thunk...");
             const result = await dispatch(
                 createOrder({
                     data: orderData,
@@ -88,10 +74,8 @@ export default function NewModal() {
                 })
             ).unwrap();
 
-            console.log("Order created successfully:", result);
             toast.success("Order created successfully!");
 
-            // Reset form and clear states
             reset();
             setSelectedPlatform("");
             setIsEdit(false);
@@ -101,23 +85,18 @@ export default function NewModal() {
             setCreatorType("");
             setIsShipping(false);
             setDuration("");
-
-            console.log("Form and states reset successfully");
         } catch (error) {
-            console.error("Error during order creation:", error);
             toast.error("Error creating order.");
         } finally {
             console.groupEnd();
         }
     };
 
-
     return (
         <>
             <form onSubmit={handleSubmit(onSubmitForm)}>
                 <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">
                     <h2 className="text-lg mb-6 font-semibold">Create Custom Order</h2>
-
                     <div className="flex flex-col lg:flex-row justify-start items-start lg:space-x-28">
                         {/* Left Side Fields */}
                         <div className="mt-2 grid grid-cols-1 lg:grid-cols-1 space-y-3">
@@ -390,15 +369,11 @@ export default function NewModal() {
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
                     {/* Save Button */}
                     <div className="mt-6 text-right">
                         <button type="submit" className="ButtonBlue text-white px-6 py-0.5 rounded">Save</button>
                     </div>
-
-
                 </div>
             </form>
         </>

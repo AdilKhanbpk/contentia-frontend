@@ -1,10 +1,10 @@
-import React from "react";
 
 export default function Modal() {
     return (
         <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">
 
             <div className="grid grid-cols-1 gap-8">
+
                 {/* Customer Information */}
                 <div className="flex flex-col sm:flex-row space-x-9">
                     <h3 className="text-sm whitespace-nowrap font-semibold mb-4">Customer Information:</h3>
@@ -53,7 +53,6 @@ export default function Modal() {
                         </div>
                     </div>
 
-
                     {/* Invoice Information */}
                     <div className="mt-4 lg:mt-0 flex-col sm:flex-row  w-full lg:w-1/2  space-x-9 lg:space-x-4">
                         <h3 className="text-sm whitespace-nowrap font-semibold mb-4">Invoice Information:</h3>
@@ -76,8 +75,6 @@ export default function Modal() {
                             </div>
                         </div>
                     </div>
-
-                    
                 </div>
             </div>
         </div>

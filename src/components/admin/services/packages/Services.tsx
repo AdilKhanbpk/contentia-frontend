@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -13,7 +13,6 @@ import CustomModelAdmin from '../../../modal/CustomModelAdmin';
 import Modal from "./sub-packages/Modal";
 import { toast } from 'react-toastify';
 
-// Icon placeholders for packages
 const PackageIcon = () => <img src="/icons/package.png" alt="Package Icon" className="w-10 h-8" />;
 
 type PackageFormData = {
@@ -25,11 +24,9 @@ type PackageFormData = {
 
 const Packages = () => {
   const dispatch = useDispatch();
-
   const { data: serverPackages, loading, error } = useSelector((state: RootState) => {
     return state.package;
   });
-
   const [packages, setPackages] = useState<PackageFormData[]>([]);
   const [editingPackage, setEditingPackage] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,10 +37,7 @@ const Packages = () => {
   useEffect(() => {
     const storedToken = localStorage.getItem("accessToken") || "";
     setToken(storedToken);
-
     if (storedToken) {
-      console.log("[Debug] Dispatching fetchPackages with token:", storedToken);
-
       dispatch(fetchPackages(storedToken) as any)
         .then(() => {
           toast.success("Packages fetched successfully!");
@@ -52,16 +46,11 @@ const Packages = () => {
           toast.error(err.message || "Failed to fetch packages.");
         });
     } else {
-      console.warn("[Warning] No token available in localStorage!");
       toast.error("No access token found!");
     }
   }, [dispatch]);
 
-
-  // Sync local packages with server packages when they load
   useEffect(() => {
-    console.log("Server packages received:", serverPackages);
-
     if (serverPackages && serverPackages.length > 0) {
       const transformedPackages: PackageFormData[] = serverPackages.map((pkg: Package) => ({
         id: pkg._id,
@@ -69,19 +58,15 @@ const Packages = () => {
         description: pkg.description,
         price: pkg.price,
       }));
-
-      console.log("Transformed packages:", transformedPackages);
       setPackages(transformedPackages);
     } else {
       console.log("No server packages available or empty data.");
     }
   }, [serverPackages]);
 
-  // Open and close modal handlers
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  // Handle edit click and pre-populate form fields
   const handleEditClick = (pkg: PackageFormData) => {
     setEditingPackage(pkg.id || '');
     reset(pkg);
@@ -89,7 +74,6 @@ const Packages = () => {
 
   const handleSave = (data: PackageFormData) => {
     const packageToUpdate = serverPackages?.find((pkg: Package) => pkg._id === editingPackage);
-
     if (packageToUpdate) {
       dispatch(
         updatePackage({
@@ -109,17 +93,13 @@ const Packages = () => {
           toast.error(err.message || "Failed to update package.");
         });
     }
-
     setPackages((prevPackages) =>
       prevPackages.map((pkg) => (pkg.id === editingPackage ? { ...pkg, ...data } : pkg))
     );
-
     setEditingPackage(null);
     reset();
   };
 
-
-  // Render loading state
   if (loading) {
     return (
       <div className="flex justify-center items-center p-8">
@@ -128,19 +108,9 @@ const Packages = () => {
     );
   }
 
-  // Render error state
-  if (error) {
-    return (
-      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-        {error}
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72">
       <h2 className="mb-6 text-lg font-semibold">Packages</h2>
-
       <div className="mb-6 flex items-center">
         <button
           onClick={openModal}

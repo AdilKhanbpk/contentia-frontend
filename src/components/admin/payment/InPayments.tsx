@@ -1,7 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaFileCsv, FaEye } from "react-icons/fa";
-import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useForm } from "react-hook-form";
 import CustomModelAdmin from '../../modal/CustomModelAdmin'
@@ -10,7 +9,6 @@ import Modal from "./sub-payment/Modal";
 
 const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
 
-// Define the Order interface
 export interface Order {
   id: number;
   customerName: string;
@@ -22,7 +20,6 @@ export interface Order {
   cancelRefund: string;
 }
 
-// Initial orders data
 const initialOrders: Order[] = [
   { id: 1, customerName: "Saud", customerSurname: "Khan", paymentID: 9080124, paymentDate: "19/09/2024", amountPaid: "25,000 TL", paymentStatus: "Success", cancelRefund: "Not Refunded" },
   { id: 2, customerName: "Kagan", customerSurname: "Sahin", paymentID: 9193824, paymentDate: "22/08/2024", amountPaid: "100,000 TL", paymentStatus: "Success", cancelRefund: "Refunded" },
@@ -46,7 +43,6 @@ const InPayments: React.FC = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  // Define table columns
   const columns = [
     {
       name: "Order ID",
@@ -111,7 +107,6 @@ const InPayments: React.FC = () => {
     },
   ];
 
-  // Function to export to CSV
   const exportToCSV = () => {
     const csvRows = [
       ["Order ID", "Customer Name", "Customer Surname", "Payment ID", "Payment Date", "Amount Paid", "Payment Status", "Cancel / Refund"],

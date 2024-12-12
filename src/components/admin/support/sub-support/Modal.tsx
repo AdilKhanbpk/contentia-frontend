@@ -1,11 +1,9 @@
-import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import { createAdminClaim } from "@/store/features/admin/claimSlice";
 import { toast } from 'react-toastify';
 
-// Define interface to match backend expected structure
 interface ClaimFormData {
   status: string;
   customerId: string;
@@ -15,7 +13,6 @@ interface ClaimFormData {
 }
 
 export default function Modal() {
-  // Use ThunkDispatch to properly type the dispatch for async thunks
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
   const {
@@ -34,8 +31,7 @@ export default function Modal() {
   });
 
   const onSubmit: SubmitHandler<ClaimFormData> = (data) => {
-    console.log("data to be created", data);
-    const token = localStorage.getItem("accessToken"); // Get token from localStorage
+    const token = localStorage.getItem("accessToken");
     if (token) {
       dispatch(
         createAdminClaim({
@@ -51,24 +47,20 @@ export default function Modal() {
       )
         .unwrap()
         .then(() => {
-          console.log("Claim created:", data);
-          reset(); // Reset form after successful submission
-          toast.success("Claim created successfully!"); // Success toast
+          reset();
+          toast.success("Claim created successfully!");
         })
         .catch((error) => {
-          console.error("Failed to create claim:", error);
-          toast.error(`Failed to create claim: ${error.message || "Unknown error"}`); // Error toast
+          toast.error(`Failed to create claim: ${error.message || "Unknown error"}`);
         });
     } else {
-      toast.error("No access token found! Please log in again."); // Error toast for missing token
+      toast.error("No access token found! Please log in again.");
     }
   };
-
 
   return (
     <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">
       <h1 className="text-lg font-semibold">Add Order Claim</h1>
-
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mt-4 sm:mt-6 md:mt-8 lg:mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6 lg:gap-6">
           <div>

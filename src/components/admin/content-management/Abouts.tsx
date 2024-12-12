@@ -1,10 +1,9 @@
 "use client";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
-
 import { RootState } from "@/store/store";
 import {
   createAbout,
@@ -13,8 +12,6 @@ import {
 } from "@/store/features/admin/aboutSlice";
 import ImageUploader from "./sub-content/ImageUploader";
 import { toast } from "react-toastify";
-
-// Dynamically import the Quill editor to avoid SSR issues
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 interface AboutFormData {
@@ -25,7 +22,7 @@ interface AboutFormData {
   contactPhone: string;
   contactAddress: string;
   buttonUrl: string;
-  aboutImage?: string; // Add this line, making it optional with ?
+  aboutImage?: string;
 }
 
 export default function Abouts() {
@@ -33,7 +30,6 @@ export default function Abouts() {
   const { sections, loading, error } = useSelector(
     (state: RootState) => state.about
   );
-  console.log("sections from the component:", sections);
 
   const {
     register,
@@ -50,7 +46,7 @@ export default function Abouts() {
       contactPhone: "",
       contactAddress: "",
       buttonUrl: "",
-      aboutImage: "" // Add default empty string
+      aboutImage: "" 
     }
   });
 
@@ -59,30 +55,19 @@ export default function Abouts() {
     const token = localStorage.getItem("accessToken");
   
     if (token) {
-      console.log("Fetching Data", { token });
-  
-      // Log when the dispatch function is called
       dispatch(fetchAbout(token) as any)
         .then((action: any) => {
-          // If the dispatch returns a successful result
-          console.log("Action Dispatched Successfully:", action);
-          toast.success("Data fetched successfully!");  // Success toast
+          toast.success("Data fetched successfully!");
         })
         .catch((error: any) => {
-          // Log if there was an error in dispatch
-          console.log("Dispatch failed with error:", error);
-          toast.error("Failed to fetch data!");  // Error toast
+          toast.error("Failed to fetch data!"); 
         });
-  
     } else {
-      console.log("No Token Found in Local Storage");
-      toast.error("No token found in local storage!");  // Error toast for missing token
+      toast.error("No token found in local storage!");
     }
   }, [dispatch]);
 
-
   useEffect(() => {
-    console.log("useEffect Triggered - Checking sections", { sections });
     if (sections && sections._id) {
       const { title, content, contactTitle, contactEmail, contactPhone, contactAddress, buttonUrl } = sections;
       reset({ title, content, contactTitle, contactEmail, contactPhone, contactAddress, buttonUrl });
@@ -91,18 +76,13 @@ export default function Abouts() {
     }
   }, [sections, reset]);
 
-
   const onSubmit = (data: AboutFormData) => {
-    console.log("Form Submitted", data);
-  
     const token = localStorage.getItem("accessToken");
     if (!token) {
-      console.log("Submit Error - No Token Found");
-      toast.error("No token found in local storage!");  // Error toast for missing token
+      toast.error("No token found in local storage!");
       return;
     }
   
-    // If a section exists, update; otherwise, create
     if (sections) {
       const sectionId = sections._id;
       console.log("Dispatching Update", { sectionId, data });
@@ -113,42 +93,26 @@ export default function Abouts() {
         token
       }) as any)
         .then(() => {
-          toast.success("Section updated successfully!");  // Success toast for update
+          toast.success("Section updated successfully!");
         })
         .catch((error: any) => {
-          console.log("Update failed with error:", error);
-          toast.error("Failed to update section!");  // Error toast for update failure
+          toast.error("Failed to update section!"); 
         });
   
     } else {
-      console.log("Dispatching Create", { data });
-  
+
       dispatch(createAbout({
         data,
         token
       }) as any)
         .then(() => {
-          toast.success("Section created successfully!");  // Success toast for create
+          toast.success("Section created successfully!");
         })
         .catch((error: any) => {
-          console.log("Create failed with error:", error);
-          toast.error("Failed to create section!");  // Error toast for create failure
+          toast.error("Failed to create section!");
         });
     }
   };
-
-  // Log errors and state changes
-  useEffect(() => {
-    if (error) console.log("Error State Changed", error);
-  }, [error]);
-
-  useEffect(() => {
-    console.log("Loading State Updated", { loading });
-  }, [loading]);
-
-  useEffect(() => {
-    if (Object.keys(errors).length > 0) console.log("Form Validation Errors", errors);
-  }, [errors]);
 
   return (
     <div className="flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72">

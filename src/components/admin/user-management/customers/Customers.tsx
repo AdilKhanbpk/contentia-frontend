@@ -14,14 +14,11 @@ import {
 import CustomModelAdmin from '../../../modal/CustomModelAdmin';
 import ModalNew from "./sub-customer/ModalNew";
 import ModalEdit from "./sub-customer/ModalEdit";
-import ModalView from "./sub-customer/ModelView"; // Import view modal
+import ModalView from "./sub-customer/ModelView";
 import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import { toast } from 'react-toastify';
 
-
-
-// Memoized SearchBar component
 const SearchBar = memo(({ onSearch }: { onSearch: (value: string) => void }) => (
     <input
         type="text"
@@ -33,8 +30,6 @@ const SearchBar = memo(({ onSearch }: { onSearch: (value: string) => void }) => 
 
 SearchBar.displayName = 'SearchBar';
 
-
-// Memoized Table Actions component
 const TableActions = memo(({ onDelete, onEdit, onView, id }: { onDelete: (id: string) => void; onEdit: (id: string) => void; onView: (id: string) => void; id: string }) => (
     <div className="flex space-x-3">
         <button
@@ -73,7 +68,6 @@ const Customers: React.FC = () => {
     const handleDelete = useCallback((id: string) => {
         const tokenFromStorage = localStorage.getItem('accessToken');
         if (!tokenFromStorage) {
-            console.warn("Authorization token is missing.");
             toast.error('Authorization token is missing. Please log in again.');
             return;
         }
@@ -84,13 +78,10 @@ const Customers: React.FC = () => {
                 toast.success('Customer deleted successfully!');
             })
             .catch((error: any) => {
-                console.error("Delete failed:", error);
                 toast.error('Failed to delete customer. Please try again.');
             });
     }, [dispatch]);
 
-
-    // Handler for viewing a customer
     const handleView = (id: string) => {
         const customer = customers.find((customer) => customer.id === id);
         setCurrentCustomer(customer);
@@ -101,21 +92,16 @@ const Customers: React.FC = () => {
         const tokenFromStorage = localStorage.getItem('accessToken');
 
         try {
-            // Validate token
             if (!tokenFromStorage) {
-                console.error('Authorization token is missing');
                 toast.error('Authorization token is missing. Please log in again.');
                 return;
             }
 
-            // Validate customer data
             if (!customerData || Object.keys(customerData).length === 0) {
-                console.error('Customer data is empty');
                 toast.error('Customer data is missing or empty.');
                 return;
             }
 
-            // Log the request attempt
             console.log('Attempting to create customer:', {
                 ...customerData,
                 token: tokenFromStorage ? `${tokenFromStorage.substring(0, 10)}...` : 'missing'
@@ -128,80 +114,63 @@ const Customers: React.FC = () => {
                 })
             ).unwrap();
 
-            console.log('Customer created successfully:', result);
             setIsModalOpen(false);
-
-            // Refresh customer list and show success message
             await dispatch(fetchAdminCustomers(tokenFromStorage));
             toast.success('Customer created successfully!');
 
         } catch (error) {
-            console.error('Customer creation failed:', error);
             toast.error('Failed to create customer. Please try again.');
         }
     };
 
     const handleUpdate = async (customerData: any) => {
-        console.log('Function `handleUpdate` called with customerData: ', customerData);
-
-        const token = localStorage.getItem('accessToken');  // Assume the token is stored in localStorage
-        console.log('Retrieved token from storage: ', token);
-
+        const token = localStorage.getItem('accessToken');
         if (token) {
             const customerId = customerData.id;
             const dataToUpdate = {
-                fullName: customerData.fullName ?? '',  // Default to empty string if fullName is missing or undefined
-                email: customerData.email ?? '',  // Default to empty string if email is missing or undefined
-                phoneNumber: customerData.contact ?? '',  // Default to empty string if contact is missing or undefined
-                age: customerData.age ?? null,  // Default to null if age is missing or undefined
-                country: customerData.country ?? '',  // Default to empty string if country is missing or undefined
-                customerStatus: customerData.customerStatus ?? '',  // Default to empty string if customerStatus is missing or undefined
-                invoiceType: customerData.invoiceType ?? '',  // Default to empty string if invoiceType is missing or undefined
+                fullName: customerData.fullName ?? '',
+                email: customerData.email ?? '',
+                phoneNumber: customerData.contact ?? '',
+                age: customerData.age ?? null,
+                country: customerData.country ?? '',
+                customerStatus: customerData.customerStatus ?? '',
+                invoiceType: customerData.invoiceType ?? '',
                 billingInformation: {
-                    invoiceStatus: customerData.billingInformation?.invoiceStatus ?? false,  // Default to false if invoiceStatus is missing or undefined
-                    trId: customerData.billingInformation?.trId ?? '',  // Default to empty string if trId is missing or undefined
-                    address: customerData.billingInformation?.address ?? '',  // Default to empty string if address is missing or undefined
-                    fullName: customerData.billingInformation?.fullName ?? '',  // Default to empty string if fullName is missing or undefined
-                    companyName: customerData.billingInformation?.companyName ?? '',  // Default to empty string if companyName is missing or undefined
-                    taxNumber: customerData.billingInformation?.taxNumber ?? '',  // Default to empty string if taxNumber is missing or undefined
-                    taxOffice: customerData.billingInformation?.taxOffice ?? '',  // Default to empty string if taxOffice is missing or undefined
+                    invoiceStatus: customerData.billingInformation?.invoiceStatus ?? false,
+                    trId: customerData.billingInformation?.trId ?? '',
+                    address: customerData.billingInformation?.address ?? '',
+                    fullName: customerData.billingInformation?.fullName ?? '',
+                    companyName: customerData.billingInformation?.companyName ?? '',
+                    taxNumber: customerData.billingInformation?.taxNumber ?? '',
+                    taxOffice: customerData.billingInformation?.taxOffice ?? '',
                 },
-                rememberMe: customerData.rememberMe ?? false,  // Default to false if rememberMe is missing or undefined
-                termsAndConditionsApproved: customerData.termsAndConditionsApproved ?? false  // Default to false if termsAndConditionsApproved is missing or undefined
+                rememberMe: customerData.rememberMe ?? false,
+                termsAndConditionsApproved: customerData.termsAndConditionsApproved ?? false
             };
 
             try {
-                // Dispatch the update action
                 await dispatch(updateAdminCustomer({ customerId, data: dataToUpdate, token }));
-                console.log('Data to be sent for update: ', dataToUpdate);
-
-                // Refresh customer list and show success message
                 await dispatch(fetchAdminCustomers(token));
                 toast.success('Customer updated successfully!');
             } catch (error) {
-                console.error('Customer update failed:', error);
                 toast.error('Failed to update customer. Please try again.');
             }
 
         } else {
-            console.error('Authorization token is missing!');
             toast.error('Authorization token is missing. Please log in again.');
         }
     };
 
-    // Handler for editing a customer
     const handleEdit = (id: string) => {
         const customer = customers.find((customer) => customer.id === id);
         setCurrentCustomer(customer);
         setIsModalEditOpen(true);
     };
 
-    // Handler for search input
     const handleSearch = useCallback((value: string) => {
         setSearchTerm(value);
     }, []);
 
-    // Export to CSV
     const handleExport = useCallback(() => {
         const headers = ["ID", "Name", "Email", "Contact", "Age", "Country", "Status"];
         const data = customers.map(customer => ({
@@ -217,7 +186,6 @@ const Customers: React.FC = () => {
         exportCsvFile({ data, headers, filename: "customers.csv" });
     }, [customers]);
 
-    // Fetch customers on mount
     useEffect(() => {
         const tokenFromStorage = localStorage.getItem('accessToken');
         if (tokenFromStorage) {
@@ -225,7 +193,6 @@ const Customers: React.FC = () => {
         }
     }, [dispatch]);
 
-    // Memoized columns configuration
     const columns = React.useMemo(() => [
         {
             name: "#",
@@ -292,7 +259,6 @@ const Customers: React.FC = () => {
         },
     ], [handleDelete, handleEdit, handleView]);
 
-    // Filtered customers based on search
     const filteredCustomers = React.useMemo(() => {
         const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
         return customers.filter((customer) => (
@@ -332,7 +298,6 @@ const Customers: React.FC = () => {
                 />
             </div>
 
-            {/* Modal for adding a new customer */}
             <CustomModelAdmin
                 isOpen={isModalOpen}
                 closeModal={() => setIsModalOpen(false)}
@@ -345,7 +310,6 @@ const Customers: React.FC = () => {
                 />
             </CustomModelAdmin>
 
-            {/* Modal for editing a customer */}
             <CustomModelAdmin
                 isOpen={isModalEditOpen}
                 closeModal={() => setIsModalEditOpen(false)}
@@ -359,7 +323,6 @@ const Customers: React.FC = () => {
                 />
             </CustomModelAdmin>
 
-            {/* Modal for viewing a customer */}
             <CustomModelAdmin
                 isOpen={isModalViewOpen}
                 closeModal={() => setIsModalViewOpen(false)}

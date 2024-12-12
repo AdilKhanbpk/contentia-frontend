@@ -9,6 +9,7 @@ import {
   setCreatorInformation,
 } from "@/store/becomeCreator/becomeCreatorSlice";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const Preferences: React.FC = () => {
   const {
@@ -22,14 +23,23 @@ const Preferences: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const onSubmit: SubmitHandler<any> = async (data) => {
-    console.log(data);
-    dispatch(setCreatorInformation(data));
-    const res = await dispatch(becomeCreatorThunk()).unwrap();
-    console.log(res);
-    if (res.status === 201) {
-      router.push("/contentiaio/become-creator/submitted-successfully");
-    } else {
-      router.push("/contentiaio/become-creator");
+    try {
+      console.log(data);
+      dispatch(setCreatorInformation(data));
+
+      const res = await dispatch(becomeCreatorThunk()).unwrap();
+      console.log(res);
+
+      if (res.status === 201) {
+        toast.success('Successfully submitted creator information'); // Show success message
+        router.push("/contentiaio/become-creator/submitted-successfully");
+      } else {
+        toast.error('Failed to submit creator information'); // Show error message for unsuccessful status
+        router.push("/contentiaio/become-creator");
+      }
+    } catch (error) {
+      toast.error('An error occurred while submitting creator information'); // Handle unexpected errors
+      console.error(error);
     }
   };
 

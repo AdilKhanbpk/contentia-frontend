@@ -1,6 +1,4 @@
 "use client";
-import React from 'react';
-
 const PageViews = () => {
   const pageData = [
     { title: "Admin Home", url: "/demo/admin/index.html", views: 7755, percentage: "31.74%" },

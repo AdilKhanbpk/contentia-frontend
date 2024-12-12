@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
+import { toast } from "react-toastify";
 
 const TabFourth = () => {
 
@@ -28,18 +29,21 @@ const TabFourth = () => {
 
     const contentType = watch('contentType');
 
-    const onSubmit = async(data: any) => {
+    const onSubmit = async (data: any) => {
         console.log(data); // This will log the selected gender to the console
         try {
             const response = await axios.post('http://localhost:3001/api/v1/preferences/preferencesRoute', data);
             console.log('Response from server:', response.data);
-            // Handle success (e.g., show a success message, redirect, etc.)
+
+            // Show success message
+            toast.success('Preferences saved successfully!');
         } catch (error) {
             console.error('Error submitting form data:', error);
-            // Handle error (e.g., show an error message)
+
+            // Show error message
+            toast.error('Failed to save preferences. Please try again.');
         }
     };
-
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>

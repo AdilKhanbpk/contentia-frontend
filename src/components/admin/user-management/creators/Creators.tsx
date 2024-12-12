@@ -18,95 +18,6 @@ import { exportCsvFile } from "@/utils/exportCsvFile";
 import EditCreatorForm from "./sub-creator/EditCreatorForm";
 import { toast } from 'react-toastify';
 
-interface Creator {
-  id: number;
-  fullName: string;
-  creatorType: "individual" | "company";
-  userType: "customer" | "creator";
-  role: "user" | "admin";
-  password: string;
-  identityNo: number;
-  email: string;
-  dateOfBirth: string; // Format: "YYYY-MM-DD"
-  gender: "male" | "female" | "other";
-  phoneNumber: string;
-  isVerified: "pending" | "approved" | "rejected";
-  accountType: "individual" | "institutional";
-  invoiceType: "individual" | "institutional";
-  addressDetails: {
-    addressOne: string;
-    addressTwo: string;
-    country: string;
-    zipCode: number;
-  },
-  paymentInformation: {
-    ibanNumber?: string;
-    address: string;
-    fullName: string;
-    trId?: string;
-    companyName?: string;
-    taxNumber?: string;
-    taxOffice?: string;
-  };
-  billingInformation: {
-    invoiceStatus: boolean;
-    address: string;
-    fullName: string;
-    trId?: string;
-    companyName?: string;
-    taxNumber?: string;
-    taxOffice?: string;
-  };
-  preferences: {
-    contentInformation: {
-      contentType: "product" | "service" | "other";
-      creatorType: "nano" | "micro"; // Updated
-      contentFormats: string[]; // Example: ["video", "image"]
-      areaOfInterest: string[]; // Example: ["tech", "gadgets"]
-      addressDetails: {
-        country: string;
-        state: string;
-        district: string;
-        neighbourhood?: string;
-        fullAddress: string;
-      };
-    };
-    socialInformation: {
-      contentType: "product" | "service";
-      platforms: {
-        Instagram?: {
-          followers: number;
-          username: string;
-        };
-        TikTok?: {
-          followers: number;
-          username: string;
-        };
-        Facebook?: {
-          followers: number;
-          username: string;
-        };
-        Youtube?: {
-          followers: number;
-          username: string;
-        };
-        X?: {
-          followers: number;
-          username: string;
-        };
-        Linkedin?: {
-          followers: number;
-          username: string;
-        };
-      };
-      portfolioLink?: string[];
-    };
-  };
-  userAgreement: boolean;
-  approvedCommercial: boolean;
-}
-
-// Memoized SearchBar component
 const SearchBar = memo(({ onSearch }: { onSearch: (value: string) => void }) => (
   <input
     type="text"
@@ -118,8 +29,6 @@ const SearchBar = memo(({ onSearch }: { onSearch: (value: string) => void }) => 
 
 SearchBar.displayName = 'SearchBar';
 
-
-// Memoized Table Actions component
 const TableActions = memo(({ onDelete, onEdit, onView, id }: { onDelete: (id: string) => void; onEdit: (id: string) => void; onView: (id: string) => void; id: string }) => (
   <div className="flex space-x-3">
     <button
@@ -158,7 +67,6 @@ const Customers: React.FC = () => {
   const handleDelete = useCallback((id: string) => {
     const tokenFromStorage = localStorage.getItem('accessToken');
     if (!tokenFromStorage) {
-      console.warn("Authorization token is missing.");
       toast.error('Authorization token is missing. Please log in again.');
       return;
     }
@@ -169,12 +77,10 @@ const Customers: React.FC = () => {
         toast.success('Customer deleted successfully!');
       })
       .catch((error: any) => {
-        console.error("Delete failed:", error);
         toast.error(`Error deleting customer: ${error?.message || 'Unknown error'}`);
       });
   }, [dispatch]);
 
-  // Handler for viewing a customer
   const handleView = (id: string) => {
     const customer = creators.find((customer) => customer.id === id);
     setCurrentCustomer(customer);
@@ -182,29 +88,18 @@ const Customers: React.FC = () => {
   };
 
   const handleCreate = async (customerData: any) => {
-    console.log('customerData from create handler', customerData);
     const tokenFromStorage = localStorage.getItem('accessToken');
-
     try {
-      // Validate token
       if (!tokenFromStorage) {
-        console.error('Authorization token is missing');
         toast.error('Authorization token is missing. Please log in again.');
         return;
       }
 
-      // Validate customer data
       if (!customerData || Object.keys(customerData).length === 0) {
         console.error('Customer data is empty');
         toast.error('Please provide valid customer data.');
         return;
       }
-
-      // Log the request attempt
-      console.log('Attempting to create customer:', {
-        ...customerData,
-        token: tokenFromStorage ? `${tokenFromStorage.substring(0, 10)}...` : 'missing'
-      });
 
       const result = await dispatch(
         createAdminCreator({
@@ -213,40 +108,33 @@ const Customers: React.FC = () => {
         })
       ).unwrap();
 
-      console.log('Customer created successfully:', result);
       setIsModalOpen(false);
 
-      // Optionally refresh the customer list or show success message
       toast.success('Customer created successfully!');
       await dispatch(fetchAdminCreators(tokenFromStorage));
 
     } catch (error) {
-      console.error('Customer creation failed:', error);
       toast.error(`Error creating customer: 'Unknown error'}`);
     }
   };
 
   const handleUpdate = async (customerData: any) => {
-    console.log('Function `handleUpdate` called with customerData: ', customerData);
-
-    const token = localStorage.getItem('accessToken');  // Assume the token is stored in localStorage
-    console.log('Retrieved token from storage: ', token);
-
+    const token = localStorage.getItem('accessToken');
     if (token) {
       const customerId = customerData.id;
       console.log(customerId);
       const dataToUpdate = {
-        fullName: customerData.fullName ?? '', // Default to empty string if missing
-        creatorType: customerData.creatorType ?? 'individual', // Default to "individual"
-        password: customerData.password ?? '', // Default to empty string if missing
-        indentityNo: customerData.identityNo ?? '', // Default to empty string if missing
-        email: customerData.email ?? '', // Default to empty string if missing
-        dateOfBirth: customerData.dateOfBirth ?? '', // Default to empty string if missing
-        gender: customerData.gender ?? 'other', // Default to "other"
-        phoneNumber: customerData.contact ?? '', // Default to empty string if missing
-        isVerified: customerData.isVerified ?? 'pending', // Default to false if missing
-        accountType: customerData.accountType ?? 'individual', // Default to "individual"
-        invoiceType: customerData.invoiceType ?? 'individual', // Default to "individual"
+        fullName: customerData.fullName ?? '',
+        creatorType: customerData.creatorType ?? 'individual',
+        password: customerData.password ?? '',
+        indentityNo: customerData.identityNo ?? '',
+        email: customerData.email ?? '',
+        dateOfBirth: customerData.dateOfBirth ?? '',
+        gender: customerData.gender ?? 'other',
+        phoneNumber: customerData.contact ?? '',
+        isVerified: customerData.isVerified ?? 'pending',
+        accountType: customerData.accountType ?? 'individual',
+        invoiceType: customerData.invoiceType ?? 'individual',
         addressDetails: {
           addressOne: customerData.addressDetails?.addressOne ?? '',
           addressTwo: customerData.addressDetails?.addressTwo ?? '',
@@ -255,40 +143,40 @@ const Customers: React.FC = () => {
         },
 
         paymentInformation: {
-          ibanNumber: customerData.paymentInformation?.ibanNumber ?? '', // Default to empty string if missing
-          address: customerData.paymentInformation?.address ?? '', // Default to empty string if missing
-          fullName: customerData.paymentInformation?.fullName ?? '', // Default to empty string if missing
-          trId: customerData.paymentInformation?.trId ?? '', // Default to empty string if missing
-          companyName: customerData.paymentInformation?.companyName ?? '', // Default to empty string if missing
-          taxNumber: customerData.paymentInformation?.taxNumber ?? '', // Default to empty string if missing
-          taxOffice: customerData.paymentInformation?.taxOffice ?? '', // Default to empty string if missing
+          ibanNumber: customerData.paymentInformation?.ibanNumber ?? '',
+          address: customerData.paymentInformation?.address ?? '',
+          fullName: customerData.paymentInformation?.fullName ?? '',
+          trId: customerData.paymentInformation?.trId ?? '',
+          companyName: customerData.paymentInformation?.companyName ?? '',
+          taxNumber: customerData.paymentInformation?.taxNumber ?? '',
+          taxOffice: customerData.paymentInformation?.taxOffice ?? '',
         },
 
         billingInformation: {
-          invoiceStatus: customerData.billingInformation?.invoiceStatus ?? false, // Default to false if missing
-          address: customerData.billingInformation?.address ?? '', // Default to empty string if missing
-          fullName: customerData.billingInformation?.fullName ?? '', // Default to empty string if missing
-          trId: customerData.billingInformation?.trId ?? '', // Default to empty string if missing
-          companyName: customerData.billingInformation?.companyName ?? '', // Default to empty string if missing
-          taxNumber: customerData.billingInformation?.taxNumber ?? '', // Default to empty string if missing
-          taxOffice: customerData.billingInformation?.taxOffice ?? '', // Default to empty string if missing
+          invoiceStatus: customerData.billingInformation?.invoiceStatus ?? false,
+          address: customerData.billingInformation?.address ?? '',
+          fullName: customerData.billingInformation?.fullName ?? '',
+          trId: customerData.billingInformation?.trId ?? '',
+          companyName: customerData.billingInformation?.companyName ?? '',
+          taxNumber: customerData.billingInformation?.taxNumber ?? '',
+          taxOffice: customerData.billingInformation?.taxOffice ?? '',
         },
 
         preferences: {
           contentInformation: {
-            contentType: customerData.preferences?.contentInformation?.contentType ?? 'other', // Default to "other"
-            contentFormats: customerData.preferences?.contentInformation?.contentFormats ?? [], // Default to empty array
-            areaOfInterest: customerData.preferences?.contentInformation?.areaOfInterest ?? [], // Default to empty array
+            contentType: customerData.preferences?.contentInformation?.contentType ?? 'other',
+            contentFormats: customerData.preferences?.contentInformation?.contentFormats ?? [],
+            areaOfInterest: customerData.preferences?.contentInformation?.areaOfInterest ?? [],
             addressDetails: {
-              country: customerData.preferences?.contentInformation?.addressDetails?.country ?? '', // Default to empty string
-              state: customerData.preferences?.contentInformation?.addressDetails?.state ?? '', // Default to empty string
-              district: customerData.preferences?.contentInformation?.addressDetails?.district ?? '', // Default to empty string
-              neighbourhood: customerData.preferences?.contentInformation?.addressDetails?.neighbourhood ?? '', // Optional
-              fullAddress: customerData.preferences?.contentInformation?.addressDetails?.fullAddress ?? '', // Default to empty string
+              country: customerData.preferences?.contentInformation?.addressDetails?.country ?? '',
+              state: customerData.preferences?.contentInformation?.addressDetails?.state ?? '',
+              district: customerData.preferences?.contentInformation?.addressDetails?.district ?? '',
+              neighbourhood: customerData.preferences?.contentInformation?.addressDetails?.neighbourhood ?? '',
+              fullAddress: customerData.preferences?.contentInformation?.addressDetails?.fullAddress ?? '',
             },
           },
           socialInformation: {
-            contentType: customerData.preferences?.socialInformation?.contentType ?? 'other', // Default to "other"
+            contentType: customerData.preferences?.socialInformation?.contentType ?? 'other',
             platforms: {
               Instagram: customerData.preferences?.socialInformation?.platforms?.Instagram ?? {
                 followers: 0,
@@ -315,33 +203,26 @@ const Customers: React.FC = () => {
                 username: '',
               },
             },
-            portfolioLink: customerData.preferences?.socialInformation?.portfolioLink ?? '', // Default to empty string if missing
+            portfolioLink: customerData.preferences?.socialInformation?.portfolioLink ?? '',
           },
         },
 
-        userAgreement: customerData.userAgreement ?? false, // Default to false if missing
-        approvedCommercial: customerData.approvedCommercial ?? false, // Default to false if missing
+        userAgreement: customerData.userAgreement ?? false,
+        approvedCommercial: customerData.approvedCommercial ?? false,
       };
 
       try {
-        // Dispatch the update action
-        console.log('Data to be sent for update: ', dataToUpdate);
         await dispatch(updateAdminCreator({ customerId, data: dataToUpdate, token }));
         await dispatch(fetchAdminCreators(token));
-
         toast.success('Customer updated successfully!');
       } catch (error) {
-        console.error('Update failed:', error);
         toast.error('Failed to update customer. Please try again.');
       }
     } else {
-      console.error('Authorization token is missing!');
       toast.error('Authorization token is missing! Please log in again.');
     }
   };
 
-
-  // Handler for editing a customer
   const handleEdit = (id: string) => {
     const creator = creators.find((creator) => creator.id === id);
     setCurrentCustomer(creator);
@@ -349,12 +230,10 @@ const Customers: React.FC = () => {
     setShowEditForm(true);
   };
 
-  // Handler for search input
   const handleSearch = useCallback((value: string) => {
     setSearchTerm(value);
   }, []);
 
-  // Export to CSV
   const handleExport = useCallback(() => {
     const headers = ["ID", "Name", "Email", "Contact", "Total Orders", "Country", "Status"];
     const data = creators.map(customer => [
@@ -370,7 +249,6 @@ const Customers: React.FC = () => {
     exportCsvFile({ data, headers, filename: "creators.csv" });
   }, [creators]);
 
-  // Fetch customers on mount
   useEffect(() => {
     const tokenFromStorage = localStorage.getItem('accessToken');
     if (tokenFromStorage) {
@@ -447,8 +325,6 @@ const Customers: React.FC = () => {
     }
   ], [handleDelete, handleEdit, handleView]);
 
-
-  // Update the filteredCustomers function to match the new data structure
   const filteredCreators = React.useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
     return creators.filter((customer) => (
@@ -459,7 +335,6 @@ const Customers: React.FC = () => {
     ));
   }, [creators, searchTerm]);
 
-  // Handler for closing the edit form
   const handleCloseEdit = () => {
     setEditingCreator(false);
     setCurrentCustomer(null);
@@ -492,6 +367,7 @@ const Customers: React.FC = () => {
           columns={columns}
           data={filteredCreators}
         />
+
         {/* Conditional render of the edit form */}
         {showEditForm && (
           <EditCreatorForm
@@ -516,8 +392,6 @@ const Customers: React.FC = () => {
           onSubmit={handleCreate}
         />
       </CustomModelAdmin>
-
-
 
       {/* Modal for viewing a customer */}
       <CustomModelAdmin

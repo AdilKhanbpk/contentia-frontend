@@ -1,10 +1,9 @@
 "use client";
-import React, { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { FaCheck, FaTimes, FaEye, FaFileCsv } from "react-icons/fa";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useForm, SubmitHandler } from "react-hook-form";
-
 const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
 
 export interface Creator {
@@ -17,13 +16,12 @@ export interface Creator {
   status: "Verified" | "Pending" | "Rejected";
 }
 
-// Define the Order interface based on your model
 interface Order {
   _id: string;
   coupon?: string;
   orderOwner: {
-    id: string; // User's ID
-    fullName: string; // User's full name
+    id: string;
+    fullName: string;
   };
   assignedCreators: string[];
   appliedCreators: string[];
@@ -84,7 +82,7 @@ const initialCreators: Creator[] = [
 ];
 
 interface RequestModalProps {
-  order: Order | null;  // Add type definition for Order if not already defined
+  order: Order | null;
   onApprove: (orderId: string, creatorId: string) => Promise<void>;
   onReject: (orderId: string, creatorId: string) => Promise<void>;
 }

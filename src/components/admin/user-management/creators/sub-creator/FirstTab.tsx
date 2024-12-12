@@ -14,7 +14,7 @@ interface Creator {
     password: string;
     identityNo: number;
     email: string;
-    dateOfBirth: string; // Format: "YYYY-MM-DD"
+    dateOfBirth: string;
     gender: "male" | "female" | "other";
     phoneNumber: string;
     isVerified: "pending" | "approved" | "rejected";
@@ -47,9 +47,9 @@ interface Creator {
     preferences: {
         contentInformation: {
             contentType: "product" | "service" | "other";
-            creatorType: "nano" | "micro"; // Updated
-            contentFormats: string[]; // Example: ["video", "image"]
-            areaOfInterest: string[]; // Example: ["tech", "gadgets"]
+            creatorType: "nano" | "micro";
+            contentFormats: string[];
+            areaOfInterest: string[];
             addressDetails: {
                 country: string;
                 state: string;
@@ -99,7 +99,7 @@ interface FirstTabProps {
 }
 
 export default function FirstTab({ editCreatorForm }: FirstTabProps) {
-    console.log("edit creator form : ", editCreatorForm);
+
     const dispatch = useDispatch<AppDispatch>();
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
@@ -145,20 +145,17 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
 
     const onSubmit: SubmitHandler<any> = async (formData) => {
         if (!editCreatorForm?.id) {
-            console.error('No creator ID found');
-            toast.error("Creator ID not found!"); // Error toast for missing creator ID
+            toast.error("Creator ID not found!");
             return;
         }
 
-        // Get token from localStorage
         const token = localStorage.getItem('accessToken');
         if (!token) {
             console.error('No access token found');
-            toast.error("No access token found!"); // Error toast for missing token
+            toast.error("No access token found!");
             return;
         }
 
-        // Transform form data to match API expectations
         const updateData = {
             fullName: formData.name,
             identityNo: Number(formData.identityNo),
@@ -187,7 +184,6 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
         };
 
         try {
-            // Dispatch update action with token
             const resultAction = await dispatch(
                 updateAdminCreator({
                     customerId: editCreatorForm.id.toString(),
@@ -197,18 +193,13 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
             );
 
             if (updateAdminCreator.fulfilled.match(resultAction)) {
-                // Handle success (e.g., show success message)
-                console.log('Update successful');
-                toast.success("Creator updated successfully!"); // Success toast
+                toast.success("Creator updated successfully!");
                 await dispatch(fetchAdminCreators(token));
             } else {
-                // Handle error
-                console.error('Update failed:', resultAction.error);
-                toast.error("Failed to update creator. Please try again!"); // Error toast
+                toast.error("Failed to update creator. Please try again!");
             }
         } catch (error: any) {
-            console.error('Error updating creator:', error);
-            toast.error(`Error updating creator: ${error.message || "Unknown error"}`); // Error toast
+            toast.error(`Error updating creator: ${error.message || "Unknown error"}`);
         }
     };
 

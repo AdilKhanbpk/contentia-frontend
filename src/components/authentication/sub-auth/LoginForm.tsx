@@ -2,10 +2,10 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser, resetLoginState } from '@/store/features/auth/loginSlice'; // Import resetLoginState
+import { loginUser } from '@/store/features/auth/loginSlice'; // Import resetLoginState
 import { RootState } from '@/store/store';
 import { AppDispatch } from '@/store/store'; // Correctly typed dispatch
-import { useEffect } from 'react';
+import { toast } from "react-toastify";
 
 interface IFormInput {
   email: string;
@@ -20,23 +20,21 @@ const LoginForm = () => {
   // Access the login state using useSelector
   const loginState = useSelector((state: RootState) => state.login);
 
-  // On form submission, dispatch the loginUser action
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    dispatch(loginUser(data)); // Dispatch login action
-  };
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    try {
+      const response = await dispatch(loginUser(data)); // Dispatch login action
 
-  // Handle the login success in useEffect
-  useEffect(() => {
-    if (loginState.success) {
-      alert('Login successful!');
-      dispatch(resetLoginState()); // Reset login state after success
+      // Check if the login action was fulfilled and contains the token
+      if (response.meta.requestStatus === 'fulfilled') {
+        toast.success('Login successful'); // Show success message
+      } else {
+        toast.error('Login failed: Invalid credentials'); // Show error message if login fails
+      }
+    } catch (error) {
+      toast.error('Login failed: An error occurred'); // Show error if there's an issue with the login process
+      console.error(error);
     }
-  }, [loginState.success, dispatch]);
-
-  // Show error message if login fails
-  if (loginState.error) {
-    alert(`Error: ${loginState.error}`);
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="px-4">

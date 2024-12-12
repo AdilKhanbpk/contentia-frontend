@@ -1,13 +1,10 @@
 "use client";
-// components/UsersCardChart.tsx
-import React, { useState } from 'react';
-// third-party
+import { useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import { Props as ChartProps } from 'react-apexcharts';
 
 const UsersCardChart: React.FC = () => {
 
-    // chart options
     const areaChartOptions = {
         chart: {
             id: 'new-stack-chart',

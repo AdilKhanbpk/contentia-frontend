@@ -2,15 +2,15 @@ import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from '@reduxjs/toolkit';
-import { Claim, updateAdminClaim } from "@/store/features/admin/claimSlice"; // Adjust import based on file structure
+import { Claim, updateAdminClaim } from "@/store/features/admin/claimSlice";
 import { toast } from 'react-toastify';
 
 interface ModalTwoProps {
-  claim: Claim | null; // Accept a Claim object or null
+  claim: Claim | null;
 }
 
 export default function ModalTwo({ claim }: ModalTwoProps) {
-  // Use ThunkDispatch to properly type the dispatch for async thunks
+
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
   const {
@@ -22,11 +22,9 @@ export default function ModalTwo({ claim }: ModalTwoProps) {
     defaultValues: { claimContent: claim?.claimContent || "" },
   });
 
-  // Function to handle form submission
   const onSubmit: SubmitHandler<Pick<Claim, "claimContent">> = (data) => {
-    const token = localStorage.getItem("accessToken"); // Get token from localStorage
+    const token = localStorage.getItem("accessToken");
     if (claim?.id && token) {
-      // Use .unwrap() to handle potential errors and provide proper typing
       dispatch(
         updateAdminClaim({
           claimId: claim.id,
@@ -35,19 +33,16 @@ export default function ModalTwo({ claim }: ModalTwoProps) {
         })
       ).unwrap()
         .then(() => {
-          console.log("Claim content updated:", data.claimContent);
-          toast.success("Claim content updated successfully!"); // Success toast
+          toast.success("Claim content updated successfully!");
         })
         .catch((error) => {
-          console.error("Failed to update claim:", error);
-          toast.error(`Failed to update claim: ${error.message || "Unknown error"}`); // Error toast
+          toast.error(`Failed to update claim: ${error.message || "Unknown error"}`);
         });
     } else {
-      toast.error("Missing claim ID or access token!"); // Error toast for missing claim or token
+      toast.error("Missing claim ID or access token!");
     }
   };
 
-  // Reset the form when claim changes
   React.useEffect(() => {
     reset({ claimContent: claim?.claimContent || "" });
   }, [claim, reset]);

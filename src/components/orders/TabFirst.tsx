@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import axios from 'axios';
+import { toast } from "react-toastify";
 
 // English translations
 const en = {
@@ -146,18 +147,21 @@ export default function TabFirst() {
             totalPrice: getPrice(selectedQuantity, selectedCard, totalAdditionalCharges), // Total price based on selection, including additional charges
         };
 
-        console.log(formData)
+        console.log(formData);
 
         try {
             const response = await axios.post('http://localhost:3001/api/v1/videos/videoOptions', formData);
             console.log('Response from server:', response.data);
-            // Handle success (e.g., show a success message, redirect, etc.)
+
+            // Show success message
+            toast.success('Form submitted successfully!');
         } catch (error) {
             console.error('Error submitting form data:', error);
-            // Handle error (e.g., show an error message)
+
+            // Show error message
+            toast.error('Failed to submit form. Please try again.');
         }
     };
-
 
     return (
         <>

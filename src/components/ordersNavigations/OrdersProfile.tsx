@@ -13,6 +13,7 @@ import { ProfileInfo } from "./sub-profile/ProfileInfo";
 import { InvoiceInfo } from "./sub-profile/InvoiceInfo";
 import { PasswordChange } from "./sub-profile/PasswordChange";
 import { AppDispatch } from "@/store/store";
+import { toast } from "react-toastify";
 
 const OrdersProfile: React.FC = () => {
 
@@ -35,7 +36,6 @@ const OrdersProfile: React.FC = () => {
 
 
   useEffect(() => {
-
     setToken(localStorage.getItem('accessToken'));
 
     if (token) {
@@ -46,12 +46,24 @@ const OrdersProfile: React.FC = () => {
   const onSubmitProfileInvoice = async (data: any) => {
     console.log("data", data);
     if (token) {
-      await dispatch(updateProfile({ data, token }));
-      // Fetch profile data again after updating
-      dispatch(fetchProfile(token));
+      try {
+        // Dispatch the action to update profile
+        await dispatch(updateProfile({ data, token }));
+
+        // Fetch the profile data again after updating
+        dispatch(fetchProfile(token));
+
+        // Show success message after updating profile
+        toast.success('Profile updated successfully!');
+      } catch (error) {
+        // Show error message if the update fails
+        console.error('Error updating profile:', error);
+        toast.error('Failed to update profile. Please try again.');
+      }
+    } else {
+      toast.error('No token found. Please log in again.');
     }
   };
-
 
   useEffect(() => {
     if (profile.data) {
@@ -67,7 +79,6 @@ const OrdersProfile: React.FC = () => {
     }
   }, [profile.data]); // Update when profile.data changes
 
-
   const onSubmitPasswordChange = async (data: any) => {
     if (token) {
       try {
@@ -81,22 +92,23 @@ const OrdersProfile: React.FC = () => {
         );
 
         if (result.meta.requestStatus === "fulfilled") {
-          // Show success message in alert
-          alert("Password change successful!");
+          // Show success message with Toastify
+          toast.success("Password change successful!");
           console.log("Password change successful:", result.payload);
         } else {
-          // Show failure message in alert
-          alert(`Password change failed: ${result.payload}`);
+          // Show failure message with Toastify
+          toast.error(`Password change failed: ${result.payload}`);
           console.error("Password change failed:", result.payload);
         }
       } catch (error) {
-        // Show error message in alert
-        alert(`An error occurred during password change: ${error}`);
+        // Show error message with Toastify
+        toast.error(`An error occurred during password change: ${error}`);
         console.error("An error occurred during password change:", error);
       }
+    } else {
+      toast.error("No token found. Please log in again.");
     }
   };
-
 
   return (
     <div className="my-14 sm:my-20 md:my-20 lg:my-24 px-4 sm:px-6 md:px-8 lg:px-28 p-4 sm:p-6 md:p-8 lg:p-8 bg-gray-50">

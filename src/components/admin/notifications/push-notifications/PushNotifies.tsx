@@ -1,15 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import { FaCheck, FaTimes, FaEye, FaFileCsv } from "react-icons/fa";
-import Image from "next/image";
 import dynamic from "next/dynamic";
-import { useForm } from "react-hook-form";
 import CustomModelAdmin from '../../../modal/CustomModelAdmin';
 import Modal from "./sub-push/Modal";
-
 const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
 
-// Define the Claim interface
 export interface Claim {
   id: number;
   number: number;
@@ -19,7 +15,6 @@ export interface Claim {
   claimStatus: string;
 }
 
-// Initial claims data
 const initialClaims: Claim[] = [
   { id: 1, number: 100, notificationID: "NF1001", orderID: 9284221, claimDate: "21/10/2024", claimStatus: "Verified" },
   { id: 2, number: 99, notificationID: "NF1002", orderID: 4254210, claimDate: "14/09/2024", claimStatus: "Pending" },
@@ -29,8 +24,6 @@ const initialClaims: Claim[] = [
 const PushNotifies: React.FC = () => {
   const [claims, setClaims] = useState(initialClaims);
   const [searchTerm, setSearchTerm] = useState("");
-
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<Claim>();
 
   const filteredClaims = claims.filter((claim) =>
     claim.notificationID.toLowerCase().includes(searchTerm.toLowerCase())
@@ -44,9 +37,7 @@ const PushNotifies: React.FC = () => {
   const [isModalTwoOpen, setIsModalTwoOpen] = useState(false);
 
   const openModalTwo = () => setIsModalTwoOpen(true);
-  const closeModalTwo = () => setIsModalTwoOpen(false);
 
-  // Define table columns
   const columns = [
     {
       name: "#No",
@@ -107,7 +98,6 @@ const PushNotifies: React.FC = () => {
     },
   ];
 
-  // Function to export to CSV
   const exportToCSV = () => {
     const csvRows = [
       ["#No", "Notification ID", "Order ID", "Claim Date", "Claim Status"],

@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { NumericFormat } from 'react-number-format';
 import Dot from './Dot';
 
-// Data type definition
 interface Data {
   name: string;
   carbs: number;
@@ -12,7 +11,6 @@ interface Data {
   protein: number;
 }
 
-// Helper function to create data rows
 function createData(tracking_no: number, name: string, fat: number, carbs: number, protein: number): Data {
   return { tracking_no, name, fat, carbs, protein };
 }
@@ -30,7 +28,6 @@ const rows = [
   createData(98753291, 'Chair', 100, 0, 14001)
 ];
 
-// Sorting functions
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) return -1;
   if (b[orderBy] > a[orderBy]) return 1;
@@ -74,7 +71,6 @@ const headCells: readonly HeadCell[] = [
   { id: 'protein', align: 'right', disablePadding: false, label: 'Total Amount' }
 ];
 
-// Table header component
 interface OrderTableHeadProps {
   order: Order;
   orderBy: string;
@@ -97,7 +93,6 @@ function OrderTableHead({ order, orderBy }: OrderTableHeadProps) {
   );
 }
 
-// Status indicator component
 interface OrderStatusProps {
   status: number;
 }
@@ -132,7 +127,6 @@ const OrderStatus = ({ status }: OrderStatusProps) => {
   );
 };
 
-// Main OrdersList component
 export default function OrdersList() {
   const [order] = useState<Order>('asc');
   const [orderBy] = useState<keyof Data>('tracking_no');

@@ -46,8 +46,6 @@ const areaChartOptions = {
   }
 };
 
-// ==============================|| INCOME LINE CHART ||============================== //
-
 interface Props {
   slot: string;
   quantity: any;
@@ -72,7 +70,7 @@ const IncomeAreaChart = ({ slot, quantity }: Props) => {
             : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
         labels: {
           style: {
-            colors: Array(12).fill('#6b7280') // gray color for each month label
+            colors: Array(12).fill('#6b7280')
           }
         },
         axisBorder: {
@@ -84,7 +82,7 @@ const IncomeAreaChart = ({ slot, quantity }: Props) => {
       yaxis: {
         labels: {
           style: {
-            colors: ['#6b7280'] // gray color for y-axis labels
+            colors: ['#6b7280'] 
           }
         }
       },
