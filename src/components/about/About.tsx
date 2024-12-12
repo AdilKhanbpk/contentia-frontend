@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
@@ -8,39 +8,26 @@ import { toast } from "react-toastify";
 
 const About = () => {
     const dispatch = useDispatch();
-    const { sections, loading, error } = useSelector((state: RootState) => state.about);
+    const { sections } = useSelector((state: RootState) => state.about);
 
     useEffect(() => {
-        console.log("Component Mounted");
         const token = localStorage.getItem("accessToken");
-
         if (token) {
-            console.log("Fetching Data", { token });
-
             dispatch(fetchAbout(token) as any)
-                .then((action: any) => {
-                    console.log("Action Dispatched Successfully:", action);
+                .then(() => {
                     toast.success("Data fetched successfully!");
                 })
-                .catch((error: any) => {
-                    console.log("Dispatch failed with error:", error);
+                .catch(() => {
                     toast.error("Failed to fetch data!");
                 });
         } else {
-            console.log("No Token Found in Local Storage");
+            toast.error("No Token Found in Local Storage");
         }
     }, [dispatch]);
-
-    useEffect(() => {
-        if (sections?.aboutImage) {
-            console.log("About Image URL:", sections.aboutImage);
-        }
-    }, [sections?.aboutImage]);
 
     return (
         <>
             <div className="px-4 sm:px-6 md:px-8 lg:px-[38px] pt-24 sm:pt-24 md:pt-24 lg:pt-[100px]">
-                {/* Main Content Section */}
                 <div className="flex flex-col lg:flex-row gap-10 justify-between items-center">
                     {/* Display the Image */}
                     <div className="flex justify-center">
@@ -49,7 +36,7 @@ const About = () => {
                                 className=""
                                 src={sections.aboutImage}
                                 alt="About Image"
-                                width={500} // Adjust dimensions as needed
+                                width={500} 
                                 height={300}
                             />
                         ) : (
@@ -81,7 +68,7 @@ const About = () => {
                                 height={300}
                                 width={270}
                                 alt="border image"
-                                className="object-contain" // Use object-contain to maintain aspect ratio
+                                className="object-contain"
                             />
                         </div>
                     </div>

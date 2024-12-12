@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
+import { toast } from "react-toastify";
 
 export default function TabSecond() {
   const [orderDate, setOrderDate] = useState<Date>(new Date());
@@ -34,20 +35,18 @@ export default function TabSecond() {
     try {
       const response = await axios.post('http://localhost:3001/api/v1/sipay/payment', data);
       if (response.data.status === 'success') {
-        alert('Payment successful!');
+        // Show success message
+        toast.success('Payment successful!');
       } else {
-        alert('Payment failed: ' + response.data.errorMessage);
+        // Show error message with the provided error message
+        toast.error('Payment failed: ' + response.data.errorMessage);
       }
     } catch (error) {
       console.error('Payment error:', error);
-      alert('There was an issue with your payment.');
+      // Show error message for any network or request errors
+      toast.error('There was an issue with your payment.');
     }
   };
-
-
-
-
-
 
   return (
     <>

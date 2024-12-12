@@ -16,7 +16,7 @@ interface Creator {
     password: string;
     identityNo: number;
     email: string;
-    dateOfBirth: string; // Format: "YYYY-MM-DD"
+    dateOfBirth: string;
     gender: "male" | "female" | "other";
     phoneNumber: string;
     isVerified: "pending" | "approved" | "rejected";
@@ -49,9 +49,9 @@ interface Creator {
     preferences: {
         contentInformation: {
             contentType: "product" | "service" | "other";
-            creatorType: "nano" | "micro"; // Updated
-            contentFormats: string[]; // Example: ["video", "image"]
-            areaOfInterest: string[]; // Example: ["tech", "gadgets"]
+            creatorType: "nano" | "micro";
+            contentFormats: string[];
+            areaOfInterest: string[];
             addressDetails: {
                 country: string;
                 state: string;
@@ -95,13 +95,11 @@ interface Creator {
     approvedCommercial: boolean;
 }
 
-
 interface EditCreatorFormProps {
     customerData: Creator | null;
     onSubmit: (data: Creator) => void;
 }
 
-// memoization
 const MemoizedFirstTab = React.memo(FirstTab);
 const MemoizedSecondTab = React.memo(SecondTab);
 const MemoizedThirdTab = React.memo(ThirdTab);
@@ -110,9 +108,7 @@ const MemoizedFourthTab = React.memo(FourthTab);
 const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
     customerData, onSubmit
 }) => {
-    console.log("data sent to editCreatorForm : ", customerData);
     const [activeSection, setActiveSection] = useState('personal-info');
-
     const handleLinkClick = (section: string) => {
         setActiveSection(section);
     };
@@ -124,7 +120,6 @@ const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
         formState: { errors },
     } = useForm<Creator>();
 
-    // Reset the form if customerData changes
     useEffect(() => {
         if (customerData) {
             reset(customerData);

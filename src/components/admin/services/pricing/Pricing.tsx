@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePricePlan, fetchPricePlans } from "@/store/features/admin/pricingSlice";
@@ -8,8 +8,6 @@ import { RootState } from "@/store/store";
 import { PricePlan } from "@/store/features/admin/pricingSlice"; // Import the PricePlan type
 import { toast } from 'react-toastify';
 
-
-// Icon placeholders for plans
 const VideoIcon = () => <span>📹</span>;
 
 type Plan = {
@@ -22,71 +20,54 @@ type Plan = {
 
 const PricingPlans = () => {
   const dispatch = useDispatch();
-
   const { data: serverPlans, loading, error } = useSelector((state: RootState) => {
     return state.pricing;
   });
-
   const [plans, setPlans] = useState<Plan[]>([]);
   const [editingPlan, setEditingPlan] = useState<number | null>(null);
   const { register, handleSubmit, reset, formState: { errors } } = useForm<Plan>();
   const [token, setToken] = useState<string>("");
 
-  // Fetch token and plans on component mount
   useEffect(() => {
     const storedToken = localStorage.getItem("accessToken") || "";
     setToken(storedToken);
-
     if (storedToken) {
-      console.log("[Debug] Dispatching fetchPricePlans with token:", storedToken);
       dispatch(fetchPricePlans(storedToken) as any)
         .then(() => {
           toast.success("Plans fetched successfully!");
         })
         .catch((error:any) => {
-          console.error("[Error] Failed to fetch plans:", error);
           toast.error("Failed to fetch price plans! Please try again.");
         });
     } else {
-      console.warn("[Warning] No token available in localStorage!");
       toast.error("No token available!");
     }
   }, [dispatch]);
 
-
-  // Sync local plans with server plans when they load
   useEffect(() => {
-    console.log("Server plans received:", serverPlans); // Debug initial serverPlans value
-
     if (serverPlans && serverPlans.length > 0) {
       const transformedPlans: Plan[] = serverPlans.map((plan: PricePlan, index: number) => {
-        console.log(`Transforming plan ${index + 1}:`, plan); // Debug individual plans during transformation
         return {
           id: index + 1,
           title: `${plan.videoCount} Videos`,
-          strikethroughPrice: plan.strikeThroughPrice?.toString() || "", // Use optional chaining and provide fallback
+          strikethroughPrice: plan.strikeThroughPrice?.toString() || "",
           finalPrice: plan.finalPrice.toString(),
           icon: <VideoIcon />,
         };
       });
-
-      console.log("Transformed plans:", transformedPlans); // Debug transformed plans
-      setPlans(transformedPlans); // Update local state
+      setPlans(transformedPlans);
     } else {
-      console.log("No server plans available or empty data."); // Log empty state
+      console.log("No server plans available or empty data.");
     }
   }, [serverPlans]);
 
-  // Handle edit click and pre-populate form fields
   const handleEditClick = (plan: Plan) => {
     setEditingPlan(plan.id);
     reset(plan);
   };
 
-
   const handleSave = (data: Plan) => {
     const serverPlan = serverPlans?.find((plan: PricePlan, index: number) => index + 1 === editingPlan);
-
     if (serverPlan) {
       dispatch(
         updatePricePlan({
@@ -115,8 +96,6 @@ const PricingPlans = () => {
     reset();
   };
 
-
-  // Render loading state
   if (loading) {
     return (
       <div className="flex justify-center items-center p-8">
@@ -125,7 +104,6 @@ const PricingPlans = () => {
     );
   }
 
-  // Render error state
   if (error) {
     return (
       <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">

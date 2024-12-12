@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCouponById, updateCoupon } from '@/store/features/admin/couponSlice';
@@ -36,31 +36,21 @@ export default function ModalEdit({ closeModal, token, couponId }: ModalEditProp
     const fetchCouponData = async () => {
       try {
         if (couponId && token) {
-          // Dispatch action to fetch coupon by ID
           await dispatch(getCouponById({ id: couponId, token }) as any);
-
-          // Success toast notification
           toast.success("Coupon data fetched successfully!");
         }
       } catch (error) {
-        console.error("Failed to fetch coupon:", error);
-
-        // Error toast notification
         const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
         toast.error(errorMessage);
       }
     };
-
     fetchCouponData();
   }, [couponId, token, dispatch]);
 
-  // Populate form when selectedCoupon changes
   useEffect(() => {
     if (selectedCoupon) {
       setValue('code', selectedCoupon.code);
-      // Use customer's ID if available, otherwise use an empty string
       setValue('customerId', selectedCoupon.customer?._id || '');
-      // Set customer name, fallback to 'Unknown' if not available
       setValue('customerName', selectedCoupon.customer?.fullName || 'Unknown');
       setValue('discountTL', selectedCoupon.discountTl ? parseFloat(selectedCoupon.discountTl) : undefined);
       setValue('discountPercent', selectedCoupon.discountPercentage);
@@ -74,18 +64,15 @@ export default function ModalEdit({ closeModal, token, couponId }: ModalEditProp
     if (!couponId) return;
 
     try {
-      // Validate that only one discount type is provided
       if ((formData.discountTL && formData.discountPercent) ||
         (!formData.discountTL && !formData.discountPercent)) {
         throw new Error(
           "You must provide either a discount in TL or a discount percentage, but not both."
         );
       }
-
-      // Prepare data to send
       const couponData: Record<string, any> = {
         code: formData.code,
-        customerId: formData.customerId, // Use the actual customer ID
+        customerId: formData.customerId,
         usageLimit: formData.useLimit === 0 ? null : formData.useLimit,
         expiryDate: new Date(formData.endingDate).toISOString(),
         isActive: formData.isActive,
@@ -96,29 +83,14 @@ export default function ModalEdit({ closeModal, token, couponId }: ModalEditProp
       } else if (formData.discountPercent) {
         couponData.discountPercentage = formData.discountPercent;
       }
-
-      console.log("Coupon data in modal edit before update", couponData);
-
-      // Dispatch action to update coupon
       await dispatch(updateCoupon({ id: couponId, data: couponData, token }) as any);
-
-      // Show success toast notification
       toast.success("Coupon updated successfully!");
-
-      // Close modal after successful submission
       closeModal();
     } catch (error) {
-      console.error('Failed to update coupon:', error);
-
-      // Error toast notification
       const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
       toast.error(errorMessage);
     }
   };
-
-  if (loading) {
-    return <div className="p-4">Loading...</div>;
-  }
 
   return (
     <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:px-16 lg:py-8">

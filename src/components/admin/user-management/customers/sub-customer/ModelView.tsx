@@ -1,5 +1,3 @@
-import React from 'react';
-
 export interface Customer {
     id: number;
     fullName: string;
@@ -8,25 +6,24 @@ export interface Customer {
     age: number;
     country: string;
     status: "Verified" | "Pending" | "Rejected";
-    invoiceType: string;  // Capitalized to camelCase
-    tcNumber?: string;  // Capitalized to camelCase
-    companyTitle?: string;  // Capitalized to camelCase
-    taxNumber?: string;  // Capitalized to camelCase
-    taxOffice?: string;  // Capitalized to camelCase
-    address?: string;  // Capitalized to camelCase
-    billingInformation?: {  // Capitalized to camelCase
-        invoiceStatus: boolean;  // Capitalized to camelCase
-        trId: string;  // Capitalized to camelCase
-        address: string;  // Capitalized to camelCase
-        fullName: string;  // Capitalized to camelCase
-        companyName: string;  // Capitalized to camelCase
-        taxNumber: string;  // Capitalized to camelCase
-        taxOffice: string;  // Capitalized to camelCase
+    invoiceType: string;
+    tcNumber?: string;
+    companyTitle?: string;
+    taxNumber?: string;
+    taxOffice?: string;
+    address?: string;
+    billingInformation?: {
+        invoiceStatus: boolean;
+        trId: string;
+        address: string;
+        fullName: string;
+        companyName: string;
+        taxNumber: string;
+        taxOffice: string;
     };
-    rememberMe?: boolean;  // Capitalized to camelCase
-    termsAndConditionsApproved?: boolean;  // Capitalized to camelCase
+    rememberMe?: boolean;
+    termsAndConditionsApproved?: boolean;
 }
-
 
 interface ModalViewProps {
     isOpen: boolean;
@@ -34,13 +31,11 @@ interface ModalViewProps {
     customerData: Customer | null;
 }
 
-// Helper function to return a default value if data is empty, undefined, or null
 const getDefault = (value: any, defaultValue: string = 'N/A') => {
     return value ?? defaultValue;
 }
 
 const ModalView: React.FC<ModalViewProps> = ({ isOpen, onClose, customerData }) => {
-    // If modal is not open or no customer data, return null
     if (!isOpen || !customerData) return null;
 
     return (

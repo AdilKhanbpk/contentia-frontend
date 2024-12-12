@@ -1,5 +1,4 @@
 "use client";
-// components/IncomeOverview.tsx
 import { useState } from 'react';
 import IncomeChart from './IncomeChart';
 

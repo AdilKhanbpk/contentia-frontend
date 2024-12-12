@@ -10,17 +10,13 @@ import CustomModelAdmin from '../../modal/CustomModelAdmin';
 import Modal from "./sub-support/Modal";
 import ModalTwo from "./sub-support/ModalTwo";
 import { exportCsvFile } from "@/utils/exportCsvFile";
-import { toast } from 'react-toastify'; // Import Toastify
-
-
-// Import Redux actions
+import { toast } from 'react-toastify';
 import {
   fetchAdminClaims,
   updateAdminClaim,
   fetchAdminClaimById,
 } from "@/store/features/admin/claimSlice";
 
-// Define the Claim interface to match the slice structure
 export interface Claim {
   id?: string;
   status?: 'pending' | 'approved' | 'rejected';
@@ -36,7 +32,6 @@ export interface Claim {
   claimContent: string;
 }
 
-// Memoized SearchBar component
 const SearchBar = memo(({ onSearch }: { onSearch: (value: string) => void }) => (
   <input
     type="text"
@@ -48,7 +43,6 @@ const SearchBar = memo(({ onSearch }: { onSearch: (value: string) => void }) => 
 
 SearchBar.displayName = 'SearchBar';
 
-// Memoized Table Actions component
 const TableActions = memo(({
   onView,
   onApprove,
@@ -91,10 +85,8 @@ const Claims: React.FC = () => {
   const [isModalTwoOpen, setIsModalTwoOpen] = useState(false);
   const [currentClaim, setCurrentClaim] = useState<Claim | null>(null);
 
-  // Get claims from Redux state
-  const { data: claims, loading, error } = useSelector((state: RootState) => state.claim);
+  const { data: claims } = useSelector((state: RootState) => state.claim);
 
-  // Fetch claims on component mount
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
     if (token) {
@@ -103,53 +95,34 @@ const Claims: React.FC = () => {
           toast.success("Claims fetched successfully!");
         })
         .catch((error) => {
-          console.error("[Error] Failed to fetch claims:", error);
           toast.error("Failed to fetch claims. Please try again.");
         });
     } else {
-      console.warn("[Warning] No token available in localStorage!");
       toast.error("No token available!");
     }
   }, [dispatch]);
 
 
   const handleView = (id: string) => {
-    console.log(`handleView called with id: ${id}`);
-
     const token = localStorage.getItem('accessToken');
     if (!token) {
-      console.log('No access token found in localStorage.');
-      toast.error('No access token found!'); // Error toast
+      toast.error('No access token found!');
       return;
     }
-
-    console.log('Access token retrieved from localStorage:', token);
-
     dispatch(fetchAdminClaimById({ id, token }))
       .then((response) => {
-        console.log('Response received from fetchAdminClaimById:', response);
-
         if (response.payload) {
-          console.log('Response payload:', response.payload);
-
           setCurrentClaim(response.payload as Claim);
-          console.log('Current claim set:', response.payload);
-
           setIsModalTwoOpen(true);
-          console.log('Modal state updated to open.');
-          toast.success('Claim details fetched successfully!'); // Success toast
+          toast.success('Claim details fetched successfully!');
         } else {
-          console.log('No payload found in the response.');
-          toast.error('No claim data found for this ID!'); // Error toast
+          toast.error('No claim data found for this ID!');
         }
       })
-      .catch((error) => {
-        console.error('Error occurred while fetching claim:', error);
-        toast.error('Failed to fetch claim details. Please try again!'); // Error toast
+      .catch(() => {
+        toast.error('Failed to fetch claim details. Please try again!');
       });
   };
-
-
 
   const handleApprove = (id: string) => {
     const token = localStorage.getItem('accessToken');
@@ -160,18 +133,16 @@ const Claims: React.FC = () => {
         token
       }))
         .then((response: any) => {
-          if (response.meta.requestStatus === 'fulfilled') { // Check if the update was successful
-            dispatch(fetchAdminClaims(token)); // Fetch claims again
-            toast.success("Claim approved successfully!"); // Success toast
+          if (response.meta.requestStatus === 'fulfilled') { 
+            dispatch(fetchAdminClaims(token));
+            toast.success("Claim approved successfully!");
           }
         })
         .catch((error: any) => {
-          console.error("Failed to update claim status:", error);
-          toast.error("Failed to approve claim. Please try again."); // Error toast
+          toast.error("Failed to approve claim. Please try again.");
         });
     }
   };
-
 
   const handleReject = (id: string) => {
     const token = localStorage.getItem('accessToken');
@@ -182,25 +153,21 @@ const Claims: React.FC = () => {
         token
       }))
         .then((response: any) => {
-          if (response.meta.requestStatus === 'fulfilled') { // Check if the update was successful
-            dispatch(fetchAdminClaims(token)); // Fetch claims again
-            toast.success("Claim rejected successfully!"); // Success toast
+          if (response.meta.requestStatus === 'fulfilled') {
+            dispatch(fetchAdminClaims(token));
+            toast.success("Claim rejected successfully!");
           }
         })
-        .catch((error: any) => {
-          console.error("Failed to update claim status:", error);
-          toast.error("Failed to reject claim. Please try again."); // Error toast
+        .catch(() => {
+          toast.error("Failed to reject claim. Please try again.");
         });
     }
   };
 
-
-  // Handler for search input
   const handleSearch = useCallback((value: string) => {
     setSearchTerm(value);
   }, []);
 
-  // Export to CSV
   const handleExport = useCallback(() => {
     const headers = ["#", "Customer Name", "Customer Email", "Customer ID", "Order ID", "Claim Date", "Claim Status"];
     const data = claims.map((claim, index) => ({
@@ -216,7 +183,6 @@ const Claims: React.FC = () => {
     exportCsvFile({ data, headers, filename: "claims.csv" });
   }, [claims]);
 
-  // Memoized columns configuration
   const columns = React.useMemo(() => [
     {
       name: "#",
@@ -294,7 +260,6 @@ const Claims: React.FC = () => {
     },
   ], [handleView, handleApprove, handleReject]);
 
-  // Filtered claims based on search
   const filteredClaims = React.useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
     return claims.filter((claim) => (
@@ -334,7 +299,6 @@ const Claims: React.FC = () => {
         />
       </div>
 
-      {/* Modal for adding a new claim */}
       <CustomModelAdmin
         isOpen={isModalOpen}
         closeModal={() => setIsModalOpen(false)}
@@ -343,7 +307,6 @@ const Claims: React.FC = () => {
         <Modal />
       </CustomModelAdmin>
 
-      {/* Modal for viewing a claim */}
       <CustomModelAdmin
         isOpen={isModalTwoOpen}
         closeModal={() => setIsModalTwoOpen(false)}

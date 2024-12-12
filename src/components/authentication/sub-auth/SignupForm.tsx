@@ -1,10 +1,10 @@
 "use client";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/store/store"; // Import AppDispatch and RootState types
-import { signupUser, resetLoginState } from "@/store/features/auth/loginSlice"; // Assuming your loginSlice is named like this
+import { signupUser } from "@/store/features/auth/loginSlice"; // Assuming your loginSlice is named like this
+import { toast } from "react-toastify";
 
 interface FormData {
   email: string;
@@ -18,15 +18,14 @@ const LoginForm = () => {
   const loginState = useSelector((state: RootState) => state.login); // Use RootState to type the state
 
   const onSubmit = (data: FormData) => {
-    dispatch(signupUser(data)); // Ensure correct data type passed to loginUser
+    dispatch(signupUser(data)) // Ensure correct data type passed to signupUser
+      .then(() => {
+        toast.success('Signup successful'); // Show success message
+      })
+      .catch(() => {
+        toast.error('Signup failed'); // Show error message
+      });
   };
-
-  useEffect(() => {
-    if (loginState.success) {
-      alert("Signup successful!");
-      dispatch(resetLoginState());
-    }
-  }, [loginState.success, dispatch]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="px-4">

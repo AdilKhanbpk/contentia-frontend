@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +10,6 @@ import {
 } from "@/store/features/admin/lanPageSlice";
 import "react-quill/dist/quill.snow.css";
 import { toast } from "react-toastify";
-
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 interface FormData {
@@ -22,7 +21,7 @@ interface FormData {
 
 export default function LandingPages() {
   const dispatch = useDispatch<AppDispatch>();
-  const { data, loading, error } = useSelector(
+  const { data } = useSelector(
     (state: RootState) => state.landingPage
   );
 
@@ -34,30 +33,19 @@ export default function LandingPages() {
     },
   });
 
-  // Watch the heroSubtitle value
-  const heroSubtitleValue = watch("heroSubTitle");
-
-  // Access token from localStorage
-  const token = typeof window !== 'undefined' ? localStorage.getItem("accessToken") : null;
-
-  // Compute fixedId
   const fixedId = data?._id || "";
 
-  // Fetch the landing page data on mount
   useEffect(() => {
-    const token = localStorage.getItem("accessToken"); // Ensure the token is fetched here
+    const token = localStorage.getItem("accessToken");
 
     if (!token) {
-      toast.error("No token found. Please log in to access the landing page."); // Show error toast if no token is found
+      toast.error("No token found. Please log in to access the landing page.");
       return;
     }
-
-    // If token exists, dispatch the action
     dispatch(fetchLandingPage(token));
 
-  }, [dispatch]); // `token` should be in the dependency array if it's used here
+  }, [dispatch]);
 
-  // Populate the form with fetched data
   useEffect(() => {
     if (data) {
       reset({
@@ -69,21 +57,19 @@ export default function LandingPages() {
   }, [data, reset]);
 
   const onSubmit = async (formData: FormData) => {
-    const token = localStorage.getItem('accessToken'); // Get token from localStorage
+    const token = localStorage.getItem('accessToken');
     if (!token) {
-      // Show a toast notification if no token is found
       toast.error("No token found. Please log in to submit the form.");
       return;
     }
 
-    if (!fixedId || !token) return; // Make sure both fixedId and token are present
+    if (!fixedId || !token) return;
 
     const payload = new FormData();
     payload.append("carouselHeroTitle", formData.carouselHeroTitle);
     payload.append("staticHeroTitle", formData.staticHeroTitle);
     payload.append("heroSubTitle", formData.heroSubTitle);
 
-    // Handle video files if present
     if (formData.videos) {
       Array.from(formData.videos).forEach((file) => {
         payload.append("videos", file);
@@ -91,13 +77,9 @@ export default function LandingPages() {
     }
 
     try {
-      // Dispatch action to update landing page
       await dispatch(updateLandingPage({ id: fixedId, data: payload, token }));
-      // Optionally show success message if needed
       toast.success("Landing page updated successfully!");
     } catch (error) {
-      console.error("Error updating landing page:", error);
-      // Show error toast notification for failed submission
       toast.error("Error updating landing page. Please try again.");
     }
   };
@@ -110,9 +92,6 @@ export default function LandingPages() {
       alert("Please select a valid video file.");
     }
   };
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
     <div className="flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72">

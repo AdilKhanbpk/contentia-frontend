@@ -1,21 +1,18 @@
-
-
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 
-// TypeScript type for form data
 interface PlanFormData {
     title: string;
     description: string;
     price: number;
-    platform: string; // Add this field
-    edit: string;    // Add this field
-    duration: string; // Add this field
-    aspectRatio: string; // Add this field
-    share: string; // Add this field
-    coverPicture: string; // Add this field
-    creatorType: string; // Add this field
-    shipping: string; // Add this field
+    platform: string;
+    edit: string;
+    duration: string;
+    aspectRatio: string;
+    share: string;
+    coverPicture: string;
+    creatorType: string;
+    shipping: string;
     customerName: string;
     numberOfUGC: number;
 }
@@ -23,23 +20,19 @@ interface PlanFormData {
 export default function Home() {
 
     const [selectedPlatform, setSelectedPlatform] = useState('');
-    // State for the edit option (Yes/No)
-    const [isEdit, setIsEdit] = useState(''); // Default is true for 'Yes' or false for 'No'
+    const [isEdit, setIsEdit] = useState('');
     const [aspectRatio, setAspectRatio] = useState('');
     const [isShare, setIsShare] = useState('');
     const [isCoverPicture, setIsCoverPicture] = useState('');
     const [creatorType, setCreatorType] = useState('');
     const [isShipping, setIsShipping] = useState('');
     const [duration, setDuration] = useState('');
-
-    const { register, handleSubmit, reset, control, watch } = useForm<PlanFormData>();
+    const { register, handleSubmit, control, watch } = useForm<PlanFormData>();
 
     const onSubmitForm: SubmitHandler<PlanFormData> = (data) => {
         console.log('Form Data:', data);
     };
 
-
-    // Watch the fields to update the total price in real-time
     const numberOfUGC = watch('numberOfUGC');
     const price = watch('price');
     const totalPrice = (numberOfUGC || 0) * (price || 0);
@@ -47,12 +40,9 @@ export default function Home() {
     return (
         <>
             <form onSubmit={handleSubmit(onSubmitForm)}>
-
                 <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">
                     <h2 className="text-lg mb-6 font-semibold">Create Custom Package</h2>
-
                     <div className="flex flex-col lg:flex-row justify-start items-start space-y-4 lg:space-y-0 lg:space-x-28">
-                        {/* Left Side Fields */}
                         <div className="mt-2 grid grid-cols-1 lg:grid-cols-1">
                             {/* Select Customer */}
                             <div>
@@ -310,15 +300,11 @@ export default function Home() {
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
                     {/* Save Button */}
                     <div className="mt-6 text-right">
                         <button type="submit" className="ButtonBlue text-white px-6 py-0.5 rounded">Save</button>
                     </div>
-
-
                 </div>
             </form>
         </>

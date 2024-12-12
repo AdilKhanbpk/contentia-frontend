@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { FaFileCsv, FaEdit, FaTrashAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store/store";
@@ -8,7 +8,7 @@ import {
   fetchHelpSupports,
   deleteHelpSupport,
   setCurrentHelpSupport,
-  HelpSupport // Import the type
+  HelpSupport
 } from "@/store/features/admin/helpSlice";
 import CustomModelAdmin from '../../modal/CustomModelAdmin';
 import { ModalCenters } from './sub-content/ModalCenters';
@@ -18,29 +18,21 @@ import { toast } from "react-toastify";
 
 const HelpCenters: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { helpSupports, loading } = useSelector((state: RootState) => state.help); // Change from helpSupport to help
-
+  const { helpSupports } = useSelector((state: RootState) => state.help);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    // Retrieve the token from localStorage
     const token = localStorage.getItem('accessToken');
   
     if (token) {
-      console.log("Fetching help supports...");
-      // Dispatch the action to fetch help supports
       dispatch(fetchHelpSupports(token));
     } else {
-      // Show an error toast if no token is found
       toast.error("No token found. Please log in.");
-      console.log("No token found.");
     }
   }, [dispatch]);
 
-  // Export to CSV functionality
   const exportToCSV = () => {
-    console.log("Exporting to CSV...");
     const headers = ["ID", "Title", "Category", "Content"];
     const data = helpSupports.map(support => ({
       ID: support._id,
@@ -48,52 +40,42 @@ const HelpCenters: React.FC = () => {
       Category: support.category,
       Content: support.content
     }));
-
     exportCsvFile({ data, headers, filename: "help_supports.csv" });
   };
 
   const handleDelete = (id: string) => {
     const token = localStorage.getItem('accessToken');
-    console.log(`Deleting help support with ID: ${id}`);
-  
     if (token) {
-      // If token is found, dispatch delete action
       dispatch(deleteHelpSupport({ helpSupportId: id, token }));
     } else {
-      // Show error toast if no token is found
       toast.error("No token found. Please log in to perform this action.");
-      console.log("No token found for delete action.");
     }
   };
 
-  // Filtered help supports
   const filteredHelpSupports = useMemo(() => {
-    console.log("Filtering help supports...");
     return helpSupports.filter((support: HelpSupport) =>
       support.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       support.category.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [helpSupports, searchTerm]);
 
-  // Define table columns
   const columns = useMemo(() => {
-    console.log("Defining table columns...");
     return [
       {
         name: "Title",
-        selector: (row: HelpSupport) => row.title, // Add type annotation
+        selector: (row: HelpSupport) => row.title,
         sortable: true,
         width: "250px",
       },
       {
         name: "Category",
-        selector: (row: HelpSupport) => row.category, // Add type annotation
+        selector: (row: HelpSupport) => row.category,
         sortable: true,
         width: "200px",
       },
       {
         name: "Actions",
-        cell: (row: HelpSupport) => ( // Add type annotation
+        cell: (row: HelpSupport) => (
           <div className="flex space-x-3">
             <button
               className="text-blue-500 hover:text-blue-700"
@@ -160,7 +142,6 @@ const HelpCenters: React.FC = () => {
         </div>
       </div>
 
-      {/* Modal for adding/editing help supports */}
       <CustomModelAdmin
         isOpen={isModalOpen}
         closeModal={() => {

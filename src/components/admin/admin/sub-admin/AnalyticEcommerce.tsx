@@ -1,4 +1,3 @@
-import React from 'react';
 import { RiseOutlined, FallOutlined } from '@ant-design/icons';
 
 interface Props {

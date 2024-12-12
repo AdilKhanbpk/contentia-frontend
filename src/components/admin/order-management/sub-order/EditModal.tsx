@@ -1,12 +1,9 @@
-import React from 'react';
-
-// Define the Order interface based on your model
 interface Order {
     _id: string;
     coupon?: string;
     orderOwner: {
-        id: string; // User's ID
-        fullName: string; // User's full name
+        id: string;
+        fullName: string;
       };
     assignedCreators: string[];
     appliedCreators: string[];
@@ -61,7 +58,6 @@ interface Order {
     updatedAt?: Date;
 }
 
-// Define props interface for the EditModal component
 interface EditModalProps {
     order: Order | null;
 }
@@ -70,22 +66,16 @@ export default function EditModal({ order }: EditModalProps) {
     if (!order) return null;
     return (
         <>
-            {/* model */}
             <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">
-                {/* First Box: Fields and Profile Section */}
                 <div className="bg-white rounded-md mb-4 sm:mb-6 md:mb-8 lg:mb-8">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4 lg:gap-4">
                         <div className="col-span-2">
                             <div className="mb-2 sm:mb-3 md:mb-4 lg:mb-4">
                                 <label className="block text-gray-700 font-semibold">Edit Order</label>
                             </div>
-
                         </div>
-
                     </div>
                 </div>
-
-
 
                 <div className="flex flex-row ">
                     <div className="flex flex-col lg:flex-row w-full lg:space-x-16">
@@ -97,25 +87,18 @@ export default function EditModal({ order }: EditModalProps) {
                             <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:gap-4 ">
                                 <div className="text-gray-700 whitespace-nowrap mr-6">Customer Name:</div>
                                 <div className="text-right BlueText font-bold">Saud Khan</div>
-
                                 <div className="text-gray-700">Customer ID:</div>
                                 <div className="text-right BlueText font-bold">149124019</div>
-
                                 <div className="text-gray-700">Order ID:</div>
                                 <div className="text-right BlueText font-bold">201240184112</div>
-
                                 <div className="text-gray-700">Order Date:</div>
                                 <div className="text-right BlueText font-bold">19/09/2024</div>
-
                                 <div className="text-gray-700">Order Status:</div>
                                 <div className="text-right BlueText font-bold">Active</div>
-
                                 <div className="text-gray-700">Payment ID:</div>
                                 <div className="text-right BlueText font-bold">9080124</div>
-
                                 <div className="text-gray-700 whitespace-nowrap">Payment Date:</div>
                                 <div className="text-right BlueText font-bold">19/09/2024</div>
-
                                 <div className="text-gray-700">Invoice:</div>
                                 <div className="text-right BlueText font-bold">
                                     <a href="https://we.tl/send/5323" className="underline">
@@ -171,52 +154,29 @@ export default function EditModal({ order }: EditModalProps) {
                         {/* Product Name */}
                         <div className="text-gray-700">Product Name:</div>
                         <div className="text-right BlueText font-bold">Product A</div>
-
-                        {/* Brand */}
                         <div className="text-gray-700">Brand:</div>
                         <div className="text-right BlueText font-bold">Brand Name</div>
-
-                        {/* Platform */}
                         <div className="text-gray-700">Platform:</div>
                         <div className="text-right BlueText font-bold">Meta</div>
-
-                        {/* Duration */}
                         <div className="text-gray-700">Duration:</div>
                         <div className="text-right BlueText font-bold">15s</div>
-
-                        {/* Edit */}
                         <div className="text-gray-700">Edit:</div>
                         <div className="text-right BlueText font-bold">Yes</div>
-
-                        {/* Aspect Ratio */}
                         <div className="text-gray-700">Aspect Ratio:</div>
                         <div className="text-right BlueText font-bold">9:16</div>
-
-                        {/* Share */}
                         <div className="text-gray-700">Share:</div>
                         <div className="text-right BlueText font-bold">No</div>
-
-                        {/* Cover Picture */}
                         <div className="text-gray-700">Cover Picture:</div>
                         <div className="text-right BlueText font-bold">No</div>
-
-                        {/* Creator Type */}
                         <div className="text-gray-700">Creator Type:</div>
                         <div className="text-right BlueText font-bold">Nano</div>
-
-                        {/* Product Shipping */}
                         <div className="text-gray-700">Product Shipping:</div>
                         <div className="text-right BlueText font-bold">No</div>
-
-                        {/* Content Type */}
                         <div className="text-gray-700">Content Type:</div>
                         <div className="text-right BlueText font-bold">Service</div>
                     </div>
                 </div>
 
-
-
-                {/* Four InputFields */}
                 <div className="mt-4 sm:mt-6 md:mt-8 lg:mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6 lg:gap-6">
                     {/* Product/Service Description */}
                     <div>
@@ -239,9 +199,8 @@ export default function EditModal({ order }: EditModalProps) {
                     </div>
                 </div>
 
-                {/* Third Row - Brief and Examples */}
+                {/* Brief and Examples */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6 lg:gap-6">
-                    {/* Brief */}
                     <div>
                         <label className="block text-sm font-semibold mt-2 sm:mt-3 md:mt-4 lg:mt-4">Brief:</label>
                         <input
@@ -264,8 +223,6 @@ export default function EditModal({ order }: EditModalProps) {
                 <div className=" bg-white">
                     <div className="bg-white py-4 sm:py-5 md:py-6 lg:py-6 rounded-md">
                         <h2 className="text-base font-semibold mb-1">Revision Request</h2>
-
-
                         <div className=" mb-2 sm:mb-3 md:mb-3 lg:mb-4">
                             <textarea
                                 className="w-full p-2 sm:p-3 md:p-4 lg:p-4 border rounded-lg focus:outline-none"
@@ -273,8 +230,6 @@ export default function EditModal({ order }: EditModalProps) {
                                 placeholder=""
                             />
                         </div>
-
-
                     </div>
                 </div>
 
@@ -317,9 +272,6 @@ export default function EditModal({ order }: EditModalProps) {
                         Save
                     </button>
                 </div>
-
-
-
             </div>
         </>
     );

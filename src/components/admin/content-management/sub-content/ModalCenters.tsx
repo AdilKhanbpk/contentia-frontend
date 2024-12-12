@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import dynamic from "next/dynamic";
@@ -52,78 +52,45 @@ export const ModalCenters: React.FC<ModalCentersProps> = ({ onClose }) => {
                 content: currentHelpSupport.content || "",
             });
         }
-        console.log("currentHelpSupport:", currentHelpSupport);
     }, [currentHelpSupport, reset]);
 
     const onSubmit = async (formData: HelpSupportFormData) => {
         try {
-            // Get the token from localStorage
             const token = localStorage.getItem("accessToken");
             if (!token) {
-                console.error("No access token found");
                 toast.error("No access token found. Please log in.");
                 return;
             }
-
-            console.log("Original formData:", formData);
-
-            // Create a new FormData object to handle file uploads and form data
             const submitData = new FormData();
             submitData.append("title", formData.title.trim());
             submitData.append("category", formData.category.trim());
             submitData.append("content", formData.content.trim());
-
-            // Check if an icon file has been selected and append to the FormData
             if (iconField && iconField instanceof FileList && iconField.length > 0) {
                 submitData.append("icon", iconField[0]);
             }
-
-            // Log the FormData contents before submission (for debugging purposes)
-            console.log("FormData contents before submission:");
-            Array.from(submitData.entries()).forEach(([key, value]) => {
-                console.log(`FormData - ${key}:`, value);
-            });
-
-            // If there's an existing Help Support (to update), perform update
             if (currentHelpSupport) {
-                console.log("Attempting to update Help Support...");
-                console.log("Help Support ID:", currentHelpSupport._id);
-                console.log("Data being sent to update (FormData):", submitData);
-
-                const result = await dispatch(
+                await dispatch(
                     updateHelpSupport({
                         helpSupportId: currentHelpSupport._id,
                         data: submitData,
                         token,
                     })
                 ).unwrap();
-
-                console.log("Update successful:", result);
                 toast.success("Help support updated successfully!");
             } else {
-                // Otherwise, create a new Help Support
-                console.log("Attempting to create new Help Support...");
-                console.log("Data being sent to create (FormData):", submitData);
-
-                const result = await dispatch(
+                await dispatch(
                     createHelpSupport({
                         data: submitData,
                         token,
                     })
                 ).unwrap();
-
-                console.log("Creation successful:", result);
                 toast.success("Help support created successfully!");
             }
-
-            // Close the form/modal after successful submission
             onClose();
         } catch (error) {
-            console.error("Form submission failed:", error);
             toast.error("Failed to submit. Please try again.");
         }
     };
-
 
     return (
         <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">

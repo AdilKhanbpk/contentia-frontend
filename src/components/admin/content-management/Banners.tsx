@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback, memo, useMemo } from "react";
+import { useEffect, useState, useCallback, memo, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import {
@@ -12,7 +12,6 @@ import {
 import CustomModelAdmin from "../../modal/CustomModelAdmin";
 import { toast } from "react-toastify";
 
-// Memoized Banner Card Component
 const BannerCard = memo(({
   banner,
   index,
@@ -42,7 +41,6 @@ const BannerCard = memo(({
 
 BannerCard.displayName = "BannerCard";
 
-// Memoized Form Input Component
 const FormInput = memo(({
   label,
   value,
@@ -71,7 +69,6 @@ const FormInput = memo(({
 
 FormInput.displayName = "FormInput";
 
-// Memoized Image Upload Component
 const ImageUpload = memo(({
   previewUrl,
   onImageChange,
@@ -104,7 +101,6 @@ const ImageUpload = memo(({
 
 ImageUpload.displayName = "ImageUpload";
 
-// Memoized Modal Banner Component
 const ModalBanner = memo(({
   initialData,
   onSubmit,
@@ -193,17 +189,15 @@ const Banners: React.FC = () => {
   useEffect(() => {
     const tokenFromStorage = localStorage.getItem("accessToken");
     if (tokenFromStorage) {
-      // Dispatch action to fetch banners
       dispatch(fetchBanners(tokenFromStorage))
         .then(() => {
-          toast.success("Banners fetched successfully!");  // Success toast on successful fetch
+          toast.success("Banners fetched successfully!");
         })
         .catch((error: any) => {
-          console.log("Error fetching banners:", error);
-          toast.error("Failed to fetch banners!");  // Error toast on failure
+          toast.error("Failed to fetch banners!");
         });
     } else {
-      toast.error("No token found in local storage!");  // Error toast if no token found
+      toast.error("No token found in local storage!");
     }
   }, [dispatch]);
 
@@ -222,7 +216,7 @@ const Banners: React.FC = () => {
     async (formData: FormData) => {
       const tokenFromStorage = localStorage.getItem("accessToken");
       if (!tokenFromStorage) {
-        toast.error("No token found in local storage!");  // Error toast if no token found
+        toast.error("No token found in local storage!");
         return;
       }
   
@@ -235,7 +229,7 @@ const Banners: React.FC = () => {
               token: tokenFromStorage,
             })
           ).unwrap();
-          toast.success("Banner updated successfully!");  // Success toast on successful update
+          toast.success("Banner updated successfully!");
         } else {
           await dispatch(
             createBanner({ 
@@ -243,12 +237,11 @@ const Banners: React.FC = () => {
               token: tokenFromStorage 
             })
           ).unwrap();
-          toast.success("Banner created successfully!");  // Success toast on successful create
+          toast.success("Banner created successfully!");
         }
         handleModalClose();
       } catch (error) {
-        console.error("Banner operation failed:", error);
-        toast.error("Failed to save banner!");  // Error toast on failure
+        toast.error("Failed to save banner!");
       }
     },
     [dispatch, modalMode, currentBanner, handleModalClose]
@@ -268,9 +261,6 @@ const Banners: React.FC = () => {
       />
     ));
   }, [banners, handleEdit]);
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="bg-white rounded-lg">

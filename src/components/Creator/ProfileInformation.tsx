@@ -2,6 +2,7 @@ import { setProfileInformation } from "@/store/becomeCreator/becomeCreatorSlice"
 import React from "react";
 import { useForm, FieldErrors } from "react-hook-form";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 interface ProfileInformationProps {
   setActiveTab: (id: number) => void;
@@ -30,9 +31,17 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
   const dispatch = useDispatch();
 
   const onSubmit = async (data: ProfileFormInputs) => {
-    const res = await dispatch(setProfileInformation(data));
-    if (res) {
-      setActiveTab(2);
+    try {
+      const res = await dispatch(setProfileInformation(data));
+      if (res) {
+        toast.success('Profile information saved successfully'); // Show success message
+        setActiveTab(2);
+      } else {
+        toast.error('Failed to save profile information'); // Show error message
+      }
+    } catch (error) {
+      toast.error('An error occurred while saving profile information'); // Handle unexpected errors
+      console.error(error);
     }
   };
 

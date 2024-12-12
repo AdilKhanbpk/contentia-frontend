@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { createCoupon } from "@/store/features/admin/couponSlice";
@@ -33,7 +33,6 @@ export default function ModalCreate({ closeModal, token }: ModalCreateProps) {
 
   const onSubmit = async (formData: CouponForm) => {
     try {
-      // Validate that only one discount type is provided
       if ((formData.discountTL && formData.discountPercent) ||
         (!formData.discountTL && !formData.discountPercent)) {
         throw new Error(
@@ -41,7 +40,6 @@ export default function ModalCreate({ closeModal, token }: ModalCreateProps) {
         );
       }
 
-      // Prepare data to send
       const couponData: Record<string, any> = {
         code: formData.code,
         customerId: formData.customerId,
@@ -56,20 +54,10 @@ export default function ModalCreate({ closeModal, token }: ModalCreateProps) {
         couponData.discountPercentage = formData.discountPercent;
       }
 
-      console.log("coupon data in modal create before create", couponData);
-
-      // Dispatch the action to create the coupon
       await dispatch(createCoupon({ data: couponData, token }) as any);
-
-      // Display success message
       toast.success("Coupon created successfully!");
-
-      // Close the modal after success
       closeModal();
     } catch (error) {
-      console.error("Failed to create coupon:", error);
-
-      // Display error message
       const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
       toast.error(errorMessage);
     }

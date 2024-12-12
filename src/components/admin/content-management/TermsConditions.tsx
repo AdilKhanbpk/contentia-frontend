@@ -1,15 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import { useForm } from "react-hook-form";
 import CustomModelAdmin from '../../modal/CustomModelAdmin';
 import ModalTerms from "./sub-content/ModalTerms";
 import { FaFileCsv } from "react-icons/fa";
-
 const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
 
-// Define the Page interface
 export interface Page {
   id: number;
   number: number;
@@ -17,7 +14,6 @@ export interface Page {
   url: string;
 }
 
-// Initial pages data
 const initialPages: Page[] = [
   { id: 1, number: 1, title: "Terms and Conditions", url: "/terms_and_conditions" },
   { id: 2, number: 2, title: "Cookie Policy", url: "/cookie_policy" },
@@ -30,8 +26,6 @@ const TermsConditions: React.FC = () => {
   const [pages, setPages] = useState(initialPages);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<Page>();
-
   const filteredPages = pages.filter((page) =>
     page.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -41,7 +35,6 @@ const TermsConditions: React.FC = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  // Define table columns
   const columns = [
     {
       name: "#",
@@ -72,7 +65,6 @@ const TermsConditions: React.FC = () => {
     },
   ];
 
-  // Function to export to CSV
   const exportToCSV = () => {
     const csvRows = [
       ["#", "Page Title", "URL"],
@@ -86,7 +78,6 @@ const TermsConditions: React.FC = () => {
     link.click();
     document.body.removeChild(link);
   };
-
 
   return (
     <div className=" bg-white rounded-lg">

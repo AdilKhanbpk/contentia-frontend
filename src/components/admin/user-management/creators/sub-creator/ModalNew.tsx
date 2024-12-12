@@ -10,7 +10,7 @@ interface Creator {
     password: string;
     tckn: string;
     email: string;
-    dateOfBirth: string; // Format: "YYYY-MM-DD"
+    dateOfBirth: string;
     gender: "male" | "female" | "other";
     phoneNumber: string;
     isVerified: "pending" | "approved" | "rejected";
@@ -46,8 +46,8 @@ interface Creator {
     preferences: {
         contentInformation: {
             contentType: "product" | "service" | "other";
-            contentFormats: string[]; // Example: ["video", "image"]
-            areaOfInterest: string[]; // Example: ["tech", "gadgets"]
+            contentFormats: string[];
+            areaOfInterest: string[];
             addressDetails: {
                 country: string;
                 state: string;
@@ -82,20 +82,18 @@ interface Creator {
 interface ModalNewProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: Creator) => void; // This handles form submission
+    onSubmit: (data: Creator) => void;
 }
 
-export default function ModalNew({ isOpen, onClose, onSubmit }: ModalNewProps) {
-    const [invoiceType, setInvoiceType] = useState('Bireysel');
+export default function ModalNew({ isOpen, onSubmit }: ModalNewProps) {
 
     const {
         register,
         handleSubmit,
-        reset,
         formState: { errors },
     } = useForm<Creator>();
 
-    if (!isOpen) return null;  // If the modal is closed, return null (don't render)
+    if (!isOpen) return null;
 
     return (
         <>

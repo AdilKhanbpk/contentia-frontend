@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 export interface Customer {
     id: number;
@@ -11,29 +11,29 @@ export interface Customer {
     age: number;
     country: string;
     status: "Verified" | "Pending" | "Rejected";
-    invoiceType: string;  // Capitalized to camelCase
-    tcNumber?: string;  // Capitalized to camelCase
-    companyTitle?: string;  // Capitalized to camelCase
-    taxNumber?: string;  // Capitalized to camelCase
-    taxOffice?: string;  // Capitalized to camelCase
-    address?: string;  // Capitalized to camelCase
-    billingInformation?: {  // Capitalized to camelCase
-        invoiceStatus: boolean;  // Capitalized to camelCase
-        trId: string;  // Capitalized to camelCase
-        address: string;  // Capitalized to camelCase
-        fullName: string;  // Capitalized to camelCase
-        companyName: string;  // Capitalized to camelCase
-        taxNumber: string;  // Capitalized to camelCase
-        taxOffice: string;  // Capitalized to camelCase
+    invoiceType: string;
+    tcNumber?: string;
+    companyTitle?: string;
+    taxNumber?: string;
+    taxOffice?: string;
+    address?: string;
+    billingInformation?: {
+        invoiceStatus: boolean;
+        trId: string;
+        address: string;
+        fullName: string;
+        companyName: string;
+        taxNumber: string;
+        taxOffice: string;
     };
-    rememberMe?: boolean;  // Capitalized to camelCase
-    termsAndConditionsApproved?: boolean;  // Capitalized to camelCase
+    rememberMe?: boolean;
+    termsAndConditionsApproved?: boolean;
 }
 
 interface ModalNewProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: Customer) => void; // This handles form submission
+    onSubmit: (data: Customer) => void;
 }
 
 export default function ModalNew({ isOpen, onClose, onSubmit }: ModalNewProps) {
@@ -42,11 +42,9 @@ export default function ModalNew({ isOpen, onClose, onSubmit }: ModalNewProps) {
     const {
         register,
         handleSubmit,
-        reset,
-        formState: { errors },
     } = useForm<Customer>();
 
-    if (!isOpen) return null;  // If the modal is closed, return null (don't render)
+    if (!isOpen) return null;
 
     return (
         <>

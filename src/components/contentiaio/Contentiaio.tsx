@@ -11,17 +11,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import {
     fetchLandingPage,
 } from "@/store/features/admin/lanPageSlice";
-
-const videos = [
-    '/videos/firstVideo.mp4',
-    '/videos/secondVideo.mp4',
-    '/videos/thirdVideo.mp4',
-    '/videos/firstVideo.mp4',
-    '/videos/secondVideo.mp4',
-    '/videos/thirdVideo.mp4',
-    '/videos/thirdVideo.mp4',
-    '/videos/firstVideo.mp4'
-];
+import { toast } from "react-toastify";
 
 const cards = [
     {
@@ -75,15 +65,19 @@ export default function Contentiaio() {
         console.log("useEffect triggered");
         if (token) {
             console.log("Token is available:", token);
-            dispatch(fetchLandingPage(token));
-            console.log("Dispatching fetchLandingPage with token");
+            dispatch(fetchLandingPage(token))
+                .then(() => {
+                    toast.success('Landing page data fetched successfully'); // Show success message
+                    console.log("Dispatching fetchLandingPage with token");
+                })
+                .catch(() => {
+                    toast.error('Failed to fetch landing page data'); // Show error message
+                    console.log("Error while dispatching fetchLandingPage");
+                });
         } else {
             console.log("Token is not available");
         }
     }, [dispatch, token]);
-
-
-
 
     const handleOrderClick = () => {
         router.push('/orders'); // Navigate to the orders page

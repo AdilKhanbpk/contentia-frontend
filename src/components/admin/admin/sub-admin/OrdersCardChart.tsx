@@ -1,15 +1,10 @@
 "use client";
 import { useState } from 'react';
-
-// third-party
 import ReactApexChart from 'react-apexcharts';
 import { Props as ChartProps } from 'react-apexcharts';
 
-// ==============================|| ORDERS CARD CHART ||============================== //
-
 const OrdersCardChart = () => {
 
-  // chart options
   const areaChartOptions = {
     chart: {
       id: 'new-stack-chart',

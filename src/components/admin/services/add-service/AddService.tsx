@@ -9,7 +9,6 @@ import {
 } from "@/store/features/admin/addPriceSlice";
 import { toast } from 'react-toastify';
 
-
 type FormData = {
     platform: string;
     aspectRatio: string;
@@ -27,42 +26,34 @@ const aspectRatios = ["9:16", "16:9"];
 
 const AddService: React.FC = () => {
     const dispatch = useDispatch();
-    const { data: additionalService, loading, error } = useSelector(
+    const { data: additionalService, error } = useSelector(
         (state: RootState) => state.addPrice
     );
     const [token, setToken] = useState<string>("");
     const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
     const [selectedAspectRatio, setSelectedAspectRatio] = useState<string | null>(null);
-
     const { register, handleSubmit, setValue, reset } = useForm<FormData>();
-
 
     useEffect(() => {
         const storedToken = localStorage.getItem("accessToken") || "";
         setToken(storedToken);
-
         if (storedToken) {
             dispatch(fetchAdditionalServices(storedToken) as any)
                 .then(() => {
-                    // Success message after fetching services
                     toast.success("Services fetched successfully!");
                 })
                 .catch((err: Error) => {
-                    // Error message in case of failure
                     toast.error(err.message || "Failed to fetch services");
                 });
         }
     }, [dispatch]);
 
-
     useEffect(() => {
         if (additionalService) {
             const backendPlatform = additionalService.platform || "";
             const backendAspectRatio = additionalService.aspectRatio || "";
-
             setSelectedPlatform(backendPlatform);
             setSelectedAspectRatio(backendAspectRatio);
-
             reset({
                 platform: backendPlatform,
                 aspectRatio: backendAspectRatio,
@@ -76,12 +67,6 @@ const AddService: React.FC = () => {
             });
         }
     }, [additionalService, reset]);
-
-    useEffect(() => {
-        if (error) {
-            console.error("Error fetching additional services:", error);
-        }
-    }, [error]);
 
     const handlePlatformSelect = (platform: string) => {
         setSelectedPlatform(platform);
@@ -106,7 +91,6 @@ const AddService: React.FC = () => {
                 thirtySecondDurationPrice: data.thirtySecondDurationPrice,
                 sixtySecondDurationPrice: data.sixtySecondDurationPrice,
             };
-
             dispatch(
                 updateAdditionalService({
                     id: additionalService._id || '',

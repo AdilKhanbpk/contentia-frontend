@@ -1,11 +1,8 @@
 "use client";
 import { useState } from 'react';
-
-// third-party
 import ReactApexChart from 'react-apexcharts';
 import { Props as ChartProps } from 'react-apexcharts';
 
-// ==============================|| SALES CARD CHART ||============================== //
 
 const SalesCardChart = () => {
  

@@ -2,6 +2,7 @@ import { setPaymentInformation } from "@/store/becomeCreator/becomeCreatorSlice"
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
   setActiveTab,
@@ -38,9 +39,16 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
   const dispatch = useDispatch();
 
   const onSubmit = async (data: PaymentInformationFormValues) => {
-    const res = await dispatch(setPaymentInformation(data));
-    if (res) {
-      setActiveTab(3);
+    try {
+      const res = await dispatch(setPaymentInformation(data));
+      if (res) {
+        toast.success('Payment information saved successfully'); // Show success message
+        setActiveTab(3);
+      } else {
+        toast.error('Failed to save payment information'); // Show error message if needed
+      }
+    } catch (error) {
+      toast.error('An error occurred while saving payment information'); // Handle unexpected errors
     }
   };
 

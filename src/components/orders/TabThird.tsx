@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import Image from 'next/image';
 import { useForm, Controller } from 'react-hook-form';
 import axios from 'axios';
+import { toast } from "react-toastify";
 
 const TabThird = () => {
     const { register, handleSubmit, control, formState: { errors } } = useForm();
@@ -25,11 +26,11 @@ const TabThird = () => {
         try {
             // Create a FormData object to send files and other data
             const formData = new FormData();
-            
-        // Append the first file to FormData (change 'files' to 'file')
-        if (data.files && data.files.length > 0) {
-            formData.append('file', data.files[0]); // Append only the first file
-        }
+
+            // Append the first file to FormData (change 'files' to 'file')
+            if (data.files && data.files.length > 0) {
+                formData.append('file', data.files[0]); // Append only the first file
+            }
 
             // Append other form fields
             formData.append('brand', data.brand);
@@ -48,9 +49,11 @@ const TabThird = () => {
 
             // Handle success
             console.log('Success:', response.data);
+            toast.success('UGC brief submitted successfully!');
         } catch (error) {
             // Handle error
             console.error('Error:', error);
+            toast.error('Failed to submit UGC brief. Please try again.');
         }
     };
 

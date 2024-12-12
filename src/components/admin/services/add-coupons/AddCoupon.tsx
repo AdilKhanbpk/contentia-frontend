@@ -18,7 +18,7 @@ import { toast } from 'react-toastify';
 
 export interface CouponForm {
     _id: string;
-    customer?: Customer; // Make customer optional
+    customer?: Customer;
     code: string;
     discountTl?: string;
     discountPercentage?: number;
@@ -32,7 +32,7 @@ export interface CouponForm {
 
 export default function AddCoupon() {
     const dispatch = useDispatch();
-    const { data: coupons, loading, error } = useSelector(
+    const { data: coupons, loading } = useSelector(
         (state: RootState) => state.coupon
     );
 
@@ -47,7 +47,6 @@ export default function AddCoupon() {
     useEffect(() => {
         const storedToken = localStorage.getItem("accessToken") || "";
         setToken(storedToken);
-
         if (storedToken) {
             dispatch(getCoupons(storedToken) as any)
                 .then(() => {
@@ -71,7 +70,7 @@ export default function AddCoupon() {
         reset({
             _id: coupon._id,
             code: coupon.code,
-            customer: coupon.customer, // Use the full customer object if available
+            customer: coupon.customer,
             discountTl: coupon.discountTl,
             discountPercentage: coupon.discountPercentage,
             expiryDate: new Date(coupon.expiryDate).toISOString().split("T")[0],
@@ -91,29 +90,20 @@ export default function AddCoupon() {
     };
 
     const handleDelete = async (id: string) => {
-        console.log("Delete button clicked for coupon ID:", id);
-
         if (window.confirm("Are you sure you want to delete this coupon?")) {
-            console.log("User confirmed deletion for coupon ID:", id);
-
             try {
-                console.log("Dispatching deleteCoupon action with ID and token:", { id, token });
                 await dispatch(deleteCoupon({ id, token }) as any);
-                console.log("Coupon deleted successfully:", id);
                 toast.success("Coupon deleted successfully!");
             } catch (err) {
-                console.error("Error occurred while deleting coupon:", err);
                 const errorMessage =
                     err instanceof Error ? err.message : "Failed to delete coupon";
                 setErrorMessage(errorMessage);
-                console.error("Error message set:", errorMessage);
                 toast.error(errorMessage || "Failed to delete coupon");
             }
         } else {
             console.log("User cancelled the deletion process for coupon ID:", id);
         }
     };
-
 
     const formatDiscount = (coupon: ReduxCoupon): string => {
         if (coupon.discountTl) {

@@ -11,6 +11,7 @@ import {
 import {
     fetchHowItWorks,
 } from "@/store/features/admin/howWorkSlice";
+import { toast } from "react-toastify";
 
 
 
@@ -81,9 +82,16 @@ export default function HowItWorks() {
 
         if (tokenFromStorage) {
             console.log("Token exists. Dispatching fetchFaqs...");
-            dispatch(fetchFaqs(tokenFromStorage));
+            dispatch(fetchFaqs(tokenFromStorage))
+                .then(() => {
+                    toast.success('FAQs fetched successfully'); // Show success message
+                })
+                .catch(() => {
+                    toast.error('Failed to fetch FAQs'); // Show error message
+                });
         } else {
             console.log("No token found in localStorage.");
+            toast.error('No access token found. Unable to fetch FAQs.'); // Error message for missing token
         }
     }, [dispatch]);
 
@@ -96,9 +104,16 @@ export default function HowItWorks() {
 
         if (token) {
             console.log("Token found. Fetching data with token...");
-            dispatch(fetchHowItWorks(token) as any);
+            dispatch(fetchHowItWorks(token) as any)
+                .then(() => {
+                    toast.success('Data fetched successfully'); // Show success message
+                })
+                .catch(() => {
+                    toast.error('Failed to fetch data'); // Show error message
+                });
         } else {
             console.log("No token found in localStorage.");
+            toast.error('No access token found. Unable to fetch data.'); // Show error for missing token
         }
 
         return () => {
