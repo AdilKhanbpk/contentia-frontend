@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { axiosInstance } from '@/store/axiosInstance';
 import { AxiosError } from 'axios';
 
-// Price Plan Interface
 export interface PricePlan {
   _id: string;
   videoCount: number;
@@ -12,7 +11,6 @@ export interface PricePlan {
   updatedAt?: string;
 }
 
-// State Interface
 export interface PricePlanState {
   data: PricePlan[] | null;
   currentPlan: PricePlan | null;
@@ -20,7 +18,6 @@ export interface PricePlanState {
   error: string | null;
 }
 
-// Initial State
 const initialState: PricePlanState = {
   data: null,
   currentPlan: null,
@@ -28,7 +25,6 @@ const initialState: PricePlanState = {
   error: null,
 };
 
-// Create Price Plan
 export const createPricePlan = createAsyncThunk(
   'pricePlan/createPricePlan',
   async (
@@ -43,22 +39,15 @@ export const createPricePlan = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log("[Debug] Creating Price Plan");
-      console.log("[Debug] Payload:", data);
-      console.log("[Debug] Token:", token);
-
       const response = await axiosInstance.post('/admin/pricing', data, {
         headers: { 
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
       });
-
-      console.log("[Debug] Create Price Plan Response:", response.data);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
-      console.error("[Error] Failed to create price plan:", axiosError.response?.data || error);
       return rejectWithValue(
         axiosError.response?.data || 'Failed to create price plan'
       );
@@ -71,18 +60,12 @@ export const fetchPricePlans = createAsyncThunk(
   'pricePlan/fetchPricePlans',
   async (token: string, { rejectWithValue }) => {
     try {
-      console.log("[Debug] Fetching Price Plans");
-      console.log("[Debug] Token:", token);
-
       const response = await axiosInstance.get('/admin/pricing', {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      console.log("[Debug] Fetch Price Plans Response:", response.data);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
-      console.error("[Error] Failed to fetch price plans:", axiosError.response?.data || error);
       return rejectWithValue(
         axiosError.response?.data || 'Failed to fetch price plans'
       );
@@ -95,19 +78,13 @@ export const fetchPricePlanById = createAsyncThunk(
   'pricePlan/fetchPricePlanById',
   async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
     try {
-      console.log("[Debug] Fetching Price Plan by ID");
-      console.log("[Debug] ID:", id);
-      console.log("[Debug] Token:", token);
-
       const response = await axiosInstance.get(`/admin/pricing/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("[Debug] Fetch Price Plan by ID Response:", response.data);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
-      console.error("[Error] Failed to fetch price plan by ID:", axiosError.response?.data || error);
       return rejectWithValue(
         axiosError.response?.data || 'Failed to fetch price plan'
       );
@@ -135,24 +112,15 @@ export const updatePricePlan = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log("[Debug] Updating Price Plan");
-      console.log("[Debug] ID:", id);
-      console.log("[Debug] Payload:", data);
-      console.log("[Debug] Token:", token);
-
       const response = await axiosInstance.patch(`/admin/pricing/${id}`, data, {
         headers: { 
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
       });
-
-      console.log("data sent to slice for updation", data);
-      console.log("[Debug] Update Price Plan Response:", response.data);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
-      console.error("[Error] Failed to update price plan:", axiosError.response?.data || error);
       return rejectWithValue(
         axiosError.response?.data || 'Failed to update price plan'
       );
@@ -165,19 +133,13 @@ export const deletePricePlan = createAsyncThunk(
   'pricePlan/deletePricePlan',
   async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
     try {
-      console.log("[Debug] Deleting Price Plan");
-      console.log("[Debug] ID:", id);
-      console.log("[Debug] Token:", token);
-
       const response = await axiosInstance.delete(`/admin/pricing/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("[Debug] Delete Price Plan Response:", response.data);
-      return id; // Return the ID of the deleted plan
+      return id;
     } catch (error) {
       const axiosError = error as AxiosError;
-      console.error("[Error] Failed to delete price plan:", axiosError.response?.data || error);
       return rejectWithValue(
         axiosError.response?.data || 'Failed to delete price plan'
       );

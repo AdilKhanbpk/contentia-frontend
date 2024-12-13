@@ -1,4 +1,3 @@
-// components/Modal.tsx
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import Image from 'next/image';
@@ -49,9 +48,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, closeModal, title, children }) =>
                                             <Image width={20} height={20} src="/x.png" alt="Close Button" className="w-8 h-8" onClick={closeModal} />
                                         </div>
                                     </div>
-
-
-
                                 </Dialog.Panel>
                             </div>
                         </Transition.Child>

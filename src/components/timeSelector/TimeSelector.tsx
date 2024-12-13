@@ -12,25 +12,18 @@ interface TimeSelectorProps {
 const TimeSelector: React.FC<TimeSelectorProps> = ({ children }) => {
   const [selectedTime, setSelectedTime] = useState<string>('');
 
-  // Function to handle click events
   const handleClick = (value: string) => {
-    setSelectedTime((prevValue) => (prevValue === value ? '' : value)); // Toggle selection
+    setSelectedTime((prevValue) => (prevValue === value ? '' : value));
   };
 
-  // Type guard to check if the child is a valid React element with 'value' prop
   const isValidTimeButton = (child: ReactNode): child is ReactElement<ButtonProps> => {
     return React.isValidElement(child) && 'value' in child.props;
   };
 
-  // Map over children and apply styles based on whether the button is selected
   const childrenWithProps = React.Children.map(children, (child) => {
     if (isValidTimeButton(child)) {
       const { value, className, ...restProps } = child.props;
-
-      // Determine if this button is selected
       const isSelected = selectedTime === value;
-
-      // Clone the element with updated onClick and className props
       return cloneElement(child, {
         onClick: () => handleClick(value),
         className: `px-2  py-0 rounded-full text-xs font-medium ${
@@ -40,7 +33,7 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({ children }) => {
       });
     }
 
-    return child; // Return child as is if it's not a valid button
+    return child;
   });
 
   return <div className="flex space-x-2">{childrenWithProps}</div>;

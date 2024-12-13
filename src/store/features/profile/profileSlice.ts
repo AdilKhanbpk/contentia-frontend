@@ -1,4 +1,3 @@
-// src/store/profileSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { axiosInstance } from '@/store/axiosInstance';
 import { AxiosError } from 'axios';
@@ -59,28 +58,19 @@ export const changePassword = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log('Change Password Request:', { currentPassword, newPassword, confirmNewPassword }); // Log request payload (excluding token for security)
-      
       const headers = { Authorization: `Bearer ${token}` };
-      console.log('Headers:', headers); // Log headers to confirm token setup
-
       const response = await axiosInstance.patch(
         '/users/change-password',
         { currentPassword, newPassword, confirmNewPassword },
         { headers }
       );
-
-      console.log(response);
-      
-      console.log('Change Password Response:', response.data); // Log response data
       return response.data;
     } catch (error) {
       let errorMessage = 'Failed to change password';
       if ((error as AxiosError).isAxiosError && (error as AxiosError).response) {
-        console.log('Axios Error Response:', (error as AxiosError).response?.data); // Log error response data
         errorMessage = `Password change failed: ${(error as AxiosError).response?.data || 'Unknown error'}`;
       } else {
-        console.log('Non-Axios Error:', error); // Log non-Axios errors
+        console.log('Non-Axios Error:', error);
       }
       return rejectWithValue(errorMessage);
     }

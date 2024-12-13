@@ -1,9 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import Image from "next/image";
 import Link from "next/link";
-// Import images
 import img7 from "../../../public/helpcenter/img7.svg";
 import img1 from "../../../public/helpcenter/img1.svg";
 import img2 from "../../../public/helpcenter/img2.svg";
@@ -11,28 +10,22 @@ import img3 from "../../../public/helpcenter/img3.svg";
 import img4 from "../../../public/helpcenter/img4.svg";
 import img5 from "../../../public/helpcenter/img5.svg";
 import img6 from "../../../public/helpcenter/img6.svg";
-
-// import cards images
 import card from "../../../public/helpcenter/card.svg"
 import card1 from "../../../public/helpcenter/card1.svg"
 import card2 from "../../../public/helpcenter/card2.png"
 import card3 from "../../../public/helpcenter/card3.svg"
 
-
-// Define subtitle type
 interface Subtitle {
   text: string;
   icon: JSX.Element;
 }
 
-// Define category type
 interface HelpCategory {
   title: string;
   icon: JSX.Element;
   subtitles: Subtitle[];
 }
 
-// Define categories with their subtitles and unique icons
 const helpCategories: HelpCategory[] = [
   {
     title: "Sipariş Oluşturma",
@@ -79,10 +72,7 @@ const helpCategories: HelpCategory[] = [
 ];
 
 const Section: React.FC = () => {
-  // State to track the selected main category
   const [selectedCategory, setSelectedCategory] = useState<number>(0);
-
-
 
   return (
     <div className="px-4 sm:px-6 md:px-8 lg:px-32 ">
@@ -134,7 +124,6 @@ const Section: React.FC = () => {
           </div>
         </div>
       </div>
-
     </div>
   );
 };

@@ -1,4 +1,3 @@
-// bannerSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { axiosInstance } from "@/store/axiosInstance";
 import { AxiosError } from "axios";

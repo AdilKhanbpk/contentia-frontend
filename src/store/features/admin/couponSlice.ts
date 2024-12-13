@@ -21,7 +21,7 @@ export interface Customer {
     role: string;
     email: string;
     customerStatus: string;
-    password: string; // Should be omitted if not needed
+    password: string;
     rememberMe: boolean;
     termsAndConditionsApproved: boolean;
     createdAt: string;
@@ -35,7 +35,7 @@ export interface Customer {
 
 export interface Coupon {
     _id: string;
-    customer: Customer; // Updated to include customer details
+    customer: Customer;
     code: string;
     discountTl?: string;
     discountPercentage?: number;
@@ -66,16 +66,13 @@ const initialState: CouponState = {
 export const createCoupon = createAsyncThunk(
     'coupon/createCoupon',
     async ({ data, token }: { data: any; token: string }, { rejectWithValue }) => {
-        console.log('Creating coupon with data:', data);
         try {
             const response = await axiosInstance.post('/admin/coupons', data, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            console.log('Coupon created successfully:', response.data.data);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
-            console.error('Error creating coupon:', axiosError);
             return rejectWithValue(
                 axiosError.response?.data || 'Failed to create coupon'
             );
@@ -87,16 +84,13 @@ export const createCoupon = createAsyncThunk(
 export const getCoupons = createAsyncThunk(
     'coupon/getCoupons',
     async (token: string, { rejectWithValue }) => {
-        console.log('Fetching all coupons...');
         try {
             const response = await axiosInstance.get('/admin/coupons', {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            console.log('Coupons fetched successfully:', response.data.data);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
-            console.error('Error fetching coupons:', axiosError);
             return rejectWithValue(
                 axiosError.response?.data || 'Failed to fetch coupons'
             );
@@ -108,16 +102,13 @@ export const getCoupons = createAsyncThunk(
 export const getMyCoupons = createAsyncThunk(
     'coupon/getMyCoupons',
     async (token: string, { rejectWithValue }) => {
-        console.log('Fetching user coupons...');
         try {
             const response = await axiosInstance.get('/admin/coupons/my-coupons', {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            console.log('User coupons fetched successfully:', response.data.data);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
-            console.error('Error fetching user coupons:', axiosError);
             return rejectWithValue(
                 axiosError.response?.data || 'Failed to fetch your coupons'
             );
@@ -132,16 +123,13 @@ export const getCouponById = createAsyncThunk(
         { id, token }: { id: string; token: string },
         { rejectWithValue }
     ) => {
-        console.log(`Fetching coupon with ID: ${id}`);
         try {
             const response = await axiosInstance.get(`/admin/coupons/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            console.log('Coupon fetched successfully:', response.data.data);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
-            console.error(`Error fetching coupon with ID ${id}:`, axiosError);
             return rejectWithValue(
                 axiosError.response?.data || 'Failed to fetch coupon'
             );
@@ -156,16 +144,13 @@ export const updateCoupon = createAsyncThunk(
         { id, data, token }: { id: string; data: any; token: string },
         { rejectWithValue }
     ) => {
-        console.log(`Updating coupon with ID: ${id}`, data);
         try {
             const response = await axiosInstance.patch(`/admin/coupons/${id}`, data, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            console.log('Coupon updated successfully:', response.data.data);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
-            console.error(`Error updating coupon with ID ${id}:`, axiosError);
             return rejectWithValue(
                 axiosError.response?.data || 'Failed to update coupon'
             );
@@ -180,16 +165,13 @@ export const deleteCoupon = createAsyncThunk(
         { id, token }: { id: string; token: string },
         { rejectWithValue }
     ) => {
-        console.log(`Deletinnnng coupon with ID: ${id}`);
         try {
             const response = await axiosInstance.delete(`/admin/coupons/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            console.log('Coupon deleted successfully:', response.data);
-            return id; // Return the id to remove it from the state
+            return id;
         } catch (error) {
             const axiosError = error as AxiosError;
-            console.error(`Error deleting coupon with ID ${id}:`, axiosError);
             return rejectWithValue(
                 axiosError.response?.data || 'Failed to delete coupon'
             );
@@ -204,7 +186,6 @@ export const validateCoupon = createAsyncThunk(
         { code, orderId, token }: { code: string; orderId: string; token: string },
         { rejectWithValue }
     ) => {
-        console.log(`Validating coupon with code: ${code} for order: ${orderId}`);
         try {
             const response = await axiosInstance.post(
                 '/admin/coupons/validate',
@@ -213,11 +194,9 @@ export const validateCoupon = createAsyncThunk(
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
-            console.log('Coupon validated successfully:', response.data.data);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
-            console.error('Error validating coupon:', axiosError);
             return rejectWithValue(
                 axiosError.response?.data || 'Failed to validate coupon'
             );

@@ -1,6 +1,5 @@
 "use client";
-// src/components/OrdersProfile.tsx
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import {
@@ -16,48 +15,35 @@ import { AppDispatch } from "@/store/store";
 import { toast } from "react-toastify";
 
 const OrdersProfile: React.FC = () => {
-
   const dispatch = useDispatch<AppDispatch>();
   const {
     register,
     handleSubmit,
     setValue,
-    formState: { errors },
   } = useForm();
   const {
     register: registerPassword,
     handleSubmit: handleSubmitPassword,
-    formState: { errors: passwordErrors },
   } = useForm();
   const [isEditing, setIsEditing] = useState(false);
   const [invoiceType, setInvoiceType] = useState("individual");
   const profile = useSelector((state: RootState) => state.profile);
   const [token, setToken] = useState<string | null>(null);
 
-
   useEffect(() => {
     setToken(localStorage.getItem('accessToken'));
-
     if (token) {
       dispatch(fetchProfile(token));
     }
   }, [token]);
 
   const onSubmitProfileInvoice = async (data: any) => {
-    console.log("data", data);
     if (token) {
       try {
-        // Dispatch the action to update profile
         await dispatch(updateProfile({ data, token }));
-
-        // Fetch the profile data again after updating
         dispatch(fetchProfile(token));
-
-        // Show success message after updating profile
         toast.success('Profile updated successfully!');
       } catch (error) {
-        // Show error message if the update fails
-        console.error('Error updating profile:', error);
         toast.error('Failed to update profile. Please try again.');
       }
     } else {
@@ -77,7 +63,7 @@ const OrdersProfile: React.FC = () => {
       setValue("taxNumber", profile.data.taxNumber || "");
       setValue("taxOffice", profile.data.taxOffice || "");
     }
-  }, [profile.data]); // Update when profile.data changes
+  }, [profile.data]);
 
   const onSubmitPasswordChange = async (data: any) => {
     if (token) {
@@ -92,18 +78,12 @@ const OrdersProfile: React.FC = () => {
         );
 
         if (result.meta.requestStatus === "fulfilled") {
-          // Show success message with Toastify
           toast.success("Password change successful!");
-          console.log("Password change successful:", result.payload);
         } else {
-          // Show failure message with Toastify
           toast.error(`Password change failed: ${result.payload}`);
-          console.error("Password change failed:", result.payload);
         }
       } catch (error) {
-        // Show error message with Toastify
         toast.error(`An error occurred during password change: ${error}`);
-        console.error("An error occurred during password change:", error);
       }
     } else {
       toast.error("No token found. Please log in again.");
@@ -112,6 +92,7 @@ const OrdersProfile: React.FC = () => {
 
   return (
     <div className="my-14 sm:my-20 md:my-20 lg:my-24 px-4 sm:px-6 md:px-8 lg:px-28 p-4 sm:p-6 md:p-8 lg:p-8 bg-gray-50">
+     
       {/* Profile and Invoice Information */}
       <form onSubmit={handleSubmit(onSubmitProfileInvoice)}>
         <div className="bg-white rounded-lg shadow-lg px-4 py-3 sm:px-6 sm:py-4 lg:px-12 lg:py-6">

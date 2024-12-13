@@ -1,7 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { useForm, SubmitHandler } from "react-hook-form";
 
 const ContentCreatorPreferences: React.FC<{
   register: any;
@@ -31,7 +30,7 @@ const ContentCreatorPreferences: React.FC<{
                     onMouseLeave={() => setShowTooltipTwo(false)}
                   >
                     <Image
-                      src="/tooltipIcon.png" // Placeholder for the logo next to "Brand Name"
+                      src="/tooltipIcon.png"
                       alt="brand logo"
                       height={16}
                       width={16}
@@ -140,7 +139,6 @@ const ContentCreatorPreferences: React.FC<{
             </div>
           </div>
 
-          {/* address form */}
           <div className="w-full lg:w-1/3">
             {/* If Mekan (Place) selected */}
             {(contentType === "space" || contentType === "product") && (
@@ -156,7 +154,7 @@ const ContentCreatorPreferences: React.FC<{
                       onMouseLeave={() => setShowTooltipThree(false)}
                     >
                       <Image
-                        src="/tooltipIcon.png" // Placeholder for the logo next to "Brand Name"
+                        src="/tooltipIcon.png"
                         alt="brand logo"
                         height={16}
                         width={16}

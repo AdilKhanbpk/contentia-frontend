@@ -1,6 +1,6 @@
 import { setProfileInformation } from "@/store/becomeCreator/becomeCreatorSlice";
 import React from "react";
-import { useForm, FieldErrors } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -34,14 +34,13 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
     try {
       const res = await dispatch(setProfileInformation(data));
       if (res) {
-        toast.success('Profile information saved successfully'); // Show success message
+        toast.success('Profile information saved successfully');
         setActiveTab(2);
       } else {
-        toast.error('Failed to save profile information'); // Show error message
+        toast.error('Failed to save profile information');
       }
     } catch (error) {
-      toast.error('An error occurred while saving profile information'); // Handle unexpected errors
-      console.error(error);
+      toast.error('An error occurred while saving profile information');
     }
   };
 

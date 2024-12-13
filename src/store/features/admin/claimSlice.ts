@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { axiosInstance } from '@/store/axiosInstance';
 import { AxiosError } from 'axios';
 
-// Define the Claim type based on the model structure
 export interface Claim {
     id?: string;
     status?: 'pending' | 'approved' | 'rejected';
@@ -18,7 +17,6 @@ export interface Claim {
     claimContent: string;
 }
 
-// State interface for Claims
 export interface AdminClaimsState {
     data: Claim[];
     loading: boolean;
@@ -26,7 +24,6 @@ export interface AdminClaimsState {
     selectedClaim: Claim | null;
 }
 
-// Initial state
 const initialState: AdminClaimsState = {
     data: [],
     loading: false,
@@ -39,9 +36,6 @@ export const fetchAdminClaims = createAsyncThunk(
     'adminClaims/fetchAdminClaims',
     async (token: string) => {
         try {
-            console.group("fetchAdminClaims Thunk Debugging");
-            console.log("Fetching claims with token:", token);
-
             const response = await axiosInstance.get('/admin/claims', {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -61,18 +55,12 @@ export const fetchAdminClaims = createAsyncThunk(
                     claimDate: claim.claimDate ?? new Date(),
                     claimContent: claim.claimContent ?? ''
                 }));
-
-                console.log("Fetched claims:", claims);
                 console.groupEnd();
                 return claims;
             } else {
-                console.warn('Response data does not contain the expected data field.');
-                console.groupEnd();
                 return [];
             }
         } catch (error) {
-            console.error('Error fetching admin claims:', error);
-            console.groupEnd();
             throw Error('Failed to fetch admin claims');
         }
     }
@@ -82,8 +70,6 @@ export const fetchAdminClaims = createAsyncThunk(
 export const fetchAdminClaimById = createAsyncThunk(
     'adminClaims/fetchAdminClaimById',
     async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
-        console.group("fetchAdminClaimById Thunk Debugging");
-        console.log("Fetching claim with ID:", id);
 
         try {
             const response = await axiosInstance.get(`/admin/claims/${id}`, {
@@ -92,7 +78,6 @@ export const fetchAdminClaimById = createAsyncThunk(
 
             console.log("Response from fetchAdminClaimById:", response.data);
 
-            // Map the data properly
             const claim = {
                 id: response.data.data?._id ?? null,
                 status: response.data.data?.status ?? 'pending',
@@ -108,12 +93,9 @@ export const fetchAdminClaimById = createAsyncThunk(
                 claimContent: response.data.data?.claimContent ?? '',
             };
 
-            console.log("Mapped claim details:", claim);
-            console.groupEnd();
             return claim;
+
         } catch (error) {
-            console.error("Error fetching claim by ID:", error);
-            console.groupEnd();
             return rejectWithValue('Failed to fetch admin claim by ID');
         }
     }
@@ -134,7 +116,6 @@ export const createAdminClaim = createAsyncThunk(
                 return rejectWithValue('Authentication token is missing');
             }
 
-            // Format the data before sending it to the API
             const formattedData = {
                 status: data.status,
                 customerId: data.customer?.id,
@@ -143,8 +124,6 @@ export const createAdminClaim = createAsyncThunk(
                 claimContent: data.claimContent,
             };
 
-            console.log("formatted data", formattedData);
-
             const response = await axiosInstance.post('/admin/claims', formattedData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -152,9 +131,6 @@ export const createAdminClaim = createAsyncThunk(
                 },
             });
 
-            console.log("response ", response);
-
-            // Ensure the response matches the backend structure
             const newClaim = {
                 status: response.data.data.status,
                 customerId: response.data.data.customer, // Getting the customer ID from response
@@ -163,19 +139,10 @@ export const createAdminClaim = createAsyncThunk(
                 claimContent: response.data.data.claimContent,
             };
 
-            console.log("Created claim:", newClaim);
-            console.groupEnd();
             return newClaim;
+
         } catch (error) {
             const axiosError = error as AxiosError;
-
-            console.error('Claim creation failed:', {
-                status: axiosError.response?.status,
-                statusText: axiosError.response?.statusText,
-                data: axiosError.response?.data,
-            });
-            console.groupEnd();
-
             return rejectWithValue(
                 axiosError.response?.data ||
                 'Failed to create admin claim. Please check server logs for details.'
@@ -191,9 +158,6 @@ export const updateAdminClaim = createAsyncThunk(
         { claimId, data, token }: { claimId: string; data: Partial<Claim>; token: string },
         { rejectWithValue }
     ) => {
-        console.group("updateAdminClaim Thunk Debugging");
-        console.log("Updating claim. Claim ID:", claimId);
-        console.log("Update data:", data);
 
         try {
             const response = await axiosInstance.patch(`/admin/claims/${claimId}`, data, {
@@ -201,7 +165,7 @@ export const updateAdminClaim = createAsyncThunk(
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
-                timeout: 10000, // 10-second timeout
+                timeout: 10000,
             });
 
             const updatedClaim = {
@@ -219,19 +183,10 @@ export const updateAdminClaim = createAsyncThunk(
                 claimContent: response.data.claimContent
             };
 
-            console.log("Updated claim:", updatedClaim);
-            console.groupEnd();
             return updatedClaim;
+
         } catch (error) {
             const axiosError = error as AxiosError;
-
-            console.error('Claim update failed:', {
-                status: axiosError.response?.status,
-                statusText: axiosError.response?.statusText,
-                data: axiosError.response?.data,
-            });
-            console.groupEnd();
-
             return rejectWithValue(
                 axiosError.response?.data ||
                 'Failed to update admin claim. Please check server logs for details.'
@@ -244,27 +199,14 @@ export const updateAdminClaim = createAsyncThunk(
 export const deleteAdminClaim = createAsyncThunk(
     'adminClaims/deleteAdminClaim',
     async ({ claimId, token }: { claimId: string; token: string }, { rejectWithValue }) => {
-        console.group("deleteAdminClaim Thunk Debugging");
-        console.log("Attempting to delete claim:", claimId);
 
         try {
             await axiosInstance.delete(`/admin/claims/${claimId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-
-            console.log("Claim deleted successfully:", claimId);
-            console.groupEnd();
             return claimId;
         } catch (error) {
             const axiosError = error as AxiosError;
-
-            console.error('Claim deletion failed:', {
-                status: axiosError.response?.status,
-                statusText: axiosError.response?.statusText,
-                data: axiosError.response?.data,
-            });
-            console.groupEnd();
-
             return rejectWithValue(
                 axiosError.response?.data ||
                 'Failed to delete admin claim. Please check server logs for details.'

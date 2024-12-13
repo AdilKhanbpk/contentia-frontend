@@ -5,13 +5,8 @@ import axios from 'axios';
 import { toast } from "react-toastify";
 
 const TabFourth = () => {
-
-
-
     const [minAge, setMinAge] = useState<number>(18);
     const [maxAge, setMaxAge] = useState<number>(65);
-
-
 
     const handleMaxAgeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = parseInt(event.target.value);
@@ -24,23 +19,15 @@ const TabFourth = () => {
     const [showTooltipOne, setShowTooltipOne] = useState(false);
     const [showTooltipTwo, setShowTooltipTwo] = useState(false);
     const [showTooltipThree, setShowTooltipThree] = useState(false);
-
     const { register, handleSubmit, watch } = useForm();
-
     const contentType = watch('contentType');
 
     const onSubmit = async (data: any) => {
-        console.log(data); // This will log the selected gender to the console
+        console.log(data);
         try {
             const response = await axios.post('http://localhost:3001/api/v1/preferences/preferencesRoute', data);
-            console.log('Response from server:', response.data);
-
-            // Show success message
             toast.success('Preferences saved successfully!');
         } catch (error) {
-            console.error('Error submitting form data:', error);
-
-            // Show error message
             toast.error('Failed to save preferences. Please try again.');
         }
     };
@@ -51,6 +38,7 @@ const TabFourth = () => {
                 <div className="p-6 bg-white rounded-lg shadow-md w-full ">
                     <div className='flex flex-row'>
                         <h2 className="text-lg font-semibold mb-4">İçerik Üreticisi Tercihleri <span className='font-medium'>(Opsiyonel)</span></h2>
+                     
                         {/* Tooltip or Information section */}
                         <div className="relative mb-4 flex justify-center">
                             <button
@@ -59,7 +47,7 @@ const TabFourth = () => {
                                 onMouseLeave={() => setShowTooltipOne(false)}
                             >
                                 <Image
-                                    src="/tooltipIcon.png" // Placeholder for the logo next to "Brand Name"
+                                    src="/tooltipIcon.png"
                                     alt="brand logo"
                                     height={16}
                                     width={16}
@@ -74,13 +62,10 @@ const TabFourth = () => {
                                 </div>
                             )}
                         </div>
-
                     </div>
                     <label className="block text-sm font-medium text-gray-700 mb-4">
                         UGC'lerinizi hazırlayacak içerik üreticileri için tercih ettiginiz özellikler bulunuyorsa, lütfen seçimlerinizi yapın</label>
-
                     <div className='flex flex-col lg:flex-row justify-between items-center lg:space-x-4'>
-
 
                         {/* Cinsiyet */}
                         <div className="mb-4 w-full lg:w-1/3 mt-2 grid grid-cols-3">
@@ -104,11 +89,11 @@ const TabFourth = () => {
                             ))}
                         </div>
 
-
                         {/* İçerik Türü */}
                         <div className="mb-4 w-full lg:w-1/3">
                             <div className='flex flex-row'>
                                 <h2 className="text-lg font-semibold mb-4">İçerik Türü:</h2>
+                         
                                 {/* Tooltip or Information section */}
                                 <div className="relative mb-4 flex justify-center">
                                     <button
@@ -117,7 +102,7 @@ const TabFourth = () => {
                                         onMouseLeave={() => setShowTooltipTwo(false)}
                                     >
                                         <Image
-                                            src="/tooltipIcon.png" // Placeholder for the logo next to "Brand Name"
+                                            src="/tooltipIcon.png"
                                             alt="brand logo"
                                             height={16}
                                             width={16}
@@ -126,7 +111,6 @@ const TabFourth = () => {
                                     </button>
                                     {showTooltipTwo && (
                                         <div className="absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2">
-
                                             İçerik üreticilerine ürün gönderimi sağlayacaksanız ya da üreticilerin bir fiziki lokasyona ulaşması gerekiyorsa, bu alanda içerik türünüzü belirterek lokasyona göre eşleştirme gerçekleştirme yapılması ge
                                         </div>
                                     )}
@@ -134,7 +118,6 @@ const TabFourth = () => {
                             </div>
 
                             <label className="block text-sm font-medium text-gray-700 mb-2">UGC’lerinizde tanıtım gerektiren, içerik türünüzü seçin</label>
-
                             <div className="flex justify-between space-x-4">
                                 <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
                                     <input
@@ -175,15 +158,12 @@ const TabFourth = () => {
                                     <span className="ml-1 text-sm">Mekan</span>
                                 </label>
                             </div>
-
                         </div>
-
-
-
                     </div>
 
                     <div className=" my-5 flex flex-col">
                         <label className="block text-sm font-semibold text-gray-700">Yaş Aralığı: <span className='font-medium'> (Opsiyonel)</span></label>
+                       
                         {/* Age Range Sliders */}
                         <div className="w-4/12 lg:w-3/12">
 
@@ -195,14 +175,13 @@ const TabFourth = () => {
                                 className="w-full h-2 cardButton rounded-lg appearance-none cursor-pointer"
                                 onChange={handleMaxAgeChange}
                             />
+                          
                             {/* Display Age Values */}
                             <div className="flex justify-between text-sm text-gray-500">
                                 <span>{minAge}</span>
                                 <span>{maxAge}</span>
                             </div>
                         </div>
-
-
                     </div>
 
                     {/* İlgi Alanları */}
@@ -241,9 +220,9 @@ const TabFourth = () => {
                                         <span className="ml-1 text-sm">{item}</span>
                                     </label>
                                 ))}
-
                             </div>
                             <div className='w-full lg:w-1/3'>
+                             
                                 {/* If Mekan (Place) selected */}
                                 {contentType === 'Mekan' && (
                                     <div className="lg:-mt-28">
@@ -258,7 +237,7 @@ const TabFourth = () => {
                                                     onMouseLeave={() => setShowTooltipThree(false)}
                                                 >
                                                     <Image
-                                                        src="/tooltipIcon.png" // Placeholder for the logo next to "Brand Name"
+                                                        src="/tooltipIcon.png"
                                                         alt="brand logo"
                                                         height={16}
                                                         width={16}
@@ -280,10 +259,9 @@ const TabFourth = () => {
                                                 <label className="block text-sm font-semibold mb-2">Ülke</label>
                                                 <select
                                                     className="w-full px-3 py-2 border rounded-md focus:outline-none"
-                                                    {...register('place.country')} // Register with React Hook Form
+                                                    {...register('place.country')}
                                                 >
                                                     <option value="">Seçiniz</option>
-                                                    {/* Add country options here */}
                                                 </select>
                                             </div>
 
@@ -291,10 +269,9 @@ const TabFourth = () => {
                                                 <label className="block text-sm font-semibold mb-2">İl</label>
                                                 <select
                                                     className="w-full px-3 py-2 border rounded-md focus:outline-none"
-                                                    {...register('place.city')} // Register with React Hook Form
+                                                    {...register('place.city')}
                                                 >
                                                     <option value="">Seçiniz</option>
-                                                    {/* Add city options here */}
                                                 </select>
                                             </div>
 
@@ -302,10 +279,9 @@ const TabFourth = () => {
                                                 <label className="block text-sm font-semibold mb-2">İlçe</label>
                                                 <select
                                                     className="w-full px-3 py-2 border rounded-md focus:outline-none"
-                                                    {...register('place.state')} // Register with React Hook Form
+                                                    {...register('place.state')}
                                                 >
                                                     <option value="">Seçiniz</option>
-                                                    {/* Add state options here */}
                                                 </select>
                                             </div>
 
@@ -313,10 +289,9 @@ const TabFourth = () => {
                                                 <label className="block text-sm font-semibold mb-2">Mahalle</label>
                                                 <select
                                                     className="w-full px-3 py-2 border rounded-md focus:outline-none"
-                                                    {...register('place.neighborhood')} // Register with React Hook Form
+                                                    {...register('place.neighborhood')}
                                                 >
                                                     <option value="">Seçiniz</option>
-                                                    {/* Add neighborhood options here */}
                                                 </select>
                                             </div>
 
@@ -325,22 +300,16 @@ const TabFourth = () => {
                                                 <textarea
                                                     placeholder="Lütfen işletme adını ve açık adres bilgilerini girin."
                                                     className="w-full text-sm px-3 py-2 border rounded-md focus:outline-none"
-                                                    rows={2} // Set the number of rows to 2
-                                                    {...register('place.address')} // Register with React Hook Form
+                                                    rows={2}
+                                                    {...register('place.address')}
                                                 />
                                             </div>
                                         </div>
-
                                     </div>
                                 )}
-
-
                             </div>
                         </div>
                     </div>
-
-
-
 
                     <div className='w-full flex justify-end items-end'>
                         <button type='submit' className="mt-6 ButtonBlue text-white py-2 px-4 rounded-md">

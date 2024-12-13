@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface SmallCardProps {
   image: string;
   title: string;

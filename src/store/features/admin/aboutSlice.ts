@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { axiosInstance } from "@/store/axiosInstance";
 import { AxiosError } from "axios";
 
-// Types (keep existing types)
 export interface AboutData {
     title: string;
     content: string;
@@ -18,7 +17,7 @@ export interface AboutData {
 }
 
 export interface AboutState {
-    sections: AboutData; // sections is now an object, not an array
+    sections: AboutData;
     currentSection: AboutData | null;
     loading: boolean;
     error: string | null;
@@ -47,7 +46,7 @@ interface UpdateAboutImagePayload {
 }
 
 const initialState: AboutState = {
-    sections: {} as AboutData, // Initialize sections as an empty object
+    sections: {} as AboutData,
     currentSection: null,
     loading: false,
     error: null,
@@ -57,11 +56,9 @@ const initialState: AboutState = {
 export const updateAboutImage = createAsyncThunk(
     "about/updateAboutImage",
     async ({ aboutId, imageFile, token }: UpdateAboutImagePayload, { rejectWithValue }) => {
-        console.log('Updating About Image', { aboutId });
         try {
             const formData = new FormData();
             formData.append('aboutImage', imageFile);
-
             axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             const response = await axiosInstance.patch(
                 `/admin/about/${aboutId}/change-image`,
@@ -72,18 +69,10 @@ export const updateAboutImage = createAsyncThunk(
                     }
                 }
             );
-
-            console.log('Updated About Image successfully', response.data.data);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
             const errorMessage = axiosError.response?.data || `Failed to update About Image for ID ${aboutId}`;
-            console.error('Update About Image failed', {
-                error: axiosError,
-                status: axiosError.response?.status,
-                message: errorMessage,
-                aboutId
-            });
             return rejectWithValue(errorMessage);
         }
     }
@@ -96,16 +85,10 @@ export const createAbout = createAsyncThunk(
         try {
             axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             const response = await axiosInstance.post("/admin/about", data);
-            console.log('Created About section successfully', response.data.data);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
             const errorMessage = axiosError.response?.data || "Failed to create About section";
-            console.error('Create About section failed', {
-                error: axiosError,
-                status: axiosError.response?.status,
-                message: errorMessage
-            });
             return rejectWithValue(errorMessage);
         }
     }
@@ -118,16 +101,10 @@ export const fetchAbout = createAsyncThunk(
         try {
             axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             const response = await axiosInstance.get("/admin/about");
-            console.log('Fetched About sections successfully', response.data.data); // Directly log the data
-            return response.data.data; // Return the data directly
+            return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
             const errorMessage = axiosError.response?.data || "Failed to fetch About sections";
-            console.error('Fetch About sections failed', {
-                error: axiosError,
-                status: axiosError.response?.status,
-                message: errorMessage
-            });
             return rejectWithValue(errorMessage);
         }
     }
@@ -136,25 +113,16 @@ export const fetchAbout = createAsyncThunk(
 export const updateAbout = createAsyncThunk(
     "about/updateAbout",
     async ({ aboutId, data, token }: UpdateAboutPayload, { rejectWithValue }) => {
-        console.log('Updating About section', { aboutId, data });
         try {
             axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             const response = await axiosInstance.patch(
                 `/admin/about/${aboutId}`,
                 data
             );
-            console.log('Updated About section successfully', response.data.data);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
             const errorMessage = axiosError.response?.data || `Failed to update About section with ID ${aboutId}`;
-            console.error('Update About section failed', {
-                error: axiosError,
-                status: axiosError.response?.status,
-                message: errorMessage,
-                aboutId,
-                attemptedData: data
-            });
             return rejectWithValue(errorMessage);
         }
     }
@@ -163,21 +131,13 @@ export const updateAbout = createAsyncThunk(
 export const deleteAbout = createAsyncThunk(
     "about/deleteAbout",
     async ({ aboutId, token }: DeleteAboutPayload, { rejectWithValue }) => {
-        console.log('Deleting About section', { aboutId });
         try {
             axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             await axiosInstance.delete(`/admin/about/${aboutId}`);
-            console.log('Deleted About section successfully', { aboutId });
             return aboutId;
         } catch (error) {
             const axiosError = error as AxiosError;
             const errorMessage = axiosError.response?.data || `Failed to delete About section with ID ${aboutId}`;
-            console.error('Delete About section failed', {
-                error: axiosError,
-                status: axiosError.response?.status,
-                message: errorMessage,
-                aboutId
-            });
             return rejectWithValue(errorMessage);
         }
     }
@@ -189,17 +149,15 @@ const aboutSlice = createSlice({
     initialState,
     reducers: {
         setCurrentSection: (state, action: PayloadAction<AboutData | null>) => {
-            console.log('Setting current section', action.payload);
             state.currentSection = action.payload;
         },
         addSectionToState: (state, action: PayloadAction<AboutData>) => {
-            console.log('Adding section to state', action.payload);
-            state.sections = action.payload; // Directly assign new AboutData to sections
+            state.sections = action.payload;
         },
         updateSectionInState: (state, action: PayloadAction<AboutData>) => {
             console.log('Updating section in state', action.payload);
             if (state.sections._id === action.payload._id) {
-                state.sections = action.payload; // Update the current section
+                state.sections = action.payload;
             } else {
                 console.log('Section not found in state', {
                     searchedId: action.payload._id,
@@ -208,8 +166,7 @@ const aboutSlice = createSlice({
             }
         },
         removeSectionFromState: (state) => {
-            console.log('Removing section from state');
-            state.sections = {} as AboutData; // Reset sections to empty object
+            state.sections = {} as AboutData;
         },
     },
     extraReducers: (builder) => {
@@ -222,7 +179,7 @@ const aboutSlice = createSlice({
             .addCase(createAbout.fulfilled, (state, action: PayloadAction<AboutData>) => {
                 console.log('Create About fulfilled', action.payload);
                 state.loading = false;
-                state.sections = action.payload; // Update sections directly with new data
+                state.sections = action.payload;
             })
             .addCase(createAbout.rejected, (state, action) => {
                 console.log('Create About rejected', null, action.payload);
@@ -237,7 +194,7 @@ const aboutSlice = createSlice({
             .addCase(fetchAbout.fulfilled, (state, action: PayloadAction<AboutData>) => {
                 console.log('Fetch About fulfilled', action.payload);
                 state.loading = false;
-                state.sections = action.payload; // Assuming payload is a single AboutData object
+                state.sections = action.payload;
             })
             .addCase(fetchAbout.rejected, (state, action) => {
                 console.log('Fetch About rejected', null, action.payload);

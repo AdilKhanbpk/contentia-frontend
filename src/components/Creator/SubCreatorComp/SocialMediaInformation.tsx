@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import instIcon from "../../../../public/BecomeCreator/Instagram_icon.png";
 import facebookIcon from "../../../../public/BecomeCreator/facebook_icon..png";
@@ -21,6 +21,7 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
           <span>(Opsiyonel)</span>
           <div className="flex gap-2 items-center mt-3">
             <h2 className="text-lg font-semibold">Sosyal Medya Paylaşımı:</h2>
+            
             {/* Tooltip */}
             <div className="relative flex justify-center">
               <button

@@ -9,7 +9,6 @@ export default function TabSecond() {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
-  // Calculate delivery dates (Order Date + 30 Days to 35 Days)
   const deliveryStartDate = new Date(orderDate);
   deliveryStartDate.setDate(deliveryStartDate.getDate() + 30);
 
@@ -30,20 +29,16 @@ export default function TabSecond() {
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = async (data: any) => {
-    console.log(data); // Logs the form data
+    console.log(data);
 
     try {
       const response = await axios.post('http://localhost:3001/api/v1/sipay/payment', data);
       if (response.data.status === 'success') {
-        // Show success message
         toast.success('Payment successful!');
       } else {
-        // Show error message with the provided error message
         toast.error('Payment failed: ' + response.data.errorMessage);
       }
     } catch (error) {
-      console.error('Payment error:', error);
-      // Show error message for any network or request errors
       toast.error('There was an issue with your payment.');
     }
   };
@@ -53,6 +48,7 @@ export default function TabSecond() {
       <div className=' flex flex-col lg:flex-row justify-between px-4 sm:px-6 md:px-12 lg:px-24 lg:space-x-16'>
         <div className='w-full lg:w-3/5'>
           <div className="bg-white border rounded-lg p-6 shadow-md w-full">
+        
             {/* Order Summary */}
             <h2 className="text-xl font-semibold mb-4">Sipariş Özeti:</h2>
             <div className="space-y-3">
@@ -152,8 +148,6 @@ export default function TabSecond() {
                 </p>
               </div>
             </div>
-
-
           </div>
         </div>
 

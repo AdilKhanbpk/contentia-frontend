@@ -1,6 +1,4 @@
-import React from "react";
 import dynamic from "next/dynamic";
-
 const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
 
 interface CustomTableProps {

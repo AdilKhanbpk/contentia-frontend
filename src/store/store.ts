@@ -1,4 +1,3 @@
-import { Package } from './features/admin/packageSlice';
 import { configureStore } from '@reduxjs/toolkit';
 import becomeCreatorReducer from './becomeCreator/becomeCreatorSlice';
 import signupReducer from './features/auth/signupSlice';
@@ -21,7 +20,6 @@ import claimSlice from './features/admin/claimSlice';
 import notificationSlice from './features/admin/notificationSlice';
 import socketSlice from './socket/socketSlice';
 import packageSlice from './features/admin/packageSlice';
-
 
 const store = configureStore({
   reducer: {

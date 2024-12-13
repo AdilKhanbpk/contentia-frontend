@@ -1,4 +1,3 @@
-import React from 'react';
 import Image from 'next/image';
 import infuencerMarketingImage from '../../../../public/blog/influencer-marketing.svg'
 

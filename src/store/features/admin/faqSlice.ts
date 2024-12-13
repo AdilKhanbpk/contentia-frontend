@@ -51,14 +51,11 @@ export const createFaq = createAsyncThunk(
   "faq/createFaq",
   async ({ data, token }: CreateFaqPayload, { rejectWithValue }) => {
     try {
-      console.log("Creating FAQ with data:", data);
       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       const response = await axiosInstance.post("/admin/faq", data);
-      console.log("FAQ created successfully:", response.data.data);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
-      console.error("Error creating FAQ:", axiosError.response?.data || error);
       return rejectWithValue(
         axiosError.response?.data || "Failed to create FAQ"
       );
@@ -71,14 +68,11 @@ export const fetchFaqs = createAsyncThunk(
   "faq/fetchFaqs",
   async (token: string, { rejectWithValue }) => {
     try {
-      console.log("Fetching FAQs...");
       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       const response = await axiosInstance.get("/admin/faq");
-      console.log("Fetched FAQs successfully:", response.data.data);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
-      console.error("Error fetching FAQs:", axiosError.response?.data || error);
       return rejectWithValue(
         axiosError.response?.data || "Failed to fetch FAQs"
       );
@@ -91,14 +85,11 @@ export const updateFaq = createAsyncThunk(
   "faq/updateFaq",
   async ({ faqId, data, token }: UpdateFaqPayload, { rejectWithValue }) => {
     try {
-      console.log(`Updating FAQ with ID: ${faqId}`, data);
       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       const response = await axiosInstance.patch(`/admin/faq/${faqId}`, data);
-      console.log("FAQ updated successfully:", response.data.data);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
-      console.error(`Error updating FAQ with ID ${faqId}:`, axiosError.response?.data || error);
       return rejectWithValue(
         axiosError.response?.data || `Failed to update FAQ with ID ${faqId}`
       );
@@ -111,14 +102,11 @@ export const deleteFaq = createAsyncThunk(
   "faq/deleteFaq",
   async ({ faqId, token }: DeleteFaqPayload, { rejectWithValue }) => {
     try {
-      console.log(`Deleting FAQ with ID: ${faqId}`);
       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       await axiosInstance.delete(`/admin/faq/${faqId}`);
-      console.log("FAQ deleted successfully:", faqId);
       return faqId;
     } catch (error) {
       const axiosError = error as AxiosError;
-      console.error(`Error deleting FAQ with ID ${faqId}:`, axiosError.response?.data || error);
       return rejectWithValue(
         axiosError.response?.data || `Failed to delete FAQ with ID ${faqId}`
       );

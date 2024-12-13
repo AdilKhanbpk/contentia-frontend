@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import SmallCard from '../customCard/SmallCard';
 import { useTranslation } from 'react-i18next';
@@ -12,14 +12,6 @@ import {
     fetchHowItWorks,
 } from "@/store/features/admin/howWorkSlice";
 import { toast } from "react-toastify";
-
-
-
-// Define the FAQProps interface to specify the shape of the FAQ items
-interface FAQProps {
-    question: string;
-    answer: string;
-}
 
 const cards = [
     {
@@ -54,19 +46,14 @@ const cards = [
     }
 ];
 
-
 export default function HowItWorks() {
 
     const [openIndex, setOpenIndex] = useState<number | null>(null);
     const dispatch = useDispatch<AppDispatch>();
-    const { faqs, loading } = useSelector((state: RootState) => state.faq);
-    console.log("faq from the component", faqs);
-
+    const { faqs } = useSelector((state: RootState) => state.faq);
     const { sections } = useSelector(
         (state: RootState) => state.howWork
     );
-
-    console.log("sections from the component", sections);
 
     const toggleFAQ = (index: number) => {
         setOpenIndex(openIndex === index ? null : index);
@@ -75,45 +62,32 @@ export default function HowItWorks() {
     const { t } = useTranslation();
 
     useEffect(() => {
-        console.log("useEffect triggered");
-
         const tokenFromStorage = localStorage.getItem('accessToken');
-        console.log("Token from localStorage:", tokenFromStorage);
-
         if (tokenFromStorage) {
-            console.log("Token exists. Dispatching fetchFaqs...");
             dispatch(fetchFaqs(tokenFromStorage))
                 .then(() => {
-                    toast.success('FAQs fetched successfully'); // Show success message
+                    toast.success('FAQs fetched successfully');
                 })
                 .catch(() => {
-                    toast.error('Failed to fetch FAQs'); // Show error message
+                    toast.error('Failed to fetch FAQs');
                 });
         } else {
-            console.log("No token found in localStorage.");
-            toast.error('No access token found. Unable to fetch FAQs.'); // Error message for missing token
+            toast.error('No access token found. Unable to fetch FAQs.');
         }
     }, [dispatch]);
 
-    // Fetch data on mount
     useEffect(() => {
-        console.log("Initialization - Component Mounted");
-
         const token = localStorage.getItem("accessToken");
-        console.log("Token from localStorage:", token);
-
         if (token) {
-            console.log("Token found. Fetching data with token...");
             dispatch(fetchHowItWorks(token) as any)
                 .then(() => {
-                    toast.success('Data fetched successfully'); // Show success message
+                    toast.success('Data fetched successfully');
                 })
                 .catch(() => {
-                    toast.error('Failed to fetch data'); // Show error message
+                    toast.error('Failed to fetch data');
                 });
         } else {
-            console.log("No token found in localStorage.");
-            toast.error('No access token found. Unable to fetch data.'); // Show error for missing token
+            toast.error('No access token found. Unable to fetch data.');
         }
 
         return () => {
@@ -124,8 +98,8 @@ export default function HowItWorks() {
     return (
         <>
             <div className='px-4 sm:px-6 md:px-8 lg:px-[38px] '>
-                {/* /////////////// */}
 
+                {/* /////////////// */}
                 <div className="pt-24 sm:pt-24 md:pt-24 lg:pt-[180px]">
                     <div className="flex flex-col justify-center items-center">
                         <div className="flex flex-col justify-center items-center">
@@ -144,6 +118,7 @@ export default function HowItWorks() {
                             {sections[0]?.sectionDescription}
                         </p>
                     </div>
+
                     {/* Updated container for dynamic steps */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                         {sections[0]?.steps?.map((step: any, index: number) => (
@@ -162,10 +137,7 @@ export default function HowItWorks() {
                     </div>
                 </div>
 
-
-
                 {/* //////////// */}
-
                 <div className='mt-8 sm:mt-12 md:mt-16 lg:mt-20'>
                     <div className="flex flex-col justify-center items-center">
                         <h1 className="headingText mb-3">Sıkça Sorulan Sorular</h1>
@@ -211,8 +183,6 @@ export default function HowItWorks() {
                 </div>
 
                 {/* ////////////////// */}
-
-
                 <div className='w-full ml-2  mt-10 sm:mt-10 md:mt-16 lg:mt-20'>
                     <div>
                         <div className="flex flex-col justify-center items-center">
@@ -249,8 +219,6 @@ export default function HowItWorks() {
                 </div>
 
                 {/* ///////////////////////// */}
-                {/* //////////////////// */}
-
                 <div className='mt-8 sm:mt-12 md:mt-16 lg:mt-[100px]'>
                     <div className='flex flex-col justify-center items-center'>
                         <h1 className='headingText mb-3'>Neden Contentia?</h1>
@@ -260,7 +228,7 @@ export default function HowItWorks() {
                                 height={300}
                                 width={270}
                                 alt="border image"
-                                className="object-contain" // Use object-contain to maintain aspect ratio
+                                className="object-contain"
                             />
                         </div>
                     </div>
@@ -275,9 +243,6 @@ export default function HowItWorks() {
                         height={1500}
                     />
                 </div>
-
-                {/* ///////////////// */}
-
             </div>
         </>
     );

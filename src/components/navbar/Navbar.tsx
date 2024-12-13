@@ -1,14 +1,13 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import { useTranslation } from 'react-i18next'; // Import useTranslation hook
+import { useTranslation } from 'react-i18next';
 import Link from "next/link";
 
 export default function Navbar() {
-  const { t } = useTranslation(); // Initialize the translation hook
+  const { t } = useTranslation();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-  // Function to toggle sidebar visibility
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
@@ -24,7 +23,7 @@ export default function Navbar() {
                 data-drawer-toggle="logo-sidebar"
                 aria-controls="logo-sidebar"
                 type="button"
-                onClick={toggleSidebar} // Click handler for toggling sidebar
+                onClick={toggleSidebar}
                 className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
               >
                 <span className="sr-only">{t('open_sidebar')}</span>
@@ -163,22 +162,23 @@ export default function Navbar() {
                 <span className="flex-1 ms-3 whitespace-nowrap">{t('faq')}</span>
               </a>
             </li>
-
             <li>
-              <a
-                href="#"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-              >
-                <span className="flex-1 ms-3 whitespace-nowrap">{t('becomeContentCreator')}</span>
-              </a>
+              <Link legacyBehavior href="/contentiaio/become-creator">
+                <a
+                  className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                >
+                  <span className="flex-1 ms-3 whitespace-nowrap">{t('becomeContentCreator')}</span>
+                </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="#"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-              >
-                <span className="flex-1 ms-3 whitespace-nowrap">{t('login')}</span>
-              </a>
+              <Link legacyBehavior href="/contentiaio/authentication">
+                <a
+                  className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                >
+                  <span className="flex-1 ms-3 whitespace-nowrap">{t('login')}</span>
+                </a>
+              </Link>
             </li>
             <li>
               <a

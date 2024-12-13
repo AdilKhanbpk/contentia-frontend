@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { axiosInstance } from '@/store/axiosInstance';
 import { AxiosError } from 'axios';
 
-// Package Interface
 export interface Package {
   _id: string;
   title: string;
@@ -12,7 +11,6 @@ export interface Package {
   updatedAt?: string;
 }
 
-// State Interface
 export interface PackageState {
   data: Package[] | null;
   currentPackage: Package | null;
@@ -20,7 +18,6 @@ export interface PackageState {
   error: string | null;
 }
 
-// Initial State
 const initialState: PackageState = {
   data: null,
   currentPackage: null,
@@ -28,7 +25,6 @@ const initialState: PackageState = {
   error: null,
 };
 
-// Create Package
 export const createPackage = createAsyncThunk(
   'package/createPackage',
   async (
@@ -43,9 +39,6 @@ export const createPackage = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log("[Debug] Creating Package");
-      console.log("[Debug] Payload:", data);
-      console.log("[Debug] Token:", token);
 
       const response = await axiosInstance.post('/admin/packages', data, {
         headers: { 
@@ -54,11 +47,9 @@ export const createPackage = createAsyncThunk(
         },
       });
 
-      console.log("[Debug] Create Package Response:", response.data);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
-      console.error("[Error] Failed to create package:", axiosError.response?.data || error);
       return rejectWithValue(
         axiosError.response?.data || 'Failed to create package'
       );
@@ -71,18 +62,13 @@ export const fetchPackages = createAsyncThunk(
   'package/fetchPackages',
   async (token: string, { rejectWithValue }) => {
     try {
-      console.log("[Debug] Fetching Packages");
-      console.log("[Debug] Token:", token);
-
       const response = await axiosInstance.get('/admin/packages', {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("[Debug] Fetch Packages Response:", response.data);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
-      console.error("[Error] Failed to fetch packages:", axiosError.response?.data || error);
       return rejectWithValue(
         axiosError.response?.data || 'Failed to fetch packages'
       );
@@ -95,19 +81,13 @@ export const fetchPackageById = createAsyncThunk(
   'package/fetchPackageById',
   async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
     try {
-      console.log("[Debug] Fetching Package by ID");
-      console.log("[Debug] ID:", id);
-      console.log("[Debug] Token:", token);
-
       const response = await axiosInstance.get(`/admin/packages/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("[Debug] Fetch Package by ID Response:", response.data);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
-      console.error("[Error] Failed to fetch package by ID:", axiosError.response?.data || error);
       return rejectWithValue(
         axiosError.response?.data || 'Failed to fetch package'
       );
@@ -135,11 +115,6 @@ export const updatePackage = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log("[Debug] Updating Package");
-      console.log("[Debug] ID:", id);
-      console.log("[Debug] Payload:", data);
-      console.log("[Debug] Token:", token);
-
       const response = await axiosInstance.patch(`/admin/packages/${id}`, data, {
         headers: { 
           Authorization: `Bearer ${token}`,
@@ -147,12 +122,9 @@ export const updatePackage = createAsyncThunk(
         },
       });
 
-      console.log("data sent to slice for updation", data);
-      console.log("[Debug] Update Package Response:", response.data);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
-      console.error("[Error] Failed to update package:", axiosError.response?.data || error);
       return rejectWithValue(
         axiosError.response?.data || 'Failed to update package'
       );
@@ -165,19 +137,13 @@ export const deletePackage = createAsyncThunk(
   'package/deletePackage',
   async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
     try {
-      console.log("[Debug] Deleting Package");
-      console.log("[Debug] ID:", id);
-      console.log("[Debug] Token:", token);
-
       const response = await axiosInstance.delete(`/admin/packages/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("[Debug] Delete Package Response:", response.data);
-      return id; // Return the ID of the deleted package
+      return id;
     } catch (error) {
       const axiosError = error as AxiosError;
-      console.error("[Error] Failed to delete package:", axiosError.response?.data || error);
       return rejectWithValue(
         axiosError.response?.data || 'Failed to delete package'
       );
