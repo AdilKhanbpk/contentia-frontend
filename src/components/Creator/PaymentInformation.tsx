@@ -42,13 +42,13 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
     try {
       const res = await dispatch(setPaymentInformation(data));
       if (res) {
-        toast.success('Payment information saved successfully'); // Show success message
+        toast.success('Payment information saved successfully');
         setActiveTab(3);
       } else {
-        toast.error('Failed to save payment information'); // Show error message if needed
+        toast.error('Failed to save payment information');
       }
     } catch (error) {
-      toast.error('An error occurred while saving payment information'); // Handle unexpected errors
+      toast.error('An error occurred while saving payment information');
     }
   };
 

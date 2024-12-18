@@ -1,6 +1,5 @@
 import axios from "axios";
 
-// Reusable axios instance with default config
 export const axiosInstance = axios.create({
     baseURL: "https://contentia-backend.onrender.com/api/v1",
     headers: {

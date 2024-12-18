@@ -39,40 +39,21 @@ export const createBlog = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log("createBlog called.");
-      console.log("Token:", token);
-
-      console.log("Sending POST request to /admin/blogs...");
-      console.log("data send to the create thunk", data);
       const response = await axiosInstance.post('/admin/blogs', data, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
-
-      console.log("POST request successful. Response data:", response.data);
       return response.data.data;
     } catch (error) {
-      console.error("Error occurred while creating the blog:", error);
-
       const axiosError = error as AxiosError;
-      if (axiosError.response) {
-        console.error("Server responded with status:", axiosError.response.status);
-        console.error("Error response data:", axiosError.response.data);
-      } else if (axiosError.request) {
-        console.error("No response received. Request details:", axiosError.request);
-      } else {
-        console.error("Unexpected error:", axiosError.message);
-      }
-
       return rejectWithValue(
         axiosError.response?.data || 'Failed to create blog'
       );
     }
   }
 );
-
 
 // Fetch all blogs
 export const fetchBlogs = createAsyncThunk(

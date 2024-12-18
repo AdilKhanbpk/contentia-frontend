@@ -1,5 +1,3 @@
-import React from "react";
-
 const Beginning: React.FC<{ setActiveTab: (id: number) => void }> = ({
   setActiveTab,
 }) => {

@@ -1,15 +1,12 @@
 'use client';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import CustomModal from '../modal/CustomModel'
 
 export default function OrdersPackages() {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
-
 
     return (
         <>
@@ -19,17 +16,16 @@ export default function OrdersPackages() {
                         <div className=''>
                             <button className="font-semibold px-2 py-0.5 ButtonBlue text-white rounded-lg">UGC Siparişini Oluştur</button>
                         </div>
-
                         <div className='bg-white p-6 mt-2 mb-8'>
 
                             {/* Sipariş Detay Box 1 */}
                             <div className=" pb-2 mb-2 sm:pb-3 sm:mb-3 md:pb-4 md:mb-4 lg:pb-4 lg:mb-4">
+                            
                                 {/* Profil Bilgileri */}
                                 <div className="mb-4 p-6 sm:mb-5 sm:p-7 md:mb-6 md:p-8 lg:mb-6 lg:p-8 border-2 border-gray-200 ">
                                     <div className="flex flex-col lg:flex-row justify-start lg:justify-between items-start lg:items-start mb-2 sm:mb-3 md:mb-4 lg:mb-4">
                                         <div className='w-full lg:w-2/4 flex flex-col justify-between items-start md:items-start lg:items-start'>
                                             <h2 className="text-base font-semibold mb-12">Profil Bilgileri</h2>
-
                                             <div className="w-36 h-36 ButtonBlue font-semibold text-white rounded-full flex items-center justify-center">
                                                 SK
                                             </div>
@@ -65,8 +61,6 @@ export default function OrdersPackages() {
                                         </div>
                                     </div>
                                 </div>
-
-
                             </div>
                         </div>
 
@@ -74,10 +68,12 @@ export default function OrdersPackages() {
                         <div className='font-semibold mb-2'>Paketlerim</div>
                         <div className="bg-white p-4 pb-3 mb-2 sm:p-5 sm:pb-3.5 sm:mb-3 md:p-6 md:pb-4 md:mb-4 lg:p-6 lg:pb-4 lg:mb-4">
                             <div className="flex flex-col lg:flex-row justify-start lg:justify-between items-start lg:items-end lg:space-x-28">
+                               
                                 {/* First Section */}
                                 <div className="bg-white rounded-md">
                                     <h3 className="text-lg font-semibold mb-2 sm:mb-3 md:mb-4 lg:mb-4 BlueText">Launch</h3>
                                     <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:gap-4">
+                                      
                                         {/* Paket Durumu */}
                                         <div className="text-gray-700">Paket Durumu:</div>
                                         <div className="text-right BlueText font-semibold">Aktif</div>
@@ -103,14 +99,13 @@ export default function OrdersPackages() {
                                     </button>
                                 </div>
                             </div>
-
-
-
                         </div>
 
                         <CustomModal isOpen={isModalOpen} closeModal={closeModal} title="">
+                       
                             {/* model */}
                             <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">
+                              
                                 {/* First Box: Fields and Profile Section */}
                                 <div className="bg-white rounded-md mb-4 sm:mb-6 md:mb-8 lg:mb-8">
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4 lg:gap-4">
@@ -119,9 +114,7 @@ export default function OrdersPackages() {
                                                 <label className="block text-gray-700 font-semibold">İçerikleriniz</label>
                                                 <span className="text-gray-900">İçerik üreticiler içeriklerinizi hazırladığında bu sayfada görünecektir.</span>
                                             </div>
-
                                         </div>
-
                                     </div>
                                 </div>
 
@@ -160,10 +153,12 @@ export default function OrdersPackages() {
                                 </div>
 
                                 <div className='flex flex-col lg:flex-row lg:space-x-28'>
+                                
                                     {/* Paket Bilgileri Section */}
                                     <div className="bg-white rounded-md mb-4 sm:mb-6 md:mb-8 lg:mb-8">
                                         <h3 className="text-lg font-semibold mb-2 sm:mb-3 md:mb-4 lg:mb-4 BlueText">Paket Bilgileri:</h3>
                                         <div className="grid grid-cols-2 gap-0.5 sm:gap-0.5 md:gap-4 lg:gap-4">
+                                        
                                             {/* Ödeme No */}
                                             <div className="text-gray-700">Ödeme No:</div>
                                             <div className="text-right BlueText font-medium lg:font-semibold">201240184112</div>
@@ -210,7 +205,6 @@ export default function OrdersPackages() {
                                 <div className="flex">
                                     <div className="bg-white rounded-md w-full lg:w-1/3">
                                         <h2 className="BlueText text-lg font-semibold mb-2 sm:mb-3 md:mb-4 lg:mb-4">İçerik Detayı:</h2>
-
                                         <div className="flex justify-between  mb-2 sm:mb-2 md:mb-3 lg:mb-3">
                                             <p className="font-medium">Platform:</p>
                                             <p className="BlueText font-semibold">Meta</p>
@@ -257,20 +251,8 @@ export default function OrdersPackages() {
                                         </div>
                                     </div>
                                 </div>
-
-
-
                             </div>
                         </CustomModal>
-
-
-
-
-
-
-
-
-
                     </div>
                 </div>
             </div>

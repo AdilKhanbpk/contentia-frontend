@@ -1,4 +1,3 @@
-import React from "react";
 import ContentCreatorPreferences from "./SubCreatorComp/ContentCreatorPreferences";
 import SocialMediaInformation from "./SubCreatorComp/SocialMediaInformation";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -24,22 +23,17 @@ const Preferences: React.FC = () => {
 
   const onSubmit: SubmitHandler<any> = async (data) => {
     try {
-      console.log(data);
       dispatch(setCreatorInformation(data));
-
       const res = await dispatch(becomeCreatorThunk()).unwrap();
-      console.log(res);
-
       if (res.status === 201) {
-        toast.success('Successfully submitted creator information'); // Show success message
+        toast.success('Successfully submitted creator information');
         router.push("/contentiaio/become-creator/submitted-successfully");
       } else {
-        toast.error('Failed to submit creator information'); // Show error message for unsuccessful status
+        toast.error('Failed to submit creator information');
         router.push("/contentiaio/become-creator");
       }
     } catch (error) {
-      toast.error('An error occurred while submitting creator information'); // Handle unexpected errors
-      console.error(error);
+      toast.error('An error occurred while submitting creator information');
     }
   };
 

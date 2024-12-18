@@ -8,8 +8,6 @@ interface CreateNotificationPayload {
     link: string;
 }
 
-
-
 const initialState = {
     loading: false,
     success: false,

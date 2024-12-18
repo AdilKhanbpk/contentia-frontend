@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useTranslation } from "react-i18next"; // Import useTranslation hook
+import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import { IoNotificationsOutline } from 'react-icons/io5';
 import { AiOutlineSearch, AiOutlineSetting } from 'react-icons/ai';
@@ -9,26 +9,24 @@ import { MdOutlineEmail } from 'react-icons/md';
 import { BiUserCircle } from 'react-icons/bi';
 
 export default function AdminNavbar() {
-    const { t } = useTranslation(); // Initialize the translation hook
+    const { t } = useTranslation();
     const [isSidebarOpen, setSidebarOpen] = useState(true);
 
-    // Set initial sidebar state based on screen size
     useEffect(() => {
         const updateSidebarState = () => {
-            if (window.innerWidth >= 1024) { // Large screens (lg breakpoint in Tailwind is 1024px and up)
+            if (window.innerWidth >= 1024) {
                 setSidebarOpen(true);
             } else {
                 setSidebarOpen(false);
             }
         };
 
-        updateSidebarState(); // Initial check
-        window.addEventListener("resize", updateSidebarState); // Update on resize
+        updateSidebarState();
+        window.addEventListener("resize", updateSidebarState);
 
-        return () => window.removeEventListener("resize", updateSidebarState); // Cleanup
+        return () => window.removeEventListener("resize", updateSidebarState);
     }, []);
 
-    // Function to toggle sidebar visibility
     const toggleSidebar = () => {
         setSidebarOpen(!isSidebarOpen);
     };
@@ -41,7 +39,7 @@ export default function AdminNavbar() {
                         <div className="flex items-center">
                             <button
                                 type="button"
-                                onClick={toggleSidebar} // Click handler for toggling sidebar
+                                onClick={toggleSidebar}
                                 className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
                             >
                                 <span className="sr-only">{t('open_sidebar')}</span>
@@ -72,7 +70,6 @@ export default function AdminNavbar() {
                                     />
                                 </a>
 
-
                                 {/* Search Bar */}
                                 <div className="relative hidden sm:block ml-4 lg:ml-[52px]">
                                     <AiOutlineSearch className="absolute left-3 top-2.5 text-gray-400" />
@@ -82,13 +79,11 @@ export default function AdminNavbar() {
                                         className="pl-10 pr-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     />
                                 </div>
-
                             </div>
                         </div>
 
                         {/* Right Section */}
                         <ul className="flex items-center space-x-2 md:space-x-4 font-medium">
-
                             <button className="relative text-gray-600 hover:text-gray-800">
                                 <IoNotificationsOutline size={24} />
                                 <span className="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
@@ -100,8 +95,6 @@ export default function AdminNavbar() {
                                 <AiOutlineSetting size={24} />
                             </button>
 
-
-
                             {/* User Profile */}
                             <div className="flex items-center space-x-2">
                                 <BiUserCircle size={32} className="text-gray-600" />
@@ -111,7 +104,6 @@ export default function AdminNavbar() {
                     </div>
                 </div>
             </nav>
-
 
             {/* Sidebar */}
             <aside
@@ -364,8 +356,6 @@ export default function AdminNavbar() {
                                 </a>
                             </Link>
                         </li>
-
-
                     </ul>
                 </div>
             </aside>

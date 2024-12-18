@@ -1,6 +1,5 @@
 "use client";
-import React from 'react';
-import { useTranslation } from 'react-i18next'; // Import the useTranslation hook
+import { useTranslation } from 'react-i18next';
 import TimeSelector from '../timeSelector/TimeSelector';
 
 interface CardProps {
@@ -24,7 +23,7 @@ const CustomCard: React.FC<CardProps> = ({
   price = 'Default Price',
   onOrderClick = () => {}
 }) => {
-  const { t } = useTranslation(); // Initialize the translation hook
+  const { t } = useTranslation();
 
   return (
     <div className='flex flex-col cardBorder rounded-3xl w-full max-w-sm md:max-w-md lg:max-w-lg mx-auto'>

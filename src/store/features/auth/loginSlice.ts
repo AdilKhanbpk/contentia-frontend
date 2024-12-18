@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { axiosInstance } from '@/store/axiosInstance'; // Import the axios instance you created
+import { axiosInstance } from '@/store/axiosInstance';
 
 interface LoginData {
   email: string;
@@ -33,11 +33,10 @@ export const loginUser = createAsyncThunk(
   async (loginData: LoginData, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post('/users/login', loginData);
-      const token = response.data.data.accessToken; // Adjust this according to your API's response structure
-      localStorage.setItem('accessToken', token); // Store token under a consistent key
-      return token; // Return the token to the fulfilled action
+      const token = response.data.data.accessToken;
+      localStorage.setItem('accessToken', token);
+      return token;
     } catch (error: any) {
-      // If the login fails, use rejectWithValue to pass the error message
       return rejectWithValue(error.response?.data?.message || 'Login failed');
     }
   }
@@ -49,11 +48,10 @@ export const signupUser = createAsyncThunk(
   async (signupData: SignupData, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post('/users/signup', signupData);
-      const token = response.data.data.accessToken; // Adjust this according to your API's response structure
-      localStorage.setItem('accessToken', token); // Store token under a consistent key
-      return token; // Return the token to the fulfilled action
+      const token = response.data.data.accessToken;
+      localStorage.setItem('accessToken', token);
+      return token;
     } catch (error: any) {
-      // If the signup fails, use rejectWithValue to pass the error message
       return rejectWithValue(error.response?.data?.message || 'Signup failed');
     }
   }
@@ -82,7 +80,7 @@ const loginSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
-        state.error = action.payload as string; // Access the error message from rejectedWithValue
+        state.error = action.payload as string;
       })
       // Signup cases
       .addCase(signupUser.pending, (state) => {
@@ -96,7 +94,7 @@ const loginSlice = createSlice({
       .addCase(signupUser.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
-        state.error = action.payload as string; // Access the error message from rejectedWithValue
+        state.error = action.payload as string;
       });
   },
 });

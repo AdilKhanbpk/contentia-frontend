@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import Slider from "react-slick";
 
 interface CarouselProps {
@@ -7,8 +7,8 @@ interface CarouselProps {
 }
 
 const MyCarousel: React.FC<CarouselProps> = ({ videos }) => {
-  const sliderRef = useRef<Slider>(null); // Ensure correct type for ref
-  const [playingVideoIndex, setPlayingVideoIndex] = useState(1); // Start with the index set to 1
+  const sliderRef = useRef<Slider>(null);
+  const [playingVideoIndex, setPlayingVideoIndex] = useState(1);
 
   const settings = {
     dots: false,
@@ -18,9 +18,9 @@ const MyCarousel: React.FC<CarouselProps> = ({ videos }) => {
     slidesToScroll: 1,
     className: "center",
     centerMode: true,
-    centerPadding: "0px", // Adjust if needed
+    centerPadding: "0px",
     beforeChange: (oldIndex: number, newIndex: number) => {
-      setPlayingVideoIndex(newIndex); // Update the index when a slide changes
+      setPlayingVideoIndex(newIndex);
     },
   };
 
@@ -39,26 +39,10 @@ const MyCarousel: React.FC<CarouselProps> = ({ videos }) => {
   };
 
   const handleVideoEnded = () => {
-    const nextIndex = (playingVideoIndex + 1) % videos.length; // Move to the next video
-    setPlayingVideoIndex(nextIndex); // Set the next video index
+    const nextIndex = (playingVideoIndex + 1) % videos.length;
+    setPlayingVideoIndex(nextIndex);
     if (sliderRef.current) {
-      sliderRef.current.slickGoTo(nextIndex); // Move to the next slide
-    }
-  };
-
-  const handleArrowClick = (direction: "left" | "right") => {
-    if (sliderRef.current) {
-      const totalSlides = videos.length;
-      let newIndex = playingVideoIndex;
-
-      if (direction === "left") {
-        newIndex = (playingVideoIndex - 1 + totalSlides) % totalSlides;
-      } else {
-        newIndex = (playingVideoIndex + 1) % totalSlides;
-      }
-
-      setPlayingVideoIndex(newIndex);
-      sliderRef.current.slickGoTo(newIndex);
+      sliderRef.current.slickGoTo(nextIndex);
     }
   };
 
@@ -76,14 +60,14 @@ const MyCarousel: React.FC<CarouselProps> = ({ videos }) => {
               }`}
             >
               <video
-                muted={true} // Keep all videos muted
+                muted={true}
                 className={`object-cover ${
                   index === playingVideoIndex
                     ? "w-[250px] h-[250px] sm:w-[350px] sm:h-[350px] md:w-[400px] md:h-[400px]"
                     : "w-[200px] h-[200px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[350px]"
                 }`}
                 onClick={() => handleVideoClick(index)}
-                onEnded={handleVideoEnded} // Trigger the next video on end
+                onEnded={handleVideoEnded}
                 ref={(videoRef) => {
                   if (videoRef && index === playingVideoIndex) {
                     videoRef.play();

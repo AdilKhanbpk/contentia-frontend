@@ -1,14 +1,13 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import { useTranslation } from "react-i18next"; // Import useTranslation hook
+import { useTranslation } from "react-i18next";
 import Link from "next/link";
 
 export default function Navbar() {
-  const { t } = useTranslation(); // Initialize the translation hook
+  const { t } = useTranslation();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-  // Function to toggle sidebar visibility
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
@@ -30,7 +29,7 @@ export default function Navbar() {
             <div className="flex items-center">
               <button
                 type="button"
-                onClick={toggleSidebar} // Click handler for toggling sidebar
+                onClick={toggleSidebar}
                 className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
               >
                 <span className="sr-only">{t('open_sidebar')}</span>
@@ -49,12 +48,11 @@ export default function Navbar() {
                 </svg>
               </button>
 
-
               {/* Brand and Menu Links */}
               <div className="flex items-center space-x-8 ms-4">
                 <div className="flex items-center space-x-2">
                   <Image
-                    src="/brand-logo.png" // Placeholder for the logo next to "Brand Name"
+                    src="/brand-logo.png"
                     alt="brand logo"
                     height={32}
                     width={32}
@@ -64,7 +62,7 @@ export default function Navbar() {
                     Brand Name
                   </span>
                   <Image
-                    src="/dropDownIcon.png" // Placeholder for the logo next to "Brand Name"
+                    src="/dropDownIcon.png"
                     alt="brand logo"
                     height={20}
                     width={20}
@@ -90,7 +88,6 @@ export default function Navbar() {
                         {t('profile')}
                       </a>
                     </Link>
-
                   </li>
                   <li>
                     <Link legacyBehavior href="/orders/orders">
@@ -135,10 +132,10 @@ export default function Navbar() {
                 >
                   <span className="sr-only">Open user menu</span>
                   <span className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 text-white mr-2">
-                    SK {/* Initials */}
+                    SK
                   </span>
                   <Image
-                    src="/dropDownIcon.png" // Placeholder for the logo next to "Brand Name"
+                    src="/dropDownIcon.png"
                     alt="brand logo"
                     height={20}
                     width={20}
@@ -167,36 +164,40 @@ export default function Navbar() {
               </a>
             </li>
             <li>
-              <a
-                href="#"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-              >
-                <span className="flex-1 ms-3 whitespace-nowrap">{t('profile')}</span>
-              </a>
+              <Link legacyBehavior href="/orders/profile">
+                <a
+                  className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                >
+                  <span className="flex-1 ms-3 whitespace-nowrap">{t('profile')}</span>
+                </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="#"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-              >
-                <span className="flex-1 ms-3 whitespace-nowrap">{t('orders')}</span>
-              </a>
+              <Link legacyBehavior href="/orders/orders">
+                <a
+                  className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                >
+                  <span className="flex-1 ms-3 whitespace-nowrap">{t('orders')}</span>
+                </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="#"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-              >
-                <span className="flex-1 ms-3 whitespace-nowrap">{t('packages')}</span>
-              </a>
+              <Link legacyBehavior href="/orders/packages">
+                <a
+                  className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                >
+                  <span className="flex-1 ms-3 whitespace-nowrap">{t('packages')}</span>
+                </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="#"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-              >
-                <span className="flex-1 ms-3 whitespace-nowrap">{t('my_brands')}</span>
-              </a>
+              <Link legacyBehavior href="/orders/my-brands">
+                <a
+                  className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                >
+                  <span className="flex-1 ms-3 whitespace-nowrap">{t('my_brands')}</span>
+                </a>
+              </Link>
             </li>
           </ul>
         </div>

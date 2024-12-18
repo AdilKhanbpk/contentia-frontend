@@ -1,6 +1,5 @@
 "use client";
-// ProfileInfo.tsx
-import React from 'react';
+
 import Image from 'next/image';
 
 interface ProfileInfoProps {
@@ -8,8 +7,6 @@ interface ProfileInfoProps {
     setIsEditing: (isEditing: boolean) => void;
     isEditing: boolean;
 }
-
-console.log("this is profile info");
 
 export const ProfileInfo: React.FC<ProfileInfoProps> = ({ register, setIsEditing, isEditing }) => (
     <div className="flex flex-col lg:flex-row justify-start items-start lg:space-x-36 mb-4">

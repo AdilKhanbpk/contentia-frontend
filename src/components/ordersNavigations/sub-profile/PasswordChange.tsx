@@ -1,6 +1,4 @@
 "use client";
-// PasswordChange.tsx
-import React from 'react';
 
 interface PasswordChangeProps {
     register: any;

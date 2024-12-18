@@ -2,8 +2,8 @@
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "@/store/store"; // Import AppDispatch and RootState types
-import { signupUser } from "@/store/features/auth/loginSlice"; // Assuming your loginSlice is named like this
+import type { AppDispatch, RootState } from "@/store/store";
+import { signupUser } from "@/store/features/auth/loginSlice";
 import { toast } from "react-toastify";
 
 interface FormData {
@@ -13,17 +13,17 @@ interface FormData {
 }
 
 const LoginForm = () => {
-  const dispatch: AppDispatch = useDispatch(); // Use AppDispatch to correctly type dispatch
+  const dispatch: AppDispatch = useDispatch();
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
-  const loginState = useSelector((state: RootState) => state.login); // Use RootState to type the state
+  const loginState = useSelector((state: RootState) => state.login);
 
   const onSubmit = (data: FormData) => {
-    dispatch(signupUser(data)) // Ensure correct data type passed to signupUser
+    dispatch(signupUser(data))
       .then(() => {
-        toast.success('Signup successful'); // Show success message
+        toast.success('Signup successful');
       })
       .catch(() => {
-        toast.error('Signup failed'); // Show error message
+        toast.error('Signup failed');
       });
   };
 

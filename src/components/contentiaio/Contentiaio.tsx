@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import Image from 'next/image';
 import MyCarousel from '@/components/carousel/MyCarousel';
 import CustomCard from '@/components/customCard/CustomCard';
@@ -52,35 +52,26 @@ export default function Contentiaio() {
     const { data: landingPage, loading, error } = useSelector(
         (state: RootState) => state.landingPage
     );
-    console.log("landingPage data:", landingPage);
-
     const { t } = useTranslation();
-    const router = useRouter(); // Initialize the router
-
-    // Access token from localStorage
+    const router = useRouter();
     const token = typeof window !== 'undefined' ? localStorage.getItem("accessToken") : null;
 
-    // Fetch the landing page data on mount
     useEffect(() => {
-        console.log("useEffect triggered");
         if (token) {
-            console.log("Token is available:", token);
             dispatch(fetchLandingPage(token))
                 .then(() => {
                     toast.success('Landing page data fetched successfully'); // Show success message
-                    console.log("Dispatching fetchLandingPage with token");
                 })
                 .catch(() => {
                     toast.error('Failed to fetch landing page data'); // Show error message
-                    console.log("Error while dispatching fetchLandingPage");
                 });
         } else {
-            console.log("Token is not available");
+            toast.error("Token is not available");
         }
     }, [dispatch, token]);
 
     const handleOrderClick = () => {
-        router.push('/orders'); // Navigate to the orders page
+        router.push('/orders');
     };
 
     return (
@@ -92,16 +83,11 @@ export default function Contentiaio() {
                         {loading ? (
                             <div className='flex flex-col lg:flex-row'>
                                 <div>
-                                    {/* Skeleton for carouselHeroTitle */}
                                     <div className="h-8 bg-gray-200 animate-pulse w-2/3 mb-3"></div>
-                                    {/* Skeleton for staticHeroTitle */}
                                     <div className="h-8 bg-gray-200 animate-pulse w-1/2 mb-5"></div>
-                                    {/* Skeleton for heroSubTitle */}
                                     <div className="h-6 bg-gray-200 animate-pulse w-4/5 mb-5"></div>
-                                    {/* Skeleton for button */}
                                     <div className="h-10 bg-gray-200 animate-pulse w-32 rounded-md mb-6"></div>
                                 </div>
-                                {/* Skeleton for carousel */}
                                 <div className="flex justify-center space-x-4">
                                     {[...Array(3)].map((_, index) => (
                                         <div key={index} className="w-36 h-36 bg-gray-300 animate-pulse rounded-xl" />
@@ -113,7 +99,6 @@ export default function Contentiaio() {
                         ) : (
                             <>
                                 <div className='flex flex-col'>
-                                    {/* Render content after successful data fetch */}
                                     <h1 className='headingText mb-3'>
                                         <span className='headingTextBlue'>{landingPage?.carouselHeroTitle}</span>
                                         <span className="ml-2">{landingPage?.staticHeroTitle}</span>
@@ -121,7 +106,6 @@ export default function Contentiaio() {
                                     <div className='mx-3'>
                                         <p className='paraText mb-5'>{landingPage?.heroSubTitle}</p>
                                     </div>
-                                    {/* Button is only shown after successful data fetch */}
                                     {landingPage && (
                                         <div>
                                             <button className="Button text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
@@ -131,7 +115,6 @@ export default function Contentiaio() {
                                     )}
                                 </div>
 
-                                {/* Carousel Section */}
                                 <div className='lg:w-1/2 w-full lg:ml-2 mx-auto'>
                                     <MyCarousel videos={landingPage?.videos || []} />
                                 </div>
@@ -140,10 +123,7 @@ export default function Contentiaio() {
                     </div>
                 </div>
 
-
-
                 {/* /////////////////// */}
-
                 <div className='mt-8 sm:mt-12 md:mt-16 lg:mt-[100px]'>
                     <div className='flex flex-col justify-center items-center'>
                         <h1 className='headingText mb-3'>{t('discoverContentHeader')}</h1>
@@ -215,14 +195,12 @@ export default function Contentiaio() {
                         </div>
                     </div>
                 </div>
+
                 {/* ////////////////// */}
-
-
                 <div className='w-full ml-2  mt-10 sm:mt-10 md:mt-16 lg:mt-20'>
                     <div>
                         <p className='paraText text-center mb-8'>
                             {t('PAGE_TITLE')}
-
                         </p>
                         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6'>
                             {cards.map((card, index) => (
@@ -245,8 +223,6 @@ export default function Contentiaio() {
                 </div>
 
                 {/* ///////////////////////// */}
-
-
                 <div className='mt-8 sm:mt-12 md:mt-16 lg:mt-[100px]'>
                     <div className='flex flex-col justify-center items-center'>
                         <h1 className='headingText mb-3'>{t('successRatesHeader')}</h1>
@@ -309,9 +285,7 @@ export default function Contentiaio() {
                     </div>
                 </div>
 
-
                 {/* //////////////////// */}
-
                 <div className='mt-8 sm:mt-12 md:mt-16 lg:mt-[100px]'>
                     <div className='flex flex-col justify-center items-center'>
                         <h1 className='headingText mb-3'>{t('whyContentiaHeader')}</h1>
@@ -321,7 +295,7 @@ export default function Contentiaio() {
                                 height={300}
                                 width={270}
                                 alt="border image"
-                                className="object-contain" // Use object-contain to maintain aspect ratio
+                                className="object-contain"
                             />
                         </div>
                     </div>
@@ -338,7 +312,6 @@ export default function Contentiaio() {
                 </div>
 
                 {/* ///////////////// */}
-
                 <div className='w-full ml-2  mt-8 sm:mt-12 md:mt-16 lg:mt-20'>
                     <div>
                         <p className='paraText text-center mb-8'>
@@ -392,9 +365,7 @@ export default function Contentiaio() {
                     </div>
                 </div>
 
-
                 {/* /////////////// */}
-
                 <div className=' mt-8 sm:mt-12 md:mt-16 lg:mt-20'>
                     <div className='flex justify-center items-center'>
                         <h1 className='paraText text-center mb-8'>
@@ -402,9 +373,7 @@ export default function Contentiaio() {
                         </h1>
                     </div>
 
-                    {/* Updated container for 2x2 grid */}
                     <div className='grid grid-cols-1 sm:grid-cols-2 gap-8'>
-                        {/* First Box */}
                         <div className=''>
                             <div className='flex flex-col'>
                                 <div className='flex flex-row items-center'>
@@ -417,7 +386,6 @@ export default function Contentiaio() {
                             </div>
                         </div>
 
-                        {/* Second Box */}
                         <div className=''>
                             <div className='flex flex-col'>
                                 <div className='flex flex-row items-center'>
@@ -430,7 +398,6 @@ export default function Contentiaio() {
                             </div>
                         </div>
 
-                        {/* Third Box */}
                         <div className=''>
                             <div className='flex flex-col'>
                                 <div className='flex flex-row items-center'>
@@ -443,7 +410,6 @@ export default function Contentiaio() {
                             </div>
                         </div>
 
-                        {/* Fourth Box */}
                         <div className=''>
                             <div className='flex flex-col'>
                                 <div className='flex flex-row items-center'>
@@ -458,10 +424,7 @@ export default function Contentiaio() {
                     </div>
                 </div>
 
-
-
                 {/* //////////// */}
-
                 <div className='yellowGradient px-4 md:px-10 lg:px-24 py-6 md:py-8 my-10  rounded-3xl'>
                     <div className='flex flex-col md:flex-row justify-center items-center gap-6 md:gap-12 lg:gap-36'>
                         <div className='flex-shrink-0'>
@@ -493,10 +456,7 @@ export default function Contentiaio() {
                         </div>
                     </div>
                 </div>
-
-
             </div >
-
         </>
     );
 }

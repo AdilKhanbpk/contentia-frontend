@@ -1,6 +1,4 @@
 "use client";
-// InvoiceInfo.tsx
-import React from 'react';
 
 interface InvoiceInfoProps {
     register: any;
@@ -9,8 +7,6 @@ interface InvoiceInfoProps {
     setIsEditing: (value: boolean) => void;
     isEditing: boolean;
 }
-
-console.log("this is invoice info");
 
 export const InvoiceInfo: React.FC<InvoiceInfoProps> = ({ register, invoiceType, setInvoiceType, setIsEditing, isEditing }) => (
     <>

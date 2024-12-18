@@ -38,7 +38,7 @@ export const createLandingPage = createAsyncThunk(
           'Content-Type': 'multipart/form-data',
         },
       });
-      return response.data.data; // Assuming API response includes `data` field
+      return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
       return rejectWithValue(
@@ -52,24 +52,18 @@ export const createLandingPage = createAsyncThunk(
 export const fetchLandingPage = createAsyncThunk(
   'landingPage/fetchLandingPage',
   async (token: string, { rejectWithValue }) => {
-    console.log("fetchLandingPage initiated with token:", token); // Log token
     try {
-      console.log("Sending GET request to /admin/landingPage...");
       const response = await axiosInstance.get('/admin/landingPage', {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("Response received:", response.data); // Log response
-      return response.data.data; // Assuming API response includes `data` field
+      return response.data.data;
     } catch (error) {
-      console.error("Error occurred while fetching landing page:", error); // Log error details
       const axiosError = error as AxiosError;
       const errorData = axiosError.response?.data || 'Failed to fetch landing page';
-      console.error("Error response data:", errorData); // Log error response
       return rejectWithValue(errorData);
     }
   }
 );
-
 
 // Update the landing page
 export const updateLandingPage = createAsyncThunk(
@@ -78,13 +72,7 @@ export const updateLandingPage = createAsyncThunk(
       { id, data, token }: { id: string; data: FormData; token: string },
       { rejectWithValue }
     ) => {
-      console.log("[Debug] Sending request to update landing page");
-      console.log("[Debug] ID:", id);
-      console.log("[Debug] Payload (FormData):", data);
-      console.log("[Debug] Token:", token);
-  
       try {
-        // Making the PATCH request
         const response = await axiosInstance.patch(
           `/admin/landingPage/${id}`,
           data,
@@ -95,18 +83,9 @@ export const updateLandingPage = createAsyncThunk(
             },
           }
         );
-  
-        // Log successful response
-        console.log("[Debug] Response received from update API:", response.data);
-  
-        // Return the response data for further use in reducers
         return response.data.data;
       } catch (error) {
-        // Log error response
         const axiosError = error as AxiosError;
-        console.error("[Error] Failed to update landing page:", axiosError.response?.data || error);
-  
-        // Return the error message
         return rejectWithValue(
           axiosError.response?.data || 'Failed to update landing page'
         );

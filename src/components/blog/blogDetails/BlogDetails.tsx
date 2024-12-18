@@ -4,7 +4,6 @@ import { IoIosArrowForward } from 'react-icons/io';
 import influencerMarketingImage from "../../../../public/blog/influencer-marketing1.svg";
 import Image from 'next/image';
 
-// Sample post data
 const posts = [
     {
         id: 1,

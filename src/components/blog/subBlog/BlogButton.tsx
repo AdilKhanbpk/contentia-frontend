@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface BlogButtonProps {
   onCategoryChange: (category: string) => void;
   activeCategory: string;  

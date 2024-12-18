@@ -1,10 +1,7 @@
-// i18n.js
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import translationEN from '../public/locales/en/translation.json';
 import translationTR from '../public/locales/tr/translation.json';
-
-console.log('Initializing i18n');
 
 i18n
   .use(initReactI18next)
@@ -17,7 +14,7 @@ i18n
         translation: translationTR,
       },
     },
-    lng: 'tr', // Default language is Turkish
+    lng: 'tr',
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false,

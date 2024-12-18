@@ -1,5 +1,4 @@
-// src/components/InitializeSocket.tsx
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setSocketLoading,
@@ -15,17 +14,15 @@ import {
 
 function InitializeSocket() {
   const dispatch = useDispatch();
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+  const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
   const notifications = useSelector(selectNotifications);
-  console.log(notifications);
+  
   useEffect(() => {
     if (token) {
       dispatch(setSocketLoading());
       try {
         const socket = initializeSocket(token);
         socket.on("connect", () => {
-          console.log("Connected to the socket.", socket.id);
           dispatch(setSocketConnected());
         });
 

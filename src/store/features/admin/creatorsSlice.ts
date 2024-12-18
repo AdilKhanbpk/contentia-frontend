@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { axiosInstance } from '@/store/axiosInstance';
 import { AxiosError } from 'axios';
 
-type Creator = { [key: string]: any }; // Define this according to your customer object structure
+type Creator = { [key: string]: any };
 
 export interface AdminCreatorsState {
   data: Creator[];
@@ -23,36 +23,27 @@ export const fetchAdminCreators = createAsyncThunk(
     'adminCreators/fetchAdminCreators',
     async (token: string) => {
       try {
-        console.log('Fetching admin creators...');
-        
-        // Make the API request
         const response = await axiosInstance.get('/admin/creators', {
           headers: { Authorization: `Bearer ${token}` },
         });
   
-        console.log('API Response:', response);  // Log the entire response to inspect its structure
-  
         if (response.data && response.data.data) {
-          console.log('Found data field in response:', response.data.data);
-          
           const customers = response.data.data.map((customer: any) => {
-            console.log('Mapping customer data:', customer);  // Log each customer before processing it
-  
             return {
-              id: customer._id ?? null,  // Set to null if _id is missing or undefined
-              fullName: customer.fullName ?? '',  // Default to an empty string if fullName is missing or undefined
-              creatorType: customer.creatorType ?? 'individual',  // Default to 'individual' if creatorType is missing or undefined
-              userType: customer.userType ?? '', // Default to 'user' if user
-              role: customer.role ?? '', // Default to ''
-              password: customer.password ?? '',  // Default to empty string if password is missing or undefined
-              identityNo: customer.identityNo ?? '',  // Default to empty string if tckn is missing or undefined
-              email: customer.email ?? '',  // Default to an empty string if email is missing or undefined
-              dateOfBirth: customer.dateOfBirth ?? '',  // Default to an empty string if dateOfBirth is missing or undefined
-              gender: customer.gender ?? 'other',  // Default to 'other' if gender is missing or undefined
-              phoneNumber: customer.phoneNumber ?? '',  // Default to empty string if phoneNumber is missing or undefined
-              isVerified: customer.isVerified ?? 'pending',  // Default to false if isVerified is missing or undefined
-              accountType: customer.accountType ?? 'individual',  // Default to 'individual' if accountType is missing or undefined
-              invoiceType: customer.invoiceType ?? 'individual',  // Default to 'individual' if invoiceType is missing or undefined
+              id: customer._id ?? null,
+              fullName: customer.fullName ?? '',
+              creatorType: customer.creatorType ?? 'individual',
+              userType: customer.userType ?? '',
+              role: customer.role ?? '',
+              password: customer.password ?? '',
+              identityNo: customer.identityNo ?? '',
+              email: customer.email ?? '',
+              dateOfBirth: customer.dateOfBirth ?? '',
+              gender: customer.gender ?? 'other',
+              phoneNumber: customer.phoneNumber ?? '',
+              isVerified: customer.isVerified ?? 'pending',
+              accountType: customer.accountType ?? 'individual',
+              invoiceType: customer.invoiceType ?? 'individual',
               addressDetails: {
                 addressOne: customer.addressDetails?.addressOne ?? '',
                 addressTwo: customer.addressDetails?.addressTwo ?? '',
@@ -60,89 +51,81 @@ export const fetchAdminCreators = createAsyncThunk(
                 zipCode: customer.addressDetails?.zipCode ?? '',
               },
               paymentInformation: {
-                ibanNumber: customer.paymentInformation?.ibanNumber ?? '',  // Default to empty string if ibanNumber is missing or undefined
-                address: customer.paymentInformation?.address ?? '',  // Default to empty string if address is missing or undefined
-                fullName: customer.paymentInformation?.fullName ?? '',  // Default to empty string if fullName is missing or undefined
-                trId: customer.paymentInformation?.trId ?? '',  // Default to empty string if trId is missing or undefined
-                companyName: customer.paymentInformation?.companyName ?? '',  // Default to empty string if companyName is missing or undefined
-                taxNumber: customer.paymentInformation?.taxNumber ?? '',  // Default to empty string if taxNumber is missing or undefined
-                taxOffice: customer.paymentInformation?.taxOffice ?? '',  // Default to empty string if taxOffice is missing or undefined
+                ibanNumber: customer.paymentInformation?.ibanNumber ?? '',
+                address: customer.paymentInformation?.address ?? '',
+                fullName: customer.paymentInformation?.fullName ?? '',
+                trId: customer.paymentInformation?.trId ?? '',
+                companyName: customer.paymentInformation?.companyName ?? '',
+                taxNumber: customer.paymentInformation?.taxNumber ?? '',
+                taxOffice: customer.paymentInformation?.taxOffice ?? '',
               },
               billingInformation: {
-                invoiceStatus: customer.billingInformation?.invoiceStatus ?? false,  // Default to false if invoiceStatus is missing or undefined
-                address: customer.billingInformation?.address ?? '',  // Default to empty string if address is missing or undefined
-                fullName: customer.billingInformation?.fullName ?? '',  // Default to empty string if fullName is missing or undefined
-                trId: customer.billingInformation?.trId ?? '',  // Default to empty string if trId is missing or undefined
-                companyName: customer.billingInformation?.companyName ?? '',  // Default to empty string if companyName is missing or undefined
-                taxNumber: customer.billingInformation?.taxNumber ?? '',  // Default to empty string if taxNumber is missing or undefined
-                taxOffice: customer.billingInformation?.taxOffice ?? '',  // Default to empty string if taxOffice is missing or undefined
+                invoiceStatus: customer.billingInformation?.invoiceStatus ?? false,
+                address: customer.billingInformation?.address ?? '',
+                fullName: customer.billingInformation?.fullName ?? '',
+                trId: customer.billingInformation?.trId ?? '',
+                companyName: customer.billingInformation?.companyName ?? '',
+                taxNumber: customer.billingInformation?.taxNumber ?? '',
+                taxOffice: customer.billingInformation?.taxOffice ?? '',
               },
               preferences: {
                 contentInformation: {
-                  contentType: customer.preferences?.contentInformation?.contentType ?? 'other',  // Default to 'other' if contentType is missing or undefined
-                  contentFormats: customer.preferences?.contentInformation?.contentFormats ?? [],  // Default to empty array if contentFormats is missing or undefined
-                  areaOfInterest: customer.preferences?.contentInformation?.areaOfInterest ?? [],  // Default to empty array if areaOfInterest is missing or undefined
+                  contentType: customer.preferences?.contentInformation?.contentType ?? 'other',
+                  contentFormats: customer.preferences?.contentInformation?.contentFormats ?? [],
+                  areaOfInterest: customer.preferences?.contentInformation?.areaOfInterest ?? [],
                   addressDetails: {
-                    country: customer.preferences?.contentInformation?.addressDetails?.country ?? '',  // Default to empty string if country is missing or undefined
-                    state: customer.preferences?.contentInformation?.addressDetails?.state ?? '',  // Default to empty string if state is missing or undefined
-                    district: customer.preferences?.contentInformation?.addressDetails?.district ?? '',  // Default to empty string if district is missing or undefined
-                    neighbourhood: customer.preferences?.contentInformation?.addressDetails?.neighbourhood ?? '',  // Default to empty string if neighbourhood is missing or undefined
-                    fullAddress: customer.preferences?.contentInformation?.addressDetails?.fullAddress ?? '',  // Default to empty string if fullAddress is missing or undefined
+                    country: customer.preferences?.contentInformation?.addressDetails?.country ?? '',
+                    state: customer.preferences?.contentInformation?.addressDetails?.state ?? '',
+                    district: customer.preferences?.contentInformation?.addressDetails?.district ?? '',
+                    neighbourhood: customer.preferences?.contentInformation?.addressDetails?.neighbourhood ?? '',
+                    fullAddress: customer.preferences?.contentInformation?.addressDetails?.fullAddress ?? '',
                   },
                 },
                 socialInformation: {
-                  contentType: customer.preferences?.socialInformation?.contentType ?? 'other',  // Default to 'other' if contentType is missing or undefined
+                  contentType: customer.preferences?.socialInformation?.contentType ?? 'other',
                   platforms: {
                     Instagram: {
-                      followers: customer.preferences?.socialInformation?.platforms?.Instagram?.followers ?? 0,  // Default to 0 if followers count is missing
-                      username: customer.preferences?.socialInformation?.platforms?.Instagram?.username ?? '',  // Default to empty string if username is missing
+                      followers: customer.preferences?.socialInformation?.platforms?.Instagram?.followers ?? 0,
+                      username: customer.preferences?.socialInformation?.platforms?.Instagram?.username ?? '',
                     },
                     TikTok: {
-                      followers: customer.preferences?.socialInformation?.platforms?.TikTok?.followers ?? 0,  // Default to 0 if followers count is missing
-                      username: customer.preferences?.socialInformation?.platforms?.TikTok?.username ?? '',  // Default to empty string if username is missing
+                      followers: customer.preferences?.socialInformation?.platforms?.TikTok?.followers ?? 0,
+                      username: customer.preferences?.socialInformation?.platforms?.TikTok?.username ?? '',
                     },
                     Youtube: {
-                      followers: customer.preferences?.socialInformation?.platforms?.Youtube?.followers ?? 0,  // Default to 0 if followers count is missing
-                      username: customer.preferences?.socialInformation?.platforms?.Youtube?.username ?? '',  // Default to empty string if username is missing
+                      followers: customer.preferences?.socialInformation?.platforms?.Youtube?.followers ?? 0,
+                      username: customer.preferences?.socialInformation?.platforms?.Youtube?.username ?? '',
                     },
                     X: {
-                      followers: customer.preferences?.socialInformation?.platforms?.Instagram?.followers ?? 0,  // Default to 0 if followers count is missing
-                      username: customer.preferences?.socialInformation?.platforms?.Instagram?.username ?? '',  // Default to empty string if username is missing
+                      followers: customer.preferences?.socialInformation?.platforms?.Instagram?.followers ?? 0,
+                      username: customer.preferences?.socialInformation?.platforms?.Instagram?.username ?? '',
                     },
                     Facebook: {
-                      followers: customer.preferences?.socialInformation?.platforms?.TikTok?.followers ?? 0,  // Default to 0 if followers count is missing
-                      username: customer.preferences?.socialInformation?.platforms?.TikTok?.username ?? '',  // Default to empty string if username is missing
+                      followers: customer.preferences?.socialInformation?.platforms?.TikTok?.followers ?? 0,
+                      username: customer.preferences?.socialInformation?.platforms?.TikTok?.username ?? '',
                     },
                     Linkedin: {
-                      followers: customer.preferences?.socialInformation?.platforms?.Youtube?.followers ?? 0,  // Default to 0 if followers count is missing
-                      username: customer.preferences?.socialInformation?.platforms?.Youtube?.username ?? '',  // Default to empty string if username is missing
+                      followers: customer.preferences?.socialInformation?.platforms?.Youtube?.followers ?? 0,
+                      username: customer.preferences?.socialInformation?.platforms?.Youtube?.username ?? '',
                     },
                   },
-                  portfolioLink: customer.preferences?.socialInformation?.portfolioLink ?? '',  // Default to empty string if portfolioLink is missing or undefined
+                  portfolioLink: customer.preferences?.socialInformation?.portfolioLink ?? '',
                 },
               },
-              userAgreement: customer.userAgreement ?? false,  // Default to false if userAgreement is missing or undefined
-              approvedCommercial: customer.approvedCommercial ?? false,  // Default to false if approvedCommercial is missing or undefined
+              userAgreement: customer.userAgreement ?? false,
+              approvedCommercial: customer.approvedCommercial ?? false,
             };
           });
-  
-          console.log('Mapped customers:', customers);  // Log the mapped customers to verify the transformation
-  
           return customers;
         } else {
-          console.warn('Response data does not contain the expected data field.');
-          return [];  // Return an empty array if the data is not as expected
+          return [];
         }
       } catch (error) {
-        console.error('Error fetching admin customers:', error);  // Log the error message
         throw Error('Failed to fetch admin customers');
       }
     }
   );
   
-
-
-
 // Fetch a single customer by ID
 export const fetchAdminCreatorById = createAsyncThunk(
   'adminCreators/fetchAdminCreatorById',
@@ -165,14 +148,13 @@ export const createAdminCreator = createAsyncThunk(
     { data, token }: { data: AdminCreatorsState; token: string },
     { rejectWithValue }
   ) => {
+   
     try {
+    
       // Validate token
       if (!token) {
         return rejectWithValue('Authentication token is missing');
       }
-
-      // Log request details
-      console.log('Creating customer with data:', data);
 
       const response = await axiosInstance.post(
         '/admin/creators',
@@ -188,15 +170,6 @@ export const createAdminCreator = createAsyncThunk(
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError;
-      
-      // Log detailed error information
-      console.error('Customer creation failed:', {
-        status: axiosError.response?.status,
-        statusText: axiosError.response?.statusText,
-        data: axiosError.response?.data,
-        headers: axiosError.response?.headers,
-      });
-
       return rejectWithValue(
         axiosError.response?.data || 
         'Failed to create admin customer. Please check server logs for details.'
@@ -205,7 +178,6 @@ export const createAdminCreator = createAsyncThunk(
   }
 );
 
-
 // Update an existing customer with enhanced debugging and timeout
 export const updateAdminCreator = createAsyncThunk(
   'adminCreators/updateAdminCreator',
@@ -213,84 +185,51 @@ export const updateAdminCreator = createAsyncThunk(
     { customerId, data, token }: { customerId: string; data: any; token: string },
     { rejectWithValue }
   ) => {
-    console.group("updateAdminCreator Thunk Debugging");
-
-    console.log("Starting customer update process");
-    console.log("Customer ID to update:", customerId);
-    console.log("Data being sent for update:", data);
-    console.log("Authorization token:", token);
 
     try {
-      console.log("Attempting to send PATCH request to server...");
-
       const response = await axiosInstance.patch(`/admin/creators/${customerId}`, data, {
         headers: { Authorization: `Bearer ${token}` },
-        timeout: 10000, // Set a 10-second timeout
+        timeout: 10000,
       });
 
       if (response.status >= 200 && response.status < 300) {
-        console.log("Update successful, server response data:", response.data);
-        console.groupEnd();
         return response.data;
       } else {
-        console.warn(`Unexpected response status: ${response.status}`);
-        console.groupEnd();
         return rejectWithValue(`Unexpected response status: ${response.status}`);
       }
     } catch (error) {
-      console.group("Error Details");
-
       if ((error as AxiosError).isAxiosError) {
         const axiosError = error as AxiosError;
-        console.error("Axios error during update. Server response:", axiosError.response);
-
         if (axiosError.response) {
           console.log("Server response status:", axiosError.response.status);
-          console.log("Server response data:", axiosError.response.data);
-          console.log("Server headers:", axiosError.response.headers);
         } else if (axiosError.request) {
           console.error("Request was made but no response was received:", axiosError.request);
         }
-
         return rejectWithValue(`Update failed: ${axiosError.message}`);
       } else {
         console.error("Non-Axios error during update:", error);
         return rejectWithValue(`Unexpected error: ${error instanceof Error ? error.message : String(error)}`);
       }
-
-      console.groupEnd();
     }
   }
 );
-
-
-
 
 // Delete a customer by ID
 export const deleteAdminCreator = createAsyncThunk(
   'adminCreators/deleteAdminCreator',
   async ({ customerId, token }: { customerId: string; token: string }, { rejectWithValue }) => {
-    console.log("Attempting to delete customer:", customerId);
-    console.log("Token provided:", token);
+
     try {
       const response = await axiosInstance.delete(`/admin/creators/${customerId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("Delete successful, server response:", response);
       return customerId;
     } catch (error) {
       let errorMessage = 'Failed to delete admin customer';
-      if ((error as AxiosError).isAxiosError && (error as AxiosError).response) {
-        errorMessage = `Delete failed: ${(error as AxiosError).response?.data || 'Unknown error'}`;
-        console.error("Server responded with an error:", (error as AxiosError).response);
-      } else {
-        console.error("Axios error:", error);
-      }
       return rejectWithValue(errorMessage);
     }
   }
 );
-
 
 const adminCreatorsSlice = createSlice({
   name: 'adminCreators',
@@ -331,7 +270,7 @@ const adminCreatorsSlice = createSlice({
       })
       .addCase(createAdminCreator.fulfilled, (state, action: PayloadAction<Creator>) => {
         state.loading = false;
-        state.data.push(action.payload); // Add the new customer to the list
+        state.data.push(action.payload);
       })
       .addCase(createAdminCreator.rejected, (state, action) => {
         state.loading = false;
@@ -348,7 +287,7 @@ const adminCreatorsSlice = createSlice({
         const updatedData = state.data.map((customer) =>
           customer.id === updatedCustomer.id ? updatedCustomer : customer
         );
-        state.data = updatedData; // Create a new reference to trigger re-render
+        state.data = updatedData;
       })
       .addCase(updateAdminCreator.rejected, (state, action) => {
         state.loading = false;

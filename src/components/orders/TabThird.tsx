@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import Image from 'next/image';
 import { useForm, Controller } from 'react-hook-form';
 import axios from 'axios';
@@ -14,45 +14,26 @@ const TabThird = () => {
         }
     };
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const files = event.target.files;
-        if (files) {
-            console.log(files); // Handle the file upload logic here
-        }
-    };
-
     const onSubmit = async (data: any) => {
         console.log(data);
         try {
-            // Create a FormData object to send files and other data
             const formData = new FormData();
-
-            // Append the first file to FormData (change 'files' to 'file')
             if (data.files && data.files.length > 0) {
-                formData.append('file', data.files[0]); // Append only the first file
+                formData.append('file', data.files[0]);
             }
-
-            // Append other form fields
             formData.append('brand', data.brand);
             formData.append('brief', data.brief);
             formData.append('productName', data.productName);
             formData.append('scenario', data.scenario);
             formData.append('description', data.description);
             formData.append('sampleWork', data.sampleWork);
-
-            // Axios POST request to send formData
             const response = await axios.post('http://localhost:3001/api/v1/ugc/ugcBrief', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-
-            // Handle success
-            console.log('Success:', response.data);
             toast.success('UGC brief submitted successfully!');
         } catch (error) {
-            // Handle error
-            console.error('Error:', error);
             toast.error('Failed to submit UGC brief. Please try again.');
         }
     };
@@ -61,8 +42,10 @@ const TabThird = () => {
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="w-full max-w-4xl bg-white p-8 shadow-lg rounded-md">
                 <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+                 
                     {/* First Row - Brand Selection and Brief */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      
                         {/* Brand Selection */}
                         <div>
                             <div className='flex flex-row items-center space-x-4 mb-4'>
@@ -85,7 +68,6 @@ const TabThird = () => {
                                 defaultValue=""
                             >
                                 <option value="" disabled>Brand Name</option>
-                                {/* Add brand options here */}
                             </select>
                             {errors.brand && <span className="text-red-500">Marka Seçimi zorunludur</span>}
                         </div>
@@ -104,6 +86,7 @@ const TabThird = () => {
 
                     {/* Second Row - Product/Service Name and Scenario */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                     
                         {/* Product/Service Name */}
                         <div>
                             <label className="block text-sm font-semibold mb-1">Ürün / Hizmet Adı:</label>
@@ -130,6 +113,7 @@ const TabThird = () => {
 
                     {/* Third Row - Product/Service Description and Sample Work */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                       
                         {/* Product/Service Description */}
                         <div>
                             <label className="block text-sm font-semibold mb-1">Ürün / Hizmet Açıklaması:</label>
@@ -194,8 +178,7 @@ const TabThird = () => {
                                         ref={fileInputRef}
                                         className="hidden"
                                         onChange={(e) => {
-                                            handleFileChange(e);
-                                            onChange(e.target.files); // Update react-hook-form state
+                                            onChange(e.target.files);
                                         }}
                                         accept=".jpg,.png,.gif,.pdf,.mp4,.mov,.wmv"
                                         multiple
