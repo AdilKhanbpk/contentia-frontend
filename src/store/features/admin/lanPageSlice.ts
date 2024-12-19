@@ -51,11 +51,9 @@ export const createLandingPage = createAsyncThunk(
 // Fetch the landing page
 export const fetchLandingPage = createAsyncThunk(
   'landingPage/fetchLandingPage',
-  async (token: string, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/admin/landingPage', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.get('/admin/landingPage');
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;

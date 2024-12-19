@@ -1,15 +1,40 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/store/store";
+import { logoutUser } from "@/store/features/auth/logoutSlice";
 import Image from "next/image";
 import { useTranslation } from 'react-i18next';
 import Link from "next/link";
+import { toast } from "react-toastify";
+import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
+  const dispatch: AppDispatch = useDispatch();
+  const router = useRouter();
   const { t } = useTranslation();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    setIsLoggedIn(!!token);
+  }, []);
+
+  const handleLogout = () => {
+    dispatch(logoutUser())
+      .then(() => {
+        toast.success('Logout successful');
+        router.push('/');
+      })
+      .catch(() => {
+        toast.error('Logout failed');
+      });
+    setIsLoggedIn(false);
   };
 
   return (
@@ -41,17 +66,23 @@ export default function Navbar() {
                   ></path>
                 </svg>
               </button>
-              <a href="" className="flex ms-2 md:me-0">
-                <div className="">
-                  <Image
-                    src="/contentiaLogo.png"
-                    height={44}
-                    width={151}
-                    alt="logo"
-                    className="h-[33px] w-[173px]"
-                  />
-                </div>
-              </a>
+              <ul className="">
+                <li>
+                  <Link legacyBehavior href="/">
+                    <a href="" className="flex ms-2 md:me-0">
+                      <div className="">
+                        <Image
+                          src="/contentiaLogo.png"
+                          height={44}
+                          width={151}
+                          alt="logo"
+                          className="h-[33px] w-[173px]"
+                        />
+                      </div>
+                    </a>
+                  </Link>
+                </li>
+              </ul>
 
               {/* Sidebar links aligned with the logo on large screens */}
               <ul className="hidden lg:flex space-x-4 ms-10 font-medium">
@@ -101,15 +132,28 @@ export default function Navbar() {
                   </a>
                 </Link>
               </li>
-              <li>
-                <Link legacyBehavior href="/contentiaio/authentication">
-                  <a
+              {!isLoggedIn ? (
+                <>
+                  <li>
+                    <Link legacyBehavior href="/contentiaio/authentication">
+                      <a
+                        className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg"
+                      >
+                        {t('login')}
+                      </a>
+                    </Link>
+                  </li>
+                </>
+              ) : (
+                <li>
+                  <button
+                    onClick={handleLogout}
                     className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg"
                   >
-                    {t('login')}
-                  </a>
-                </Link>
-              </li>
+                    {t('logout')}
+                  </button>
+                </li>
+              )}
               <li>
                 <div>
                   <button className="Button text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
@@ -171,15 +215,28 @@ export default function Navbar() {
                 </a>
               </Link>
             </li>
-            <li>
-              <Link legacyBehavior href="/contentiaio/authentication">
-                <a
+            {!isLoggedIn ? (
+              <>
+                <li>
+                  <Link legacyBehavior href="/contentiaio/authentication">
+                    <a
+                      className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                    >
+                      <span className="flex-1 ms-3 whitespace-nowrap">{t('login')}</span>
+                    </a>
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <li>
+                <button
+                  onClick={handleLogout}
                   className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                 >
-                  <span className="flex-1 ms-3 whitespace-nowrap">{t('login')}</span>
-                </a>
-              </Link>
-            </li>
+                  <span className="flex-1 ms-3 whitespace-nowrap">{t('logout')}</span>
+                </button>
+              </li>
+            )}
             <li>
               <a
                 href="#"

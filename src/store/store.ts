@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import becomeCreatorReducer from './becomeCreator/becomeCreatorSlice';
 import signupReducer from './features/auth/signupSlice';
 import loginReducer from './features/auth/loginSlice';
+import logoutReducer from './features/auth/logoutSlice';
 import profileReducer from './features/profile/profileSlice';
 import adminCustomersReducer from './features/admin/customersSlice'
 import adminCreatorsReducer from './features/admin/creatorsSlice'
@@ -26,6 +27,7 @@ const store = configureStore({
     becomeCreator: becomeCreatorReducer,
     signup: signupReducer,
     login: loginReducer,
+    logout: logoutReducer,
     profile: profileReducer,
     adminCustomers: adminCustomersReducer,
     adminCreators: adminCreatorsReducer,

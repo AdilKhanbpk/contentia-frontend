@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/store/store";
 import { signupUser } from "@/store/features/auth/loginSlice";
 import { toast } from "react-toastify";
+import { useRouter } from 'next/navigation';
 
 interface FormData {
   email: string;
@@ -13,6 +14,7 @@ interface FormData {
 }
 
 const LoginForm = () => {
+  const router = useRouter();
   const dispatch: AppDispatch = useDispatch();
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
   const loginState = useSelector((state: RootState) => state.login);
@@ -21,6 +23,7 @@ const LoginForm = () => {
     dispatch(signupUser(data))
       .then(() => {
         toast.success('Signup successful');
+        router.push('/');
       })
       .catch(() => {
         toast.error('Signup failed');
@@ -67,10 +70,15 @@ const LoginForm = () => {
       </div>
 
       <div className="flex items-start mb-2">
-        <input id="rememberMe" type="checkbox" className="mt-1 mr-2" {...register("rememberMe")} />
+        <input
+          id="rememberMe"
+          type="checkbox"
+          className="mt-1 mr-2"
+          {...register("rememberMe", { required: "Lütfen Beni Hatırla'yı işaretleyin" })}
+        />
         <label htmlFor="rememberMe" className="text-sm text-gray-500">Beni Hatırla</label>
       </div>
-      {errors.rememberMe && <span className="text-red-500">Beni hatırlama seçeneği gereklidir</span>}
+      {errors.rememberMe && <span className="text-red-500">Lütfen göndermeden önce Beni Hatırla kısmını doldurunuz.</span>}
 
       <button type="submit" className="w-full ButtonBlue text-white py-2 rounded-lg font-semibold">
         {loginState.loading ? "Logging in..." : "Giriş Yap"}

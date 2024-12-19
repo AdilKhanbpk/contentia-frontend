@@ -54,21 +54,10 @@ export default function Contentiaio() {
     );
     const { t } = useTranslation();
     const router = useRouter();
-    const token = typeof window !== 'undefined' ? localStorage.getItem("accessToken") : null;
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchLandingPage(token))
-                .then(() => {
-                    toast.success('Landing page data fetched successfully'); // Show success message
-                })
-                .catch(() => {
-                    toast.error('Failed to fetch landing page data'); // Show error message
-                });
-        } else {
-            toast.error("Token is not available");
-        }
-    }, [dispatch, token]);
+        dispatch(fetchLandingPage())
+    }, [dispatch]);
 
     const handleOrderClick = () => {
         router.push('/orders');
@@ -78,49 +67,50 @@ export default function Contentiaio() {
         <>
             <div className='px-4 sm:px-6 md:px-8 lg:px-[38px] '>
 
-                <div className='flex flex-col lg:flex-row lg:justify-between pt-12 sm:pt-16 md:pt-24 lg:pt-[180px]'>
-                    <div className='flex flex-col lg:flex-row w-full lg:mt-0 mt-9 mx-auto'>
-                        {loading ? (
-                            <div className='flex flex-col lg:flex-row'>
-                                <div>
-                                    <div className="h-8 bg-gray-200 animate-pulse w-2/3 mb-3"></div>
-                                    <div className="h-8 bg-gray-200 animate-pulse w-1/2 mb-5"></div>
-                                    <div className="h-6 bg-gray-200 animate-pulse w-4/5 mb-5"></div>
-                                    <div className="h-10 bg-gray-200 animate-pulse w-32 rounded-md mb-6"></div>
-                                </div>
-                                <div className="flex justify-center space-x-4">
-                                    {[...Array(3)].map((_, index) => (
-                                        <div key={index} className="w-36 h-36 bg-gray-300 animate-pulse rounded-xl" />
-                                    ))}
-                                </div>
+                <div className="flex flex-col lg:flex-row w-full pt-12 sm:pt-16 md:pt-24 lg:pt-[180px] lg:justify-between">
+                    {loading ? (
+                        <div className="flex flex-col lg:flex-row w-full">
+                            {/* First Half */}
+                            <div className="flex flex-col w-full lg:w-1/2">
+                                <div className="bg-gray-200 animate-pulse w-full h-8 mb-3 rounded-md"></div>
+                                <div className="bg-gray-200 animate-pulse w-3/4 h-8 mb-5 rounded-md"></div>
+                                <div className="bg-gray-200 animate-pulse w-4/5 h-8 mb-5 rounded-md"></div>
+                                <div className="bg-gray-200 animate-pulse w-1/4 h-10 mb-6 rounded-md"></div>
                             </div>
-                        ) : error ? (
-                            <p className="text-red-500">Error: {error}</p>
-                        ) : (
-                            <>
-                                <div className='flex flex-col'>
-                                    <h1 className='headingText mb-3'>
-                                        <span className='headingTextBlue'>{landingPage?.carouselHeroTitle}</span>
-                                        <span className="ml-2">{landingPage?.staticHeroTitle}</span>
-                                    </h1>
-                                    <div className='mx-3'>
-                                        <p className='paraText mb-5'>{landingPage?.heroSubTitle}</p>
-                                    </div>
-                                    {landingPage && (
-                                        <div>
-                                            <button className="Button text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                                {t('buttonText')}
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
+                            {/* Second Half */}
+                            <div className="flex justify-center lg:w-1/2 w-full space-x-4">
+                                {[...Array(3)].map((_, index) => (
+                                    <div key={index} className="w-36 h-36 bg-gray-300 animate-pulse rounded-xl"></div>
+                                ))}
+                            </div>
+                        </div>
 
-                                <div className='lg:w-1/2 w-full lg:ml-2 mx-auto'>
-                                    <MyCarousel videos={landingPage?.videos || []} />
+                    ) : error ? (
+                        <p className="text-red-500">Error: {error}</p>
+                    ) : (
+                        <>
+                            <div className='flex flex-col'>
+                                <h1 className='headingText mb-3'>
+                                    <span className='headingTextBlue'>{landingPage?.carouselHeroTitle}</span>
+                                    <span className="ml-2">{landingPage?.staticHeroTitle}</span>
+                                </h1>
+                                <div className='mx-3'>
+                                    <p className='paraText mb-5'>{landingPage?.heroSubTitle}</p>
                                 </div>
-                            </>
-                        )}
-                    </div>
+                                {landingPage && (
+                                    <div>
+                                        <button className="Button text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                            {t('buttonText')}
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className='lg:w-1/2 w-full lg:ml-2 mx-auto'>
+                                <MyCarousel videos={landingPage?.videos || []} />
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 {/* /////////////////// */}

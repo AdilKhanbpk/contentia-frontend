@@ -5,8 +5,16 @@ import Image from 'next/image';
 import scannerImage1 from "../../../../public/BecomeCreator/scanner1png.png";
 import appStoreImage from "../../../../public/BecomeCreator/AppStore1.png";
 import googlePlayImage from "../../../../public/BecomeCreator/google3.png";
+import { useRouter } from "next/navigation";
 
 export default function SideSec() {
+
+    const router = useRouter();
+
+    const creatorRouter = () => {
+        router.push('/contentiaio/become-creator')
+    }
+
     return (
         <>
             <div className="flex flex-col justify-center items-center w-full lg:w-2/5 p-8 pb-14 authBG2 lg:ml-8 rounded-sm mt-2 lg:mt-0">
@@ -15,7 +23,7 @@ export default function SideSec() {
                     İçerik üreticisi olarak ürün, hizmet ya da mekan tanıtımı yaparak gelir elde etmek mi istiyorsun?
                 </p>
 
-                <button className="w-full ButtonBlue text-white py-2 rounded-lg mb-4  transition font-semibold">
+                <button onClick={creatorRouter} className="w-full ButtonBlue text-white py-2 rounded-lg mb-4  transition font-semibold">
                     İçerik Üreticisi Ol
                 </button>
 

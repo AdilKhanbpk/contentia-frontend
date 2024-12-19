@@ -6,6 +6,7 @@ import { loginUser } from '@/store/features/auth/loginSlice';
 import { RootState } from '@/store/store';
 import { AppDispatch } from '@/store/store';
 import { toast } from "react-toastify";
+import { useRouter } from 'next/navigation';
 
 interface IFormInput {
   email: string;
@@ -14,6 +15,7 @@ interface IFormInput {
 }
 
 const LoginForm = () => {
+  const router = useRouter();
   const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>();
   const dispatch = useDispatch<AppDispatch>();
   const loginState = useSelector((state: RootState) => state.login);
@@ -23,6 +25,7 @@ const LoginForm = () => {
       const response = await dispatch(loginUser(data));
       if (response.meta.requestStatus === 'fulfilled') {
         toast.success('Login successful');
+        router.push('/');
       } else {
         toast.error('Login failed: Invalid credentials');
       }
@@ -71,9 +74,15 @@ const LoginForm = () => {
       </div>
 
       <div className="flex items-start mt-4 mb-4">
-        <input id="rememberMe" type="checkbox" className="mt-1 mr-2" {...register('rememberMe')} />
+        <input
+          id="rememberMe"
+          type="checkbox"
+          className="mt-1 mr-2"
+          {...register("rememberMe", { required: "Lütfen Beni Hatırla'yı işaretleyin" })}
+        />
         <label htmlFor="rememberMe" className="text-sm text-gray-500">Beni Hatırla</label>
       </div>
+      {errors.rememberMe && <span className="text-red-500">Lütfen göndermeden önce Beni Hatırla kısmını doldurunuz.</span>}
 
       <button type="submit" className="w-full ButtonBlue text-white py-2 rounded-lg font-semibold" disabled={loginState.loading}>
         {loginState.loading ? 'Yükleniyor...' : 'Giriş Yap'}
