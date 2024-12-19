@@ -4,6 +4,7 @@ import signupReducer from './features/auth/signupSlice';
 import loginReducer from './features/auth/loginSlice';
 import logoutReducer from './features/auth/logoutSlice';
 import profileReducer from './features/profile/profileSlice';
+import brandReducer from './features/profile/brandSlice';
 import adminCustomersReducer from './features/admin/customersSlice'
 import adminCreatorsReducer from './features/admin/creatorsSlice'
 import lanPageSlice from './features/admin/lanPageSlice'
@@ -29,6 +30,7 @@ const store = configureStore({
     login: loginReducer,
     logout: logoutReducer,
     profile: profileReducer,
+    brand: brandReducer,
     adminCustomers: adminCustomersReducer,
     adminCreators: adminCreatorsReducer,
     landingPage: lanPageSlice,
