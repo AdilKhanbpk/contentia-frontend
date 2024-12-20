@@ -11,7 +11,6 @@ import { AppDispatch, RootState } from "@/store/store";
 import {
     fetchLandingPage,
 } from "@/store/features/admin/lanPageSlice";
-import { toast } from "react-toastify";
 
 const cards = [
     {
