@@ -2,72 +2,70 @@ import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 
-// Define props interface
+interface BlogFormData {
+    _id?: string;
+    title: string;
+    category: string;
+    bannerImage: FileList | string;
+    content: string;
+    metaDescription: string;
+    metaKeywords: string[];
+    status: string;
+    author: string;
+}
+
 interface ModalProps {
-    onSubmit?: (blogData: BlogData) => void;
+    onSubmit?: (blogData: BlogFormData) => void;
     onClose: () => void;
 }
 
-interface BlogData {
-    _id: string;
-    status: string;
-    author: string;
-    title: string;
-    category: string;
-    bannerImage: FileList | null;
-    content: string;
-    metaDescription: string;
-    metaKeywords: string;
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-}
-
-// Dynamically import the Quill editor to avoid SSR issues
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 export default function Modal({ onSubmit, onClose }: ModalProps) {
-    const [blogData, setBlogData] = useState<BlogData>({
+    const [blogData, setBlogData] = useState<Partial<BlogFormData>>({
         title: "",
         category: "",
+        content: "",
         metaDescription: "",
-        metaKeywords: "",
-        description: ""
+        metaKeywords: [],
+        status: "Draft",
+        author: ""
     });
-    const [banner, setBanner] = useState<File | null>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setBlogData(prev => ({
             ...prev,
-            [name]: name === 'keywords' ? value.split(',').map(k => k.trim()) : value
+            [name]: name === 'metaKeywords' ? value.split(',').map(k => k.trim()) : value
         }));
     };
 
     const handleDescriptionChange = (value: string) => {
         setBlogData(prev => ({
             ...prev,
-            description: value
+            content: value
         }));
     };
 
     const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            setBanner(file);
+        const files = e.target.files;
+        if (files && files.length > 0) {
             setBlogData(prev => ({
                 ...prev,
-                bannerImage: e.target.files,
-                banner: file
+                bannerImage: files
             }));
         }
     };
 
     const handleSubmit = () => {
-        const dataToSubmit: BlogData = {
+        if (!blogData.bannerImage) {
+            return;
+        }
+
+        const dataToSubmit = {
             ...blogData,
-            metaKeywords: blogData.keywords?.length ? blogData.keywords : []
-        };
+            bannerImage: blogData.bannerImage,
+        } as BlogFormData;
         
         if (onSubmit) {
             onSubmit(dataToSubmit);
@@ -79,7 +77,6 @@ export default function Modal({ onSubmit, onClose }: ModalProps) {
         <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">
             <h1 className="text-lg font-semibold">Add a new blog</h1>
 
-            {/* Title */}
             <div className="mt-4">
                 <label className="block text-sm font-semibold">Title</label>
                 <input
@@ -92,7 +89,6 @@ export default function Modal({ onSubmit, onClose }: ModalProps) {
                 />
             </div>
 
-            {/* Category */}
             <div className="mt-4">
                 <label className="block text-sm font-semibold">Category</label>
                 <select 
@@ -108,24 +104,22 @@ export default function Modal({ onSubmit, onClose }: ModalProps) {
                 </select>
             </div>
 
-            {/* Keywords */}
             <div className="mt-4">
                 <label className="block text-sm font-semibold">Keywords</label>
                 <input
                     type="text"
-                    name="keywords"
-                    value={blogData.keywords?.join(', ')}
+                    name="metaKeywords"
+                    value={blogData.metaKeywords?.join(', ')}
                     onChange={handleInputChange}
                     placeholder="Click the enter button after writing your keyword"
                     className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none"
                 />
             </div>
 
-            {/* Description */}
             <div className="mt-4">
                 <label className="block text-sm font-semibold">Description</label>
                 <ReactQuill
-                    value={blogData.description}
+                    value={blogData.content}
                     onChange={handleDescriptionChange}
                     placeholder="Write something..."
                     theme="snow"
@@ -133,7 +127,6 @@ export default function Modal({ onSubmit, onClose }: ModalProps) {
                 />
             </div>
 
-            {/* Blog Banner */}
             <div className="mt-4">
                 <label className="block text-sm font-semibold">Blog Banner</label>
                 <div className="relative border border-gray-400 rounded-md p-4 text-center bg-gray-200" style={{ width: '100%', maxWidth: '500px', height: '125px' }}>
@@ -149,7 +142,6 @@ export default function Modal({ onSubmit, onClose }: ModalProps) {
                 </div>
             </div>
 
-            {/* Meta Description */}
             <div className="mt-4">
                 <label className="block text-sm font-semibold">Meta Description</label>
                 <input

@@ -11,14 +11,40 @@ import { toast } from 'react-toastify'; // Assuming you're using react-toastify 
 // Dynamically import the Quill editor to avoid SSR issues
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-// Interface for form data
 interface BlogFormData {
   _id: string;
   status: string;
-  author: string;
+  author: {
+    billingInformation: {
+      invoiceStatus: boolean;
+      trId: string;
+      address: string;
+      fullName: string;
+      companyName: string;
+      taxNumber: string;
+      taxOffice: string;
+    };
+    _id: string;
+    authProvider: string;
+    status: string;
+    userType: string;
+    role: string;
+    email: string;
+    customerStatus: string;
+    password: string;
+    rememberMe: boolean;
+    termsAndConditionsApproved: boolean;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+    age: number;
+    fullName: string;
+    invoiceType: string;
+    phoneNumber: string;
+  };
   title: string;
   category: string;
-  bannerImage: FileList | null;
+  bannerImage: string;
   content: string;
   metaDescription: string;
   metaKeywords: string;
@@ -56,7 +82,7 @@ export default function NewBlogs() {
       // Explicitly append each field
       formData.append('title', data.title);
       formData.append('category', data.category);
-      formData.append('metaKeywords', data.metaKeywords);
+      formData.append('metaKeywords',  data.metaKeywords.split(',').map(keyword => keyword.trim()).join(','));
       formData.append('content', data.content);
       formData.append('metaDescription', data.metaDescription);
   
