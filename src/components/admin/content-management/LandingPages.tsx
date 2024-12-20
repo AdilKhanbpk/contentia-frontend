@@ -36,15 +36,8 @@ export default function LandingPages() {
   const fixedId = data?._id || "";
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-
-    if (!token) {
-      toast.error("No token found. Please log in to access the landing page.");
-      return;
-    }
-    dispatch(fetchLandingPage(token));
-
-  }, [dispatch]);
+    dispatch(fetchLandingPage())
+}, [dispatch]);
 
   useEffect(() => {
     if (data) {
