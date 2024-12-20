@@ -8,7 +8,6 @@ import { RootState, AppDispatch } from "@/store/store";
 import { 
   fetchMyBrands,
   updateBrand,
-  Brand 
 } from "@/store/features/profile/brandSlice";
 import CustomModelAdmin from '../modal/CustomModelAdmin';
 import ModelBrand from "./sub-profile/ModelBrand";

@@ -189,22 +189,21 @@ export const changeBrandPic = createAsyncThunk(
   "brand/changeBrandPic",
   async ({ brandId, data, token }: ChangeBrandPicPayload, { rejectWithValue }) => {
     try {
-      console.log("Changing brand picture for ID:", brandId);
-      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       const response = await axiosInstance.patch(`/brands/change-brand-image/${brandId}`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log("Change brand picture response:", response.data);
       return response.data.data;
     } catch (error) {
-      console.error("Error changing brand picture:", error);
       const axiosError = error as AxiosError;
-      return rejectWithValue(
-        axiosError.response?.data || `Failed to change Brand picture for ID ${brandId}`
-      );
+      const errorMessage =
+        axiosError.response?.data ||
+        `Failed to change Brand picture for ID ${brandId}`;
+      return rejectWithValue(errorMessage);
     }
   }
 );
+
 
 const brandSlice = createSlice({
   name: "brand",
