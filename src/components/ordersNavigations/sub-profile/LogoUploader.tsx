@@ -3,10 +3,10 @@ import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { changeBrandPic } from "@/store/features/profile/brandSlice";
 import { toast } from "react-toastify";
-import { AppDispatch } from "@/store/store"; // Make sure to import AppDispatch
+import { AppDispatch } from "@/store/store";
 
 interface LogoUploaderProps {
-    brandId: string; // Changed from aboutId to match the thunk
+    brandId: string;
     currentImage?: string | null;
 }
 
@@ -23,41 +23,39 @@ export default function LogoUploader({ brandId, currentImage }: LogoUploaderProp
 
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        
         if (!file) {
             toast.error("No image selected. Please choose an image to upload.");
             return;
         }
-
-        // Set the file and preview
         setImageFile(file);
         const reader = new FileReader();
         reader.onloadend = () => {
             setPreviewImage(reader.result as string);
         };
         reader.readAsDataURL(file);
-
-        // Handle the upload
         const token = localStorage.getItem("accessToken");
-        
         if (!token) {
             toast.error("No token found. Please log in to upload the image.");
             return;
         }
-
         try {
             const formData = new FormData();
-            formData.append('image', file);
-
-            const result = await dispatch(changeBrandPic({
-                brandId,
-                data: formData,  // Changed to match the thunk payload
-                token
-            })).unwrap();
-            
+            formData.append("brandImage", file);
+            const result = await dispatch(
+                changeBrandPic({
+                    brandId,
+                    data: formData,
+                    token,
+                })
+            ).unwrap();
             toast.success("Image uploaded successfully!");
         } catch (error) {
-            toast.error(typeof error === 'string' ? error : "Error uploading the image. Please try again.");
+            const errorMessage =
+                typeof error === "string"
+                    ? error
+                    : "Error uploading the image. Please try again.";
+            console.error("Toast error message:", errorMessage);
+            toast.error(errorMessage);
         }
     };
 
