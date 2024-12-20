@@ -4,64 +4,59 @@ import "react-quill/dist/quill.snow.css";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-interface BlogData {
-    _id: string;
-    status: string;
-    author: string;
+interface BlogFormData {
+    _id?: string;
     title: string;
     category: string;
-    bannerImage: FileList | null;
+    bannerImage?: FileList | string;
     content: string;
     metaDescription: string;
-    metaKeywords: string;
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
+    metaKeywords: string[];
+    status: string;
+    author: string;
 }
 
 interface BlogEditModelProps {
-    blogData: BlogData;
+    blogData: BlogFormData;
     onClose: () => void;
-    onSubmit: (data: BlogData) => void;
+    onSubmit: (data: BlogFormData) => void;
 }
 
 export function ModalEdit({ blogData, onClose, onSubmit }: BlogEditModelProps) {
-    const [formData, setFormData] = useState<BlogData>({
+    console.log("blog data from modal edit", blogData);
+    const [formData, setFormData] = useState<BlogFormData>({
         title: '',
         category: '',
+        content: '',
         metaDescription: '',
         metaKeywords: [],
-        description: ''
+        status: 'Draft',
+        author: '',
+        bannerImage: new DataTransfer().files
     });
 
     useEffect(() => {
         if (blogData) {
-            setFormData({
-                ...blogData,
-                keywords: blogData.metaKeywords || []
-            });
+            setFormData(blogData);
         }
     }, [blogData]);
 
     const handleDescriptionChange = (value: string) => {
-        setFormData(prev => ({ ...prev, description: value }));
+        setFormData(prev => ({ ...prev, content: value }));
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ 
             ...prev, 
-            [name]: name === 'keywords' ? value.split(',').map(k => k.trim()) : value 
+            [name]: name === 'metaKeywords' ? value.split(',').map(k => k.trim()) : value 
         }));
     };
 
     const handleSubmit = (e: React.FormEvent) => {
+        console.log("formdata from update modal to be sent", formData);
         e.preventDefault();
-        const dataToSubmit: BlogData = {
-            ...formData,
-            metaKeywords: formData.keywords
-        };
-        onSubmit(dataToSubmit);
+        onSubmit(formData);
         onClose();
     };
 
@@ -101,8 +96,8 @@ export function ModalEdit({ blogData, onClose, onSubmit }: BlogEditModelProps) {
                     <label className="block text-sm font-semibold">Keywords</label>
                     <input
                         type="text"
-                        name="keywords"
-                        value={formData.keywords?.join(', ')}
+                        name="metaKeywords"
+                        value={formData.metaKeywords?.join(', ')}
                         onChange={handleInputChange}
                         placeholder="Click the enter button after writing your keyword"
                         className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none"
@@ -112,7 +107,7 @@ export function ModalEdit({ blogData, onClose, onSubmit }: BlogEditModelProps) {
                 <div className="mt-4">
                     <label className="block text-sm font-semibold">Description</label>
                     <ReactQuill
-                        value={formData.description}
+                        value={formData.content}
                         onChange={handleDescriptionChange}
                         placeholder="Write something..."
                         theme="snow"
@@ -125,7 +120,6 @@ export function ModalEdit({ blogData, onClose, onSubmit }: BlogEditModelProps) {
                     <div className="relative border border-gray-400 rounded-md p-4 text-center bg-gray-200" style={{ width: '100%', maxWidth: '500px', height: '125px' }}>
                         <input
                             type="file"
-                            name="banner"
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                             accept="image/*"
                         />

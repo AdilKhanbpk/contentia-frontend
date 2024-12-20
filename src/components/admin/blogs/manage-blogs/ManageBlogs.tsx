@@ -1,12 +1,11 @@
 "use client";
-
 import React, { useEffect, useState, useCallback, memo } from "react";
 import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store/store";
 import {
-  fetchBlogs,  // This is the function you want to use
+  fetchBlogs,
   deleteBlog,
   createBlog,
   updateBlog,
@@ -20,7 +19,18 @@ import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import { toast } from "react-toastify";
 
-// Memoized SearchBar component
+interface BlogFormData {
+  _id?: string;
+  title: string;
+  category: string;
+  bannerImage?: FileList | string;
+  content: string;
+  metaDescription: string;
+  metaKeywords: string[];
+  status: string;
+  author: string;
+}
+
 const SearchBar = memo(({ onSearch }: { onSearch: (value: string) => void }) => (
   <input
     type="text"
@@ -32,7 +42,6 @@ const SearchBar = memo(({ onSearch }: { onSearch: (value: string) => void }) => 
 
 SearchBar.displayName = 'SearchBar';
 
-// Memoized Table Actions component
 const TableActions = memo(({ onDelete, onEdit, onView, id }: { onDelete: (id: string) => void; onEdit: (id: string) => void; onView: (id: string) => void; id: string }) => (
   <div className="flex space-x-3">
     <button
@@ -66,9 +75,8 @@ const ManageBlogs: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalEditOpen, setIsModalEditOpen] = useState(false);
   const [isModalViewOpen, setIsModalViewOpen] = useState(false);
-  const [currentBlog, setCurrentBlog] = useState<Blog | null>(null);
+  const [currentBlog, setCurrentBlog] = useState<BlogFormData | null>(null);
 
-  // Handler for deleting a blog
   const handleDelete = useCallback((id: string) => {
     const tokenFromStorage = localStorage.getItem('accessToken');
     if (!tokenFromStorage) {
@@ -88,50 +96,54 @@ const ManageBlogs: React.FC = () => {
       });
   }, [dispatch]);
 
-  // Handler for viewing a blog
   const handleView = (id: string) => {
     const blog = blogs?.find((blog) => blog._id === id);
-    setCurrentBlog(blog || null);
+    console.log(blog);
+    if (blog) {
+      const formattedBlog: BlogFormData = {
+        _id: blog._id,
+        title: blog.title,
+        category: blog.category,
+        bannerImage: blog.bannerImage,
+        content: blog.content,
+        metaDescription: blog.metaDescription,
+        metaKeywords: blog.metaKeywords,
+        status: blog.status,
+        author: blog.author.fullName || ''
+      };
+      setCurrentBlog(formattedBlog);
+    }
     setIsModalViewOpen(true);
   };
 
-  const handleCreate = async (blogData: Blog) => {
+  const handleCreate = async (blogData: BlogFormData) => {
     const tokenFromStorage = localStorage.getItem('accessToken');
 
     try {
-      // Validate token
       if (!tokenFromStorage) {
         toast.error('Authorization token is missing');
         return;
       }
 
-      // Validate blog data
       if (!blogData || Object.keys(blogData).length === 0) {
         toast.error('Blog data is empty');
         return;
       }
 
-      // Create FormData for blog creation
       const formData = new FormData();
       Object.entries(blogData).forEach(([key, value]) => {
-        if (key === 'bannerImage' && value && value instanceof FileList && value.length > 0) {
+        if (key === 'bannerImage' && value instanceof FileList && value.length > 0) {
           formData.append(key, value[0]);
-        } else if (value && typeof value === 'string') {
-          formData.append(key, value);
+        } else if (value && typeof value !== 'object') {
+          formData.append(key, value.toString());
+        } else if (Array.isArray(value)) {
+          formData.append(key, JSON.stringify(value));
         }
       });
 
-      const result = await dispatch(
-        createBlog({
-          data: formData,
-          token: tokenFromStorage
-        })
-      ).unwrap();
-
+      await dispatch(createBlog({ data: formData, token: tokenFromStorage })).unwrap();
       toast.success('Blog created successfully');
       setIsModalOpen(false);
-
-      // Refresh the blog list
       await dispatch(fetchBlogs(tokenFromStorage));
 
     } catch (error) {
@@ -140,26 +152,29 @@ const ManageBlogs: React.FC = () => {
     }
   };
 
-  const handleUpdate = async (blogData: Blog) => {
+  const handleUpdate = async (blogData: BlogFormData) => {
     const token = localStorage.getItem('accessToken');
 
-    if (token) {
-      const blogId = blogData._id;
+    if (token && blogData._id) {
       const formData = new FormData();
 
-      // Append all relevant fields to formData
       Object.entries(blogData).forEach(([key, value]) => {
-        if (key === 'bannerImage' && value && value instanceof FileList && value.length > 0) {
-          formData.append(key, value[0]);
-        } else if (value && typeof value === 'string') {
-          formData.append(key, value);
+        if (key === 'bannerImage') {
+          if (value instanceof FileList && value.length > 0) {
+            formData.append(key, value[0]);
+          }
+        } else if (value && typeof value !== 'object') {
+          formData.append(key, value.toString());
+        } else if (Array.isArray(value)) {
+          formData.append(key, JSON.stringify(value));
         }
       });
 
       try {
-        await dispatch(updateBlog({ blogId, data: formData, token })).unwrap();
+        await dispatch(updateBlog({ blogId: blogData._id, data: formData, token })).unwrap();
         toast.success('Blog updated successfully');
         await dispatch(fetchBlogs(token));
+        setIsModalEditOpen(false);
       } catch (error) {
         toast.error('Blog update failed');
         console.error('Blog update failed:', error);
@@ -169,19 +184,28 @@ const ManageBlogs: React.FC = () => {
     }
   };
 
-  // Handler for editing a blog
   const handleEdit = (id: string) => {
     const blog = blogs?.find((blog) => blog._id === id);
-    setCurrentBlog(blog || null);
+    if (blog) {
+      const formattedBlog: BlogFormData = {
+        _id: blog._id,
+        title: blog.title,
+        category: blog.category,
+        content: blog.content,
+        metaDescription: blog.metaDescription,
+        metaKeywords: blog.metaKeywords,
+        status: blog.status,
+        author: blog.author.fullName || ''
+      };
+      setCurrentBlog(formattedBlog);
+    }
     setIsModalEditOpen(true);
   };
 
-  // Handler for search input
   const handleSearch = useCallback((value: string) => {
     setSearchTerm(value);
   }, []);
 
-  // Export to CSV
   const handleExport = useCallback(() => {
     if (!blogs) {
       console.error("No blogs available to export");
@@ -193,14 +217,13 @@ const ManageBlogs: React.FC = () => {
       ID: blog._id,
       Title: blog.title,
       Category: blog.category,
-      Author: blog.author,
+      Author: blog.author.fullName || '',
       Status: blog.status
     }));
 
     exportCsvFile({ data, headers, filename: "blogs.csv" });
   }, [blogs]);
 
-  // Fetch blogs on mount
   useEffect(() => {
     const tokenFromStorage = localStorage.getItem('accessToken');
     if (tokenFromStorage) {
@@ -208,7 +231,6 @@ const ManageBlogs: React.FC = () => {
     }
   }, [dispatch]);
 
-  // Memoized columns configuration
   const columns = React.useMemo(() => [
     {
       name: "#",
@@ -241,7 +263,7 @@ const ManageBlogs: React.FC = () => {
     },
     {
       name: "Author",
-      selector: (row: Blog) => row.author,
+      selector: (row: Blog) => row.author.fullName || '',
       sortable: true,
     },
     {
@@ -273,20 +295,20 @@ const ManageBlogs: React.FC = () => {
       ),
       width: "150px",
     },
-  ], [handleDelete, handleEdit, handleView]);
+  ], [handleDelete]);
 
   const filteredBlogs = React.useMemo(() => {
-    if (!blogs) return []; // Return an empty array if blogs is null
-  
+    if (!blogs) return [];
+
     const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
     return blogs.filter((blog) => (
-      (blog.title?.toLowerCase().includes(lowerCaseSearchTerm)) ||
-      (blog.author?.toLowerCase().includes(lowerCaseSearchTerm)) ||
-      (blog.category?.toLowerCase().includes(lowerCaseSearchTerm)) ||
-      (blog.status?.toLowerCase().includes(lowerCaseSearchTerm))
+      blog.title.toLowerCase().includes(lowerCaseSearchTerm) ||
+      blog.author.fullName?.toLowerCase().includes(lowerCaseSearchTerm) ||
+      blog.category.toLowerCase().includes(lowerCaseSearchTerm) ||
+      blog.status.toLowerCase().includes(lowerCaseSearchTerm)
     ));
   }, [blogs, searchTerm]);
-  
+
   return (
     <div className="bg-white rounded-lg">
       <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
@@ -316,7 +338,6 @@ const ManageBlogs: React.FC = () => {
         />
       </div>
 
-      {/* Modal for adding a new blog */}
       <CustomModelAdmin
         isOpen={isModalOpen}
         closeModal={() => setIsModalOpen(false)}
@@ -328,34 +349,33 @@ const ManageBlogs: React.FC = () => {
         />
       </CustomModelAdmin>
 
-      {/* Modal for editing a blog */}
-      <CustomModelAdmin
-        isOpen={isModalEditOpen}
-        closeModal={() => setIsModalEditOpen(false)}
-        title=""
-      >
-        {currentBlog && (
+      {currentBlog && (
+        <CustomModelAdmin
+          isOpen={isModalEditOpen}
+          closeModal={() => setIsModalEditOpen(false)}
+          title=""
+        >
           <ModalEdit
             onClose={() => setIsModalEditOpen(false)}
             blogData={currentBlog}
             onSubmit={handleUpdate}
           />
-        )}
-      </CustomModelAdmin>
+        </CustomModelAdmin>
+      )}
 
-      {/* Modal for viewing a blog */}
-      <CustomModelAdmin
-        isOpen={isModalViewOpen}
-        closeModal={() => setIsModalViewOpen(false)}
-        title=""
-      >
-        {currentBlog && (
+      {currentBlog && (
+        <CustomModelAdmin
+          isOpen={isModalViewOpen}
+          closeModal={() => setIsModalViewOpen(false)}
+          title=""
+        >
           <ModalView
             onClose={() => setIsModalViewOpen(false)}
             blogData={currentBlog}
           />
-        )}
-      </CustomModelAdmin>
+        </CustomModelAdmin>
+      )}
+
     </div>
   );
 };

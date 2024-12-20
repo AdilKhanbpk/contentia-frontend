@@ -5,13 +5,40 @@ import { AxiosError } from 'axios';
 export interface Blog {
   _id: string;
   status: string;
-  author: string;
+  author: {
+    billingInformation: {
+      invoiceStatus: boolean;
+      trId: string;
+      address: string;
+      fullName: string;
+      companyName: string;
+      taxNumber: string;
+      taxOffice: string;
+    };
+    _id: string;
+    authProvider: string;
+    status: string;
+    userType: string;
+    role: string;
+    email: string;
+    customerStatus: string;
+    password: string;
+    rememberMe: boolean;
+    termsAndConditionsApproved: boolean;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+    age: number;
+    fullName: string;
+    invoiceType: string;
+    phoneNumber: string;
+  };
   title: string;
   category: string;
-  bannerImage: FileList | null;
+  bannerImage: string;
   content: string;
   metaDescription: string;
-  metaKeywords: string;
+  metaKeywords: string[];
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -55,7 +82,7 @@ export const createBlog = createAsyncThunk(
   }
 );
 
-// Fetch all blogs
+// Fetch all blogssss
 export const fetchBlogs = createAsyncThunk(
   'blog/fetchBlogs',
   async (token: string, { rejectWithValue }) => {
@@ -101,7 +128,17 @@ export const updateBlog = createAsyncThunk(
     { blogId, data, token }: { blogId: string; data: FormData; token: string },
     { rejectWithValue }
   ) => {
+    console.log('updateBlog called'); // Log when the function is called
+    console.log('Payload:', { blogId, data, token }); // Log the incoming payload
+
     try {
+      console.log('Sending PATCH request to:', `/admin/blogs/${blogId}`);
+      console.log('Request Headers:', {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      });
+      console.log('Request Data (FormData):', data); // Log the FormData object
+
       const response = await axiosInstance.patch(
         `/admin/blogs/${blogId}`,
         data,
@@ -112,15 +149,26 @@ export const updateBlog = createAsyncThunk(
           },
         }
       );
+
+      console.log('Response Received:', response); // Log the entire response
+      console.log('Response Data:', response.data.data); // Log the relevant data
       return response.data.data;
     } catch (error) {
+      console.error('Error occurred during PATCH request:', error); // Log the error
+
       const axiosError = error as AxiosError;
+      console.error(
+        'Axios Error Details:',
+        axiosError.response?.data || 'No additional error details available'
+      );
+
       return rejectWithValue(
         axiosError.response?.data || 'Failed to update blog'
       );
     }
   }
 );
+
 
 // Update blog banner image
 export const updateBlogBannerImage = createAsyncThunk(

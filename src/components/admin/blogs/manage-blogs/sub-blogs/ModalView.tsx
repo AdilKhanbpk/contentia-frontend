@@ -15,6 +15,7 @@ interface BlogViewModelProps {
 }
 
 export function ModalView({ blogData, onClose }: BlogViewModelProps) {
+    console.log("blogdata from modal view", blogData);
     return (
         <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">
             <h1 className="text-lg font-semibold">View Blog</h1>
