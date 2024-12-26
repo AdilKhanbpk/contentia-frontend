@@ -3,6 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
+import BrandNames from "./sub-navbar/BrandNames";
 
 export default function Navbar() {
   const { t } = useTranslation();
@@ -58,16 +59,7 @@ export default function Navbar() {
                     width={32}
                     className="rounded-full"
                   />
-                  <span className="text-lg font-semibold text-black">
-                    Brand Name
-                  </span>
-                  <Image
-                    src="/dropDownIcon.png"
-                    alt="brand logo"
-                    height={20}
-                    width={20}
-                    className="rounded-full"
-                  />
+                  <BrandNames></BrandNames>
                 </div>
 
                 {/* Navigation Links */}

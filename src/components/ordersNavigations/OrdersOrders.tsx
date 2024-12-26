@@ -115,7 +115,7 @@ export default function OrdersOrders() {
         </div>
 
         <CustomModal isOpen={isModalOpen} closeModal={closeModal} title="">
-          <ModelDetails />
+        {selectedOrder && <ModelDetails orderData={selectedOrder} />}
         </CustomModal>
 
         <CustomModal isOpen={isRevModalOpen} closeModal={closeRevModal} title="">
