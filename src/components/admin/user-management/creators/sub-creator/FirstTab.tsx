@@ -321,7 +321,7 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium">Zip Code</label>
+                            <label className="block text-sm font-medium">Zip Code </label>
                             <input
                                 type="text"
                                 {...register('addressDetails.zipCode')}

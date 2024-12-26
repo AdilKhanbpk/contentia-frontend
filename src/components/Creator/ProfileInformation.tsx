@@ -17,6 +17,12 @@ interface ProfileFormInputs {
     dateOfBirth: string;
     gender?: string;
   };
+  addressDetails: {
+    addressOne: string;
+    addressTwo: string;
+    country: string;
+    zipCode: number;
+  };
 }
 
 const ProfileInformation: React.FC<ProfileInformationProps> = ({
@@ -172,6 +178,49 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                         <span className="ml-0.5 text-base">{gender}</span>
                       </label>
                     ))}
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h2 className="text-xl font-semibold mt-6 mb-4">Address</h2>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium">Address 01</label>
+                    <input
+                      type="text"
+                      {...register('addressDetails.addressOne')}
+                      className="mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium">Address 02</label>
+                    <input
+                      type="text"
+                      {...register('addressDetails.addressTwo')}
+                      className="mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium">Country</label>
+                    <input
+                      type="text"
+                      {...register('addressDetails.country', { required: 'Country is required' })}
+                      className="mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm"
+                    />
+                    {errors?.addressDetails?.country && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.addressDetails.country.message}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium">Zip Code</label>
+                    <input
+                      type="text"
+                      {...register('addressDetails.zipCode')}
+                      className="mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm"
+                    />
                   </div>
                 </div>
               </div>
