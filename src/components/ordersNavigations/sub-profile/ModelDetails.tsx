@@ -1,4 +1,11 @@
-export default function ModelDetails() {
+import type { Order } from "@/store/features/profile/orderSlice";
+
+interface ModelRevisionProps {
+    orderData: Order;
+}
+
+export default function ModelDetails({ orderData }: ModelRevisionProps) {
+    console.log("order data from model details",orderData)
     return (
         <>
             {/* model */}
@@ -55,11 +62,11 @@ export default function ModelDetails() {
                         <h3 className="text-lg font-bold mb-2 sm:mb-3 md:mb-4 lg:mb-4 BlueText">Sipariş Bilgileri:</h3>
                         <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:gap-4">
                             <div className="text-gray-700">Sipariş No:</div>
-                            <div className="text-right BlueText font-bold">201240184112</div>
+                            <div className="text-right BlueText font-bold">{orderData._id}</div>
                             <div className="text-gray-700">Sipariş Tarihi:</div>
-                            <div className="text-right BlueText font-bold">19/09/2024</div>
+                            <div className="text-right BlueText font-bold">{orderData.createdAt}</div>
                             <div className="text-gray-700">Sipariş Durumu:</div>
-                            <div className="text-right BlueText font-bold">Aktif / Tamamlandı / İptal</div>
+                            <div className="text-right BlueText font-bold">{orderData.orderStatus}</div>
                             <div className="text-gray-700">Ödeme No:</div>
                             <div className="text-right BlueText font-bold">9080124</div>
                             <div className="text-gray-700">Ödeme Tarihi:</div>
@@ -75,17 +82,17 @@ export default function ModelDetails() {
                         <h3 className="text-lg font-bold mb-2 sm:mb-3 md:mb-4 lg:mb-4 BlueText">İçerik Detayı:</h3>
                         <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:gap-4">
                             <div className="text-gray-700">Ürün / Hizmet Adı:</div>
-                            <div className="text-right BlueText font-bold">Ürün Adı</div>
+                            <div className="text-right BlueText font-bold">Ürün / Hizmet Adı:</div>
                             <div className="text-gray-700">Marka:</div>
                             <div className="text-right BlueText font-bold">Brand Name</div>
                             <div className="text-gray-700">Platform:</div>
-                            <div className="text-right BlueText font-bold">Meta</div>
+                            <div className="text-right BlueText font-bold">{orderData.additionalServices.platform}</div>
                             <div className="text-gray-700">Süre:</div>
-                            <div className="text-right BlueText font-bold">15s</div>
+                            <div className="text-right BlueText font-bold">{orderData.additionalServices.duration}</div>
                             <div className="text-gray-700">Edit:</div>
-                            <div className="text-right BlueText font-bold">Evet</div>
+                            <div className="text-right BlueText font-bold">{orderData.additionalServices.edit === true ? 'Yes' : 'No'}</div>
                             <div className="text-gray-700">En Boy Oranı:</div>
-                            <div className="text-right BlueText font-bold">9:16</div>
+                            <div className="text-right BlueText font-bold">{orderData.additionalServices.aspectRatio}</div>
                             <div className="text-gray-700">Sosyal Medya Paylaşım:</div>
                             <div className="text-right BlueText font-bold">Hayır</div>
                             <div className="text-gray-700">Kapak Görseli:</div>
