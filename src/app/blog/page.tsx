@@ -1,12 +1,12 @@
 
 import React from 'react'
-import Blog from '@/components/blog/Blog';
+import Blogs from '@/components/blog/Blog';
 
 const blog = () => {
 
   return (
     <>
-      <Blog></Blog>
+      <Blogs></Blogs>
     </>
   )
 }

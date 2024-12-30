@@ -16,6 +16,7 @@ export interface Blog {
       taxOffice: string;
     };
     _id: string;
+    profilePic: string;
     authProvider: string;
     status: string;
     userType: string;

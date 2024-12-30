@@ -2,11 +2,13 @@
 import BlogButton from '@/components/blog/subBlog/BlogButton'
 import BlogCard from '@/components/blog/subBlog/BlogCard'
 import Feed from '@/components/blog/subBlog/Feed'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-const Blog = () => {
+
+const Blogs = () => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
+
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
@@ -29,4 +31,4 @@ const Blog = () => {
   )
 }
 
-export default Blog;
+export default Blogs;
