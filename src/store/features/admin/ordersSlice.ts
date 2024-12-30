@@ -138,16 +138,16 @@ export const fetchOrders = createAsyncThunk(
       if (response.data && response.data.data) {
         return response.data.data.orders;
       }
-      
+
       return rejectWithValue('Invalid response format');
 
     } catch (error) {
-      
+
       if ((error as AxiosError).isAxiosError) {
         const axiosError = error as AxiosError<ErrorResponse>;
         return rejectWithValue(axiosError.response?.data?.message || 'Failed to fetch orders');
       }
-      
+
       return rejectWithValue('Failed to fetch orders');
     }
   }
@@ -166,12 +166,12 @@ export const fetchOrderById = createAsyncThunk(
 
       return response.data.data;
     } catch (error) {
-      
+
       if ((error as AxiosError).isAxiosError) {
         const axiosError = error as AxiosError<ErrorResponse>;
         return rejectWithValue(axiosError.response?.data?.message || 'Failed to fetch order');
       }
-      
+
       return rejectWithValue('Failed to fetch order');
     }
   }
@@ -193,12 +193,12 @@ export const updateOrder = createAsyncThunk(
 
       return response.data.data;
     } catch (error) {
-      
+
       if ((error as AxiosError).isAxiosError) {
         const axiosError = error as AxiosError<ErrorResponse>;
         return rejectWithValue(axiosError.response?.data?.message || 'Failed to update order');
       }
-      
+
       return rejectWithValue('Failed to update order');
     }
   }
@@ -217,12 +217,12 @@ export const deleteOrder = createAsyncThunk(
 
       return { orderId, data: response.data.data };
     } catch (error) {
-      
+
       if ((error as AxiosError).isAxiosError) {
         const axiosError = error as AxiosError<ErrorResponse>;
         return rejectWithValue(axiosError.response?.data?.message || 'Failed to delete order');
       }
-      
+
       return rejectWithValue('Failed to delete order');
     }
   }
@@ -235,7 +235,7 @@ export const approveCreator = createAsyncThunk(
 
     try {
       const response = await axiosInstance.post(
-        `/admin/orders/${orderId}/approve`,
+        `/admin/orders/approve-creator/${orderId}/${creatorId}`,
         { creatorId },
         {
           headers: {
@@ -247,12 +247,12 @@ export const approveCreator = createAsyncThunk(
       );
       return response.data.data;
     } catch (error) {
-      
+
       if ((error as AxiosError).isAxiosError) {
         const axiosError = error as AxiosError<ErrorResponse>;
         return rejectWithValue(axiosError.response?.data?.message || 'Failed to approve creator');
       }
-      
+
       return rejectWithValue('Failed to approve creator');
     }
   }
@@ -265,7 +265,7 @@ export const rejectCreator = createAsyncThunk(
 
     try {
       const response = await axiosInstance.post(
-        `/admin/orders/${orderId}/reject`,
+        `/admin/orders/reject-creator/${orderId}/${creatorId}`,
         { creatorId },
         {
           headers: {
@@ -278,13 +278,35 @@ export const rejectCreator = createAsyncThunk(
 
       return response.data.data;
     } catch (error) {
-      
+
       if ((error as AxiosError).isAxiosError) {
         const axiosError = error as AxiosError<ErrorResponse>;
         return rejectWithValue(axiosError.response?.data?.message || 'Failed to reject creator');
       }
-      
+
       return rejectWithValue('Failed to reject creator');
+    }
+  }
+);
+
+// Get Applied Creators
+export const getAppliedCreators = createAsyncThunk(
+  'orders/getAppliedCreators',
+  async ({ orderId, token }: { orderId: string; token: string }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`/admin/orders/applied-creators/${orderId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        timeout: 10000,
+      });
+
+      return { orderId, creators: response.data.data };
+    } catch (error) {
+      if ((error as AxiosError).isAxiosError) {
+        const axiosError = error as AxiosError<ErrorResponse>;
+        return rejectWithValue(axiosError.response?.data?.message || 'Failed to fetch applied creators');
+      }
+
+      return rejectWithValue('Failed to fetch applied creators');
     }
   }
 );
@@ -305,6 +327,27 @@ const ordersSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Add these cases to your extraReducers:
+      .addCase(getAppliedCreators.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAppliedCreators.fulfilled, (state, action) => {
+        state.loading = false;
+        // Update the current order's appliedCreators if it matches the orderId
+        if (state.currentOrder?._id === action.payload.orderId) {
+          state.currentOrder.appliedCreators = action.payload.creators;
+        }
+        // Update the order in the data array
+        const index = state.data.findIndex(order => order._id === action.payload.orderId);
+        if (index !== -1) {
+          state.data[index].appliedCreators = action.payload.creators;
+        }
+      })
+      .addCase(getAppliedCreators.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
       // Create Order
       .addCase(createOrder.pending, (state) => {
         state.loading = true;
@@ -404,8 +447,8 @@ const ordersSlice = createSlice({
         state.error = action.payload as string;
       })
 
-       // Reject Creator
-       .addCase(rejectCreator.pending, (state) => {
+      // Reject Creator
+      .addCase(rejectCreator.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
