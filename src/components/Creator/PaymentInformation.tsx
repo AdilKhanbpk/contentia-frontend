@@ -1,46 +1,50 @@
-import { setPaymentInformation } from "@/store/becomeCreator/becomeCreatorSlice";
+import { setCreatorFormData } from "@/store/becomeCreator/becomeCreatorSlice";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
+interface PaymentInformationFormValues {
+  accountType: "individual" | "institutional";
+  invoiceType: "individual" | "institutional";
+  paymentInformation: {
+    ibanNumber: string;
+    address: string;
+    fullName: string;
+    trId?: string;
+    companyName?: string;
+    taxNumber?: string;
+    taxOffice?: string;
+  };
+  billingInformation: {
+    invoiceStatus: boolean;
+    ibanNumber: string;
+    trId?: string;
+    address: string;
+    fullName?: string;
+    companyName?: string;
+    taxNumber?: string;
+    taxOffice?: string;
+  };
+}
+
 const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
   setActiveTab,
 }) => {
-  const [accountType, setAccountType] = useState("bireysel");
-  const [accountTypeOne, setAccountTypeOne] = useState("bireysel");
-
-  interface PaymentInformationFormValues {
-    payment_information: {
-      ad_soyad?: string;
-      tr_id?: string;
-      company_name?: string;
-      tax_number?: string;
-      tax_office?: string;
-      iban_number?: string;
-      address?: string;
-      invoice_status: string;
-    };
-    billing_information: {
-      ad_soyad?: string;
-      tr_id?: string;
-      company_name?: string;
-      tax_number?: string;
-      tax_office?: string;
-      address?: string;
-    };
-  }
+  const [accountType, setAccountType] = useState<"individual" | "institutional">("individual");
+  const [invoiceType, setInvoiceType] = useState<"individual" | "institutional">("individual");
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<PaymentInformationFormValues>();
+
   const dispatch = useDispatch();
 
   const onSubmit = async (data: PaymentInformationFormValues) => {
     try {
-      const res = await dispatch(setPaymentInformation(data));
+      const res = await dispatch(setCreatorFormData(data));
       if (res) {
         toast.success('Payment information saved successfully');
         setActiveTab(3);
@@ -55,7 +59,7 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="px-4 sm:px-6 md:px-8 lg:px-28">
-        <div className=" bg-white  p-5  sm:p-5  md:p-6  lg:p-6 ">
+        <div className="bg-white p-5 sm:p-5 md:p-6 lg:p-6">
           <div className="md:flex md:flex-row justify-start md:space-x-32 lg:space-x-32 flex flex-col lg:p-0 p-3">
             <div>
               <h1 className="text-lg font-semibold">Ödeme Bilgileri</h1>
@@ -67,40 +71,34 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
                   <p className="text-base">Hesap Türü:</p>
                   <select
                     className="outline-none border w-full p-1 rounded font-semibold"
+                    {...register("accountType")}
                     value={accountType}
-                    onChange={(e) => setAccountType(e.target.value)}
+                    onChange={(e) => setAccountType(e.target.value as "individual" | "institutional")}
                   >
-                    <option
-                      className="font-semibold"
-                      value="bireysel"
-                    >
+                    <option className="font-semibold" value="individual">
                       Bireysel
                     </option>
-                    <option
-                      className="font-semibold"
-                      value="kurumsal"
-                    >
+                    <option className="font-semibold" value="institutional">
                       Kurumsal
                     </option>
                   </select>
                 </div>
 
-                {/* Bireysel form fields */}
-                {accountType === "bireysel" && (
+                {/* Individual Form Fields */}
+                {accountType === "individual" && (
                   <div className="flex flex-col gap-4">
                     <div>
                       <p className="text-base">Ad Soyad:</p>
                       <input
                         className="outline-none border w-full p-1"
                         type="text"
-                        placeholder=""
-                        {...register("payment_information.ad_soyad", {
+                        {...register("paymentInformation.fullName", {
                           required: "Ad Soyad zorunludur",
                         })}
                       />
-                      {errors.payment_information?.ad_soyad && (
+                      {errors.paymentInformation?.fullName && (
                         <span className="text-red-500">
-                          {errors.payment_information.ad_soyad.message}
+                          {errors.paymentInformation.fullName.message}
                         </span>
                       )}
                     </div>
@@ -109,8 +107,7 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
                       <input
                         className="outline-none border w-full p-1"
                         type="text"
-                        placeholder=""
-                        {...register("payment_information.tr_id", {
+                        {...register("paymentInformation.trId", {
                           required: "TC Kimlik Numarası zorunludur",
                           minLength: {
                             value: 11,
@@ -118,31 +115,30 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
                           },
                         })}
                       />
-                      {errors.payment_information?.tr_id && (
+                      {errors.paymentInformation?.trId && (
                         <span className="text-red-500">
-                          {errors.payment_information.tr_id.message}
+                          {errors.paymentInformation.trId.message}
                         </span>
                       )}
                     </div>
                   </div>
                 )}
 
-                {/* Kurumsal form fields */}
-                {accountType === "kurumsal" && (
+                {/* Institutional Form Fields */}
+                {accountType === "institutional" && (
                   <div className="flex flex-col gap-4">
                     <div>
                       <p className="text-base">Şirket Unvanı:</p>
                       <input
                         className="outline-none border w-full p-1"
                         type="text"
-                        placeholder=""
-                        {...register("payment_information.company_name", {
+                        {...register("paymentInformation.companyName", {
                           required: "Şirket Unvanı zorunludur",
                         })}
                       />
-                      {errors.payment_information?.company_name && (
+                      {errors.paymentInformation?.companyName && (
                         <span className="text-red-500">
-                          {errors.payment_information.company_name.message}
+                          {errors.paymentInformation.companyName.message}
                         </span>
                       )}
                     </div>
@@ -151,14 +147,13 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
                       <input
                         className="outline-none border w-full p-1"
                         type="text"
-                        placeholder=""
-                        {...register("payment_information.tax_number", {
+                        {...register("paymentInformation.taxNumber", {
                           required: "Vergi Numarası zorunludur",
                         })}
                       />
-                      {errors.payment_information?.tax_number && (
+                      {errors.paymentInformation?.taxNumber && (
                         <span className="text-red-500">
-                          {errors.payment_information.tax_number.message}
+                          {errors.paymentInformation.taxNumber.message}
                         </span>
                       )}
                     </div>
@@ -167,14 +162,13 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
                       <input
                         className="outline-none border w-full p-1"
                         type="text"
-                        placeholder=""
-                        {...register("payment_information.tax_office", {
+                        {...register("paymentInformation.taxOffice", {
                           required: "Vergi Dairesi zorunludur",
                         })}
                       />
-                      {errors.payment_information?.tax_office && (
+                      {errors.paymentInformation?.taxOffice && (
                         <span className="text-red-500">
-                          {errors.payment_information.tax_office.message}
+                          {errors.paymentInformation.taxOffice.message}
                         </span>
                       )}
                     </div>
@@ -186,14 +180,13 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
                   <input
                     className="outline-none border w-full p-1"
                     type="text"
-                    placeholder=""
-                    {...register("payment_information.iban_number", {
+                    {...register("paymentInformation.ibanNumber", {
                       required: "IBAN Numarası zorunludur",
                     })}
                   />
-                  {errors.payment_information?.iban_number && (
+                  {errors.paymentInformation?.ibanNumber && (
                     <span className="text-red-500">
-                      {errors.payment_information.iban_number.message}
+                      {errors.paymentInformation.ibanNumber.message}
                     </span>
                   )}
                 </div>
@@ -202,14 +195,13 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
                   <input
                     className="outline-none border w-full p-1"
                     type="text"
-                    placeholder=""
-                    {...register("payment_information.address", {
+                    {...register("paymentInformation.address", {
                       required: "Adres zorunludur",
                     })}
                   />
-                  {errors.payment_information?.address && (
+                  {errors.paymentInformation?.address && (
                     <span className="text-red-500">
-                      {errors.payment_information.address.message}
+                      {errors.paymentInformation.address.message}
                     </span>
                   )}
                 </div>
@@ -219,7 +211,7 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
         </div>
 
         {/* Section Two */}
-        <div className=" bg-white  p-5  sm:p-5  md:p-6  lg:p-6  py-6 mt-8">
+        <div className="bg-white p-5 sm:p-5 md:p-6 lg:p-6 py-6 mt-8">
           <div className="md:flex md:flex-row justify-start lg:space-x-32 flex flex-col lg:p-0 p-3">
             <div>
               <h1 className="text-lg font-semibold">Fatura Bilgileri</h1>
@@ -235,7 +227,7 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
                         type="radio"
                         className="mr-1"
                         value={"true"}
-                        {...register("payment_information.invoice_status")}
+                        {...register("billingInformation.invoiceStatus")}
                       />
                       <span>Var</span>
                     </label>
@@ -244,7 +236,7 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
                         type="radio"
                         className="mr-1"
                         value={"false"}
-                        {...register("payment_information.invoice_status")}
+                        {...register("billingInformation.invoiceStatus")}
                       />
                       <span>Yok</span>
                     </label>
@@ -252,154 +244,152 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
                 </div>
               </div>
 
-              <div className="flex flex-col gap-4 mt-9">
-                {accountTypeOne === "bireysel" && (
-                  <div className="flex flex-col gap-4 w-full">
-                    <div>
-                      <p className="text-base">Fatura Türü:</p>
-                      <select
-                        value={accountTypeOne}
-                        onChange={(e) => setAccountTypeOne(e.target.value)}
-                        className="outline-none border w-full p-1 rounded font-bold"
-                      >
-                        <option
-                          className="font-semibold"
-                          value="bireysel"
-                        >
-                          Bireysel
-                        </option>
-                        <option
-                          className="font-semibold"
-                          value="kurumsal"
-                        >
-                          Kurumsal
-                        </option>
-                      </select>
-                    </div>
-                    <div>
-                      <p className="text-base">Ad Soyad:</p>
-                      <input
-                        className="outline-none border w-full p-1"
-                        type="text"
-                        placeholder=""
-                        {...register("billing_information.ad_soyad", {
-                          required: "Ad Soyad zorunludur",
-                        })}
-                      />
-                      {errors.billing_information?.ad_soyad && (
-                        <span className="text-red-500">
-                          {errors.billing_information.ad_soyad.message}
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <p className="text-base">T.C Kimlik No:</p>
-                      <input
-                        className="outline-none border w-full p-1"
-                        type="text"
-                        placeholder=""
-                        {...register("billing_information.tr_id", {
-                          required: "T.C Kimlik No zorunludur",
-                          minLength: {
-                            value: 11,
-                            message: "T.C Kimlik No 11 haneli olmalıdır",
-                          },
-                        })}
-                      />
-                      {errors.billing_information?.tr_id && (
-                        <span className="text-red-500">
-                          {errors.billing_information.tr_id.message}
-                        </span>
-                      )}
-                    </div>
+              <div>
+                <div className="flex flex-col gap-4">
+                  <div>
+                    <p className="text-base mt-4">Fatura Durumu:</p>
+                    <select
+                      className="outline-none border w-full p-1 rounded font-semibold"
+                      {...register("invoiceType")}
+                      value={invoiceType}
+                      onChange={(e) => setInvoiceType(e.target.value as "individual" | "institutional")}
+                    >
+                      <option className="font-semibold" value="individual">
+                        Bireysel
+                      </option>
+                      <option className="font-semibold" value="institutional">
+                        Kurumsal
+                      </option>
+                    </select>
                   </div>
-                )}
 
-                {accountTypeOne === "kurumsal" && (
-                  <div className="flex flex-col gap-4 w-full">
-                    <div>
-                      <p className="text-base">Fatura Türü:</p>
-                      <select
-                        value={accountTypeOne}
-                        onChange={(e) => setAccountTypeOne(e.target.value)}
-                        className="outline-none border w-full p-1 rounded font-bold"
-                      >
-                        <option value="kurumsal">Kurumsal</option>
-                        <option value="bireysel">Bireysel</option>
-                      </select>
+                  {/* Individual Form Fields */}
+                  {invoiceType === "individual" && (
+                    <div className="flex flex-col gap-4">
+                      <div>
+                        <p className="text-base">Ad Soyad:</p>
+                        <input
+                          className="outline-none border w-full p-1"
+                          type="text"
+                          {...register("billingInformation.fullName", {
+                            required: "Ad Soyad zorunludur",
+                          })}
+                        />
+                        {errors.paymentInformation?.fullName && (
+                          <span className="text-red-500">
+                            {errors.paymentInformation.fullName.message}
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-base">TC Kimlik Numarası:</p>
+                        <input
+                          className="outline-none border w-full p-1"
+                          type="text"
+                          {...register("billingInformation.trId", {
+                            required: "TC Kimlik Numarası zorunludur",
+                            minLength: {
+                              value: 11,
+                              message: "TC Kimlik Numarası 11 haneli olmalıdır",
+                            },
+                          })}
+                        />
+                        {errors.paymentInformation?.trId && (
+                          <span className="text-red-500">
+                            {errors.paymentInformation.trId.message}
+                          </span>
+                        )}
+                      </div>
                     </div>
-
-                    <div>
-                      <p className="text-base">Şirket Unvanı:</p>
-                      <input
-                        className="outline-none border w-full p-1"
-                        type="text"
-                        placeholder=""
-                        {...register("billing_information.company_name", {
-                          required: "Şirket Unvanı zorunludur",
-                        })}
-                      />
-                      {errors.billing_information?.company_name && (
-                        <span className="text-red-500">
-                          {errors.billing_information.company_name.message}
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <p className="text-base">Vergi Numarası / TCKN:</p>
-                      <input
-                        className="outline-none border w-full p-1"
-                        type="text"
-                        placeholder=""
-                        {...register("billing_information.tax_number", {
-                          required: "Vergi Numarası veya TCKN zorunludur",
-                        })}
-                      />
-                      {errors.billing_information?.tax_number && (
-                        <span className="text-red-500">
-                          {errors.billing_information.tax_number.message}
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <p className="text-base">Vergi Dairesi:</p>
-                      <input
-                        className="outline-none border w-full p-1"
-                        type="text"
-                        placeholder=""
-                        {...register("billing_information.tax_office", {
-                          required: "Vergi Dairesi zorunludur",
-                        })}
-                      />
-                      {errors.billing_information?.tax_office && (
-                        <span className="text-red-500">
-                          {errors.billing_information.tax_office.message}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                <div>
-                  <p className="text-base">Fatura Adresi:</p>
-                  <input
-                    className="outline-none border w-full p-1"
-                    type="text"
-                    placeholder=""
-                    {...register("billing_information.address", {
-                      required: "Fatura Adresi zorunludur",
-                    })}
-                  />
-                  {errors.billing_information?.address && (
-                    <span className="text-red-500">
-                      {errors.billing_information.address.message}
-                    </span>
                   )}
+
+                  {/* Institutional Form Fields */}
+                  {invoiceType === "institutional" && (
+                    <div className="flex flex-col gap-4">
+                      <div>
+                        <p className="text-base">Şirket Unvanı:</p>
+                        <input
+                          className="outline-none border w-full p-1"
+                          type="text"
+                          {...register("billingInformation.companyName", {
+                            required: "Şirket Unvanı zorunludur",
+                          })}
+                        />
+                        {errors.paymentInformation?.companyName && (
+                          <span className="text-red-500">
+                            {errors.paymentInformation.companyName.message}
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-base">Vergi Numarası:</p>
+                        <input
+                          className="outline-none border w-full p-1"
+                          type="text"
+                          {...register("billingInformation.taxNumber", {
+                            required: "Vergi Numarası zorunludur",
+                          })}
+                        />
+                        {errors.paymentInformation?.taxNumber && (
+                          <span className="text-red-500">
+                            {errors.paymentInformation.taxNumber.message}
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-base">Vergi Dairesi:</p>
+                        <input
+                          className="outline-none border w-full p-1"
+                          type="text"
+                          {...register("billingInformation.taxOffice", {
+                            required: "Vergi Dairesi zorunludur",
+                          })}
+                        />
+                        {errors.paymentInformation?.taxOffice && (
+                          <span className="text-red-500">
+                            {errors.paymentInformation.taxOffice.message}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  <div>
+                    <p className="text-base">IBAN Numarası:</p>
+                    <input
+                      className="outline-none border w-full p-1"
+                      type="text"
+                      {...register("billingInformation.ibanNumber", {
+                        required: "IBAN Numarası zorunludur",
+                      })}
+                    />
+                    {errors.paymentInformation?.ibanNumber && (
+                      <span className="text-red-500">
+                        {errors.paymentInformation.ibanNumber.message}
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-base">Adres:</p>
+                    <input
+                      className="outline-none border w-full p-1"
+                      type="text"
+                      {...register("billingInformation.address", {
+                        required: "Adres zorunludur",
+                      })}
+                    />
+                    {errors.paymentInformation?.address && (
+                      <span className="text-red-500">
+                        {errors.paymentInformation.address.message}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="flex justify-end ">
+
+          <div className="flex justify-end">
             <button
               type="submit"
               className="ButtonBlue text-white text-lg font-bold rounded-xl p-1 px-14"

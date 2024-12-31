@@ -2,10 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { axiosInstance } from '../axiosInstance';
 
 interface CreatorFormState {
-  profileInformation: object;
-  paymentInformation: object;
-  creatorInformation: object;
-  fullObject: object;
+  creatorFormData: object;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 }
@@ -13,16 +10,22 @@ interface CreatorFormState {
 export const becomeCreatorThunk = createAsyncThunk(
   'becomeCreator/becomeCreatorThunk',
   async (_, { getState, rejectWithValue }) => {
+    console.log('Starting becomeCreatorThunk');
     try {
       const state: any = getState();
-      const fullObject = state.becomeCreator.fullObject;
-      const accessToken = state.auth.accessToken;
-      const response = await axiosInstance.post('/become-creator/create', fullObject);
+      const creatorFormData = state.becomeCreator.creatorFormData;
+      console.log('Thunk state:', { creatorFormData });
+
+      const response = await axiosInstance.post('/api/v1/creators/create', creatorFormData);
+      console.log('API Response:', response.data);
       return response.data;
     } catch (error: any) {
+      console.error('Error in becomeCreatorThunk:', error);
       if (error.response && error.response.data) {
+        console.error('API Error Response:', error.response.data);
         return rejectWithValue(error.response.data);
       } else {
+        console.error('Error Message:', error.message);
         return rejectWithValue(error.message);
       }
     }
@@ -30,10 +33,7 @@ export const becomeCreatorThunk = createAsyncThunk(
 );
 
 const initialState: CreatorFormState = {
-  profileInformation: {},
-  paymentInformation: {},
-  creatorInformation: {},
-  fullObject: {},
+  creatorFormData: {},
   status: 'idle',
   error: null,
 }
@@ -41,37 +41,27 @@ const initialState: CreatorFormState = {
 const creatorFormSlice = createSlice({
   name: 'creatorForm',
   initialState,
-  reducers: {
-    setProfileInformation: (state, action: PayloadAction<object>) => {
-      state.profileInformation = action.payload;
-      state.fullObject = { ...state.fullObject, ...action.payload };
+  reducers : {
+    setCreatorFormData : (state, action) => {
+        state.creatorFormData = {...state.creatorFormData, ...action.payload}
     },
-    setPaymentInformation: (state, action: PayloadAction<object>) => {
-      state.paymentInformation = action.payload;
-      state.fullObject = { ...state.fullObject, ...action.payload };
-    },
-    setCreatorInformation: (state, action: PayloadAction<object>) => {
-      state.creatorInformation = action.payload;
-      state.fullObject = { ...state.fullObject, ...action.payload };
-    },
-    setFullObject: (state) => {
-      state.fullObject = {
-        ...state.profileInformation,
-        ...state.paymentInformation,
-        ...state.creatorInformation,
-      };
-    },
-  },
+    resetCreatorFormData : (state) => {
+        state.creatorFormData = {}
+        }
+    },
   extraReducers: (builder) => {
     builder
       .addCase(becomeCreatorThunk.pending, (state) => {
+        console.log('Thunk Status: Pending');
         state.status = 'loading';
         state.error = null;
       })
       .addCase(becomeCreatorThunk.fulfilled, (state, action) => {
+        console.log('Thunk Status: Fulfilled', action.payload);
         state.status = 'succeeded';
       })
       .addCase(becomeCreatorThunk.rejected, (state, action) => {
+        console.log('Thunk Status: Rejected', action.payload);
         state.status = 'failed';
         state.error = action.payload as string;
       });
@@ -79,10 +69,7 @@ const creatorFormSlice = createSlice({
 });
 
 export const {
-  setProfileInformation,
-  setPaymentInformation,
-  setCreatorInformation,
-  setFullObject,
+  setCreatorFormData
 } = creatorFormSlice.actions;
 
 export default creatorFormSlice.reducer;

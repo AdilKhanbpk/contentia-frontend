@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import {
   becomeCreatorThunk,
-  setCreatorInformation,
+  setCreatorFormData,
 } from "@/store/becomeCreator/becomeCreatorSlice";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
@@ -23,17 +23,21 @@ const Preferences: React.FC = () => {
 
   const onSubmit: SubmitHandler<any> = async (data) => {
     try {
-      dispatch(setCreatorInformation(data));
+      dispatch(setCreatorFormData(data));
       const res = await dispatch(becomeCreatorThunk()).unwrap();
+      
       if (res.status === 201) {
         toast.success('Successfully submitted creator information');
         router.push("/contentiaio/become-creator/submitted-successfully");
-      } else {
-        toast.error('Failed to submit creator information');
-        router.push("/contentiaio/become-creator");
       }
-    } catch (error) {
-      toast.error('An error occurred while submitting creator information');
+    } catch (error: any) {
+      const errorMessage = error?.message || 'Failed to submit creator information';
+      toast.error(errorMessage);
+      
+      // Only redirect on authentication errors
+      if (errorMessage === 'Authentication token not found') {
+        router.push("/login"); // Or your authentication page
+      }
     }
   };
 

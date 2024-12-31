@@ -1,4 +1,4 @@
-import { setProfileInformation } from "@/store/becomeCreator/becomeCreatorSlice";
+import { setCreatorFormData } from "@/store/becomeCreator/becomeCreatorSlice";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
@@ -9,14 +9,15 @@ interface ProfileInformationProps {
 }
 
 interface ProfileFormInputs {
-  profile_information: {
-    name: string;
+
+    fullName: string;
+    password: string;
     email: string;
     phoneNumber: string;
     tckn: string;
     dateOfBirth: string;
     gender?: string;
-  };
+
   addressDetails: {
     addressOne: string;
     addressTwo: string;
@@ -38,7 +39,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
 
   const onSubmit = async (data: ProfileFormInputs) => {
     try {
-      const res = await dispatch(setProfileInformation(data));
+      const res = await dispatch(setCreatorFormData(data));
       if (res) {
         toast.success('Profile information saved successfully');
         setActiveTab(2);
@@ -72,32 +73,41 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                   <div>
                     <p className="text-base">Ad Soyad:</p>
                     <input
-                      {...register("profile_information.name", {
+                      {...register("fullName", {
                         required: "Name is required",
                       })}
                       className="outline-none border w-full p-2 rounded"
                       type="text"
                     />
-                    {errors?.profile_information?.name && (
+                    {errors?.fullName && (
                       <p className="text-red-500 text-xs">
-                        {errors.profile_information.name.message}
+                        {errors.fullName.message}
                       </p>
                     )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium">Password</label>
+                    <input
+                      type="password"
+                      {...register('password', { required: 'Contact is required' })}
+                      className="mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm"
+                    />
                   </div>
 
                   {/* Email Field */}
                   <div>
                     <p className="text-base">E-Posta:</p>
                     <input
-                      {...register("profile_information.email", {
+                      {...register("email", {
                         required: "Email is required",
                       })}
                       className="outline-none border w-full p-2 rounded"
                       type="email"
                     />
-                    {errors?.profile_information?.email && (
+                    {errors?.email && (
                       <p className="text-red-500 text-xs">
-                        {errors.profile_information.email?.message}
+                        {errors.email?.message}
                       </p>
                     )}
                   </div>
@@ -106,15 +116,15 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                   <div>
                     <p className="text-base">Telefon Numarası:</p>
                     <input
-                      {...register("profile_information.phoneNumber", {
+                      {...register("phoneNumber", {
                         required: "Phone number is required",
                       })}
                       className="outline-none border w-full p-2 rounded"
                       type="text"
                     />
-                    {errors?.profile_information?.phoneNumber && (
+                    {errors?.phoneNumber && (
                       <p className="text-red-500 text-xs">
-                        {errors.profile_information.phoneNumber?.message}
+                        {errors.phoneNumber?.message}
                       </p>
                     )}
                   </div>
@@ -125,15 +135,15 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                   <div>
                     <p className="text-base">TCKN:</p>
                     <input
-                      {...register("profile_information.tckn", {
+                      {...register("tckn", {
                         required: "TCKN is required",
                       })}
                       className="outline-none border w-full p-2 rounded"
                       type="text"
                     />
-                    {errors?.profile_information?.tckn && (
+                    {errors?.tckn && (
                       <p className="text-red-500 text-xs">
-                        {errors.profile_information.tckn?.message}
+                        {errors.tckn?.message}
                       </p>
                     )}
                   </div>
@@ -142,15 +152,15 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                   <div>
                     <p className="text-base">Doğum Tarihi:</p>
                     <input
-                      {...register("profile_information.dateOfBirth", {
+                      {...register("dateOfBirth", {
                         required: "Date of birth is required",
                       })}
                       className="outline-none border w-full p-2 rounded"
                       type="date"
                     />
-                    {errors?.profile_information?.dateOfBirth && (
+                    {errors?.dateOfBirth && (
                       <p className="text-red-500 text-xs">
-                        {errors.profile_information.dateOfBirth?.message}
+                        {errors.dateOfBirth?.message}
                       </p>
                     )}
                   </div>
@@ -169,7 +179,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                         <input
                           type="radio"
                           value={gender}
-                          {...register("profile_information.gender")}
+                          {...register("gender")}
                           className="hidden peer"
                         />
                         <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
