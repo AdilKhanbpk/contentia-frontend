@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-    baseURL: "https://contentia-backend.onrender.com/api/v1",
+    baseURL: "https://contentia-backend-s4pw.onrender.com/api/v1",
     headers: {
         "Content-Type": "application/json",
     },

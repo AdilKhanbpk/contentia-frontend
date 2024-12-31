@@ -33,7 +33,7 @@ const BecomeCreator: React.FC = () => {
                   ? "BlueBorder  BlueText font-bold"
                   : "pinkBorder text-gray-400"
               }`}
-              // onClick={() => setActiveTab(tab.id)}
+              onClick={() => setActiveTab(tab.id)}
             >
               {tab.label}
             </button>

@@ -178,7 +178,7 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
               <input
                 id="sozlesme"
                 type="checkbox"
-                {...register("social_information.user_agreement", {
+                {...register("userAgreement", {
                   required: "Kullanıcı Sözleşmesi'ni onaylamak zorunludur.",
                 })}
                 className="mt-1 mr-2"
@@ -190,7 +190,7 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                 Kullanıcı Sözleşmesi'ni okudum, onaylıyorum.
               </label>
             </div>
-            {errors.social_information?.user_agreement && (
+            {errors.userAgreement && (
               <span className="text-red-500 text-sm">
                 {errors.social_information.user_agreement.message}
               </span>
