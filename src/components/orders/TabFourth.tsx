@@ -20,7 +20,8 @@ const TabFourth = () => {
     const [showTooltipTwo, setShowTooltipTwo] = useState(false);
     const [showTooltipThree, setShowTooltipThree] = useState(false);
     const { register, handleSubmit, watch } = useForm();
-    const contentType = watch('contentType');
+     // Replace your existing contentType watch with this:
+  const contentTypes = watch("content_information.contentType") || [];
 
     const onSubmit = async (data: any) => {
         console.log(data);
@@ -118,46 +119,47 @@ const TabFourth = () => {
                             </div>
 
                             <label className="block text-sm font-medium text-gray-700 mb-2">UGC’lerinizde tanıtım gerektiren, içerik türünüzü seçin</label>
-                            <div className="flex justify-between space-x-4">
-                                <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
-                                    <input
-                                        type="radio"
-                                        {...register('contentType')}
-                                        value="Ürün"
-                                        className="hidden peer"
-                                    />
-                                    <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
-                                        <div className="w-full h-full bg-white rounded-full"></div>
-                                    </div>
-                                    <span className="ml-1 text-sm">Ürün</span>
-                                </label>
+                            {/* content_type */}
+              <div className="flex justify-between space-x-4">
+                <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
+                  <input
+                    type="checkbox"
+                    value="product"
+                    {...register("content_information.contentType")}
+                    className="hidden peer"
+                  />
+                  <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
+                    <div className="w-full h-full bg-white rounded-full"></div>
+                  </div>
+                  <span className="ml-1 text-sm">Ürün</span>
+                </label>
 
-                                <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
-                                    <input
-                                        type="radio"
-                                        {...register('contentType')}
-                                        value="Hizmet"
-                                        className="hidden peer"
-                                    />
-                                    <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
-                                        <div className="w-full h-full bg-white rounded-full"></div>
-                                    </div>
-                                    <span className="ml-1 text-sm">Hizmet</span>
-                                </label>
+                <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
+                  <input
+                    type="checkbox"
+                    value="service"
+                    {...register("content_information.contentType")}
+                    className="hidden peer"
+                  />
+                  <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
+                    <div className="w-full h-full bg-white rounded-full"></div>
+                  </div>
+                  <span className="ml-1 text-sm">Hizmet</span>
+                </label>
 
-                                <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
-                                    <input
-                                        type="radio"
-                                        {...register('contentType')}
-                                        value="Mekan"
-                                        className="hidden peer"
-                                    />
-                                    <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
-                                        <div className="w-full h-full bg-white rounded-full"></div>
-                                    </div>
-                                    <span className="ml-1 text-sm">Mekan</span>
-                                </label>
-                            </div>
+                <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
+                  <input
+                    type="checkbox"
+                    value="space"
+                    {...register("content_information.contentType")}
+                    className="hidden peer"
+                  />
+                  <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
+                    <div className="w-full h-full bg-white rounded-full"></div>
+                  </div>
+                  <span className="ml-1 text-sm">Mekan</span>
+                </label>
+              </div>
                         </div>
                     </div>
 
@@ -224,7 +226,7 @@ const TabFourth = () => {
                             <div className='w-full lg:w-1/3'>
                              
                                 {/* If Mekan (Place) selected */}
-                                {contentType === 'Mekan' && (
+                                {(contentTypes.includes("space") || contentTypes.includes("product")) && (
                                     <div className="lg:-mt-28">
                                         <div className='flex flex-row'>
                                             <h2 className="text-lg font-semibold mb-4">Adres:</h2>
