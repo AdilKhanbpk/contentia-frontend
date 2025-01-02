@@ -16,7 +16,7 @@ export const becomeCreatorThunk = createAsyncThunk(
       const creatorFormData = state.becomeCreator.creatorFormData;
       console.log('Thunk state:', { creatorFormData });
 
-      const response = await axiosInstance.post('/api/v1/creators/create', creatorFormData);
+      const response = await axiosInstance.post('/creators/create', creatorFormData);
       console.log('API Response:', response.data);
       return response.data;
     } catch (error: any) {

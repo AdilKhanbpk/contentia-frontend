@@ -9,7 +9,8 @@ const ContentCreatorPreferences: React.FC<{
 }> = ({ register, watch, errors }) => {
   const [showTooltipTwo, setShowTooltipTwo] = useState(false);
   const [showTooltipThree, setShowTooltipThree] = useState(false);
-  const contentType = watch("content_information.contentType");
+  // Replace your existing contentType watch with this:
+  const contentTypes = watch("content_information.contentType") || [];
 
   return (
     <div className="px-4 sm:px-6 md:px-8 lg:px-28">
@@ -56,11 +57,9 @@ const ContentCreatorPreferences: React.FC<{
               <div className="flex justify-between space-x-4">
                 <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
                   <input
-                    type="radio"
+                    type="checkbox"
                     value="product"
-                    {...register("content_information.contentType", {
-                      required: "İçerik türü seçilmelidir.",
-                    })}
+                    {...register("content_information.contentType")}
                     className="hidden peer"
                   />
                   <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
@@ -71,11 +70,9 @@ const ContentCreatorPreferences: React.FC<{
 
                 <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
                   <input
-                    type="radio"
+                    type="checkbox"
                     value="service"
-                    {...register("content_information.contentType", {
-                      required: "İçerik türü seçilmelidir.",
-                    })}
+                    {...register("content_information.contentType")}
                     className="hidden peer"
                   />
                   <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
@@ -86,11 +83,9 @@ const ContentCreatorPreferences: React.FC<{
 
                 <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
                   <input
-                    type="radio"
+                    type="checkbox"
                     value="space"
-                    {...register("content_information.contentType", {
-                      required: "İçerik türü seçilmelidir.",
-                    })}
+                    {...register("content_information.contentType")}
                     className="hidden peer"
                   />
                   <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
@@ -141,7 +136,7 @@ const ContentCreatorPreferences: React.FC<{
 
           <div className="w-full lg:w-1/3">
             {/* If Mekan (Place) selected */}
-            {(contentType === "space" || contentType === "product") && (
+            {(contentTypes.includes("space") || contentTypes.includes("product")) && (
               <div className="">
                 <div className="flex flex-row">
                   <h2 className="text-lg font-semibold mb-4">Adres:</h2>
@@ -184,13 +179,7 @@ const ContentCreatorPreferences: React.FC<{
                     <select
                       className="w-full px-3 py-2 border rounded-md focus:outline-none"
                       {...register(
-                        "content_information.address_details.country",
-                        {
-                          required:
-                            contentType === "space" || contentType === "product"
-                              ? "Ülke seçilmelidir."
-                              : false,
-                        }
+                        "content_information.address_details.country"
                       )}
                     >
                       <option value="">Seçiniz</option>
@@ -214,13 +203,7 @@ const ContentCreatorPreferences: React.FC<{
                     <select
                       className="w-full px-3 py-2 border rounded-md focus:outline-none"
                       {...register(
-                        "content_information.address_details.state",
-                        {
-                          required:
-                            contentType === "space" || contentType === "product"
-                              ? "İl seçilmelidir."
-                              : false,
-                        }
+                        "content_information.address_details.state"
                       )}
                     >
                       <option value="">Seçiniz</option>
@@ -244,13 +227,7 @@ const ContentCreatorPreferences: React.FC<{
                     <select
                       className="w-full px-3 py-2 border rounded-md focus:outline-none"
                       {...register(
-                        "content_information.address_details.district",
-                        {
-                          required:
-                            contentType === "space" || contentType === "product"
-                              ? "İlçe seçilmelidir."
-                              : false,
-                        }
+                        "content_information.address_details.district"
                       )}
                     >
                       <option value="">Seçiniz</option>
@@ -274,13 +251,7 @@ const ContentCreatorPreferences: React.FC<{
                     <select
                       className="w-full px-3 py-2 border rounded-md focus:outline-none"
                       {...register(
-                        "content_information.address_details.neighbourhood",
-                        {
-                          required:
-                            contentType === "space" || contentType === "product"
-                              ? "Mahalle seçilmelidir."
-                              : false,
-                        }
+                        "content_information.address_details.neighbourhood"
                       )}
                     >
                       <option value="">Seçiniz</option>
@@ -289,13 +260,13 @@ const ContentCreatorPreferences: React.FC<{
                     </select>
                     {errors.content_information?.address_details
                       ?.neighbourhood && (
-                      <span className="text-red-500 text-xs">
-                        {
-                          errors.content_information.address_details
-                            .neighbourhood.message
-                        }
-                      </span>
-                    )}
+                        <span className="text-red-500 text-xs">
+                          {
+                            errors.content_information.address_details
+                              .neighbourhood.message
+                          }
+                        </span>
+                      )}
                   </div>
 
                   <div className="col-span-2">
@@ -307,24 +278,18 @@ const ContentCreatorPreferences: React.FC<{
                       className="w-full text-sm px-3 py-2 border rounded-md focus:outline-none"
                       rows={2}
                       {...register(
-                        "content_information.address_details.full_address",
-                        {
-                          required:
-                            contentType === "space" || contentType === "product"
-                              ? "Açık adres girilmelidir."
-                              : false,
-                        }
+                        "content_information.address_details.full_address"
                       )}
                     />
                     {errors.content_information?.address_details
                       ?.full_address && (
-                      <span className="text-red-500 text-xs">
-                        {
-                          errors.content_information.address_details
-                            .full_address.message
-                        }
-                      </span>
-                    )}
+                        <span className="text-red-500 text-xs">
+                          {
+                            errors.content_information.address_details
+                              .full_address.message
+                          }
+                        </span>
+                      )}
                   </div>
                 </div>
               </div>
