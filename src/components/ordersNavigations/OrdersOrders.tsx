@@ -23,7 +23,7 @@ export default function OrdersOrders() {
     setToken(storedToken);
 
     if (storedToken) {
-      console.log('Dispatching fetchOrders');
+      console.log('Dispatching fetchOrders with token:', storedToken);
       dispatch(fetchOrders(storedToken));
     }
   }, [dispatch]);
@@ -32,17 +32,29 @@ export default function OrdersOrders() {
     console.log('Orders updated:', orders);
   }, [orders]);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-  
+  const openModal = (order: Order) => {
+    setSelectedOrder(order);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    console.log('Closing details modal');
+    setIsModalOpen(false);
+  };
+
   const openRevModal = (order: Order) => {
     setSelectedOrder(order);
+    console.log('Opening revision modal for order:', order._id);
     setIsRevModalOpen(true);
   };
-  
-  const closeRevModal = () => setIsRevModalOpen(false);
+
+  const closeRevModal = () => {
+    console.log('Closing revision modal');
+    setIsRevModalOpen(false);
+  };
 
   const getOrderStatusText = (status: string) => {
+    console.log('Mapping order status:', status);
     switch (status) {
       case 'active': return 'Aktif';
       case 'completed': return 'Tamamlandı';
@@ -102,9 +114,9 @@ export default function OrdersOrders() {
                       </button>
 
                       <div className='flex space-x-2 lg:space-x-4'>
-                        <button onClick={openModal} className="px-4 py-1 sm:px-6 sm:py-2 md:px-8 md:py-1 lg:px-8 lg:py-1 text-sm font-semibold ButtonBlue text-white rounded-lg">Detaylar</button>
-                        <button onClick={openModal} className="px-3 text-sm font-semibold border BlueBorder text-white rounded-lg"><div><Image width={20} height={20} src="/pencil.png" alt='pencil icon' /></div></button>
-                        <button className="px-3 text-sm font-semibold bg-[#00B836] text-white rounded-lg"><div><Image width={20} height={20} src="/approveButton.png" alt='pencil icon' /></div></button>
+                        <button onClick={() => openModal(order)} className="px-4 py-1 sm:px-6 sm:py-2 md:px-8 md:py-1 lg:px-8 lg:py-1 text-sm font-semibold ButtonBlue text-white rounded-lg">Detaylar</button>
+                        <button onClick={() => openModal(order)} className="px-3 text-sm font-semibold border BlueBorder text-white rounded-lg"><div><Image width={20} height={20} src="/pencil.png" alt='pencil icon' /></div></button>
+                        <button className="px-3 text-sm font-semibold bg-[#00B836] text-white rounded-lg"><div><Image width={20} height={20} src="/approveButton.png" alt='approve icon' /></div></button>
                       </div>
                     </div>
                   </div>
