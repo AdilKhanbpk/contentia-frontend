@@ -1,9 +1,27 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import axios from 'axios';
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import {
+    fetchAdditionalServices,
+    updateAdditionalService,
+} from "@/store/features/admin/addPriceSlice";
+
+
+interface AdditionalService {
+    id: number;
+    name: string;
+    price: number;
+    sharePrice?: number;
+    coverPicPrice?: number;
+    creatorTypePrice?: number;
+    shippingPrice?: number;
+}
+
 
 const tr = {
     title: "Sipariş Detayları",
@@ -30,6 +48,33 @@ export default function TabFirst() {
     const [showTooltipOne, setShowTooltipOne] = useState(false);
     const [activeEdit, setActiveEdit] = useState<string>('');
     const [activeRatio, setActiveRatio] = useState<string>('');
+    const [token, setToken] = useState<string>("");
+    const dispatch = useDispatch();
+    const { data: additionalService, error } = useSelector(
+        (state: RootState) => state.addPrice
+    );
+    console.log("data", additionalService);
+        // New state for selected services
+        const [selectedServices, setSelectedServices] = useState<{[key: string]: boolean}>({
+            share: false,
+            cover: false,
+            influencer: false,
+            shipping: false
+        });
+
+    useEffect(() => {
+        const storedToken = localStorage.getItem("accessToken") || "";
+        setToken(storedToken);
+        if (storedToken) {
+            dispatch(fetchAdditionalServices(storedToken) as any)
+                .then(() => {
+                    toast.success("Services fetched successfully!");
+                })
+                .catch((err: Error) => {
+                    toast.error(err.message || "Failed to fetch services");
+                });
+        }
+    }, [dispatch]);
 
     const handleEditChange = (edit: string): void => {
         setActiveEdit(edit);
@@ -70,8 +115,10 @@ export default function TabFirst() {
 
     const [additionalCharges, setAdditionalCharges] = useState<number[]>([]);
 
-    const handleAddService = (charge: number) => {
-        setAdditionalCharges((prev) => [...prev, charge]);
+    const handleAddService = (charge: number | undefined) => {
+        if (charge !== undefined) {
+            setAdditionalCharges((prev) => [...prev, charge]);
+        }
     };
 
     const totalAdditionalCharges = additionalCharges.reduce((acc, charge) => acc + charge, 0);
@@ -112,6 +159,8 @@ export default function TabFirst() {
             toast.error('Failed to submit form. Please try again.');
         }
     };
+
+
 
     return (
         <>
@@ -377,11 +426,11 @@ export default function TabFirst() {
                                     <div className="w-2/3 ml-2 sm:ml-3 md:ml-4 lg:ml-4 flex flex-col">
                                         <h3 className="text-md font-semibold">Sosyal Medyada Paylaşılsın</h3>
                                         <p className="text-gray-600">Hazırlanan içerikler onaylandıktan sonra Contentia.io ve içerik üreticilerinin hesaplarından paylaşılır.</p>
-                                        <span className="font-semibold text-black">+1000 TL<span className='text-sm font-thin'> / Video</span></span>
+                                        <span className="font-semibold text-black">{additionalService?.sharePrice}<span className='text-sm font-thin'> / Video</span></span>
                                         <button
                                             type='button'
                                             className="mt-2 px-2 py-1 border-2 BlueBorder BlueText rounded-md font-semibold w-14"
-                                            onClick={() => handleAddService(1000)}
+                                            onClick={() => handleAddService(additionalService?.sharePrice)}
                                         >
                                             Ekle
                                         </button>
@@ -400,11 +449,11 @@ export default function TabFirst() {
                                     <div className="w-2/3 ml-2 sm:ml-3 md:ml-4 lg:ml-4 flex flex-col">
                                         <h3 className="text-md font-semibold">Kapak Görseli</h3>
                                         <p className="text-gray-600">Hazırlanacak her video için orijinal resim ve kapak görseli hazırlanır.</p>
-                                        <span className="font-semibold text-black">+250 TL<span className='text-sm font-thin'> / Video</span></span>
+                                        <span className="font-semibold text-black">{additionalService?.coverPicPrice}<span className='text-sm font-thin'> / Video</span></span>
                                         <button
                                             type='button'
                                             className="mt-2 px-2 py-1 border-2 BlueBorder BlueText rounded-md font-semibold w-14"
-                                            onClick={() => handleAddService(250)}
+                                            onClick={() => handleAddService(additionalService?.coverPicPrice)}
                                         >
                                             Ekle
                                         </button>
@@ -423,11 +472,11 @@ export default function TabFirst() {
                                     <div className="w-2/3 ml-2 sm:ml-3 md:ml-4 lg:ml-4 flex flex-col">
                                         <h3 className="text-md font-semibold">Influencer Paketi</h3>
                                         <p className="text-gray-600">Videolarınız Micro Influencerlar tarafından üretilsin.</p>
-                                        <span className="font-semibold text-black">+1500 TL<span className='text-sm font-thin'> / Video</span></span>
+                                        <span className="font-semibold text-black">{additionalService?.creatorTypePrice}<span className='text-sm font-thin'> / Video</span></span>
                                         <button
                                             type='button'
                                             className="mt-2 px-2 py-1 border-2 BlueBorder BlueText rounded-md font-semibold w-14"
-                                            onClick={() => handleAddService(1500)}
+                                            onClick={() => handleAddService(additionalService?.creatorTypePrice)}
                                         >
                                             Ekle
                                         </button>
@@ -446,11 +495,11 @@ export default function TabFirst() {
                                     <div className="w-2/3 ml-2 sm:ml-3 md:ml-4 lg:ml-4 flex flex-col">
                                         <h3 className="text-md font-semibold">Ürün Gönderimi Kargo Ücreti</h3>
                                         <p className="text-gray-600">İçeriklerinizde tanıtımını yapmak istediğiniz ürünü, içerik üreticilerin adreslerine kargolamanız gerekir. Kargo kodu ile gönderimini ek ücret ödemeden sağlayabilirsiniz</p>
-                                        <span className="font-semibold text-black">+150 TL<span className='text-sm font-thin'> / Video</span></span>
+                                        <span className="font-semibold text-black">{additionalService?.shippingPrice}<span className='text-sm font-thin'> / Video</span></span>
                                         <button
                                             type='button'
                                             className="mt-2 px-2 py-1 border-2 BlueBorder BlueText rounded-md font-semibold w-14"
-                                            onClick={() => handleAddService(150)}
+                                            onClick={() => handleAddService(additionalService?.shippingPrice)}
                                         >
                                             Ekle
                                         </button>
