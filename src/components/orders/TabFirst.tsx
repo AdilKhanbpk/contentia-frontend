@@ -2,165 +2,156 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import axios from 'axios';
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import {
     fetchAdditionalServices,
-    updateAdditionalService,
 } from "@/store/features/admin/addPriceSlice";
-
-
-interface AdditionalService {
-    id: number;
-    name: string;
-    price: number;
-    sharePrice?: number;
-    coverPicPrice?: number;
-    creatorTypePrice?: number;
-    shippingPrice?: number;
-}
-
-
-const tr = {
-    title: "Sipariş Detayları",
-    customizeOrder: "Siparişini Özelleştir:",
-    platform: "Platform:",
-    tiktok: "TikTok",
-    meta: "Meta",
-    other: "Diğer",
-    duration: "Süre:",
-    duration_15: "15s",
-    duration_30: "30s",
-    duration_Diger: "Diğer",
-    edit: "Edit:",
-    yes: "Evet",
-    no: "Hayır",
-    aspectRatio: "En Boy Oranı:",
-    ratio_9_16: "9:16",
-    ratio_16_9: "16:9"
-};
-
-const currentLanguage = tr;
+import { setOrderFormData, createOrder } from "@/store/features/profile/orderSlice";
 
 export default function TabFirst() {
     const [showTooltipOne, setShowTooltipOne] = useState(false);
-    const [activeEdit, setActiveEdit] = useState<string>('');
+    const [activeEdit, setActiveEdit] = useState(false);
     const [activeRatio, setActiveRatio] = useState<string>('');
+    const [activeDuration, setActiveDuration] = useState<string>('');
+    const [activePlatform, setActivePlatform] = useState<string>('');
+    
     const [token, setToken] = useState<string>("");
     const dispatch = useDispatch();
-    const { data: additionalService, error } = useSelector(
+
+    const { data: additionalService } = useSelector(
         (state: RootState) => state.addPrice
     );
-    console.log("data", additionalService);
-        // New state for selected services
-        const [selectedServices, setSelectedServices] = useState<{[key: string]: boolean}>({
-            share: false,
-            cover: false,
-            influencer: false,
-            shipping: false
-        });
+
+    const { loading, error } = useSelector((state: RootState) => state.order);
+
+    const [selectedServices, setSelectedServices] = useState<{ [key: string]: boolean }>({
+        share: false,
+        cover: false,
+        influencer: false,
+        shipping: false
+    });
+
+
+    const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
+    const [selectedCard, setSelectedCard] = useState<number | null>(null);
+    const [additionalCharges, setAdditionalCharges] = useState<number[]>([]);
+    const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
         const storedToken = localStorage.getItem("accessToken") || "";
         setToken(storedToken);
         if (storedToken) {
-            dispatch(fetchAdditionalServices(storedToken) as any)
-                .then(() => {
-                    toast.success("Services fetched successfully!");
-                })
-                .catch((err: Error) => {
-                    toast.error(err.message || "Failed to fetch services");
-                });
+            dispatch(fetchAdditionalServices(storedToken) as any);
         }
     }, [dispatch]);
 
-    const handleEditChange = (edit: string): void => {
+    const handleEditChange = (edit: boolean) => {
         setActiveEdit(edit);
     };
 
-    const handleRatioChange = (ratio: string): void => {
+    const handleRatioChange = (ratio: string) => {
         setActiveRatio(ratio);
     };
-
-    const [isOpen, setIsOpen] = useState(false);
 
     const handleToggle = () => {
         setIsOpen(!isOpen);
     };
 
-    const [activeDuration, setActiveDuration] = useState<string>('');
-
-    const handleDurationChange = (duration: string): void => {
+    const handleDurationChange = (duration: string) => {
         setActiveDuration(duration);
     };
 
-    const [activePlatform, setActivePlatform] = useState<string>('');
-
-    const handlePlatformChange = (platform: string): void => {
+    const handlePlatformChange = (platform: string) => {
         setActivePlatform(platform);
     };
 
-    const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
-    const [selectedCard, setSelectedCard] = useState<number | null>(null);
-
-    const handleQuantityChange = (change: number): void => {
+    const handleQuantityChange = (change: number) => {
         setSelectedQuantity((prevQuantity) => Math.max(1, prevQuantity + change));
     };
 
-    const handleCardSelect = (cardId: number): void => {
+    const handleCardSelect = (cardId: number) => {
         setSelectedCard(cardId);
+        switch (cardId) {
+            case 3:
+                setSelectedQuantity(3);
+                break;
+            case 6:
+                setSelectedQuantity(6);
+                break;
+            case 12:
+                setSelectedQuantity(12);
+                break;
+            case 4:
+                break;
+        }
     };
 
-    const [additionalCharges, setAdditionalCharges] = useState<number[]>([]);
-
-    const handleAddService = (charge: number | undefined) => {
+    const handleAddService = (serviceType: keyof typeof selectedServices, charge: number | undefined) => {
         if (charge !== undefined) {
-            setAdditionalCharges((prev) => [...prev, charge]);
+            setSelectedServices(prev => ({
+                ...prev,
+                [serviceType]: !prev[serviceType]
+            }));
+
+            setAdditionalCharges(prev =>
+                prev.includes(charge)
+                    ? prev.filter(c => c !== charge)
+                    : [...prev, charge]
+            );
         }
     };
 
     const totalAdditionalCharges = additionalCharges.reduce((acc, charge) => acc + charge, 0);
 
     const getPrice = (quantity: number, cardId: number | null, additionalCharges: number): string => {
-        let pricePerVideo = 3.000;
+        let pricePerVideo = 3000;
         let totalPrice = 0;
+
         if (cardId === 3) {
-            totalPrice = 9.000 - 0.450;
+            totalPrice = 9000 - 450;
         } else if (cardId === 6) {
-            totalPrice = 18.000 - 2.401;
+            totalPrice = 18000 - 2401;
         } else if (cardId === 12) {
-            totalPrice = 36.000 - 8.401;
+            totalPrice = 36000 - 8401;
         } else {
             totalPrice = quantity * pricePerVideo;
         }
+
         totalPrice += additionalCharges;
         return totalPrice.toFixed(2);
     };
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        const totalAdditionalCharges = additionalCharges.reduce((acc, charge) => acc + charge, 0);
+
+        if (!token) {
+            toast.error('Please login first');
+            return;
+        }
+
+        // Only dispatch the form data without creating an order
         const formData = {
-            platform: activePlatform,
-            duration: activeDuration,
-            edit: activeEdit,
-            ratio: activeRatio,
-            selectedCard,
-            selectedQuantity,
-            totalPrice: getPrice(selectedQuantity, selectedCard, totalAdditionalCharges),
+            noOfUgc: selectedQuantity,
+            totalPrice: Number(getPrice(selectedQuantity, selectedCard, totalAdditionalCharges)),
+            additionalServices: {
+                platform: activePlatform,
+                duration: activeDuration,
+                edit: activeEdit,
+                aspectRatio: activeRatio,
+                share: selectedServices.share,
+                coverPicture: selectedServices.cover,
+                creatorType: selectedServices.influencer,
+                productShipping: selectedServices.shipping
+            }
         };
 
-        try {
-            await axios.post('http://localhost:3001/api/v1/videos/videoOptions', formData);
-            toast.success('Form submitted successfully!');
-        } catch (error) {
-            toast.error('Failed to submit form. Please try again.');
-        }
+        console.log("tab first data is saved", formData);
+
+        dispatch(setOrderFormData(formData));
+        toast.success('Details saved successfully!');
     };
-
-
 
     return (
         <>
@@ -176,12 +167,12 @@ export default function TabFirst() {
                         </div>
 
                         <div className="lg:w-2/3 bg-white  lg:px-4 lg:pr-24">
-                            <h2 className="text-xl font-bold mb-2">{currentLanguage.customizeOrder}</h2>
+                            <h2 className="text-xl font-bold mb-2">Siparişini Özelleştir:</h2>
                             <div className="grid grid-cols-1 gap-4">
 
                                 {/* Platform Section */}
                                 <div className='sectionBG py-2 flex flex-row px-2 items-end rounded-md'>
-                                    <h3 className="text-sm font-semibold mb-1 w-1/4">{currentLanguage.platform}</h3>
+                                    <h3 className="text-sm font-semibold mb-1 w-1/4">Platform:</h3>
                                     <div className="flex space-x-2">
                                         <label className={`text-sm px-3 py-1 rounded cursor-pointer ${activePlatform === 'tiktok' ? 'ButtonBlue text-white' : 'bg-white text-black'}`}>
                                             <input
@@ -191,7 +182,7 @@ export default function TabFirst() {
                                                 className="hidden"
                                                 onChange={() => handlePlatformChange('tiktok')}
                                             />
-                                            {currentLanguage.tiktok}
+                                            TikTok
                                         </label>
 
                                         <label className={`text-sm px-3 py-1 rounded cursor-pointer ${activePlatform === 'meta' ? 'ButtonBlue text-white' : 'bg-white text-black'}`}>
@@ -202,7 +193,7 @@ export default function TabFirst() {
                                                 className="hidden"
                                                 onChange={() => handlePlatformChange('meta')}
                                             />
-                                            {currentLanguage.meta}
+                                            Meta
                                         </label>
 
                                         <label className={`text-sm px-3 py-1 rounded cursor-pointer ${activePlatform === 'other' ? 'ButtonBlue text-white' : 'bg-white text-black'}`}>
@@ -213,20 +204,20 @@ export default function TabFirst() {
                                                 className="hidden"
                                                 onChange={() => handlePlatformChange('other')}
                                             />
-                                            {currentLanguage.other}
+                                            Diğer
                                         </label>
                                     </div>
                                 </div>
 
                                 <div className='sectionBG py-2 flex flex-row px-2 items-end rounded-md'>
-                                    <h3 className="text-sm font-semibold mb-1 w-1/4">{currentLanguage.duration}</h3>
+                                    <h3 className="text-sm font-semibold mb-1 w-1/4">Süre:</h3>
                                     <div className="flex space-x-2">
                                         <button
                                             type="button"
                                             className={`text-sm px-3 py-1 rounded ${activeDuration === '15s' ? 'ButtonBlue text-white' : 'bg-white text-black'}`}
                                             onClick={() => handleDurationChange('15s')}
                                         >
-                                            {currentLanguage.duration_15}
+                                            15s
                                         </button>
 
                                         <button
@@ -234,7 +225,7 @@ export default function TabFirst() {
                                             className={`text-sm px-3 py-1 rounded ${activeDuration === '30s' ? 'ButtonBlue text-white' : 'bg-white text-black'}`}
                                             onClick={() => handleDurationChange('30s')}
                                         >
-                                            {currentLanguage.duration_30}
+                                            30s
                                         </button>
 
                                         <button
@@ -242,29 +233,29 @@ export default function TabFirst() {
                                             className={`text-sm px-3 py-1 rounded ${activeDuration === 'Diger' ? 'ButtonBlue text-white' : 'bg-white text-black'}`}
                                             onClick={() => handleDurationChange('Diger')}
                                         >
-                                            {currentLanguage.duration_Diger}
+                                            Diğer
                                         </button>
                                     </div>
                                 </div>
 
                                 {/* Edit Section */}
                                 <div className='sectionBG py-2 flex flex-row px-2 items-end rounded-md'>
-                                    <h3 className="text-sm font-semibold mb-1 w-1/4">{currentLanguage.edit}</h3>
+                                    <h3 className="text-sm font-semibold mb-1 w-1/4">Edit:</h3>
                                     <div className="flex space-x-2 w-2/4">
                                         <button
                                             type="button"
-                                            className={`text-sm px-3 py-1 rounded ${activeEdit === 'yes' ? 'ButtonBlue text-white' : 'bg-white text-black'}`}
-                                            onClick={() => handleEditChange('yes')}
+                                            className={`text-sm px-3 py-1 rounded ${activeEdit === true ? 'ButtonBlue text-white' : 'bg-white text-black'}`}
+                                            onClick={() => handleEditChange(true)}
                                         >
-                                            {currentLanguage.yes}
+                                            Evet
                                         </button>
 
                                         <button
                                             type="button"
-                                            className={`text-sm px-3 py-1 rounded ${activeEdit === 'no' ? 'ButtonBlue text-white' : 'bg-white text-black'}`}
-                                            onClick={() => handleEditChange('no')}
+                                            className={`text-sm px-3 py-1 rounded ${activeEdit === false ? 'ButtonBlue text-white' : 'bg-white text-black'}`}
+                                            onClick={() => handleEditChange(false)}
                                         >
-                                            {currentLanguage.no}
+                                            Hayır
                                         </button>
 
                                         <div className="relative w-1/4 flex justify-end items-end">
@@ -295,21 +286,21 @@ export default function TabFirst() {
 
                                 {/* Aspect Ratio Section */}
                                 <div className='sectionBG py-2 flex flex-row px-2 items-end rounded-md'>
-                                    <h3 className="text-sm font-semibold mb-1 w-1/4">{currentLanguage.aspectRatio}</h3>
+                                    <h3 className="text-sm font-semibold mb-1 w-1/4">En Boy Oranı:</h3>
                                     <div className="flex space-x-2">
                                         <button
                                             type="button"
                                             className={`text-sm px-3 py-1 rounded ${activeRatio === '9:16' ? 'ButtonBlue text-white' : 'bg-white text-black'}`}
                                             onClick={() => handleRatioChange('9:16')}
                                         >
-                                            {currentLanguage.ratio_9_16}
+                                            9:16
                                         </button>
                                         <button
                                             type="button"
                                             className={`text-sm px-3 py-1 rounded ${activeRatio === '16:9' ? 'ButtonBlue text-white' : 'bg-white text-black'}`}
                                             onClick={() => handleRatioChange('16:9')}
                                         >
-                                            {currentLanguage.ratio_16_9}
+                                            16:9
                                         </button>
                                     </div>
                                 </div>
@@ -371,6 +362,7 @@ export default function TabFirst() {
                                 <h3 className="text-base font-bold mb-2">İçerik Adedi Seç:</h3>
                                 <div className="flex items-center gap-4">
                                     <button
+                                        type='button'
                                         onClick={() => handleQuantityChange(-1)}
                                         disabled={selectedQuantity === 1}
                                         className="border-2 BlueBorder text-white font-medium py-2 w-16 rounded-full flex items-center justify-center"
@@ -414,7 +406,7 @@ export default function TabFirst() {
 
                         {isOpen && (
                             <div className="space-y-4">
-                                {/* Card 1 */}
+                                {/* Card 1 - Share */}
                                 <div className="bg-white p-2 sm:p-3 md:p-4 lg:p-4 rounded-lg shadow-md flex flex-col lg:flex-row justify-between items-center">
                                     <Image
                                         src="/videoCarousal.png"
@@ -429,15 +421,18 @@ export default function TabFirst() {
                                         <span className="font-semibold text-black">{additionalService?.sharePrice}<span className='text-sm font-thin'> / Video</span></span>
                                         <button
                                             type='button'
-                                            className="mt-2 px-2 py-1 border-2 BlueBorder BlueText rounded-md font-semibold w-14"
-                                            onClick={() => handleAddService(additionalService?.sharePrice)}
+                                            className={`mt-2 px-2 py-1 border-2 rounded-md font-semibold w-20 ${selectedServices.share
+                                                ? 'border-red-500 text-red-500 hover:bg-red-50'
+                                                : 'BlueBorder BlueText hover:bg-blue-50'
+                                                }`}
+                                            onClick={() => handleAddService('share', additionalService?.sharePrice || 0)}
                                         >
-                                            Ekle
+                                            {selectedServices.share ? 'Kaldır' : 'Ekle'}
                                         </button>
                                     </div>
                                 </div>
 
-                                {/* Card 2 */}
+                                {/* Card 2 - Cover Picture */}
                                 <div className="bg-white p-2 sm:p-3 md:p-4 lg:p-4 rounded-lg shadow-md flex flex-col lg:flex-row justify-between items-center">
                                     <Image
                                         src="/videoCarousal.png"
@@ -452,15 +447,18 @@ export default function TabFirst() {
                                         <span className="font-semibold text-black">{additionalService?.coverPicPrice}<span className='text-sm font-thin'> / Video</span></span>
                                         <button
                                             type='button'
-                                            className="mt-2 px-2 py-1 border-2 BlueBorder BlueText rounded-md font-semibold w-14"
-                                            onClick={() => handleAddService(additionalService?.coverPicPrice)}
+                                            className={`mt-2 px-2 py-1 border-2 rounded-md font-semibold w-20 ${selectedServices.cover
+                                                ? 'border-red-500 text-red-500 hover:bg-red-50'
+                                                : 'BlueBorder BlueText hover:bg-blue-50'
+                                                }`}
+                                            onClick={() => handleAddService('cover', additionalService?.coverPicPrice || 0)}
                                         >
-                                            Ekle
+                                            {selectedServices.cover ? 'Kaldır' : 'Ekle'}
                                         </button>
                                     </div>
                                 </div>
 
-                                {/* Card 3 */}
+                                {/* Card 3 - Influencer */}
                                 <div className="bg-white p-2 sm:p-3 md:p-4 lg:p-4 rounded-lg shadow-md flex flex-col lg:flex-row justify-between items-center">
                                     <Image
                                         src="/videoCarousal.png"
@@ -475,15 +473,18 @@ export default function TabFirst() {
                                         <span className="font-semibold text-black">{additionalService?.creatorTypePrice}<span className='text-sm font-thin'> / Video</span></span>
                                         <button
                                             type='button'
-                                            className="mt-2 px-2 py-1 border-2 BlueBorder BlueText rounded-md font-semibold w-14"
-                                            onClick={() => handleAddService(additionalService?.creatorTypePrice)}
+                                            className={`mt-2 px-2 py-1 border-2 rounded-md font-semibold w-20 ${selectedServices.influencer
+                                                ? 'border-red-500 text-red-500 hover:bg-red-50'
+                                                : 'BlueBorder BlueText hover:bg-blue-50'
+                                                }`}
+                                            onClick={() => handleAddService('influencer', additionalService?.creatorTypePrice || 0)}
                                         >
-                                            Ekle
+                                            {selectedServices.influencer ? 'Kaldır' : 'Ekle'}
                                         </button>
                                     </div>
                                 </div>
 
-                                {/* Card 4 */}
+                                {/* Card 4 - Shipping */}
                                 <div className="bg-white p-2 sm:p-3 md:p-4 lg:p-4 rounded-lg shadow-md flex flex-col lg:flex-row justify-between items-center">
                                     <Image
                                         src="/videoCarousal.png"
@@ -498,10 +499,13 @@ export default function TabFirst() {
                                         <span className="font-semibold text-black">{additionalService?.shippingPrice}<span className='text-sm font-thin'> / Video</span></span>
                                         <button
                                             type='button'
-                                            className="mt-2 px-2 py-1 border-2 BlueBorder BlueText rounded-md font-semibold w-14"
-                                            onClick={() => handleAddService(additionalService?.shippingPrice)}
+                                            className={`mt-2 px-2 py-1 border-2 rounded-md font-semibold w-20 ${selectedServices.shipping
+                                                ? 'border-red-500 text-red-500 hover:bg-red-50'
+                                                : 'BlueBorder BlueText hover:bg-blue-50'
+                                                }`}
+                                            onClick={() => handleAddService('shipping', additionalService?.shippingPrice || 0)}
                                         >
-                                            Ekle
+                                            {selectedServices.shipping ? 'Kaldır' : 'Ekle'}
                                         </button>
                                     </div>
                                 </div>

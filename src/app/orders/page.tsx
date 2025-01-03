@@ -7,10 +7,8 @@ import TabSecond from '@/components/orders/TabSecond';
 import TabThird from '@/components/orders/TabThird';
 import TabFourth from '@/components/orders/TabFourth';
 
-// Define interface for the JWT token payload
 interface CustomJwtPayload {
   role: string;
-  // Add other expected properties from your token here
   [key: string]: any;
 }
 

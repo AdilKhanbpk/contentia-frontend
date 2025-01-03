@@ -38,7 +38,7 @@ interface BriefContent {
   productServiceDesc: string;
   scenario?: string;
   caseStudy?: string;
-  uploadFiles?: string;
+  uploadFiles?: string[];
   uploadFileDate?: string;
 }
 
@@ -75,6 +75,7 @@ export interface OrderState {
   currentOrder: Order | null;
   loading: boolean;
   error: string | null;
+  orderFormData: object;
 }
 
 // Payload Interfaces
@@ -110,16 +111,20 @@ const initialState: OrderState = {
   currentOrder: null,
   loading: false,
   error: null,
+  orderFormData: {},
 };
 
-// Create Order
+// Updated createOrder thunk
 export const createOrder = createAsyncThunk(
   "order/createOrder",
-  async ({ data, token }: CreateOrderPayload, { rejectWithValue }) => {
+  async (token: string, { getState, rejectWithValue }) => {
     try {
-      console.log("Creating order with data:", data);
+      const state: any = getState();
+      const orderData = state.order.orderFormData;
+      console.log("Creating order with data:", orderData);
+      
       axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      const response = await axiosInstance.post("/orders", data);
+      const response = await axiosInstance.post("/orders", orderData);
       console.log("Create order response:", response.data);
       return response.data.data;
     } catch (error) {
@@ -246,6 +251,13 @@ const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
+     // Add new reducer for form data
+     setOrderFormData: (state, action: PayloadAction<object>) => {
+      state.orderFormData = { ...state.orderFormData, ...action.payload };
+    },
+    resetOrderFormData: (state) => {
+      state.orderFormData = {};
+    },
     setCurrentOrder: (state, action: PayloadAction<Order | null>) => {
       state.currentOrder = action.payload;
     },
@@ -266,7 +278,7 @@ const orderSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Create Order
+      // Updated createOrder cases
       .addCase(createOrder.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -274,6 +286,7 @@ const orderSlice = createSlice({
       .addCase(createOrder.fulfilled, (state, action: PayloadAction<Order>) => {
         state.loading = false;
         state.orders.push(action.payload);
+        state.orderFormData = {}; // Reset form data on success
       })
       .addCase(createOrder.rejected, (state, action) => {
         state.loading = false;
@@ -377,6 +390,8 @@ const orderSlice = createSlice({
 });
 
 export const {
+  setOrderFormData,
+  resetOrderFormData,
   setCurrentOrder,
   addOrderToState,
   updateOrderInState,
