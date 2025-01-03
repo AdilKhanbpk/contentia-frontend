@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
-/* styles/fonts.css */
 @font-face {
   font-family: 'Shoika';
   src: url('/fonts/Montserrat/static/Montserrat-Regular.ttf') format('truetype');
@@ -19,45 +16,30 @@
   font-style: normal;
 }
 
-/* styles/globals.css */
 @import "~slick-carousel/slick/slick.css";
 @import "~slick-carousel/slick/slick-theme.css";
 @import '~react-toastify/dist/ReactToastify.min.css';
 
 
-/* Apply regular weight to the body (default) */
 body {
   font-family: 'Shoika', sans-serif;
   font-weight: 400;
-  /* Regular */
 }
 
-
-
-/* ////////////// */
-
-/* Hide the default checkbox */
 .custom-checkbox {
   appearance: none;
   width: 18px;
-  /* Set width to 15px */
   height: 18px;
-  /* Set height to 15px */
   background-image: url('/close.png');
   background-size: cover;
   cursor: pointer;
   display: inline-block;
 }
 
-/* When checked, display the check image */
 .custom-checkbox:checked {
-
   background-image: url('/check.png');
 }
 
-/* ///////////////////// */
-
-/* Custom Arrow Styles */
 .custom-arrow {
   position: absolute;
   top: 50%;
@@ -88,8 +70,6 @@ body {
   background-color: #f0f0f0;
 }
 
-/* ////////////// */
-
 .tdbgColor {
   background-color: #f6f6f6;
 }
@@ -103,8 +83,6 @@ body {
   margin: 0 auto;
 }
 
-
-
 button.cta-button {
   background-color: rgb(21, 21, 86);
   color: white;
@@ -117,18 +95,12 @@ button.cta-button {
   margin-top: 20px;
 }
 
-
-
-/* ////////////////// */
-
 .navbarText {
   font-size: 17.2592px;
   font-weight: 700;
   color: #545454;
   line-height: 24.0395px;
   letter-spacing: normal;
-
-
 }
 
 .headingText {
@@ -137,7 +109,6 @@ button.cta-button {
   color: #000000;
   line-height: 47.1545px;
   letter-spacing: -0.431479px;
-
 }
 
 .headingTextBlue {
@@ -146,7 +117,6 @@ button.cta-button {
   color: #4D4EC9;
   line-height: 47.1545px;
   letter-spacing: -0.431479px;
-
 }
 
 .cardTextBlue {
@@ -155,7 +125,6 @@ button.cta-button {
   color: #4d4ec9;
   line-height: 47.1545px;
   letter-spacing: -0.431479px;
-
 }
 
 .headingTextBlueSmall {
@@ -164,7 +133,6 @@ button.cta-button {
   color: #4d4ec9;
   line-height: 47.1545px;
   letter-spacing: -0.431479px;
-
 }
 
 .headingTextWhite {
@@ -173,7 +141,6 @@ button.cta-button {
   color: white;
   line-height: 47.1545px;
   letter-spacing: -0.431479px;
-
 }
 
 
@@ -185,16 +152,13 @@ button.cta-button {
   letter-spacing: -0.431479px;
 }
 
-
 .paraText {
   font-style: normal;
   font-size: 24.656px;
   font-weight: 400;
   color: #000000;
   line-height: 26.8133px;
-
 }
-
 
 .paraTextTwo {
   font-style: normal;
@@ -202,7 +166,6 @@ button.cta-button {
   font-weight: 400;
   color: #000000;
   line-height: 18.4919px;
-
 }
 
 .imageRotate {
@@ -215,13 +178,10 @@ button.cta-button {
   color: white;
   padding-top: 32px;
   padding-bottom: 32px;
-  /* padding-left: 69px;
-  padding-right: 69px; */
   font-style: normal;
   font-size: 17.2592px;
   font-weight: 900;
   line-height: 18.4919px;
-
 }
 
 .imgHeight {
@@ -266,9 +226,7 @@ button.cta-button {
 
 .cardBorder {
   border: 2px solid #4647B6;
-  /* Set border color and thickness */
   border-radius: 27px;
-  /* Optional: Add rounded corners if desired */
 }
 
 .yellowGradient {
@@ -286,7 +244,6 @@ button.cta-button {
 
 .BlueBorder {
   border-color: #4D4EC9;
-
 }
 
 .BlueText {
@@ -296,9 +253,7 @@ button.cta-button {
 .gradient-border {
   position: relative;
   padding: 10px;
-  /* Adjust as needed */
   background: #fff;
-  /* Background color of the content area */
   border-radius: 25px;
 }
 
@@ -306,17 +261,12 @@ button.cta-button {
   content: '';
   position: absolute;
   top: -2px;
-  /* Adjust for border thickness */
   left: -2px;
-  /* Adjust for border thickness */
   right: -2px;
-  /* Adjust for border thickness */
   bottom: -2px;
-  /* Adjust for border thickness */
   background: linear-gradient(90deg, #FFF5AF 0%, #FFB0F2 100%);
   z-index: -1;
   border-radius: 25px;
-  /* Adjust as needed to match the border radius of your element */
 }
 
 .sectionBG {
@@ -331,7 +281,6 @@ button.cta-button {
   background-color: #F5F6F8;
 }
 
-/* For WebKit browsers (Chrome, Safari) */
 .cardButton::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -339,18 +288,15 @@ button.cta-button {
   height: 20px;
   border-radius: 50%;
   background: white;
-  /* Tailwind's Indigo-500 color */
   cursor: pointer;
   border: 3px solid #4D4EC9;
 }
 
-/* For Firefox */
 .cardButton::-moz-range-thumb {
   width: 20px;
   height: 20px;
   border-radius: 50%;
   background: white;
-  /* Tailwind's Indigo-500 color */
   cursor: pointer;
   border: 3px solid #4D4EC9;
 }
@@ -359,13 +305,9 @@ button.cta-button {
   background-color: #F5F6F8;
 }
 
-
-
-
 .authBG2 {
   background-color: #FAE9F2;
 }
-
 
 .blogPink {
   background: linear-gradient(91.96deg, rgba(74, 14, 251, 0.65) 5.54%, #A487FB 85.6%);
