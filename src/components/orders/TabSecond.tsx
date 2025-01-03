@@ -1,13 +1,50 @@
 "use client";
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
-import { toast } from "react-toastify";
+import { useSelector } from 'react-redux';
+import { RootState } from "@/store/store";
+
+// Define interfaces for the form data structure
+interface AdditionalServices {
+  share?: boolean;
+  coverPicture?: boolean;
+  creatorType?: boolean;
+  productShipping?: boolean;
+}
+
+interface OrderFormData {
+  additionalServices?: AdditionalServices;
+  noOfUgc?: number;
+  totalPrice?: number;
+}
+
+// Define form input types
+interface PaymentFormInputs {
+  cardNumber: string;
+  expiryDate: string;
+  cvv: string;
+  nameOnCard: string;
+  country: string;
+  whereDidYouHear?: string;
+  companyName: string;
+  taxId: string;
+  taxOffice?: string;
+  address: string;
+  email: string;
+  phoneNumber: string;
+  saveCard?: boolean;
+  agreement?: boolean;
+}
 
 export default function TabSecond() {
   const [orderDate, setOrderDate] = useState<Date>(new Date());
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+
+  // Type the selector properly
+  const orderFormData = useSelector<RootState, OrderFormData | null>(
+    (state: RootState) => state.order.orderFormData as OrderFormData
+  );
 
   const deliveryStartDate = new Date(orderDate);
   deliveryStartDate.setDate(deliveryStartDate.getDate() + 30);
@@ -15,7 +52,7 @@ export default function TabSecond() {
   const deliveryEndDate = new Date(orderDate);
   deliveryEndDate.setDate(deliveryEndDate.getDate() + 35);
 
-  const formatDate = (date: any) => {
+  const formatDate = (date: Date) => {
     return date.toLocaleDateString('tr-TR', {
       day: 'numeric',
       month: 'long',
@@ -26,63 +63,93 @@ export default function TabSecond() {
     setIsDatePickerOpen(!isDatePickerOpen);
   };
 
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm<PaymentFormInputs>();
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: PaymentFormInputs) => {
     console.log(data);
-
-    try {
-      const response = await axios.post('http://localhost:3001/api/v1/sipay/payment', data);
-      if (response.data.status === 'success') {
-        toast.success('Payment successful!');
-      } else {
-        toast.error('Payment failed: ' + response.data.errorMessage);
-      }
-    } catch (error) {
-      toast.error('There was an issue with your payment.');
-    }
   };
+
+  // Calculate additional services total
+  const calculateAdditionalServicesTotal = () => {
+    let total = 0;
+    const services = orderFormData?.additionalServices;
+    if (services) {
+      if (services.share) total += 500;
+      if (services.coverPicture) total += 250;
+      if (services.creatorType) total += 1000;
+      if (services.productShipping) total += 150;
+    }
+    return total;
+  };
+
+  const basePrice = 3000;
+  const quantity = orderFormData?.noOfUgc || 1;
+  const totalPrice = orderFormData?.totalPrice || 0;
 
   return (
     <>
-      <div className=' flex flex-col lg:flex-row justify-between px-4 sm:px-6 md:px-12 lg:px-24 lg:space-x-16'>
+      <div className='flex flex-col lg:flex-row justify-between px-4 sm:px-6 md:px-12 lg:px-24 lg:space-x-16'>
         <div className='w-full lg:w-3/5'>
           <div className="bg-white border rounded-lg p-6 shadow-md w-full">
-        
             {/* Order Summary */}
             <h2 className="text-xl font-semibold mb-4">Sipariş Özeti:</h2>
             <div className="space-y-3">
-              {/* Item 1 */}
+              {/* Base Videos */}
               <div className="flex justify-between">
                 <div>
-                  <p className="font-semibold">1 Video</p>
-                  <p className="text-sm text-gray-500">2.500 TL / Video</p>
+                  <p className="font-semibold">{quantity} Videos</p>
+                  <p className="text-sm text-gray-500">{basePrice} TL / Video</p>
                 </div>
-                <p className="font-semibold">2.500 TL</p>
+                <p className="font-semibold">{basePrice * quantity} TL</p>
               </div>
-              {/* Item 2 */}
-              <div className="flex justify-between">
-                <div>
-                  <p className="font-semibold">1 Edit</p>
-                  <p className="text-sm text-gray-500">500 TL / Video</p>
+
+              {/* Additional Services */}
+              {orderFormData?.additionalServices?.share && (
+                <div className="flex justify-between">
+                  <div>
+                    <p className="font-semibold">Sosyal Medya Paylaşım</p>
+                    <p className="text-sm text-gray-500">500 TL / Video</p>
+                  </div>
+                  <p className="font-semibold">500 TL</p>
                 </div>
-                <p className="font-semibold">500 TL</p>
-              </div>
-              {/* Item 3 */}
-              <div className="flex justify-between">
-                <div>
-                  <p className="font-semibold">1 Kapak Görsel</p>
-                  <p className="text-sm text-gray-500">250 TL</p>
+              )}
+
+              {orderFormData?.additionalServices?.coverPicture && (
+                <div className="flex justify-between">
+                  <div>
+                    <p className="font-semibold">Kapak Görseli</p>
+                    <p className="text-sm text-gray-500">250 TL / Video</p>
+                  </div>
+                  <p className="font-semibold">250 TL</p>
                 </div>
-                <p className="font-semibold">250 TL</p>
-              </div>
+              )}
+
+              {orderFormData?.additionalServices?.creatorType && (
+                <div className="flex justify-between">
+                  <div>
+                    <p className="font-semibold">Influencer Paketi</p>
+                    <p className="text-sm text-gray-500">1000 TL / Video</p>
+                  </div>
+                  <p className="font-semibold">1000 TL</p>
+                </div>
+              )}
+
+              {orderFormData?.additionalServices?.productShipping && (
+                <div className="flex justify-between">
+                  <div>
+                    <p className="font-semibold">Ürün Gönderimi</p>
+                    <p className="text-sm text-gray-500">150 TL / Video</p>
+                  </div>
+                  <p className="font-semibold">150 TL</p>
+                </div>
+              )}
             </div>
 
             {/* Total */}
             <div className="border-t mt-4 pt-4">
               <div className="flex justify-between font-semibold text-lg">
                 <p>Toplam</p>
-                <p>3.250 TL</p>
+                <p>{totalPrice} TL</p>
               </div>
             </div>
 

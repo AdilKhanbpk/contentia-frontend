@@ -1,10 +1,34 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useForm, Controller } from 'react-hook-form';
-import axios from 'axios';
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/store/store";
+import {
+    fetchMyBrands,
+} from "@/store/features/profile/brandSlice";
+import { setOrderFormData } from "@/store/features/profile/orderSlice";
+import CustomModelAdmin from '../modal/CustomModelAdmin';
+import ModelBrand from "./sub-orders/ModelBrand";
 
 const TabThird = () => {
+    const dispatch = useDispatch<AppDispatch>();
+    const brandRecords = useSelector((state: RootState) => state.brand.myBrands);
+    const [token, setToken] = useState<string | null>(null);
+    const [selectedBrand, setSelectedBrand] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
+    useEffect(() => {
+        const storedToken = localStorage.getItem('accessToken');
+        setToken(storedToken);
+        if (storedToken) {
+            dispatch(fetchMyBrands(storedToken));
+        }
+    }, [dispatch]);
+
+    const brands = brandRecords.map(record => record.brandName);
+
     const { register, handleSubmit, control, formState: { errors } } = useForm();
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -15,26 +39,41 @@ const TabThird = () => {
     };
 
     const onSubmit = async (data: any) => {
-        console.log(data);
-        try {
-            const formData = new FormData();
-            if (data.files && data.files.length > 0) {
-                formData.append('file', data.files[0]);
-            }
-            formData.append('brand', data.brand);
-            formData.append('brief', data.brief);
-            formData.append('productName', data.productName);
-            formData.append('scenario', data.scenario);
-            formData.append('description', data.description);
-            formData.append('sampleWork', data.sampleWork);
-            const response = await axios.post('http://localhost:3001/api/v1/ugc/ugcBrief', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-            toast.success('UGC brief submitted successfully!');
-        } catch (error) {
-            toast.error('Failed to submit UGC brief. Please try again.');
+        if (!token) {
+            toast.error('Please login first');
+            return;
+        }
+
+        // Prepare brief content data
+        const briefContentData = {
+            brandName: selectedBrand,
+            brief: data.brief,
+            productServiceName: data.productName,
+            productServiceDesc: data.description,
+            scenario: data.scenario || "",
+            caseStudy: data.sampleWork || "",
+            uploadFiles: selectedFiles ? Array.from(selectedFiles).map(file => file.name) : [],
+            uploadFileDate: new Date().toISOString()
+        };
+
+        // Dispatch to Redux store
+        const formData = {
+            briefContent: briefContentData
+        };
+
+        console.log("Tab third data is saved", formData);
+        
+        dispatch(setOrderFormData(formData));
+        toast.success('Details saved successfully!');
+    };
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
+
+    const handleFileChange = (files: FileList | null) => {
+        if (files) {
+            const newFiles = Array.from(files);
+            setSelectedFiles(prevFiles => [...prevFiles, ...newFiles]);
         }
     };
 
@@ -42,32 +81,38 @@ const TabThird = () => {
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="w-full max-w-4xl bg-white p-8 shadow-lg rounded-md">
                 <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-                 
                     {/* First Row - Brand Selection and Brief */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                      
                         {/* Brand Selection */}
                         <div>
                             <div className='flex flex-row items-center space-x-4 mb-4'>
                                 <label className="block text-sm font-semibold ">Marka Seçimi:</label>
-                                <div className="flex items-center space-x-2">
+                                <button type="button" onClick={openModal} className='flex flex-row items-center space-x-2'>
                                     <div>
-                                        <Image
-                                            src="/plusIcon.png"
-                                            alt="brand logo"
-                                            height={20}
-                                            width={20}
-                                        />
+                                        <Image width={16} height={16} src='/plusIcon.png' alt='plus icon' />
                                     </div>
-                                    <label htmlFor="brand1" className="text-sm">Ekle</label>
-                                </div>
+                                    <div>
+                                        <p className='BlueText text-sm '>Marka Ekle</p>
+                                    </div>
+                                </button>
                             </div>
+
+                            <CustomModelAdmin isOpen={isModalOpen} closeModal={closeModal} title="">
+                                <ModelBrand />
+                            </CustomModelAdmin>
+
                             <select
                                 {...register("brand", { required: false })}
-                                className="w-full px-3 py-2 border rounded-md focus:outline-none"
-                                defaultValue=""
+                                value={selectedBrand}
+                                onChange={(e) => setSelectedBrand(e.target.value)}
+                                className="w-64 p-2 border border-gray-300 rounded-md shadow-sm focus:border-none bg-white text-gray-900"
                             >
-                                <option value="" disabled>Brand Name</option>
+                                <option value="" disabled>Brand Names</option>
+                                {brands.map((brand, index) => (
+                                    <option key={index} value={brand}>
+                                        {brand}
+                                    </option>
+                                ))}
                             </select>
                             {errors.brand && <span className="text-red-500">Marka Seçimi zorunludur</span>}
                         </div>
@@ -86,7 +131,6 @@ const TabThird = () => {
 
                     {/* Second Row - Product/Service Name and Scenario */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                     
                         {/* Product/Service Name */}
                         <div>
                             <label className="block text-sm font-semibold mb-1">Ürün / Hizmet Adı:</label>
@@ -113,7 +157,6 @@ const TabThird = () => {
 
                     {/* Third Row - Product/Service Description and Sample Work */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                       
                         {/* Product/Service Description */}
                         <div>
                             <label className="block text-sm font-semibold mb-1">Ürün / Hizmet Açıklaması:</label>
@@ -176,16 +219,28 @@ const TabThird = () => {
                                     <input
                                         type="file"
                                         ref={fileInputRef}
+                                        multiple
                                         className="hidden"
                                         onChange={(e) => {
                                             onChange(e.target.files);
+                                            handleFileChange(e.target.files);
                                         }}
                                         accept=".jpg,.png,.gif,.pdf,.mp4,.mov,.wmv"
-                                        multiple
                                     />
                                 )}
                             />
                         </div>
+                        {/* Display selected file names */}
+                        {selectedFiles.length > 0 && (
+                            <div className="mt-4">
+                                <h3 className="text-sm font-semibold mb-2">Seçilen Dosyalar:</h3>
+                                <ul className="flex flex-row list-disc list-inside text-sm text-gray-700">
+                                    {selectedFiles.map((file, index) => (
+                                        <p className='mr-2' key={index}>{file.name}</p>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                     </div>
 
                     {/* Submit Button */}
