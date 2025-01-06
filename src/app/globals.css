@@ -221,7 +221,6 @@ button.cta-button {
 
 .cardButton {
   background-color: #4647B6;
-  ;
 }
 
 .cardBorder {
@@ -311,4 +310,25 @@ button.cta-button {
 
 .blogPink {
   background: linear-gradient(91.96deg, rgba(74, 14, 251, 0.65) 5.54%, #A487FB 85.6%);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  pointer-events: all;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #4D4EC9;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+
+input[type="range"]::-moz-range-thumb {
+  pointer-events: all;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #4D4EC9;
+  cursor: pointer;
 }

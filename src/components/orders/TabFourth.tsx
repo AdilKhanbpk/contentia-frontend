@@ -1,34 +1,74 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/store/store";
+import { setOrderFormData, createOrder } from "@/store/features/profile/orderSlice";
 
 const TabFourth = () => {
-    const [minAge, setMinAge] = useState<number>(18);
-    const [maxAge, setMaxAge] = useState<number>(65);
+    const dispatch = useDispatch<AppDispatch>();
+    const [minAge, setMinAge] = useState(18);
+    const [maxAge, setMaxAge] = useState(65);
+    const [token, setToken] = useState<string | null>(null);
 
-    const handleMaxAgeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = parseInt(event.target.value);
+    useEffect(() => {
+        const storedToken = localStorage.getItem('accessToken');
+        setToken(storedToken);
+    }, []);
+
+    const handleMaxAgeChange = (e: any) => {
+        const value = Math.max(Number(e.target.value), minAge + 1);
         setMaxAge(value);
-        if (value < minAge) {
-            setMinAge(value);
-        }
     };
 
     const [showTooltipOne, setShowTooltipOne] = useState(false);
     const [showTooltipTwo, setShowTooltipTwo] = useState(false);
     const [showTooltipThree, setShowTooltipThree] = useState(false);
     const { register, handleSubmit, watch } = useForm();
-     // Replace your existing contentType watch with this:
-  const contentTypes = watch("content_information.contentType") || [];
+
+    const contentTypes = watch("content_information.contentType") || [];
 
     const onSubmit = async (data: any) => {
-        console.log(data);
+        if (!token) {
+            toast.error('Please login first');
+            return;
+        }
+
         try {
-            const response = await axios.post('http://localhost:3001/api/v1/preferences/preferencesRoute', data);
-            toast.success('Preferences saved successfully!');
+            // Prepare preferences data
+            const preferencesData = {
+                preferences: {
+                    creatorGender: data.gender,
+                    minCreatorAge: minAge,
+                    maxCreatorAge: maxAge,
+                    interests: data.customCheckbox || [],
+                    contentType: data.content_information?.contentType || [],
+                    locationAddress: {
+                        country: data.place?.country || "",
+                        city: data.place?.city || "",
+                        district: data.place?.state || "",
+                        street: data.place?.neighborhood || "",
+                        fullAddress: data.place?.address || ""
+                    }
+                }
+            };
+
+            console.log("data from third tab", preferencesData);
+
+            // Dispatch to Redux store
+            dispatch(setOrderFormData(preferencesData));
+
+            // Send all data to backend
+            try {
+                await dispatch(createOrder(token)).unwrap();
+                toast.success('Order created successfully!');
+            } catch (error) {
+                toast.error('Failed to create order. Please try again.');
+            }
+
         } catch (error) {
+            console.error('Error submitting form:', error);
             toast.error('Failed to save preferences. Please try again.');
         }
     };
@@ -37,10 +77,10 @@ const TabFourth = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className='px-4 sm:px-6 md:px-12 lg:px-24'>
                 <div className="p-6 bg-white rounded-lg shadow-md w-full ">
+                    {/* Existing JSX remains exactly the same */}
                     <div className='flex flex-row'>
                         <h2 className="text-lg font-semibold mb-4">İçerik Üreticisi Tercihleri <span className='font-medium'>(Opsiyonel)</span></h2>
-                     
-                        {/* Tooltip or Information section */}
+
                         <div className="relative mb-4 flex justify-center">
                             <button
                                 className="text-black text-sm px-3 py-1 rounded-full"
@@ -57,7 +97,6 @@ const TabFourth = () => {
                             </button>
                             {showTooltipOne && (
                                 <div className="absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2">
-
                                     İçerik Üreticileri için yapmış olduğunuz tercihler, sizi doğru içerik üreticilerle eşleştirmemize yardımcı olacaktır. Tercihlerinizi,
                                     maksimum düzeyde karşılamaya çalışacağız.
                                 </div>
@@ -94,7 +133,7 @@ const TabFourth = () => {
                         <div className="mb-4 w-full lg:w-1/3">
                             <div className='flex flex-row'>
                                 <h2 className="text-lg font-semibold mb-4">İçerik Türü:</h2>
-                         
+
                                 {/* Tooltip or Information section */}
                                 <div className="relative mb-4 flex justify-center">
                                     <button
@@ -120,68 +159,104 @@ const TabFourth = () => {
 
                             <label className="block text-sm font-medium text-gray-700 mb-2">UGC’lerinizde tanıtım gerektiren, içerik türünüzü seçin</label>
                             {/* content_type */}
-              <div className="flex justify-between space-x-4">
-                <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
-                  <input
-                    type="checkbox"
-                    value="product"
-                    {...register("content_information.contentType")}
-                    className="hidden peer"
-                  />
-                  <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
-                    <div className="w-full h-full bg-white rounded-full"></div>
-                  </div>
-                  <span className="ml-1 text-sm">Ürün</span>
-                </label>
+                            <div className="flex justify-between space-x-4">
+                                <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
+                                    <input
+                                        type="checkbox"
+                                        value="product"
+                                        {...register("content_information.contentType")}
+                                        className="hidden peer"
+                                    />
+                                    <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
+                                        <div className="w-full h-full bg-white rounded-full"></div>
+                                    </div>
+                                    <span className="ml-1 text-sm">Ürün</span>
+                                </label>
 
-                <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
-                  <input
-                    type="checkbox"
-                    value="service"
-                    {...register("content_information.contentType")}
-                    className="hidden peer"
-                  />
-                  <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
-                    <div className="w-full h-full bg-white rounded-full"></div>
-                  </div>
-                  <span className="ml-1 text-sm">Hizmet</span>
-                </label>
+                                <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
+                                    <input
+                                        type="checkbox"
+                                        value="service"
+                                        {...register("content_information.contentType")}
+                                        className="hidden peer"
+                                    />
+                                    <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
+                                        <div className="w-full h-full bg-white rounded-full"></div>
+                                    </div>
+                                    <span className="ml-1 text-sm">Hizmet</span>
+                                </label>
 
-                <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
-                  <input
-                    type="checkbox"
-                    value="space"
-                    {...register("content_information.contentType")}
-                    className="hidden peer"
-                  />
-                  <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
-                    <div className="w-full h-full bg-white rounded-full"></div>
-                  </div>
-                  <span className="ml-1 text-sm">Mekan</span>
-                </label>
-              </div>
+                                <label className="inline-flex items-center cursor-pointer mb-2 lg:mb-6">
+                                    <input
+                                        type="checkbox"
+                                        value="space"
+                                        {...register("content_information.contentType")}
+                                        className="hidden peer"
+                                    />
+                                    <div className="w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out">
+                                        <div className="w-full h-full bg-white rounded-full"></div>
+                                    </div>
+                                    <span className="ml-1 text-sm">Mekan</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
 
-                    <div className=" my-5 flex flex-col">
-                        <label className="block text-sm font-semibold text-gray-700">Yaş Aralığı: <span className='font-medium'> (Opsiyonel)</span></label>
-                       
-                        {/* Age Range Sliders */}
-                        <div className="w-4/12 lg:w-3/12">
+                    <div className="my-5 flex flex-col">
+                        <div className="my-5 flex flex-col">
+                            <label className="block text-sm font-semibold text-gray-700">
+                                Yaş Aralığı: <span className='font-medium'>(Opsiyonel)</span>
+                            </label>
 
-                            <input
-                                type="range"
-                                min="18"
-                                max="65"
-                                value={maxAge}
-                                className="w-full h-2 cardButton rounded-lg appearance-none cursor-pointer"
-                                onChange={handleMaxAgeChange}
-                            />
-                          
-                            {/* Display Age Values */}
-                            <div className="flex justify-between text-sm text-gray-500">
-                                <span>{minAge}</span>
-                                <span>{maxAge}</span>
+                            <div className="w-4/12 lg:w-3/12 relative mt-2">
+                                {/* Track background and active track */}
+                                <div className="absolute w-full h-2 bg-gray-200 rounded-full" />
+                                <div
+                                    className="absolute h-2 bg-blue-600 rounded-full"
+                                    style={{
+                                        left: `${((minAge - 18) / (65 - 18)) * 100}%`,
+                                        right: `${100 - ((maxAge - 18) / (65 - 18)) * 100}%`
+                                    }}
+                                />
+
+                                {/* Min age slider */}
+                                <input
+                                    type="range"
+                                    min="18"
+                                    max="65"
+                                    value={minAge}
+                                    className="absolute w-full pointer-events-none appearance-none bg-transparent"
+                                    style={{
+                                        height: '2rem',
+                                        margin: '-0.8rem 0',
+                                        zIndex: 3,
+                                    }}
+                                    onChange={(e) => {
+                                        const value = Math.min(Number(e.target.value), maxAge - 1);
+                                        setMinAge(value);
+                                    }}
+                                />
+
+                                {/* Max age slider */}
+                                <input
+                                    type="range"
+                                    min="18"
+                                    max="65"
+                                    value={maxAge}
+                                    className="absolute w-full pointer-events-none appearance-none bg-transparent"
+                                    style={{
+                                        height: '2rem',
+                                        margin: '-0.8rem 0',
+                                        zIndex: 4,
+                                    }}
+                                    onChange={handleMaxAgeChange}
+                                />
+
+                                {/* Display age values */}
+                                <div className="flex justify-between text-sm text-gray-500 mt-4">
+                                    <span>{minAge}</span>
+                                    <span>{maxAge}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -224,7 +299,7 @@ const TabFourth = () => {
                                 ))}
                             </div>
                             <div className='w-full lg:w-1/3'>
-                             
+
                                 {/* If Mekan (Place) selected */}
                                 {(contentTypes.includes("space") || contentTypes.includes("product")) && (
                                     <div className="lg:-mt-28">
@@ -264,6 +339,9 @@ const TabFourth = () => {
                                                     {...register('place.country')}
                                                 >
                                                     <option value="">Seçiniz</option>
+                                                    <option value="turkiye">Türkiye</option>
+                                                    <option value="kktc">KKTC</option>
+                                                    <option value="azerbaycan">Azerbaycan</option>
                                                 </select>
                                             </div>
 
@@ -274,6 +352,10 @@ const TabFourth = () => {
                                                     {...register('place.city')}
                                                 >
                                                     <option value="">Seçiniz</option>
+                                                    <option value="istanbul">İstanbul</option>
+                                                    <option value="ankara">Ankara</option>
+                                                    <option value="izmir">İzmir</option>
+                                                    <option value="antalya">Antalya</option>
                                                 </select>
                                             </div>
 
@@ -284,6 +366,10 @@ const TabFourth = () => {
                                                     {...register('place.state')}
                                                 >
                                                     <option value="">Seçiniz</option>
+                                                    <option value="kadikoy">Kadıköy</option>
+                                                    <option value="besiktas">Beşiktaş</option>
+                                                    <option value="uskudar">Üsküdar</option>
+                                                    <option value="sisli">Şişli</option>
                                                 </select>
                                             </div>
 
@@ -294,6 +380,10 @@ const TabFourth = () => {
                                                     {...register('place.neighborhood')}
                                                 >
                                                     <option value="">Seçiniz</option>
+                                                    <option value="caferaga">Caferağa</option>
+                                                    <option value="fenerbahce">Fenerbahçe</option>
+                                                    <option value="rasimpasa">Rasimpaşa</option>
+                                                    <option value="osmanaga">Osmanağa</option>
                                                 </select>
                                             </div>
 
