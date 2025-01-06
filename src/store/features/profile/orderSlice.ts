@@ -114,28 +114,37 @@ const initialState: OrderState = {
   orderFormData: {},
 };
 
-// Updated createOrder thunk
 export const createOrder = createAsyncThunk(
   "order/createOrder",
   async (token: string, { getState, rejectWithValue }) => {
     try {
+      console.log("createOrder thunk triggered");
       const state: any = getState();
+      console.log("State retrieved from getState:", state);
+
       const orderData = state.order.orderFormData;
-      console.log("Creating order with data:", orderData);
-      
+      console.log("Creating order with the following data:", orderData);
+
       axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      console.log("Authorization header set with token.");
+
       const response = await axiosInstance.post("/orders", orderData);
-      console.log("Create order response:", response.data);
+      console.log("Create order response received:", response.data);
+
       return response.data.data;
     } catch (error) {
-      console.error("Error in createOrder:", error);
+      console.error("Error occurred in createOrder thunk:", error);
+
       const axiosError = error as AxiosError;
-      return rejectWithValue(
-        axiosError.response?.data || "Failed to create order"
-      );
+      const errorMessage =
+        axiosError.response?.data || "Failed to create order";
+      console.error("Error details:", errorMessage);
+
+      return rejectWithValue(errorMessage);
     }
   }
 );
+
 
 // Fetch All Orders
 export const fetchOrders = createAsyncThunk(
