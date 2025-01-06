@@ -1,23 +1,22 @@
-import { setCreatorFormData } from "@/store/becomeCreator/becomeCreatorSlice";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import { setCreatorFormData } from "@/store/becomeCreator/becomeCreatorSlice";
 
 interface ProfileInformationProps {
   setActiveTab: (id: number) => void;
 }
 
 interface ProfileFormInputs {
-
-    fullName: string;
-    password: string;
-    email: string;
-    phoneNumber: string;
-    tckn: string;
-    dateOfBirth: string;
-    gender?: string;
-
+  fullName: string;
+  profilePic: string;
+  password: string;
+  email: string;
+  phoneNumber: string;
+  tckn: string;
+  dateOfBirth: string;
+  gender?: string;
   addressDetails: {
     addressOne: string;
     addressTwo: string;
@@ -29,17 +28,80 @@ interface ProfileFormInputs {
 const ProfileInformation: React.FC<ProfileInformationProps> = ({
   setActiveTab,
 }) => {
+  const [imagePreview, setImagePreview] = useState<string>("https://avatar.iran.liara.run/public/24");
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string>("");
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<ProfileFormInputs>();
 
   const dispatch = useDispatch();
 
+  const uploadImage = async (file: File) => {
+    try {
+      setIsUploading(true);
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch('/api/upload', {  // Replace with your actual upload endpoint
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+
+      const data = await response.json();
+      return data.imageUrl; // Assuming your server returns { imageUrl: "path/to/image" }
+    } catch (error) {
+      console.error('Upload error:', error);
+      throw error;
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleImageClick = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        try {
+          // Create preview immediately
+          setImagePreview(URL.createObjectURL(file));
+          
+          // Upload file and get URL
+          const imageUrl = await uploadImage(file);
+          setUploadedImageUrl(imageUrl);
+          setValue('profilePic', imageUrl); // Store image URL in form
+        } catch (error) {
+          toast.error('Failed to upload image');
+          // Reset preview if upload fails
+          setImagePreview("https://avatar.iran.liara.run/public/24");
+        }
+      }
+    };
+    input.click();
+  };
+  
   const onSubmit = async (data: ProfileFormInputs) => {
     try {
-      const res = await dispatch(setCreatorFormData(data));
+      // Include the uploaded image URL in the form data
+      const formData = {
+        ...data,
+        profilePic: uploadedImageUrl || imagePreview
+      };
+
+      console.log("formData", formData);
+
+      const res = await dispatch(setCreatorFormData(formData));
       if (res) {
         toast.success('Profile information saved successfully');
         setActiveTab(2);
@@ -60,12 +122,26 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
               <h1 className="text-lg font-semibold whitespace-nowrap">
                 Profil Bilgileri
               </h1>
-              <img
-                className="w-36 h-36 mt-4"
-                src="https://avatar.iran.liara.run/public/24"
-                alt="ProfileImage"
-              />
+              <div className="relative">
+                <img
+                  className="w-36 h-36 mt-4 rounded-full object-cover cursor-pointer"
+                  src={imagePreview}
+                  alt="ProfileImage"
+                  onClick={isUploading ? undefined : handleImageClick}
+                  style={{ opacity: isUploading ? 0.5 : 1 }}
+                />
+                {isUploading && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                  </div>
+                )}
+                <input
+                  type="hidden"
+                  {...register("profilePic")}
+                />
+              </div>
             </div>
+            {/* Rest of your existing JSX remains exactly the same */}
             <div className="w-full lg:w-2/4">
               <div className="flex flex-col lg:flex-row gap-6">
                 <div className="flex flex-col gap-4 w-full lg:w-1/2">

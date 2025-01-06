@@ -137,8 +137,8 @@ const ContentCreatorPreferences: React.FC<{
           <div className="w-full lg:w-1/3">
             {/* If Mekan (Place) selected */}
             {(contentTypes.includes("space") || contentTypes.includes("product")) && (
-              <div className="">
-                <div className="flex flex-row">
+              <div className="lg:-mt-28">
+                <div className='flex flex-row'>
                   <h2 className="text-lg font-semibold mb-4">Adres:</h2>
 
                   {/* Tooltip or Information section */}
@@ -158,138 +158,78 @@ const ContentCreatorPreferences: React.FC<{
                     </button>
                     {showTooltipThree && (
                       <div className="absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2">
-                        Adres bilgileri, tüm içerik üreticileri tarafından İl,
-                        İlçe ve Mahalle olarak gösterilecektir. Onaylanan içerik
-                        üreticiler, işletme adı ve açık adresi
-                        görüntüleyebilecektir.
+                        Adres bilgileri, tüm içerik üreticileri tarafından İl, İlçe ve Mahalle olarak gösterilecektir. Onaylanan içerik üreticiler, işletme adı ve açık adresi görüntüleyebilecektir.
                       </div>
                     )}
                   </div>
                 </div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Lütfen tanıtılmasını istediğiniz mekanın adres bilgilerini
-                  belirtin
+                  Lütfen tanıtılmasını istediğiniz mekanın adres bilgilerini belirtin
                 </label>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-8 gap-y-8">
-                  <div className="">
-                    <label className="block text-sm font-semibold mb-2">
-                      Ülke
-                    </label>
-
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">Ülke</label>
                     <select
                       className="w-full px-3 py-2 border rounded-md focus:outline-none"
-                      {...register(
-                        "content_information.address_details.country"
-                      )}
+                      {...register('place.country')}
                     >
                       <option value="">Seçiniz</option>
-                      <option value="Turkey">Turkey</option>
-                      <option value="USA">USA</option>
+                      <option value="turkiye">Türkiye</option>
+                      <option value="kktc">KKTC</option>
+                      <option value="azerbaycan">Azerbaycan</option>
                     </select>
-                    {errors.content_information?.address_details?.country && (
-                      <span className="text-red-500 text-xs">
-                        {
-                          errors.content_information.address_details.country
-                            .message
-                        }
-                      </span>
-                    )}
                   </div>
 
-                  <div className="">
-                    <label className="block text-sm font-semibold mb-2">
-                      İl
-                    </label>
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">İl</label>
                     <select
                       className="w-full px-3 py-2 border rounded-md focus:outline-none"
-                      {...register(
-                        "content_information.address_details.state"
-                      )}
+                      {...register('place.city')}
                     >
                       <option value="">Seçiniz</option>
-                      <option value="Turkey">Turkey</option>
-                      <option value="USA">USA</option>
+                      <option value="istanbul">İstanbul</option>
+                      <option value="ankara">Ankara</option>
+                      <option value="izmir">İzmir</option>
+                      <option value="antalya">Antalya</option>
                     </select>
-                    {errors.content_information?.address_details?.state && (
-                      <span className="text-red-500 text-xs">
-                        {
-                          errors.content_information.address_details.state
-                            .message
-                        }
-                      </span>
-                    )}
                   </div>
 
-                  <div className="">
-                    <label className="block text-sm font-semibold mb-2">
-                      İlçe
-                    </label>
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">İlçe</label>
                     <select
                       className="w-full px-3 py-2 border rounded-md focus:outline-none"
-                      {...register(
-                        "content_information.address_details.district"
-                      )}
+                      {...register('place.state')}
                     >
                       <option value="">Seçiniz</option>
-                      <option value="Turkey">Turkey</option>
-                      <option value="USA">USA</option>
+                      <option value="kadikoy">Kadıköy</option>
+                      <option value="besiktas">Beşiktaş</option>
+                      <option value="uskudar">Üsküdar</option>
+                      <option value="sisli">Şişli</option>
                     </select>
-                    {errors.content_information?.address_details?.district && (
-                      <span className="text-red-500 text-xs">
-                        {
-                          errors.content_information.address_details.district
-                            .message
-                        }
-                      </span>
-                    )}
                   </div>
 
-                  <div className="">
-                    <label className="block text-sm font-semibold mb-2">
-                      Mahalle
-                    </label>
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">Mahalle</label>
                     <select
                       className="w-full px-3 py-2 border rounded-md focus:outline-none"
-                      {...register(
-                        "content_information.address_details.neighbourhood"
-                      )}
+                      {...register('place.neighborhood')}
                     >
                       <option value="">Seçiniz</option>
-                      <option value="Turkey">Turkey</option>
-                      <option value="USA">USA</option>
+                      <option value="caferaga">Caferağa</option>
+                      <option value="fenerbahce">Fenerbahçe</option>
+                      <option value="rasimpasa">Rasimpaşa</option>
+                      <option value="osmanaga">Osmanağa</option>
                     </select>
-                    {errors.content_information?.address_details
-                      ?.neighbourhood && (
-                        <span className="text-red-500 text-xs">
-                          {
-                            errors.content_information.address_details
-                              .neighbourhood.message
-                          }
-                        </span>
-                      )}
                   </div>
 
                   <div className="col-span-2">
-                    <label className="block text-sm font-semibold mb-2">
-                      Açık Adres:
-                    </label>
+                    <label className="block text-sm font-semibold mb-2">İşletme Adı & Adres</label>
                     <textarea
                       placeholder="Lütfen işletme adını ve açık adres bilgilerini girin."
                       className="w-full text-sm px-3 py-2 border rounded-md focus:outline-none"
                       rows={2}
-                      {...register(
-                        "content_information.address_details.full_address"
-                      )}
+                      {...register('place.address')}
                     />
-                    {errors.content_information?.address_details
-                      ?.full_address && (
-                        <span className="text-red-500 text-xs">
-                          {
-                            errors.content_information.address_details
-                              .full_address.message
-                          }
-                        </span>
-                      )}
                   </div>
                 </div>
               </div>
