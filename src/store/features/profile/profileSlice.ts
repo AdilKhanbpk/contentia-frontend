@@ -77,6 +77,33 @@ export const changePassword = createAsyncThunk(
   }
 );
 
+export const changeProfilePicture = createAsyncThunk(
+  'profile/changeProfilePicture',
+  async (
+      { file, token }: { file: File; token: string },
+      { rejectWithValue }
+  ) => {
+      try {
+          const formData = new FormData();
+          formData.append('profilePic', file);
+
+          const response = await axiosInstance.patch('/users/change-profilePic', formData, {
+              headers: { 
+                  Authorization: `Bearer ${token}`,
+                  'Content-Type': 'multipart/form-data'
+              },
+          });
+          return response.data;
+      } catch (error) {
+          let errorMessage = 'Failed to update profile picture';
+          if ((error as AxiosError).isAxiosError && (error as AxiosError).response) {
+              errorMessage = `Profile picture update failed: ${(error as AxiosError).response?.data || 'Unknown error'}`;
+          }
+          return rejectWithValue(errorMessage);
+      }
+  }
+);
+
 const profileSlice = createSlice({
     name: 'profile',
     initialState,
@@ -118,7 +145,20 @@ const profileSlice = createSlice({
             .addCase(changePassword.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
-            });
+            })
+            // ... (keeping existing reducer cases)
+            .addCase(changeProfilePicture.pending, (state) => {
+              state.loading = true;
+              state.error = null;
+          })
+          .addCase(changeProfilePicture.fulfilled, (state, action: PayloadAction<any>) => {
+              state.loading = false;
+              state.data = action.payload.data;
+          })
+          .addCase(changeProfilePicture.rejected, (state, action) => {
+              state.loading = false;
+              state.error = action.payload as string;
+          });
     },
 });
 

@@ -29,14 +29,14 @@ interface Order {
 
 export default function NewModal() {
     const dispatch = useDispatch<AppDispatch>();
-    const [selectedPlatform, setSelectedPlatform] = useState('');
+    const [selectedPlatform, setSelectedPlatform] = useState('TikTok');
     const [isEdit, setIsEdit] = useState(false);
-    const [aspectRatio, setAspectRatio] = useState('');
+    const [aspectRatio, setAspectRatio] = useState('9:16');
     const [isShare, setIsShare] = useState(false);
     const [isCoverPicture, setIsCoverPicture] = useState(false);
-    const [creatorType, setCreatorType] = useState('');
+    const [creatorType, setCreatorType] = useState('Nano');
     const [isShipping, setIsShipping] = useState(false);
-    const [duration, setDuration] = useState('');
+    const [duration, setDuration] = useState('15s');
     const { register, handleSubmit, reset, control } = useForm<Order>();
 
     const onSubmitForm: SubmitHandler<Order> = async (data) => {
@@ -65,6 +65,8 @@ export default function NewModal() {
                 productShipping: isShipping,
             },
         };
+
+        console.log("order data", orderData);
 
         try {
             const result = await dispatch(
@@ -107,7 +109,7 @@ export default function NewModal() {
                                     type="text"
                                     placeholder="Enter customer name"
                                     className="w-full px-3 py-1 border rounded-md focus:outline-none"
-                                    {...register('orderOwner.fullName')}
+                                    {...register("orderOwner.fullName", { required: "Customer name is required" })}
                                 />
                             </div>
 
@@ -118,7 +120,7 @@ export default function NewModal() {
                                     type="number"
                                     placeholder="Enter number of UGC"
                                     className="w-full px-3 py-1 border rounded-md focus:outline-none"
-                                    {...register('noOfUgc')}
+                                    {...register("noOfUgc", { required: "Number of UGC is required" })}
                                 />
                             </div>
 
@@ -129,7 +131,7 @@ export default function NewModal() {
                                     type="number"
                                     placeholder="Enter price"
                                     className="w-full px-3 py-1 border rounded-md focus:outline-none"
-                                    {...register('totalPrice')}
+                                    {...register("totalPrice", { required: "Price is required" })}
                                 />
                             </div>
 
@@ -140,7 +142,7 @@ export default function NewModal() {
                                     type="text"
                                     placeholder="Enter creator IDs"
                                     className="w-full px-3 py-1 border rounded-md focus:outline-none"
-                                    {...register('assignedCreators')}
+                                    {...register("assignedCreators", { required: "Creator IDs are required" })}
                                 />
                             </div>
                         </div>
