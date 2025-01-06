@@ -8,10 +8,7 @@ import { AppDispatch } from '@/store/store';
 import { toast } from "react-toastify";
 
 interface Order {
-    orderOwner: {
-        id: string;
-        fullName: string;
-    };
+    orderOwner: string;
     assignedCreators: string[];
     noOfUgc: number;
     totalPrice: number;
@@ -47,10 +44,7 @@ export default function NewModal() {
         }
 
         const orderData = {
-            orderOwner: {
-                id: data.orderOwner.id,
-                fullName: data.orderOwner.fullName,
-            },
+            orderOwner: data.orderOwner,
             assignedCreators: data.assignedCreators,
             noOfUgc: data.noOfUgc,
             totalPrice: data.totalPrice,
@@ -78,15 +72,6 @@ export default function NewModal() {
 
             toast.success("Order created successfully!");
 
-            reset();
-            setSelectedPlatform("");
-            setIsEdit(false);
-            setAspectRatio("");
-            setIsShare(false);
-            setIsCoverPicture(false);
-            setCreatorType("");
-            setIsShipping(false);
-            setDuration("");
         } catch (error) {
             toast.error("Error creating order.");
         } finally {
@@ -107,9 +92,9 @@ export default function NewModal() {
                                 <label className="block text-sm font-semibold mt-2">Select Customer:</label>
                                 <input
                                     type="text"
-                                    placeholder="Enter customer name"
+                                    placeholder="Enter customer id"
                                     className="w-full px-3 py-1 border rounded-md focus:outline-none"
-                                    {...register("orderOwner.fullName", { required: "Customer name is required" })}
+                                    {...register("orderOwner", { required: "Customer id is required" })}
                                 />
                             </div>
 

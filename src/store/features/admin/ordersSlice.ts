@@ -10,10 +10,7 @@ interface ErrorResponse {
 interface Order {
   _id: string;
   coupon?: string;
-  orderOwner: {
-    id: string;
-    fullName: string;
-  };
+  orderOwner: string;
   assignedCreators: string[];
   appliedCreators: string[];
   noOfUgc: number;
@@ -91,21 +88,23 @@ export const createOrder = createAsyncThunk(
       }
 
       const transformedData = {
-        customer: data.orderOwner?.fullName || '',
+        customer: data.orderOwner,
         assignedCreators: Array.isArray(data.assignedCreators) ? data.assignedCreators : [data.assignedCreators],
         totalPrice: parseFloat(data.totalPrice?.toString() || '0'),
         noOfUgc: parseInt(data.noOfUgc?.toString() || '0', 10),
         additionalServices: {
-          platform: data.additionalServices?.platform?.toLowerCase() || '',
-          duration: data.additionalServices?.duration || '',
-          edit: data.additionalServices?.edit || false,
-          aspectRatio: data.additionalServices?.aspectRatio || '',
-          share: data.additionalServices?.share || false,
-          coverPicture: data.additionalServices?.coverPicture || false,
-          creatorType: data.additionalServices?.creatorType || '',
-          productShipping: data.additionalServices?.productShipping || false,
+          platform: data.additionalServices?.platform?.toLowerCase(),
+          duration: data.additionalServices?.duration,
+          edit: data.additionalServices?.edit,
+          aspectRatio: data.additionalServices?.aspectRatio,
+          share: data.additionalServices?.share,
+          coverPicture: data.additionalServices?.coverPicture,
+          creatorType: data.additionalServices?.creatorType,
+          productShipping: data.additionalServices?.productShipping,
         },
       };
+
+      console.log("trans", transformedData);
 
       const response = await axiosInstance.post('/admin/orders', transformedData, {
         headers: {
