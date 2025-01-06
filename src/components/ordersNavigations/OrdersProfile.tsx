@@ -52,6 +52,7 @@ const OrdersProfile: React.FC = () => {
   };
 
   useEffect(() => {
+    console.log(profile.data);
     if (profile.data) {
       setValue("email", profile.data.email || "");
       setValue("fullName", profile.data.fullName || "");
@@ -62,6 +63,7 @@ const OrdersProfile: React.FC = () => {
       setValue("companyName", profile.data.companyName || "");
       setValue("taxNumber", profile.data.taxNumber || "");
       setValue("taxOffice", profile.data.taxOffice || "");
+      setValue("profilePic", profile.data.profilePic || "");
     }
   }, [profile.data]);
 

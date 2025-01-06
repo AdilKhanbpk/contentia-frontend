@@ -27,6 +27,7 @@ function InitializeSocket() {
         });
 
         socket.on("newNotification", (notifications) => {
+          console.log("notifications", notifications);
           dispatch(setNotifications(notifications));
         });
 

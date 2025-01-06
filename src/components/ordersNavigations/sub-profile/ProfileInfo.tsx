@@ -1,6 +1,7 @@
 "use client";
 
 import Image from 'next/image';
+import ProfileChange from './ProfileChange';
 
 interface ProfileInfoProps {
     register: any;
@@ -12,7 +13,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({ register, setIsEditing
     <div className="flex flex-col lg:flex-row justify-start items-start lg:space-x-36 mb-4">
         <div className='flex flex-col justify-start items-center'>
             <h2 className="text-xl font-semibold mb-4 sm:mb-5 md:mb-6 lg:mb-6">Profil Bilgileri</h2>
-            <div className="w-28 h-28 ButtonBlue font-semibold text-white rounded-full flex items-center justify-center">SK</div>
+            <ProfileChange></ProfileChange>
         </div>
         <div className='w-1/4 flex flex-col mt-2 lg:mt-0'>
             <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4'>
