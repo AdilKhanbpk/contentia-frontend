@@ -7,22 +7,90 @@ import { createOrder } from '@/store/features/admin/ordersSlice';
 import { AppDispatch } from '@/store/store';
 import { toast } from "react-toastify";
 
-interface Order {
-    orderOwner: string;
+// Update the Order interface to include the full Creator type
+interface Creator {
+    _id: string;
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+    profilePic?: string;
+    isVerified: string;
+    preferences?: {
+      contentInformation?: {
+        contentType?: string;
+        contentFormats?: string[];
+        areaOfInterest?: string[];
+      };
+      socialInformation?: {
+        platforms?: {
+          [key: string]: {
+            followers: number;
+            username: string;
+          };
+        };
+      };
+    };
+  }
+  
+  interface Order {
+    _id: string;
+    coupon?: string;
+    orderOwner: {
+      _id: string;
+      fullName: string;
+  };
     assignedCreators: string[];
+    appliedCreators: Creator[];
     noOfUgc: number;
     totalPrice: number;
+    orderStatus: 'pending' | 'active' | 'completed' | 'cancelled' | 'revision';
+    paymentStatus: 'paid' | 'pending' | 'refunded' | 'cancelled';
+    contentsDelivered?: number;
     additionalServices: {
-        platform: string;
-        duration: string;
-        edit: boolean;
-        aspectRatio: string;
-        share?: boolean;
-        coverPicture?: boolean;
-        creatorType?: string;
-        productShipping?: boolean;
+      platform: string;
+      duration: string;
+      edit: boolean;
+      aspectRatio: string;
+      share?: boolean;
+      coverPicture?: boolean;
+      creatorType?: string;
+      productShipping?: boolean;
     };
-}
+    preferences?: {
+      creatorGender?: string;
+      minCreatorAge?: number;
+      maxCreatorAge?: number;
+      interests?: string[];
+      contentType?: string;
+      locationAddress?: {
+        country?: string;
+        city?: string;
+        district?: string;
+        street?: string;
+        fullAddress?: string;
+      };
+    };
+    briefContent?: {
+      brandName?: string;
+      brief?: string;
+      productServiceName?: string;
+      productServiceDesc?: string;
+      scenario?: string;
+      caseStudy?: string;
+      uploadFiles?: string;
+      uploadFileDate?: string;
+    };
+    numberOfRequests?: number;
+    orderQuota?: number;
+    quotaLeft?: number;
+    uploadFiles?: Array<{
+      uploadedBy: string;
+      fileUrls: string[];
+      uploadedDate: Date;
+    }>;
+    createdAt?: Date;
+    updatedAt?: Date;
+  }
 
 export default function NewModal() {
     const dispatch = useDispatch<AppDispatch>();

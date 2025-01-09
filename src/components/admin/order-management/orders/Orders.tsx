@@ -324,7 +324,7 @@ const Orders: React.FC = () => {
                 <div className="flex items-center space-x-2">
                     <Image width={10} height={10} src="/icons/avatar.png" alt="avatar" className="w-10 h-10 rounded-full" />
                     <div>
-                        <p className="font-semibold">{typeof row.orderOwner === 'object' ? row.orderOwner.fullName : 'N/A'}</p>
+                        <p className="font-semibold">{typeof row.orderOwner === 'object' ? row.orderOwner.fullName : ''}</p>
                     </div>
                 </div>
             ),
