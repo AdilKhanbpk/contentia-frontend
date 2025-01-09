@@ -7,12 +7,40 @@ interface ErrorResponse {
   status?: number;
 }
 
+// Update the Order interface to include the full Creator type
+interface Creator {
+  _id: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  profilePic?: string;
+  isVerified: string;
+  preferences?: {
+    contentInformation?: {
+      contentType?: string;
+      contentFormats?: string[];
+      areaOfInterest?: string[];
+    };
+    socialInformation?: {
+      platforms?: {
+        [key: string]: {
+          followers: number;
+          username: string;
+        };
+      };
+    };
+  };
+}
+
 interface Order {
   _id: string;
   coupon?: string;
-  orderOwner: string;
+  orderOwner: {
+    _id: string;
+    fullName: string;
+};
   assignedCreators: string[];
-  appliedCreators: string[];
+  appliedCreators: Creator[];
   noOfUgc: number;
   totalPrice: number;
   orderStatus: 'pending' | 'active' | 'completed' | 'cancelled' | 'revision';
@@ -88,7 +116,7 @@ export const createOrder = createAsyncThunk(
       }
 
       const transformedData = {
-        customer: data.orderOwner,
+        customer: typeof data.orderOwner === 'object' ? data.orderOwner._id : data.orderOwner,
         assignedCreators: Array.isArray(data.assignedCreators) ? data.assignedCreators : [data.assignedCreators],
         totalPrice: parseFloat(data.totalPrice?.toString() || '0'),
         noOfUgc: parseInt(data.noOfUgc?.toString() || '0', 10),
@@ -233,7 +261,7 @@ export const approveCreator = createAsyncThunk(
   async ({ orderId, creatorId, token }: { orderId: string; creatorId: string; token: string }, { rejectWithValue }) => {
 
     try {
-      const response = await axiosInstance.post(
+      const response = await axiosInstance.patch(
         `/admin/orders/approve-creator/${orderId}/${creatorId}`,
         { creatorId },
         {
@@ -263,7 +291,7 @@ export const rejectCreator = createAsyncThunk(
   async ({ orderId, creatorId, token }: { orderId: string; creatorId: string; token: string }, { rejectWithValue }) => {
 
     try {
-      const response = await axiosInstance.post(
+      const response = await axiosInstance.patch(
         `/admin/orders/reject-creator/${orderId}/${creatorId}`,
         { creatorId },
         {
@@ -298,7 +326,11 @@ export const getAppliedCreators = createAsyncThunk(
         timeout: 10000,
       });
 
-      return { orderId, creators: response.data.data };
+      return { 
+        orderId, 
+        creators: response.data.data.appliedCreators // This now contains the full Creator objects
+      };
+      
     } catch (error) {
       if ((error as AxiosError).isAxiosError) {
         const axiosError = error as AxiosError<ErrorResponse>;
@@ -337,12 +369,16 @@ const ordersSlice = createSlice({
         if (state.currentOrder?._id === action.payload.orderId) {
           state.currentOrder.appliedCreators = action.payload.creators;
         }
-        // Update the order in the data array
-        const index = state.data.findIndex(order => order._id === action.payload.orderId);
-        if (index !== -1) {
-          state.data[index].appliedCreators = action.payload.creators;
-        }
-      })
+       // Update the current order's appliedCreators with the full Creator objects
+       if (state.currentOrder?._id === action.payload.orderId) {
+        state.currentOrder.appliedCreators = action.payload.creators;
+      }
+      // Update the order in the data array
+      const index = state.data.findIndex(order => order._id === action.payload.orderId);
+      if (index !== -1) {
+        state.data[index].appliedCreators = action.payload.creators;
+      }
+    })
       .addCase(getAppliedCreators.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
