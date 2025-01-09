@@ -38,6 +38,7 @@ interface Order {
   orderOwner: {
     _id: string;
     fullName: string;
+    email: string;
 };
   assignedCreators: string[];
   appliedCreators: Creator[];
@@ -121,18 +122,19 @@ export const createOrder = createAsyncThunk(
         totalPrice: parseFloat(data.totalPrice?.toString() || '0'),
         noOfUgc: parseInt(data.noOfUgc?.toString() || '0', 10),
         additionalServices: {
-          platform: data.additionalServices?.platform?.toLowerCase(),
-          duration: data.additionalServices?.duration,
-          edit: data.additionalServices?.edit,
-          aspectRatio: data.additionalServices?.aspectRatio,
-          share: data.additionalServices?.share,
-          coverPicture: data.additionalServices?.coverPicture,
-          creatorType: data.additionalServices?.creatorType,
-          productShipping: data.additionalServices?.productShipping,
+          platform: data.additionalServices?.platform?.toLowerCase() || 'tiktok',
+          duration: data.additionalServices?.duration || '15s',
+          // Explicitly set edit as a boolean
+          edit: data.additionalServices?.edit === true ? true : false,
+          aspectRatio: data.additionalServices?.aspectRatio || '9:16',
+          share: data.additionalServices?.share === true ? true : false,
+          coverPicture: data.additionalServices?.coverPicture === true ? true : false,
+          creatorType: data.additionalServices?.creatorType || 'Nano',
+          productShipping: data.additionalServices?.productShipping === true ? true : false,
         },
       };
 
-      console.log("trans", transformedData);
+      console.log("transformed data", transformedData);
 
       const response = await axiosInstance.post('/admin/orders', transformedData, {
         headers: {

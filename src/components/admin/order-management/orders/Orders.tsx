@@ -31,21 +31,21 @@ interface Creator {
     profilePic?: string;
     isVerified: string;
     preferences?: {
-      contentInformation?: {
-        contentType?: string;
-        contentFormats?: string[];
-        areaOfInterest?: string[];
-      };
-      socialInformation?: {
-        platforms?: {
-          [key: string]: {
-            followers: number;
-            username: string;
-          };
+        contentInformation?: {
+            contentType?: string;
+            contentFormats?: string[];
+            areaOfInterest?: string[];
         };
-      };
+        socialInformation?: {
+            platforms?: {
+                [key: string]: {
+                    followers: number;
+                    username: string;
+                };
+            };
+        };
     };
-  }
+}
 
 interface Order {
     _id: string;
@@ -53,6 +53,7 @@ interface Order {
     orderOwner: {
         _id: string;
         fullName: string;
+        email: string;
     };
     assignedCreators: string[];
     appliedCreators: Creator[];
@@ -164,6 +165,7 @@ TableActions.displayName = 'TableActions';
 const Orders: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { data: orders, loading, error, currentOrder } = useSelector((state: RootState) => state.orders);
+    console.log("orders fetched successfully", orders);
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
@@ -324,12 +326,18 @@ const Orders: React.FC = () => {
                 <div className="flex items-center space-x-2">
                     <Image width={10} height={10} src="/icons/avatar.png" alt="avatar" className="w-10 h-10 rounded-full" />
                     <div>
-                        <p className="font-semibold">{typeof row.orderOwner === 'object' ? row.orderOwner.fullName : ''}</p>
+                        <p className="font-semibold">
+                            {typeof row.orderOwner === 'object' ?
+                                (row.orderOwner.fullName || 'No Name') : ''}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                            {typeof row.orderOwner === 'object' ? row.orderOwner.email : ''}
+                        </p>
                     </div>
                 </div>
             ),
             sortable: false,
-            width: "200px",
+            width: "300px",
         },
         {
             name: "No of UGC",
@@ -384,8 +392,8 @@ const Orders: React.FC = () => {
     const filteredOrders = React.useMemo(() => {
         const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
         return orders.filter((order) => {
-            const fullNameMatch = 
-                typeof order.orderOwner === 'object' && 
+            const fullNameMatch =
+                typeof order.orderOwner === 'object' &&
                 order.orderOwner?.fullName?.toLowerCase().includes(lowerCaseSearchTerm);
             const idMatch = order._id?.toLowerCase().includes(lowerCaseSearchTerm);
             return fullNameMatch || idMatch;
