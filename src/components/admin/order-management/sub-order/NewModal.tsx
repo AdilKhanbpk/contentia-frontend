@@ -38,6 +38,7 @@ interface Creator {
     orderOwner: {
       _id: string;
       fullName: string;
+      email: string;
   };
     assignedCreators: string[];
     appliedCreators: Creator[];
@@ -94,15 +95,28 @@ interface Creator {
 
 export default function NewModal() {
     const dispatch = useDispatch<AppDispatch>();
-    const [selectedPlatform, setSelectedPlatform] = useState('TikTok');
-    const [isEdit, setIsEdit] = useState(false);
-    const [aspectRatio, setAspectRatio] = useState('9:16');
-    const [isShare, setIsShare] = useState(false);
-    const [isCoverPicture, setIsCoverPicture] = useState(false);
-    const [creatorType, setCreatorType] = useState('Nano');
-    const [isShipping, setIsShipping] = useState(false);
-    const [duration, setDuration] = useState('15s');
-    const { register, handleSubmit, reset, control } = useForm<Order>();
+    const [selectedPlatform, setSelectedPlatform] = useState<string>('TikTok');
+    const [duration, setDuration] = useState<string>('15s');
+    const [isEdit, setIsEdit] = useState<boolean>(false);
+    const [aspectRatio, setAspectRatio] = useState<string>('9:16');
+    const [isShare, setIsShare] = useState<boolean>(false);
+    const [isCoverPicture, setIsCoverPicture] = useState<boolean>(false);
+    const [creatorType, setCreatorType] = useState<string>('Nano');
+    const [isShipping, setIsShipping] = useState<boolean>(false);
+    const { register, handleSubmit, reset, control } = useForm<Order>({
+        defaultValues: {
+            additionalServices: {
+                platform: 'TikTok',
+                duration: '15s',
+                edit: false,
+                aspectRatio: '9:16',
+                share: false,
+                coverPicture: false,
+                creatorType: 'Nano',
+                productShipping: false
+            }
+        }
+    });
 
     const onSubmitForm: SubmitHandler<Order> = async (data) => {
         const token = localStorage.getItem("accessToken");
@@ -117,7 +131,7 @@ export default function NewModal() {
             noOfUgc: data.noOfUgc,
             totalPrice: data.totalPrice,
             additionalServices: {
-                platform: selectedPlatform,
+                platform: selectedPlatform.toLowerCase(),
                 duration: duration,
                 edit: isEdit,
                 aspectRatio: aspectRatio,

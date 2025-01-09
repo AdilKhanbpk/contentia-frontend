@@ -38,6 +38,7 @@ interface Order {
   orderOwner: {
     _id: string;
     fullName: string;
+    email: string;
 };
   assignedCreators: string[];
   appliedCreators: Creator[];
