@@ -7,6 +7,7 @@ import { IoNotificationsOutline } from 'react-icons/io5';
 import { AiOutlineSearch, AiOutlineSetting } from 'react-icons/ai';
 import { MdOutlineEmail } from 'react-icons/md';
 import { BiUserCircle } from 'react-icons/bi';
+import NotifiButton from "../notifications/NotifiButton";
 
 export default function AdminNavbar() {
     const { t } = useTranslation();
@@ -84,10 +85,7 @@ export default function AdminNavbar() {
 
                         {/* Right Section */}
                         <ul className="flex items-center space-x-2 md:space-x-4 font-medium">
-                            <button className="relative text-gray-600 hover:text-gray-800">
-                                <IoNotificationsOutline size={24} />
-                                <span className="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
-                            </button>
+                            <NotifiButton></NotifiButton>
                             <button className="text-gray-600 hover:text-gray-800">
                                 <MdOutlineEmail size={24} />
                             </button>
