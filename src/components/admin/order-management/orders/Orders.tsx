@@ -22,15 +22,40 @@ import {
 import { RootState } from '@/store/store';
 import { toast } from "react-toastify";
 
+// Update the Order interface to include the full Creator type
+interface Creator {
+    _id: string;
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+    profilePic?: string;
+    isVerified: string;
+    preferences?: {
+      contentInformation?: {
+        contentType?: string;
+        contentFormats?: string[];
+        areaOfInterest?: string[];
+      };
+      socialInformation?: {
+        platforms?: {
+          [key: string]: {
+            followers: number;
+            username: string;
+          };
+        };
+      };
+    };
+  }
+
 interface Order {
     _id: string;
     coupon?: string;
     orderOwner: {
-        id: string;
+        _id: string;
         fullName: string;
     };
     assignedCreators: string[];
-    appliedCreators: string[];
+    appliedCreators: Creator[];
     noOfUgc: number;
     totalPrice: number;
     orderStatus: 'pending' | 'active' | 'completed' | 'cancelled' | 'revision';
@@ -154,7 +179,6 @@ const Orders: React.FC = () => {
 
             try {
                 const response = await dispatch(fetchOrders(token)).unwrap();
-                toast.success("Orders fetched successfully!");
             } catch (error) {
                 toast.error("Error occurred while fetching orders.");
             }
@@ -300,7 +324,7 @@ const Orders: React.FC = () => {
                 <div className="flex items-center space-x-2">
                     <Image width={10} height={10} src="/icons/avatar.png" alt="avatar" className="w-10 h-10 rounded-full" />
                     <div>
-                        <p className="font-semibold">{row.orderOwner.fullName}</p>
+                        <p className="font-semibold">{typeof row.orderOwner === 'object' ? row.orderOwner.fullName : 'N/A'}</p>
                     </div>
                 </div>
             ),
@@ -360,8 +384,10 @@ const Orders: React.FC = () => {
     const filteredOrders = React.useMemo(() => {
         const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
         return orders.filter((order) => {
-            const fullNameMatch = order.orderOwner?.fullName?.toLowerCase().includes(lowerCaseSearchTerm) ?? false;
-            const idMatch = order._id?.toLowerCase().includes(lowerCaseSearchTerm) ?? false;
+            const fullNameMatch = 
+                typeof order.orderOwner === 'object' && 
+                order.orderOwner?.fullName?.toLowerCase().includes(lowerCaseSearchTerm);
+            const idMatch = order._id?.toLowerCase().includes(lowerCaseSearchTerm);
             return fullNameMatch || idMatch;
         });
     }, [orders, searchTerm]);

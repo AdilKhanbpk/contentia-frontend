@@ -1,12 +1,37 @@
+// Update the Order interface to include the full Creator type
+interface Creator {
+    _id: string;
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+    profilePic?: string;
+    isVerified: string;
+    preferences?: {
+      contentInformation?: {
+        contentType?: string;
+        contentFormats?: string[];
+        areaOfInterest?: string[];
+      };
+      socialInformation?: {
+        platforms?: {
+          [key: string]: {
+            followers: number;
+            username: string;
+          };
+        };
+      };
+    };
+  }
+
 interface Order {
     _id: string;
     coupon?: string;
     orderOwner: {
-        id: string;
+        _id: string;
         fullName: string;
-      };
+    };
     assignedCreators: string[];
-    appliedCreators: string[];
+    appliedCreators: Creator[];
     noOfUgc: number;
     totalPrice: number;
     orderStatus: 'pending' | 'active' | 'completed' | 'cancelled' | 'revision';

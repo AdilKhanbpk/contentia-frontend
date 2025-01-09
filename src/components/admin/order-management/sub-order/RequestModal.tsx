@@ -7,25 +7,40 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/store/store';
 import { getAppliedCreators } from '@/store/features/admin/ordersSlice';
 
-export interface Creator {
+// Update the Order interface to include the full Creator type
+interface Creator {
   _id: string;
-  name: string;
+  fullName: string;
   email: string;
-  contact: string;
-  totalOrders: number;
-  country: string;
-  status: "Verified" | "Pending" | "Rejected";
+  phoneNumber: string;
+  profilePic?: string;
+  isVerified: string;
+  preferences?: {
+    contentInformation?: {
+      contentType?: string;
+      contentFormats?: string[];
+      areaOfInterest?: string[];
+    };
+    socialInformation?: {
+      platforms?: {
+        [key: string]: {
+          followers: number;
+          username: string;
+        };
+      };
+    };
+  };
 }
 
 interface Order {
   _id: string;
   coupon?: string;
   orderOwner: {
-    id: string;
+    _id: string;
     fullName: string;
-  };
+};
   assignedCreators: string[];
-  appliedCreators: string[];
+  appliedCreators: Creator[];
   noOfUgc: number;
   totalPrice: number;
   orderStatus: 'pending' | 'active' | 'completed' | 'cancelled' | 'revision';
@@ -146,9 +161,15 @@ const RequestModal: React.FC<RequestModalProps> = ({ order, onApprove, onReject 
       name: "Creator Name",
       cell: (row: Creator) => (
         <div className="flex items-center space-x-2">
-          <Image width={10} height={10} src="/icons/avatar.png" alt="avatar" className="w-10 h-10 rounded-full" />
+          <Image 
+            width={10} 
+            height={10} 
+            src={row.profilePic || "/icons/avatar.png"} 
+            alt="avatar" 
+            className="w-10 h-10 rounded-full" 
+          />
           <div>
-            <p className="font-semibold">{row.name}</p>
+            <p className="font-semibold">{row.fullName}</p>
             <p className="text-sm whitespace-nowrap text-gray-500">{row.email}</p>
           </div>
         </div>
@@ -157,8 +178,8 @@ const RequestModal: React.FC<RequestModalProps> = ({ order, onApprove, onReject 
       width: "200px",
     },
     {
-      name: "Creator ID",
-      selector: (row: Creator) => row.contact,
+      name: "Contact",
+      selector: (row: Creator) => row.phoneNumber,
       sortable: true,
       width: "150px",
     },
@@ -167,14 +188,14 @@ const RequestModal: React.FC<RequestModalProps> = ({ order, onApprove, onReject 
       cell: (row: Creator) => (
         <span
           className={`px-3 py-1 rounded-full text-sm font-semibold ${
-            row.status === "Verified"
+            row.isVerified === "approved"
               ? "text-green-700 bg-green-100"
-              : row.status === "Pending"
+              : row.isVerified === "pending"
                 ? "text-blue-700 bg-blue-100"
                 : "text-red-700 bg-red-100"
           }`}
         >
-          {row.status}
+          {row.isVerified}
         </span>
       ),
       sortable: true,
@@ -202,15 +223,16 @@ const RequestModal: React.FC<RequestModalProps> = ({ order, onApprove, onReject 
     }
   ];
 
-  const filteredCreators = currentOrder?.appliedCreators?.filter((creator: any) => {
-    const searchLower = searchTerm.toLowerCase();
-    return (
-      creator.name?.toLowerCase().includes(searchLower) ||
-      creator.email?.toLowerCase().includes(searchLower) ||
-      creator.contact?.includes(searchTerm) ||
-      creator.country?.toLowerCase().includes(searchLower)
-    );
-  }) || [];
+  const filteredCreators = currentOrder?.appliedCreators 
+  ? (currentOrder.appliedCreators as Creator[]).filter((creator: Creator) => {
+      const searchLower = searchTerm.toLowerCase();
+      return (
+        creator.fullName?.toLowerCase().includes(searchLower) ||
+        creator.email?.toLowerCase().includes(searchLower) ||
+        creator.phoneNumber?.includes(searchTerm)
+      );
+    })
+  : [];
 
   console.log("Rendering RequestModal with filtered creators:", filteredCreators);
 
