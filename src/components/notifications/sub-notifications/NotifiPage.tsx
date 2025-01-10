@@ -18,6 +18,7 @@ export default function NotifiPage() {
     const [token, setToken] = useState<string | null>(null);
 
     useEffect(() => {
+        console.log('Current notifications:', notifications);
         const storedToken = localStorage.getItem('accessToken');
         setToken(storedToken);
         if (storedToken) {
@@ -84,6 +85,9 @@ export default function NotifiPage() {
         );
     }
 
+    // Ensure notifications is always an array
+    const notificationsArray = Array.isArray(notifications) ? notifications : [];
+
     return (
         <div className="flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72">
             <div className="max-w-4xl mx-auto">
@@ -91,56 +95,56 @@ export default function NotifiPage() {
                     <div className="flex justify-between items-center mb-6">
                         <h1 className="text-2xl font-semibold">Notifications</h1>
                         <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-1 rounded">
-                            {notifications.length} New
+                            {notificationsArray.length} New
                         </span>
                     </div>
 
                     <div className="space-y-4">
-                        {notifications.map((notification) => (
-                            <div
-                                key={notification._id}
-                                className={`p-4 rounded-lg border ${notification.isRead ? 'bg-gray-50' : 'bg-blue-50'
-                                    } hover:bg-gray-100 transition-colors duration-200`}
-                            >
-                                <div className="flex items-start gap-4">
-                                    <div className="flex-shrink-0">
-                                        {getEventTypeIcon(notification.eventType || 'default')}
-                                    </div>
-
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex justify-between items-start flex-wrap gap-2">
-                                            <h3 className="font-medium truncate">
-                                                {notification.title}
-                                            </h3>
-                                            <span className="text-sm flex-shrink-0">
-                                                {formatDate(notification.createdAt)}
-                                            </span>
+                        {notificationsArray.length > 0 ? (
+                            notificationsArray.map((notification) => (
+                                <div
+                                    key={notification._id}
+                                    className={`p-4 rounded-lg border ${notification.isRead ? 'bg-gray-50' : 'bg-blue-50'
+                                        } hover:bg-gray-100 transition-colors duration-200`}
+                                >
+                                    <div className="flex items-start gap-4">
+                                        <div className="flex-shrink-0">
+                                            {getEventTypeIcon(notification.eventType || 'default')}
                                         </div>
 
-                                        <p className="mt-1 whitespace-pre-line">
-                                            {notification.details}
-                                        </p>
-
-                                        {notification.metadata && (
-                                            <div className="mt-2 text-sm flex flex-wrap gap-2">
-                                                {Object.entries(notification.metadata).map(([key, value]) => (
-                                                    <div key={key} className="inline-flex items-center py-1 rounded">
-                                                        <span className="font-medium mr-2">{key}:</span>
-                                                        <span className="truncate">
-                                                            {typeof value === 'object'
-                                                                ? JSON.stringify(value)
-                                                                : String(value)}
-                                                        </span>
-                                                    </div>
-                                                ))}
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex justify-between items-start flex-wrap gap-2">
+                                                <h3 className="font-medium truncate">
+                                                    {notification.title}
+                                                </h3>
+                                                <span className="text-sm flex-shrink-0">
+                                                    {formatDate(notification.createdAt)}
+                                                </span>
                                             </div>
-                                        )}
+
+                                            <p className="mt-1 whitespace-pre-line">
+                                                {notification.details}
+                                            </p>
+
+                                            {notification.metadata && (
+                                                <div className="mt-2 text-sm flex flex-wrap gap-2">
+                                                    {Object.entries(notification.metadata).map(([key, value]) => (
+                                                        <div key={key} className="inline-flex items-center py-1 rounded">
+                                                            <span className="font-medium mr-2">{key}:</span>
+                                                            <span className="truncate">
+                                                                {typeof value === 'object'
+                                                                    ? JSON.stringify(value)
+                                                                    : String(value)}
+                                                            </span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-
-                        {notifications.length === 0 && (
+                            ))
+                        ) : (
                             <div className="text-center py-12">
                                 <svg className="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
