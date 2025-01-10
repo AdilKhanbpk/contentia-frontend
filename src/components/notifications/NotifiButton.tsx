@@ -2,12 +2,12 @@ import React from 'react';
 import { IoNotificationsOutline } from 'react-icons/io5';
 import { useRouter } from "next/navigation";
 import { useSelector } from 'react-redux';
-import { selectNotifications } from '@/store/features/admin/notificationSlice';
+import { selectTotalCount } from '@/store/features/admin/notificationSlice';
 
 export default function NotifiButton() {
     const router = useRouter();
-    const notifications = useSelector(selectNotifications);
-    const notificationCount = notifications.length;
+    // Use totalCount instead of notifications length
+    const notificationCount = useSelector(selectTotalCount);
 
     const handleRedirect = () => {
         router.push("/admin/all-notifications");

@@ -36,6 +36,7 @@ interface NotificationState {
   error: string | null;
   notification: Notification | null;
   notifications: Notification[];
+  totalCount: number;
 }
 
 const initialState: NotificationState = {
@@ -44,6 +45,7 @@ const initialState: NotificationState = {
   error: null,
   notification: null,
   notifications: [],
+  totalCount: 0,
 };
 
 // Async Thunks
@@ -58,7 +60,10 @@ export const fetchNotifications = createAsyncThunk(
         },
       });
       console.log("Fetched notifications:", response.data.data);
-      return response.data.data;
+      return {
+        notifications: response.data.data,
+        totalCount: response.data.data.length // Or response.data.count if API provides it
+      };
     } catch (error) {
       console.error("Error fetching notifications:", error);
       const axiosError = error as AxiosError;
@@ -209,12 +214,15 @@ const notificationSlice = createSlice({
   initialState,
   reducers: {
     setNotifications: (state, action: PayloadAction<Notification[]>) => {
-      state.notifications = action.payload;
-      console.log("Notifications set to:", action.payload);
+      state.notifications = action.payload || [];
+      state.totalCount = action.payload?.length || 0;
     },
     clearNotification: (state) => {
       state.notification = null;
       console.log("Notification cleared");
+    },
+    updateTotalCount: (state, action: PayloadAction<number>) => {
+      state.totalCount = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -228,9 +236,11 @@ const notificationSlice = createSlice({
       .addCase(createNotification.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
-        state.notifications = [...state.notifications, action.payload];
-        console.log("Notification created successfully");
-      })
+        state.notifications = Array.isArray(state.notifications)
+        ? [...state.notifications, action.payload]
+        : [action.payload];
+      state.totalCount = state.totalCount + 1; // Increment total count
+    })
       .addCase(createNotification.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
@@ -244,8 +254,13 @@ const notificationSlice = createSlice({
       })
       .addCase(fetchNotifications.fulfilled, (state, action) => {
         state.loading = false;
-        state.notifications = action.payload;
-        console.log("Notifications fetched successfully");
+        if (action.payload && 'notifications' in action.payload) {
+          state.notifications = action.payload.notifications;
+          state.totalCount = action.payload.totalCount;
+        } else {
+          state.notifications = action.payload as Notification[];
+          state.totalCount = (action.payload as Notification[]).length;
+        }
       })
       .addCase(fetchNotifications.rejected, (state, action) => {
         state.loading = false;
@@ -334,8 +349,10 @@ export default notificationSlice.reducer;
 export const { setNotifications, clearNotification } = notificationSlice.actions;
 
 // Selectors
-export const selectNotifications = (state: { notification: NotificationState }) => state.notification.notifications;
+export const selectNotifications = (state: { notification: NotificationState }) => 
+  state.notification.notifications || [];
 export const selectNotification = (state: { notification: NotificationState }) => state.notification.notification;
 export const selectNotificationLoading = (state: { notification: NotificationState }) => state.notification.loading;
 export const selectNotificationError = (state: { notification: NotificationState }) => state.notification.error;
 export const selectNotificationSuccess = (state: { notification: NotificationState }) => state.notification.success;
+export const selectTotalCount = (state: { notification: NotificationState }) => state.notification.totalCount;
