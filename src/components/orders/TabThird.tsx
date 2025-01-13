@@ -61,8 +61,6 @@ const TabThird = () => {
             briefContent: briefContentData
         };
 
-        console.log("Tab third data is saved", formData);
-        
         dispatch(setOrderFormData(formData));
         toast.success('Details saved successfully!');
     };

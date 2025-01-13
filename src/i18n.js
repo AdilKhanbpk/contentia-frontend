@@ -23,7 +23,7 @@ i18n
     if (err) {
       console.error('i18n initialization error:', err);
     } else {
-      console.log('i18n initialized successfully');
+      console.log('');
     }
   });
 

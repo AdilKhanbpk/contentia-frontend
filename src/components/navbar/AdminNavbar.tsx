@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
-import { IoNotificationsOutline } from 'react-icons/io5';
 import { AiOutlineSearch, AiOutlineSetting } from 'react-icons/ai';
 import { MdOutlineEmail } from 'react-icons/md';
 import { BiUserCircle } from 'react-icons/bi';
@@ -177,7 +176,7 @@ export default function AdminNavbar() {
                             </Link>
                         </li>
                         <li>
-                            <Link legacyBehavior href="/admin/user-management/admin">
+                            <Link legacyBehavior href="/admin/user-management/admins">
                                 <a
                                     className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                                 >

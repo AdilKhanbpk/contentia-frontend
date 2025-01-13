@@ -146,9 +146,6 @@ export default function TabFirst() {
                 productShipping: selectedServices.shipping
             }
         };
-
-        console.log("tab first data is saved", formData);
-
         dispatch(setOrderFormData(formData));
         toast.success('Details saved successfully!');
     };

@@ -190,12 +190,6 @@ const Banners: React.FC = () => {
     const tokenFromStorage = localStorage.getItem("accessToken");
     if (tokenFromStorage) {
       dispatch(fetchBanners(tokenFromStorage))
-        .then(() => {
-          toast.success("Banners fetched successfully!");
-        })
-        .catch((error: any) => {
-          toast.error("Failed to fetch banners!");
-        });
     } else {
       toast.error("No token found in local storage!");
     }

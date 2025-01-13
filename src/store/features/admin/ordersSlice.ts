@@ -124,7 +124,6 @@ export const createOrder = createAsyncThunk(
         additionalServices: {
           platform: data.additionalServices?.platform?.toLowerCase() || 'tiktok',
           duration: data.additionalServices?.duration || '15s',
-          // Explicitly set edit as a boolean
           edit: data.additionalServices?.edit === true ? true : false,
           aspectRatio: data.additionalServices?.aspectRatio || '9:16',
           share: data.additionalServices?.share === true ? true : false,
@@ -133,8 +132,6 @@ export const createOrder = createAsyncThunk(
           productShipping: data.additionalServices?.productShipping === true ? true : false,
         },
       };
-
-      console.log("transformed data", transformedData);
 
       const response = await axiosInstance.post('/admin/orders', transformedData, {
         headers: {

@@ -25,38 +25,24 @@ const OrderDetails = () => {
   ];
 
   useEffect(() => {
-    console.log('Checking for access token in localStorage...');
     const token = localStorage.getItem('accessToken');
 
     if (token) {
-      console.log('Access token found:', token);
       try {
         const decodedToken = jwtDecode<CustomJwtPayload>(token);
-        console.log('Decoded token:', decodedToken);
-
-        // Check if user has appropriate role (adjust roles as needed)
         if (decodedToken.role === 'user' || decodedToken.role === 'admin') {
-          console.log('User is authorized to view orders.');
           setIsAuthorized(true);
         } else {
-          console.warn('User is not authorized. Redirecting to /unauthorized...');
           router.push('/unauthorized');
         }
       } catch (error) {
         console.error('Error decoding token:', error);
-        console.warn('Invalid token. Redirecting to /contentiaio/authentication...');
         router.push('/contentiaio/authentication');
       }
     } else {
-      console.warn('No access token found. Redirecting to /contentiaio/authentication...');
       router.push('/contentiaio/authentication');
     }
   }, [router]);
-
-  if (!isAuthorized) {
-    console.log('Authorization check in progress...');
-    return null;
-  }
 
   return (
     <div className='sectionBackground pb-4'>

@@ -110,7 +110,7 @@ const Customers: React.FC = () => {
 
       setIsModalOpen(false);
 
-      toast.success('Customer created successfully!');
+      toast.success('Creator added successfully!');
       await dispatch(fetchAdminCreators(tokenFromStorage));
 
     } catch (error) {
@@ -353,7 +353,7 @@ const Customers: React.FC = () => {
               onClick={() => setIsModalOpen(true)}
               className="px-4 py-2 ButtonBlue text-white rounded-md"
             >
-              Add Customer
+              Add Creator
             </button>
             <button
               onClick={handleExport}
