@@ -103,6 +103,7 @@ export default function NewModal() {
     const [isCoverPicture, setIsCoverPicture] = useState<boolean>(false);
     const [creatorType, setCreatorType] = useState<string>('Nano');
     const [isShipping, setIsShipping] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const { register, handleSubmit, reset, control } = useForm<Order>({
         defaultValues: {
             additionalServices: {
@@ -119,6 +120,7 @@ export default function NewModal() {
     });
 
     const onSubmitForm: SubmitHandler<Order> = async (data) => {
+        setIsSubmitting(true);
         const token = localStorage.getItem("accessToken");
         if (!token) {
             toast.error("No token found. Please log in again.");
@@ -157,7 +159,7 @@ export default function NewModal() {
         } catch (error) {
             toast.error("Error creating order.");
         } finally {
-            console.groupEnd();
+            setIsSubmitting(false);
         }
     };
 
@@ -441,7 +443,7 @@ export default function NewModal() {
                     </div>
                     {/* Save Button */}
                     <div className="mt-6 text-right">
-                        <button type="submit" className="ButtonBlue text-white px-6 py-0.5 rounded">Save</button>
+                        <button type="submit" className="ButtonBlue text-white px-6 py-0.5 rounded">{isSubmitting ? "Saving..." : "Save"}</button>
                     </div>
                 </div>
             </form>

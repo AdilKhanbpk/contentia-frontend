@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,6 +21,7 @@ interface FormData {
 
 export default function LandingPages() {
   const dispatch = useDispatch<AppDispatch>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { data } = useSelector(
     (state: RootState) => state.landingPage
   );
@@ -50,6 +51,7 @@ export default function LandingPages() {
   }, [data, reset]);
 
   const onSubmit = async (formData: FormData) => {
+    setIsSubmitting(true);
     const token = localStorage.getItem('accessToken');
     if (!token) {
       toast.error("No token found. Please log in to submit the form.");
@@ -74,6 +76,8 @@ export default function LandingPages() {
       toast.success("Landing page updated successfully!");
     } catch (error) {
       toast.error("Error updating landing page. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -166,7 +170,7 @@ export default function LandingPages() {
             type="submit"
             className="ButtonBlue text-white px-10 py-1 rounded-lg font-semibold"
           >
-            Save
+            {isSubmitting? 'Saving...' : 'Save'}
           </button>
         </div>
       </form>

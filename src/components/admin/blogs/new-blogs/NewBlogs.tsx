@@ -8,7 +8,6 @@ import { AppDispatch } from '@/store/store'; // Adjust import path as needed
 import { createBlog } from '@/store/features/admin/blogSlice'; // Adjust import path as needed
 import { toast } from 'react-toastify'; // Assuming you're using react-toastify for notifications
 
-// Dynamically import the Quill editor to avoid SSR issues
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 interface BlogFormData {
@@ -56,6 +55,7 @@ interface BlogFormData {
 export default function NewBlogs() {
   const dispatch = useDispatch<AppDispatch>();
   const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -67,9 +67,7 @@ export default function NewBlogs() {
 
   const onSubmit = async (data: BlogFormData) => {
     try {
-      console.log("Full form data:", data);
-  
-      // Get token from localStorage
+      setIsSubmitting(true);
       const token = localStorage.getItem('accessToken');
       if (!token) {
         toast.error('No access token found. Please log in.');
@@ -107,6 +105,8 @@ export default function NewBlogs() {
     } catch (error) {
       console.error('Blog creation error:', error);
       toast.error('An unexpected error occurred');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -246,7 +246,7 @@ export default function NewBlogs() {
             type="submit"
             className="ButtonBlue text-white px-8 py-1 rounded-lg font-semibold"
           >
-            Save
+           {isSubmitting ? 'Saving...' : 'Save'}
           </button>
         </div>
       </div>

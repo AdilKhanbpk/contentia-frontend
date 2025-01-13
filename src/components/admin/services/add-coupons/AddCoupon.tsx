@@ -32,6 +32,7 @@ export interface CouponForm {
 
 export default function AddCoupon() {
     const dispatch = useDispatch();
+    
     const { data: coupons, loading } = useSelector(
         (state: RootState) => state.coupon
     );

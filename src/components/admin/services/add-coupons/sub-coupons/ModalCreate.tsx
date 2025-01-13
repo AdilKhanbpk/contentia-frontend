@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { createCoupon } from "@/store/features/admin/couponSlice";
@@ -21,6 +22,7 @@ interface CouponForm {
 
 export default function ModalCreate({ closeModal, token }: ModalCreateProps) {
   const dispatch = useDispatch();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
     handleSubmit,
@@ -33,6 +35,7 @@ export default function ModalCreate({ closeModal, token }: ModalCreateProps) {
 
   const onSubmit = async (formData: CouponForm) => {
     try {
+      setIsSubmitting(true);
       if ((formData.discountTL && formData.discountPercent) ||
         (!formData.discountTL && !formData.discountPercent)) {
         throw new Error(
@@ -60,6 +63,8 @@ export default function ModalCreate({ closeModal, token }: ModalCreateProps) {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
       toast.error(errorMessage);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -155,7 +160,7 @@ export default function ModalCreate({ closeModal, token }: ModalCreateProps) {
         </div>
         <div className="mt-6 text-right">
           <button type="submit" className="ButtonBlue text-white px-5 py-2 rounded">
-            Save
+           {isSubmitting ? "Saving..." : "Save"}
           </button>
         </div>
       </form>
