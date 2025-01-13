@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCouponById, updateCoupon } from '@/store/features/admin/couponSlice';
@@ -25,6 +25,7 @@ interface CouponForm {
 
 export default function ModalEdit({ closeModal, token, couponId }: ModalEditProps) {
   const dispatch = useDispatch();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { selectedCoupon, loading } = useSelector((state: RootState) => state.coupon);
 
   const { register, handleSubmit, setValue, formState: { errors }, watch } = useForm<CouponForm>();
@@ -64,6 +65,7 @@ export default function ModalEdit({ closeModal, token, couponId }: ModalEditProp
     if (!couponId) return;
 
     try {
+      setIsSubmitting(true);
       if ((formData.discountTL && formData.discountPercent) ||
         (!formData.discountTL && !formData.discountPercent)) {
         throw new Error(
@@ -89,6 +91,8 @@ export default function ModalEdit({ closeModal, token, couponId }: ModalEditProp
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
       toast.error(errorMessage);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -199,7 +203,7 @@ export default function ModalEdit({ closeModal, token, couponId }: ModalEditProp
         </div>
         <div className="mt-6 text-right">
           <button type="submit" className="ButtonBlue text-white px-5 py-2 rounded">
-            Update
+            {isSubmitting ? "Updating..." : "Update"}
           </button>
         </div>
       </form>

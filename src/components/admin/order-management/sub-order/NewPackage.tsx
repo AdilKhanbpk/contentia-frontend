@@ -30,10 +30,12 @@ export default function NewPackageModal() {
     const [creatorType, setCreatorType] = useState('');
     const [isShipping, setIsShipping] = useState('');
     const [duration, setDuration] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { register, handleSubmit, control, watch } = useForm<PlanFormData>();
 
     const onSubmitForm: SubmitHandler<PlanFormData> = (data) => {
+        setIsSubmitting(true);
         console.log('Form Data:', data);
     };
 
@@ -309,7 +311,7 @@ export default function NewPackageModal() {
                     </div>
                     {/* Save Button */}
                     <div className="mt-6 text-right">
-                        <button type="submit" className="ButtonBlue text-white px-6 py-0.5 rounded">Save</button>
+                        <button type="submit" className="ButtonBlue text-white px-6 py-0.5 rounded">{isSubmitting ? "Saving..." : "Save"}</button>
                     </div>
                 </div>
             </form>
