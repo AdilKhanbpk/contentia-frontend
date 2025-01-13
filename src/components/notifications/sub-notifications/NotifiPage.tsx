@@ -18,7 +18,6 @@ export default function NotifiPage() {
     const [token, setToken] = useState<string | null>(null);
 
     useEffect(() => {
-        console.log('Current notifications:', notifications);
         const storedToken = localStorage.getItem('accessToken');
         setToken(storedToken);
         if (storedToken) {

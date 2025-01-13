@@ -69,19 +69,6 @@ export default function TabSecond() {
     console.log(data);
   };
 
-  // Calculate additional services total
-  const calculateAdditionalServicesTotal = () => {
-    let total = 0;
-    const services = orderFormData?.additionalServices;
-    if (services) {
-      if (services.share) total += 500;
-      if (services.coverPicture) total += 250;
-      if (services.creatorType) total += 1000;
-      if (services.productShipping) total += 150;
-    }
-    return total;
-  };
-
   const basePrice = 3000;
   const quantity = orderFormData?.noOfUgc || 1;
   const totalPrice = orderFormData?.totalPrice || 0;

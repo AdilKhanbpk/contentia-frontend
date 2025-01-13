@@ -53,16 +53,14 @@ export const fetchNotifications = createAsyncThunk(
   "notification/fetchNotifications",
   async (token: string, { rejectWithValue }) => {
     try {
-      console.log("Fetching notifications with token:", token);
       const response = await axiosInstance.get("/admin/notifications", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("Fetched notifications:", response.data.data);
       return {
         notifications: response.data.data,
-        totalCount: response.data.data.length // Or response.data.count if API provides it
+        totalCount: response.data.data.length
       };
     } catch (error) {
       console.error("Error fetching notifications:", error);
@@ -81,13 +79,11 @@ export const createNotification = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log("Creating notification with data:", data);
       const response = await axiosInstance.post("/admin/notifications", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("Created notification:", response.data.data);
       return response.data.data;
     } catch (error) {
       console.error("Error creating notification:", error);
@@ -106,14 +102,12 @@ export const fetchNotificationById = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log("Fetching notification by ID:", notificationId);
       const response = await axiosInstance.get(
         `/admin/notifications/${notificationId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log("Fetched notification:", response.data.data);
       return response.data.data;
     } catch (error) {
       console.error("Error fetching notification by ID:", error);
@@ -129,11 +123,9 @@ export const fetchMyNotifications = createAsyncThunk(
   "notification/fetchMyNotifications",
   async (token: string, { rejectWithValue }) => {
     try {
-      console.log("Fetching my notifications with token:", token);
       const response = await axiosInstance.get("/admin/notifications/my", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("Fetched my notifications:", response.data.data);
       return response.data.data;
     } catch (error) {
       console.error("Error fetching my notifications:", error);
@@ -160,7 +152,6 @@ export const updateNotification = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log("Updating notification:", notificationId, "with data:", data);
       const response = await axiosInstance.patch(
         `/admin/notifications/${notificationId}`,
         data,
@@ -170,7 +161,6 @@ export const updateNotification = createAsyncThunk(
           },
         }
       );
-      console.log("Updated notification:", response.data.data);
       return response.data.data;
     } catch (error) {
       console.error("Error updating notification:", error);
@@ -189,14 +179,12 @@ export const deleteNotification = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log("Deleting notification:", notificationId);
       const response = await axiosInstance.delete(
         `/admin/notifications/${notificationId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log("Deleted notification:", response.data.data);
       return response.data.data;
     } catch (error) {
       console.error("Error deleting notification:", error);
@@ -219,7 +207,6 @@ const notificationSlice = createSlice({
     },
     clearNotification: (state) => {
       state.notification = null;
-      console.log("Notification cleared");
     },
     updateTotalCount: (state, action: PayloadAction<number>) => {
       state.totalCount = action.payload;
@@ -231,7 +218,6 @@ const notificationSlice = createSlice({
       .addCase(createNotification.pending, (state) => {
         state.loading = true;
         state.error = null;
-        console.log("Creating notification...");
       })
       .addCase(createNotification.fulfilled, (state, action) => {
         state.loading = false;
@@ -239,7 +225,7 @@ const notificationSlice = createSlice({
         state.notifications = Array.isArray(state.notifications)
         ? [...state.notifications, action.payload]
         : [action.payload];
-      state.totalCount = state.totalCount + 1; // Increment total count
+      state.totalCount = state.totalCount + 1;
     })
       .addCase(createNotification.rejected, (state, action) => {
         state.loading = false;
@@ -250,7 +236,6 @@ const notificationSlice = createSlice({
       .addCase(fetchNotifications.pending, (state) => {
         state.loading = true;
         state.error = null;
-        console.log("Fetching notifications...");
       })
       .addCase(fetchNotifications.fulfilled, (state, action) => {
         state.loading = false;
@@ -271,7 +256,6 @@ const notificationSlice = createSlice({
       .addCase(fetchNotificationById.pending, (state) => {
         state.loading = true;
         state.error = null;
-        console.log("Fetching notification by ID...");
       })
       .addCase(fetchNotificationById.fulfilled, (state, action) => {
         state.loading = false;
@@ -287,12 +271,10 @@ const notificationSlice = createSlice({
       .addCase(fetchMyNotifications.pending, (state) => {
         state.loading = true;
         state.error = null;
-        console.log("Fetching my notifications...");
       })
       .addCase(fetchMyNotifications.fulfilled, (state, action) => {
         state.loading = false;
         state.notifications = action.payload;
-        console.log("My notifications fetched successfully");
       })
       .addCase(fetchMyNotifications.rejected, (state, action) => {
         state.loading = false;
@@ -303,7 +285,6 @@ const notificationSlice = createSlice({
       .addCase(updateNotification.pending, (state) => {
         state.loading = true;
         state.error = null;
-        console.log("Updating notification...");
       })
       .addCase(updateNotification.fulfilled, (state, action) => {
         state.loading = false;
@@ -312,7 +293,6 @@ const notificationSlice = createSlice({
         state.notifications = state.notifications.map((notification) =>
           notification._id === action.payload._id ? action.payload : notification
         );
-        console.log("Notification updated successfully");
       })
       .addCase(updateNotification.rejected, (state, action) => {
         state.loading = false;
@@ -323,7 +303,6 @@ const notificationSlice = createSlice({
       .addCase(deleteNotification.pending, (state) => {
         state.loading = true;
         state.error = null;
-        console.log("Deleting notification...");
       })
       .addCase(deleteNotification.fulfilled, (state, action) => {
         state.loading = false;
@@ -334,7 +313,6 @@ const notificationSlice = createSlice({
         if (state.notification?._id === action.payload._id) {
           state.notification = null;
         }
-        console.log("Notification deleted successfully");
       })
       .addCase(deleteNotification.rejected, (state, action) => {
         state.loading = false;

@@ -1,7 +1,8 @@
+// src/app/layout.tsx
 "use client";
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { jwtDecode } from 'jwt-decode';
+import React from 'react';
+import { usePathname } from "next/navigation";
+import { useAuth } from '@/hooks/useAuth';
 import "../i18n";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../i18n";
@@ -9,17 +10,12 @@ import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
 import CustomerNavbar from "@/components/navbar/CustomerNavbar";
 import AdminNavbar from "@/components/navbar/AdminNavbar";
-import { usePathname } from "next/navigation";
 import Footer from "@/components/footer/Footer";
 import store from "@/store/store";
 import { Provider } from "react-redux";
 import InitializeSocket from "@/socket/InitializeSocket";
 import { ToastContainer } from "react-toastify";
-
-const metadata = {
-  title: "Your Site Title",
-  description: "Your Site Description",
-};
+import LoadingSpinner from "@/components/loaders/LoadingSpinner";
 
 export default function RootLayout({
   children,
@@ -27,49 +23,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const { isAdmin, isUser, isLoading } = useAuth();
 
-  const [isAuthorized, setIsAuthorized] = useState(false);
-  const [isUserAuthorized, setIsUserAuthorized] = useState(false);
-  const router = useRouter();
-
-  useEffect(() => {
-    console.log('Checking for access token in localStorage...');
-    const token = localStorage.getItem('accessToken');
-
-    if (token) {
-      console.log('Access token found:', token);
-      try {
-        // Decode the token
-        console.log('Decoding the token...');
-        const decodedToken: any = jwtDecode(token);
-        console.log('Decoded token:', decodedToken);
-
-        // Check if the role is 'admin'
-        if (decodedToken.role === 'admin') {
-          console.log('User is authorized as admin.');
-          setIsAuthorized(true);
-          setIsUserAuthorized(true);
-        } else if (decodedToken.role === 'user' || decodedToken.role === 'admin') {
-          console.log("user is authorized as a user");
-          setIsUserAuthorized(true);
-        } else {
-          console.warn('User is not authorized. Redirecting to /unauthorized...');
-          // router.push('/unauthorized'); // Redirect if not an admin
-        }
-      } catch (error) {
-        console.error('Error decoding token:', error);
-        console.warn('Invalid token. Redirecting to /contentiaio/authentication...');
-        router.push('/contentiaio/authentication');
-      }
-    } else {
-      console.warn('No access token found. Redirecting to /contentiaio/authentication...');
-      router.push('/contentiaio/authentication');
-    }
-  }, [router]);
-
-  if (!isAuthorized) {
-    console.log('Authorization check in progress...');
-  }
+  const isPublicPath = 
+    pathname === "/" ||
+    pathname.startsWith("/contentiaio/authentication") ||
+    pathname.startsWith("/blog") ||
+    pathname.startsWith("/contentiaio");
 
   const isAfterContentiaio =
     pathname === "/" ||
@@ -77,12 +37,31 @@ export default function RootLayout({
     pathname.startsWith("/blog") ||
     pathname.startsWith("/blog/");
 
-  // Check if the current path is "/orders"
   const isOrdersPage =
     pathname === "/orders" || pathname.startsWith("/orders/");
 
-  // check if the current path is "/admin"
   const isAdminPage = pathname === "/admin" || pathname.startsWith("/admin/");
+
+  // Render loading spinner while checking authentication
+  if (isLoading && !isPublicPath) {
+    return (
+      <html lang="en">
+        <body>
+          <LoadingSpinner />
+        </body>
+      </html>
+    );
+  }
+
+  // Protect non-public routes
+  if (!isPublicPath && !isLoading && !isUser) {
+    return null; // Return nothing while redirecting
+  }
+
+  // Protect admin routes
+  if (isAdminPage && !isLoading && !isAdmin) {
+    return null; // Return nothing while redirecting
+  }
 
   return (
     <html lang="en">
@@ -90,17 +69,11 @@ export default function RootLayout({
         <Provider store={store}>
           <I18nextProvider i18n={i18n}>
             <InitializeSocket />
-            {isAfterContentiaio && <Navbar />}{" "}
-            {/* Render Navbar on landing page */}
-            {isUserAuthorized && isOrdersPage && <CustomerNavbar />}{" "}
-            {/* Render CustomerNavbar on /orders */}
-            {isAuthorized && isAdminPage && <AdminNavbar />}{" "}
-            {/* Render AdminNavbar on /orders */}
+            {isAfterContentiaio && <Navbar />}
+            {isUser && isOrdersPage && <CustomerNavbar />}
+            {isAdmin && isAdminPage && <AdminNavbar />}
             {children}
-            {isAfterContentiaio && <Footer />}{" "}
-            {/* Render Footer on landing page */}
-            {isUserAuthorized && isOrdersPage && <Footer />}
-            {/* Add the ToastContainer to render toasts */}
+            {(isAfterContentiaio || (isUser && isOrdersPage)) && <Footer />}
             <ToastContainer />
           </I18nextProvider>
         </Provider>

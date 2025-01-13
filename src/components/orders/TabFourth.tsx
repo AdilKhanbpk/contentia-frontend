@@ -53,13 +53,7 @@ const TabFourth = () => {
                     }
                 }
             };
-
-            console.log("data from third tab", preferencesData);
-
-            // Dispatch to Redux store
             dispatch(setOrderFormData(preferencesData));
-
-            // Send all data to backend
             try {
                 await dispatch(createOrder(token)).unwrap();
                 toast.success('Order created successfully!');

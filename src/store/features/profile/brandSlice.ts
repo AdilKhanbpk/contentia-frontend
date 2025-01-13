@@ -89,10 +89,8 @@ export const fetchBrands = createAsyncThunk(
   "brand/fetchBrands",
   async (token: string, { rejectWithValue }) => {
     try {
-      console.log("Fetching all brands");
       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       const response = await axiosInstance.get("/brands");
-      console.log("Fetch brands response:", response.data);
       return response.data.data;
     } catch (error) {
       console.error("Error fetching brands:", error);
@@ -109,10 +107,8 @@ export const fetchSingleBrand = createAsyncThunk(
   "brand/fetchSingleBrand",
   async ({ brandId, token }: { brandId: string; token: string }, { rejectWithValue }) => {
     try {
-      console.log("Fetching brand with ID:", brandId);
       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       const response = await axiosInstance.get(`/brands/${brandId}`);
-      console.log("Fetch single brand response:", response.data);
       return response.data.data;
     } catch (error) {
       console.error("Error fetching single brand:", error);
@@ -129,10 +125,8 @@ export const updateBrand = createAsyncThunk(
   "brand/updateBrand",
   async ({ brandId, data, token }: UpdateBrandPayload, { rejectWithValue }) => {
     try {
-      console.log("Updating brand with ID:", brandId, "Data:", data);
       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       const response = await axiosInstance.patch(`/brands/${brandId}`, data);
-      console.log("Update brand response:", response.data);
       return response.data.data;
     } catch (error) {
       console.error("Error updating brand:", error);
@@ -149,10 +143,8 @@ export const deleteBrand = createAsyncThunk(
   "brand/deleteBrand",
   async ({ brandId, token }: DeleteBrandPayload, { rejectWithValue }) => {
     try {
-      console.log("Deleting brand with ID:", brandId);
       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       await axiosInstance.delete(`/brands/${brandId}`);
-      console.log("Brand deleted successfully");
       return brandId;
     } catch (error) {
       console.error("Error deleting brand:", error);
@@ -169,10 +161,8 @@ export const fetchMyBrands = createAsyncThunk(
   "brand/fetchMyBrands",
   async (token: string, { rejectWithValue }) => {
     try {
-      console.log("Fetching my brands");
       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       const response = await axiosInstance.get("/brands/my-brands");
-      console.log("Fetch my brands response:", response.data);
       return response.data.data;
     } catch (error) {
       console.error("Error fetching my brands:", error);
