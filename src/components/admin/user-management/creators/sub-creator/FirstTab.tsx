@@ -284,8 +284,8 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                                 className="mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm"
                             >
                                 <option value="approved">Approved</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Rejected">Rejected</option>
+                                <option value="pending">Pending</option>
+                                <option value="rejected">Rejected</option>
                             </select>
                         </div>
                     </div>
