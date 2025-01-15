@@ -89,6 +89,7 @@ interface EditModalProps {
 }
 
 export default function EditModal({ order }: EditModalProps) {
+    console.log("order", order);
     if (!order) return null;
     return (
         <>

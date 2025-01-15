@@ -14,6 +14,7 @@ interface BrandFormInputs {
 
 const ModelBrand: React.FC = () => {
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const [loading, setLoading] = React.useState(false);
 
   const {
     register,
@@ -25,6 +26,7 @@ const ModelBrand: React.FC = () => {
   const onSubmit: SubmitHandler<BrandFormInputs> = (data) => {
     const token = localStorage.getItem("accessToken");
     if (token) {
+      setLoading(true); // Set loading to true before the dispatch
       dispatch(
         createBrand({
           data: {
@@ -40,9 +42,11 @@ const ModelBrand: React.FC = () => {
         .then(() => {
           reset();
           toast.success("Brand created successfully!");
+          setLoading(false);
         })
         .catch((error) => {
           toast.error(`Failed to create brand: ${error.message || "Unknown error"}`);
+          setLoading(false);
         });
     } else {
       toast.error("No access token found! Please log in again.");
@@ -127,13 +131,14 @@ const ModelBrand: React.FC = () => {
         </div>
       </div>
 
-      {/* Submit Button */}
+      {/* submit Button */}
       <div className="mt-4">
         <button
           type="submit"
           className="px-4 py-1 ButtonBlue text-white rounded-xl"
+          disabled={loading}
         >
-          Submit
+          {loading ? "Submitting..." : "Submit"}
         </button>
       </div>
     </form>

@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from '@reduxjs/toolkit';
@@ -12,6 +12,7 @@ interface ModalTwoProps {
 export default function ModalTwo({ claim }: ModalTwoProps) {
 
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -25,25 +26,29 @@ export default function ModalTwo({ claim }: ModalTwoProps) {
   const onSubmit: SubmitHandler<Pick<Claim, "claimContent">> = (data) => {
     const token = localStorage.getItem("accessToken");
     if (claim?.id && token) {
+      setLoading(true); // Set loading to true before the dispatch
       dispatch(
         updateAdminClaim({
           claimId: claim.id,
           data,
           token,
         })
-      ).unwrap()
+      )
+        .unwrap()
         .then(() => {
           toast.success("Claim content updated successfully!");
+          setLoading(false); // Reset loading state after success
         })
         .catch((error) => {
           toast.error(`Failed to update claim: ${error.message || "Unknown error"}`);
+          setLoading(false); // Reset loading state after failure
         });
     } else {
       toast.error("Missing claim ID or access token!");
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     reset({ claimContent: claim?.claimContent || "" });
   }, [claim, reset]);
 
@@ -117,8 +122,9 @@ export default function ModalTwo({ claim }: ModalTwoProps) {
             <button
               type="submit"
               className="ButtonBlue text-white px-8 py-1 rounded-lg font-semibold"
-            >
-              Save
+              disabled={loading} // Disable button during loading
+              >
+                {loading ? "Saving..." : "Save"}
             </button>
           </div>
         </form>

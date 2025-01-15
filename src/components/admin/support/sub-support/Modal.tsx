@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from '@reduxjs/toolkit';
@@ -14,6 +15,7 @@ interface ClaimFormData {
 
 export default function Modal() {
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -33,6 +35,7 @@ export default function Modal() {
   const onSubmit: SubmitHandler<ClaimFormData> = (data) => {
     const token = localStorage.getItem("accessToken");
     if (token) {
+      setLoading(true); // Start loading
       dispatch(
         createAdminClaim({
           data: {
@@ -52,11 +55,15 @@ export default function Modal() {
         })
         .catch((error) => {
           toast.error(`Failed to create claim: ${error.message || "Unknown error"}`);
+        })
+        .finally(() => {
+          setLoading(false); // Stop loading
         });
     } else {
       toast.error("No access token found! Please log in again.");
     }
   };
+
 
   return (
     <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">
@@ -141,8 +148,9 @@ export default function Modal() {
           <button
             type="submit"
             className="ButtonBlue text-white px-8 py-1 rounded-lg font-semibold"
+            disabled={loading}
           >
-            Save
+            {loading ? "Saving..." : "Save"}
           </button>
         </div>
       </form>
