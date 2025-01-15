@@ -27,6 +27,7 @@ const PricingPlans = () => {
   const [editingPlan, setEditingPlan] = useState<number | null>(null);
   const { register, handleSubmit, reset, formState: { errors } } = useForm<Plan>();
   const [token, setToken] = useState<string>("");
+  const [saving, setSaving] = useState<boolean>(false);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("accessToken") || "";
@@ -36,7 +37,7 @@ const PricingPlans = () => {
         .then(() => {
           toast.success("Plans fetched successfully!");
         })
-        .catch((error:any) => {
+        .catch((error: any) => {
           toast.error("Failed to fetch price plans! Please try again.");
         });
     } else {
@@ -66,32 +67,33 @@ const PricingPlans = () => {
     reset(plan);
   };
 
-  const handleSave = (data: Plan) => {
+  const handleSave = async (data: Plan) => {
     const serverPlan = serverPlans?.find((plan: PricePlan, index: number) => index + 1 === editingPlan);
     if (serverPlan) {
-      dispatch(
-        updatePricePlan({
-          id: serverPlan._id,
-          data: {
-            videoCount: parseInt(data.title.split(" ")[0]),
-            strikeThroughPrice: parseFloat(data.strikethroughPrice || "0"),
-            finalPrice: parseFloat(data.finalPrice),
-          },
-          token,
-        }) as any
-      )
-        .then(() => {
-          toast.success("Price plan updated successfully!");
-        })
-        .catch((err: Error) => {
-          toast.error(err.message || "Failed to update price plan.");
-        });
+      setSaving(true); // Set saving to true
+      try {
+        await dispatch(
+          updatePricePlan({
+            id: serverPlan._id,
+            data: {
+              videoCount: parseInt(data.title.split(" ")[0]), // Extract video count
+              strikeThroughPrice: parseFloat(data.strikethroughPrice || "0"),
+              finalPrice: parseFloat(data.finalPrice),
+            },
+            token,
+          }) as any
+        );
+        toast.success("Price plan updated successfully!");
+      } catch (err: any) {
+        toast.error(err.message || "Failed to update price plan.");
+      } finally {
+        setSaving(false); // Set saving back to false
+      }
     }
 
     setPlans((prevPlans) =>
       prevPlans.map((plan) => (plan.id === editingPlan ? { ...plan, ...data } : plan))
     );
-
     setEditingPlan(null);
     reset();
   };
@@ -147,8 +149,8 @@ const PricingPlans = () => {
                     className="focus:outline-none py-0.5 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   />
                 </div>
-                <button type="submit" className="w-full ButtonBlue text-white py-2 rounded-md transition ">
-                  Save
+                <button type="submit" className="w-full ButtonBlue text-white py-2 rounded-md transition" disabled={saving}>
+                  {saving ? "Saving..." : "Save"}
                 </button>
               </form>
             ) : (

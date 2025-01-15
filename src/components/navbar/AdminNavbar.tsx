@@ -109,7 +109,7 @@ export default function AdminNavbar() {
             >
                 <div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
                     <ul className="space-y-2 font-medium">
-                        <span className="p-2 font-semibold flex-1 ms-3 whitespace-nowrap">Dashboard</span>
+                        <span className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group flex-1 ms-3 whitespace-nowrap font-semibold">Dashboard</span>
                         <li className="mt-10">
                             <Link legacyBehavior href="/admin">
                                 <a
@@ -119,7 +119,7 @@ export default function AdminNavbar() {
                                 </a>
                             </Link>
                         </li>
-                        <span className="p-2 font-semibold flex-1 ms-3 whitespace-nowrap">Services</span>
+                        <span className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group flex-1 ms-3 whitespace-nowrap font-semibold">Services</span>
                         <li className="mt-10">
                             <Link legacyBehavior href="/admin/services/packages">
                                 <a
@@ -156,7 +156,7 @@ export default function AdminNavbar() {
                                 </a>
                             </Link>
                         </li>
-                        <span className="p-2 font-semibold flex-1 ms-3 whitespace-nowrap">User Management</span>
+                        <span className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group flex-1 ms-3 whitespace-nowrap font-semibold">User Management</span>
                         <li>
                             <Link legacyBehavior href="/admin/user-management/customers">
                                 <a
@@ -184,7 +184,7 @@ export default function AdminNavbar() {
                                 </a>
                             </Link>
                         </li>
-                        <span className="p-2 font-semibold flex-1 ms-3 whitespace-nowrap">Order Management</span>
+                        <span className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group flex-1 ms-3 whitespace-nowrap font-semibold">Order Management</span>
                         <li>
                             <Link legacyBehavior href="/admin/order-management/orders">
                                 <a
@@ -203,7 +203,7 @@ export default function AdminNavbar() {
                                 </a>
                             </Link>
                         </li>
-                        <span className="p-2 font-semibold flex-1 ms-3 whitespace-nowrap">File Management</span>
+                        <span className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group flex-1 ms-3 whitespace-nowrap font-semibold">File Management</span>
                         <li className="mt-10">
                             <Link legacyBehavior href="/admin/file-management/files">
                                 <a
@@ -213,7 +213,7 @@ export default function AdminNavbar() {
                                 </a>
                             </Link>
                         </li>
-                        <span className="p-2 font-semibold flex-1 ms-3 whitespace-nowrap">Payment</span>
+                        <span className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group flex-1 ms-3 whitespace-nowrap font-semibold">Payment</span>
                         <li>
                             <Link legacyBehavior href="/admin/payments/in-payments">
                                 <a
@@ -232,7 +232,7 @@ export default function AdminNavbar() {
                                 </a>
                             </Link>
                         </li>
-                        <span className="p-2 font-semibold flex-1 ms-3 whitespace-nowrap">Support</span>
+                        <span className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group flex-1 ms-3 whitespace-nowrap font-semibold">Support</span>
                         <li>
                             <Link legacyBehavior href="/admin/support/order-claims">
                                 <a
@@ -242,7 +242,7 @@ export default function AdminNavbar() {
                                 </a>
                             </Link>
                         </li>
-                        <span className="p-2 font-semibold flex-1 ms-3 whitespace-nowrap">Notifications</span>
+                        <span className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group flex-1 ms-3 whitespace-nowrap font-semibold">Notifications</span>
                         <li>
                             <Link legacyBehavior href="/admin/notifications/push-notifications">
                                 <a
@@ -261,7 +261,7 @@ export default function AdminNavbar() {
                                 </a>
                             </Link>
                         </li>
-                        <span className="p-2 font-semibold flex-1 ms-3 whitespace-nowrap">Blog</span>
+                        <span className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group flex-1 ms-3 whitespace-nowrap font-semibold">Blog</span>
                         <li>
                             <Link legacyBehavior href="/admin/blogs/new-blogs">
                                 <a
@@ -280,7 +280,7 @@ export default function AdminNavbar() {
                                 </a>
                             </Link>
                         </li>
-                        <span className="p-2 font-semibold flex-1 ms-3 whitespace-nowrap">Content Management</span>
+                        <span className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group flex-1 ms-3 whitespace-nowrap font-semibold">Content Management</span>
                         <li>
                             <Link legacyBehavior href="/admin/content-management/landing-page">
                                 <a

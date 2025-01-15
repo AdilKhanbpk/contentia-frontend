@@ -107,7 +107,6 @@ const initialState: OrdersState = {
   currentOrder: null,
 };
 
-// Create Order
 export const createOrder = createAsyncThunk(
   'orders/createOrder',
   async ({ data, token }: { data: Partial<Order>; token: string }, { rejectWithValue }) => {
@@ -133,6 +132,7 @@ export const createOrder = createAsyncThunk(
         },
       };
 
+      // First create the order
       const response = await axiosInstance.post('/admin/orders', transformedData, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -140,7 +140,14 @@ export const createOrder = createAsyncThunk(
         },
         timeout: 10000,
       });
-      return response.data.data;
+
+      // Then fetch the complete order details to get the full owner information
+      const fullOrderResponse = await axiosInstance.get(`/admin/orders/${response.data.data._id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        timeout: 10000,
+      });
+
+      return fullOrderResponse.data.data;
     } catch (error) {
       if ((error as AxiosError).isAxiosError) {
         const axiosError = error as AxiosError<ErrorResponse>;
@@ -389,7 +396,7 @@ const ordersSlice = createSlice({
       })
       .addCase(createOrder.fulfilled, (state, action: PayloadAction<Order>) => {
         state.loading = false;
-        state.data.push(action.payload);
+        state.data.unshift(action.payload);
       })
       .addCase(createOrder.rejected, (state, action) => {
         state.loading = false;

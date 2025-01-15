@@ -211,7 +211,7 @@ export default function NewModal() {
                                     type="text"
                                     placeholder="Enter creator IDs"
                                     className="w-full px-3 py-1 border rounded-md focus:outline-none"
-                                    {...register("assignedCreators", { required: "Creator IDs are required" })}
+                                    {...register("assignedCreators")}
                                 />
                             </div>
                         </div>

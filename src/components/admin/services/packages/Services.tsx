@@ -32,6 +32,7 @@ const Packages = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { register, handleSubmit, reset, formState: { errors } } = useForm<PackageFormData>();
   const [token, setToken] = useState<string>("");
+  const [isSaving, setIsSaving] = useState(false);
 
 
   useEffect(() => {
@@ -72,32 +73,40 @@ const Packages = () => {
     reset(pkg);
   };
 
-  const handleSave = (data: PackageFormData) => {
+  const handleSave = async (data: PackageFormData) => {
     const packageToUpdate = serverPackages?.find((pkg: Package) => pkg._id === editingPackage);
+    
     if (packageToUpdate) {
-      dispatch(
-        updatePackage({
-          id: packageToUpdate._id,
-          data: {
-            title: data.title,
-            description: data.description,
-            price: data.price,
-          },
-          token,
-        }) as any
-      )
-        .then(() => {
-          toast.success("Package updated successfully!");
-        })
-        .catch((err: Error) => {
-          toast.error(err.message || "Failed to update package.");
-        });
+      setIsSaving(true); // Set loading state
+  
+      try {
+        await dispatch(
+          updatePackage({
+            id: packageToUpdate._id,
+            data: {
+              title: data.title,
+              description: data.description,
+              price: data.price,
+            },
+            token,
+          }) as any
+        );
+  
+        toast.success("Package updated successfully!");
+  
+        // Update the local state with the updated package data
+        setPackages((prevPackages) =>
+          prevPackages.map((pkg) => (pkg.id === editingPackage ? { ...pkg, ...data } : pkg))
+        );
+  
+        setEditingPackage(null); // Exit editing mode
+        reset(); // Reset the form
+      } catch (err: any) {
+        toast.error(err.message || "Failed to update package.");
+      } finally {
+        setIsSaving(false); // Reset loading state
+      }
     }
-    setPackages((prevPackages) =>
-      prevPackages.map((pkg) => (pkg.id === editingPackage ? { ...pkg, ...data } : pkg))
-    );
-    setEditingPackage(null);
-    reset();
   };
 
   if (loading) {
@@ -166,8 +175,9 @@ const Packages = () => {
                   <button
                     type="submit"
                     className="w-full ButtonBlue text-white py-2 rounded-md transition"
-                  >
-                    Save
+                    disabled={isSaving} // Disable button during save
+                    >
+                      {isSaving ? "Saving..." : "Save"}
                   </button>
                   <button
                     type="button"
