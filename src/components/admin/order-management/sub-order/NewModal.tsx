@@ -16,30 +16,30 @@ interface Creator {
     profilePic?: string;
     isVerified: string;
     preferences?: {
-      contentInformation?: {
-        contentType?: string;
-        contentFormats?: string[];
-        areaOfInterest?: string[];
-      };
-      socialInformation?: {
-        platforms?: {
-          [key: string]: {
-            followers: number;
-            username: string;
-          };
+        contentInformation?: {
+            contentType?: string;
+            contentFormats?: string[];
+            areaOfInterest?: string[];
         };
-      };
+        socialInformation?: {
+            platforms?: {
+                [key: string]: {
+                    followers: number;
+                    username: string;
+                };
+            };
+        };
     };
-  }
-  
-  interface Order {
+}
+
+interface Order {
     _id: string;
     coupon?: string;
     orderOwner: {
-      _id: string;
-      fullName: string;
-      email: string;
-  };
+        _id: string;
+        fullName: string;
+        email: string;
+    };
     assignedCreators: string[];
     appliedCreators: Creator[];
     noOfUgc: number;
@@ -48,50 +48,50 @@ interface Creator {
     paymentStatus: 'paid' | 'pending' | 'refunded' | 'cancelled';
     contentsDelivered?: number;
     additionalServices: {
-      platform: string;
-      duration: string;
-      edit: boolean;
-      aspectRatio: string;
-      share?: boolean;
-      coverPicture?: boolean;
-      creatorType?: string;
-      productShipping?: boolean;
+        platform: string;
+        duration: string;
+        edit: boolean;
+        aspectRatio: string;
+        share?: boolean;
+        coverPicture?: boolean;
+        creatorType?: string;
+        productShipping?: boolean;
     };
     preferences?: {
-      creatorGender?: string;
-      minCreatorAge?: number;
-      maxCreatorAge?: number;
-      interests?: string[];
-      contentType?: string;
-      locationAddress?: {
-        country?: string;
-        city?: string;
-        district?: string;
-        street?: string;
-        fullAddress?: string;
-      };
+        creatorGender?: string;
+        minCreatorAge?: number;
+        maxCreatorAge?: number;
+        interests?: string[];
+        contentType?: string;
+        locationAddress?: {
+            country?: string;
+            city?: string;
+            district?: string;
+            street?: string;
+            fullAddress?: string;
+        };
     };
     briefContent?: {
-      brandName?: string;
-      brief?: string;
-      productServiceName?: string;
-      productServiceDesc?: string;
-      scenario?: string;
-      caseStudy?: string;
-      uploadFiles?: string;
-      uploadFileDate?: string;
+        brandName?: string;
+        brief?: string;
+        productServiceName?: string;
+        productServiceDesc?: string;
+        scenario?: string;
+        caseStudy?: string;
+        uploadFiles?: string;
+        uploadFileDate?: string;
     };
     numberOfRequests?: number;
     orderQuota?: number;
     quotaLeft?: number;
     uploadFiles?: Array<{
-      uploadedBy: string;
-      fileUrls: string[];
-      uploadedDate: Date;
+        uploadedBy: string;
+        fileUrls: string[];
+        uploadedDate: Date;
     }>;
     createdAt?: Date;
     updatedAt?: Date;
-  }
+}
 
 export default function NewModal() {
     const dispatch = useDispatch<AppDispatch>();
@@ -119,6 +119,15 @@ export default function NewModal() {
         }
     });
 
+    const formatAssignedCreators = (creators: string): string[] => {
+        if (!creators) return [];
+
+        return creators
+            .split(",")
+            .filter(id => id.trim() !== '')
+            .map(id => id.trim());
+    };
+
     const onSubmitForm: SubmitHandler<Order> = async (data) => {
         setIsSubmitting(true);
         const token = localStorage.getItem("accessToken");
@@ -129,7 +138,7 @@ export default function NewModal() {
 
         const orderData = {
             orderOwner: data.orderOwner,
-            assignedCreators: data.assignedCreators,
+            assignedCreators: formatAssignedCreators(data.assignedCreators as unknown as string), // Add formatting here
             noOfUgc: data.noOfUgc,
             totalPrice: data.totalPrice,
             additionalServices: {
@@ -144,7 +153,7 @@ export default function NewModal() {
             },
         };
 
-        console.log("order data", orderData);
+        console.log ("order data ", orderData)
 
         try {
             const result = await dispatch(
