@@ -322,20 +322,33 @@ const Orders: React.FC = () => {
         },
         {
             name: "Order Owner",
-            cell: (row: Order) => (
-                <div className="flex items-center space-x-2">
-                    <Image width={10} height={10} src="/icons/avatar.png" alt="avatar" className="w-10 h-10 rounded-full" />
-                    <div>
-                        <p className="font-semibold">
-                            {typeof row.orderOwner === 'object' ?
-                                (row.orderOwner.fullName || 'No Name') : ''}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                            {typeof row.orderOwner === 'object' ? row.orderOwner.email : ''}
-                        </p>
+            cell: (row: Order) => {
+                // Comprehensive null check for orderOwner
+                const owner = row.orderOwner;
+                const isValidOwner = owner && 
+                                   typeof owner === 'object' && 
+                                   owner !== null;
+    
+                return (
+                    <div className="flex items-center space-x-2">
+                        <Image 
+                            width={10} 
+                            height={10} 
+                            src="/icons/avatar.png" 
+                            alt="avatar" 
+                            className="w-10 h-10 rounded-full" 
+                        />
+                        <div>
+                            <p className="font-semibold">
+                                {isValidOwner && owner.fullName ? owner.fullName : 'No Name'}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                                {isValidOwner && owner.email ? owner.email : 'No Email'}
+                            </p>
+                        </div>
                     </div>
-                </div>
-            ),
+                );
+            },
             sortable: false,
             width: "300px",
         },
@@ -389,16 +402,19 @@ const Orders: React.FC = () => {
         },
     ], [handleDelete, handleEdit, handleView, handleRequest]);
 
-    const filteredOrders = React.useMemo(() => {
-        const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
-        return orders.filter((order) => {
-            const fullNameMatch =
-                typeof order.orderOwner === 'object' &&
-                order.orderOwner?.fullName?.toLowerCase().includes(lowerCaseSearchTerm);
-            const idMatch = order._id?.toLowerCase().includes(lowerCaseSearchTerm);
-            return fullNameMatch || idMatch;
-        });
-    }, [orders, searchTerm]);
+    // Update the filtering logic as well
+const filteredOrders = React.useMemo(() => {
+    const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
+    return orders.filter((order) => {
+        const owner = order.orderOwner;
+        const fullNameMatch = owner && 
+                            typeof owner === 'object' && 
+                            owner.fullName && 
+                            owner.fullName.toLowerCase().includes(lowerCaseSearchTerm);
+        const idMatch = order._id?.toLowerCase().includes(lowerCaseSearchTerm);
+        return fullNameMatch || idMatch;
+    });
+}, [orders, searchTerm]);
 
     return (
         <div className="bg-white rounded-lg">
