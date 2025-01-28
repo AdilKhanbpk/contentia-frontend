@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { axiosInstance } from "@/store/axiosInstance";
 import { AxiosError } from "axios";
+import { RootState } from "@/store/store";
 
 // Types and Interfaces
 interface LocationAddress {
@@ -118,18 +119,13 @@ export const createOrder = createAsyncThunk(
   "order/createOrder",
   async (token: string, { getState, rejectWithValue }) => {
     try {
-      console.log("createOrder thunk triggered");
       const state: any = getState();
-      console.log("State retrieved from getState:", state);
-
       const orderData = state.order.orderFormData;
-      console.log("Creating order with the following data:", orderData);
+      console.log("🚀 ~ orderData:", orderData)
 
       axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      console.log("Authorization header set with token.");
 
       const response = await axiosInstance.post("/orders", orderData);
-      console.log("Create order response received:", response.data);
 
       return response.data.data;
     } catch (error) {
@@ -151,10 +147,8 @@ export const fetchOrders = createAsyncThunk(
   "order/fetchOrders",
   async (token: string, { rejectWithValue }) => {
     try {
-      console.log("Fetching all orders");
       axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       const response = await axiosInstance.get("/orders/my-orders");
-      console.log("Fetch orders response:", response.data);
       return response.data.data;
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -174,10 +168,8 @@ export const fetchSingleOrder = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log("Fetching order with ID:", orderId);
       axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       const response = await axiosInstance.get(`/orders/${orderId}`);
-      console.log("Fetch single order response:", response.data);
       return response.data.data;
     } catch (error) {
       console.error("Error fetching single order:", error);
@@ -194,10 +186,8 @@ export const updateOrder = createAsyncThunk(
   "order/updateOrder",
   async ({ orderId, data, token }: UpdateOrderPayload, { rejectWithValue }) => {
     try {
-      console.log("Updating order with ID:", orderId, "Data:", data);
       axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       const response = await axiosInstance.patch(`/orders/${orderId}`, data);
-      console.log("Update order response:", response.data);
       return response.data.data;
     } catch (error) {
       console.error("Error updating order:", error);
@@ -217,10 +207,8 @@ export const deleteOrder = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log("Deleting order with ID:", orderId);
       axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       await axiosInstance.delete(`/orders/${orderId}`);
-      console.log("Order deleted successfully");
       return orderId;
     } catch (error) {
       console.error("Error deleting order:", error);
@@ -237,20 +225,18 @@ export const createClaim = createAsyncThunk(
   "order/createClaim",
   async ({ orderId, data, token }: CreateClaimPayload, { rejectWithValue }) => {
     try {
-      console.log("Creating claim for order ID:", orderId, "Data:", data);
       axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       const response = await axiosInstance.post(
         `/orders/create-claim/${orderId}`,
         data
       );
-      console.log("Create claim response:", response.data);
       return response.data.data;
     } catch (error) {
       console.error("Error creating claim:", error);
       const axiosError = error as AxiosError;
       return rejectWithValue(
         axiosError.response?.data ||
-          `Failed to create claim for order ID ${orderId}`
+        `Failed to create claim for order ID ${orderId}`
       );
     }
   }
@@ -260,8 +246,8 @@ const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
-     // Add new reducer for form data
-     setOrderFormData: (state, action: PayloadAction<object>) => {
+    // Add new reducer for form data
+    setOrderFormData: (state, action: PayloadAction<object>) => {
       state.orderFormData = { ...state.orderFormData, ...action.payload };
     },
     resetOrderFormData: (state) => {
@@ -406,5 +392,9 @@ export const {
   updateOrderInState,
   removeOrderFromState,
 } = orderSlice.actions;
+
+export const selectOrderFormData = (state: RootState) => state.order.orderFormData;
+export const selectOrderIsLoading = (state: RootState) => state.order.loading;
+export const selectOrderError = (state: RootState) => state.order.error;
 
 export default orderSlice.reducer;
