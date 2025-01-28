@@ -14,6 +14,7 @@ interface SignupData {
 }
 
 interface LoginState {
+  user: any;
   loading: boolean;
   success: boolean;
   error: string | null;
@@ -21,6 +22,7 @@ interface LoginState {
 }
 
 const initialState: LoginState = {
+  user: null,
   loading: false,
   success: false,
   error: null,
@@ -100,5 +102,7 @@ const loginSlice = createSlice({
 });
 
 export const { resetLoginState } = loginSlice.actions;
+
+export const selectUser = (state: any) => state.login.token
 
 export default loginSlice.reducer;
