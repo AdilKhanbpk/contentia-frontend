@@ -36,7 +36,11 @@ interface PaymentFormInputs {
     agreement?: boolean;
 }
 
-export default function TabSecond() {
+export default function TabSecond({
+    setActiveTab,
+}: {
+    setActiveTab: (id: number) => void;
+}) {
     const [orderDate, setOrderDate] = useState<Date>(new Date());
     const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
     const [isTooltipVisible, setIsTooltipVisible] = useState(false);
@@ -502,6 +506,7 @@ export default function TabSecond() {
                                 {/* Submit Button */}
                                 <button
                                     type='submit'
+                                    onClick={() => setActiveTab(2)}
                                     className='w-full ButtonBlue text-white px-4 py-2 rounded-md font-semibold'
                                 >
                                     <div className='flex flex-row space-x-8'>

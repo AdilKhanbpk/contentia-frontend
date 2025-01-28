@@ -394,5 +394,7 @@ export const {
 } = orderSlice.actions;
 
 export const selectOrderFormData = (state: RootState) => state.order.orderFormData;
+export const selectOrderIsLoading = (state: RootState) => state.order.loading;
+export const selectOrderError = (state: RootState) => state.order.error;
 
 export default orderSlice.reducer;

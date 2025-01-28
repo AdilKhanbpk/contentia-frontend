@@ -8,14 +8,18 @@ import {
     setOrderFormData,
     createOrder,
     selectOrderFormData,
+    selectOrderIsLoading,
 } from "@/store/features/profile/orderSlice";
 
-const TabFourth = () => {
+const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
+    setActiveTab,
+}) => {
     const dispatch = useDispatch<AppDispatch>();
     const [minAge, setMinAge] = useState(18);
     const [maxAge, setMaxAge] = useState(65);
     const [token, setToken] = useState<string | null>(null);
     const orderData = useSelector(selectOrderFormData);
+    const orderLoading = useSelector(selectOrderIsLoading);
 
     useEffect(() => {
         const storedToken = localStorage.getItem("accessToken");
@@ -532,7 +536,7 @@ const TabFourth = () => {
                             type='submit'
                             className='mt-6 ButtonBlue text-white py-2 px-4 rounded-md'
                         >
-                            Tamamla
+                            {orderLoading ? "Tamamlanıyor..." : "Tamamla"}
                         </button>
                     </div>
                 </div>

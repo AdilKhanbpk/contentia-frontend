@@ -9,7 +9,9 @@ import { setOrderFormData } from "@/store/features/profile/orderSlice";
 import CustomModelAdmin from "../modal/CustomModelAdmin";
 import ModelBrand from "./sub-orders/ModelBrand";
 
-const TabThird = () => {
+const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
+    setActiveTab,
+}) => {
     const dispatch = useDispatch<AppDispatch>();
     const brandRecords = useSelector(
         (state: RootState) => state.brand.myBrands
@@ -68,9 +70,10 @@ const TabThird = () => {
             briefContent: briefContentData,
         };
 
-        dispatch(setOrderFormData(formData));
+        await dispatch(setOrderFormData(formData));
         console.log("🚀 ~ onSubmit ~ formData:", formData);
         toast.success("Order Brief Saved Successfully!");
+        setActiveTab(3);
     };
 
     const openModal = () => setIsModalOpen(true);
@@ -316,6 +319,7 @@ const TabThird = () => {
                     <div className='text-right'>
                         <button
                             type='submit'
+                            // onClick={() => setActiveTab(3)}
                             className='py-2 px-4 ButtonBlue font-semibold text-white rounded-md focus:outline-none'
                         >
                             İleri

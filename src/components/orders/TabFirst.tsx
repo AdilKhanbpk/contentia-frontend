@@ -8,7 +8,11 @@ import { RootState } from "@/store/store";
 import { fetchAdditionalServices } from "@/store/features/admin/addPriceSlice";
 import { setOrderFormData } from "@/store/features/profile/orderSlice";
 
-export default function TabFirst() {
+export default function TabFirst({
+    setActiveTab,
+}: {
+    setActiveTab: (id: number) => void;
+}) {
     const [showTooltipOne, setShowTooltipOne] = useState(false);
     const [activeEdit, setActiveEdit] = useState(false);
     const [activeRatio, setActiveRatio] = useState<string>("9:16");
@@ -162,6 +166,7 @@ export default function TabFirst() {
         dispatch(setOrderFormData(formData));
         console.log("🚀 ~ handleSubmit ~ formData:", formData);
         toast.success("Order Details Saved Successfully!");
+        setActiveTab(1);
     };
 
     return (
@@ -808,6 +813,7 @@ export default function TabFirst() {
                         </div>
                         <button
                             type='submit'
+                            // onClick={() => setActiveTab(1)}
                             className='ButtonBlue text-white font-semibold py-2 px-4 rounded-lg'
                         >
                             İleri
