@@ -39,7 +39,7 @@ interface Order {
     _id: string;
     fullName: string;
     email: string;
-};
+  };
   assignedCreators: string[];
   appliedCreators: Creator[];
   noOfUgc: number;
@@ -127,7 +127,7 @@ export const createOrder = createAsyncThunk(
           aspectRatio: data.additionalServices?.aspectRatio || '9:16',
           share: data.additionalServices?.share === true ? true : false,
           coverPicture: data.additionalServices?.coverPicture === true ? true : false,
-          creatorType: data.additionalServices?.creatorType || 'Nano',
+          creatorType: data.additionalServices?.creatorType,
           productShipping: data.additionalServices?.productShipping === true ? true : false,
         },
       };
@@ -165,14 +165,9 @@ export const fetchOrders = createAsyncThunk(
     try {
       const response = await axiosInstance.get('/admin/orders', {
         headers: { Authorization: `Bearer ${token}` },
-        timeout: 10000,
       });
 
-      if (response.data && response.data.data) {
-        return response.data.data.orders;
-      }
-
-      return rejectWithValue('Invalid response format');
+      return response.data.data;
 
     } catch (error) {
 
@@ -332,11 +327,11 @@ export const getAppliedCreators = createAsyncThunk(
         timeout: 10000,
       });
 
-      return { 
-        orderId, 
+      return {
+        orderId,
         creators: response.data.data.appliedCreators // This now contains the full Creator objects
       };
-      
+
     } catch (error) {
       if ((error as AxiosError).isAxiosError) {
         const axiosError = error as AxiosError<ErrorResponse>;
@@ -375,16 +370,16 @@ const ordersSlice = createSlice({
         if (state.currentOrder?._id === action.payload.orderId) {
           state.currentOrder.appliedCreators = action.payload.creators;
         }
-       // Update the current order's appliedCreators with the full Creator objects
-       if (state.currentOrder?._id === action.payload.orderId) {
-        state.currentOrder.appliedCreators = action.payload.creators;
-      }
-      // Update the order in the data array
-      const index = state.data.findIndex(order => order._id === action.payload.orderId);
-      if (index !== -1) {
-        state.data[index].appliedCreators = action.payload.creators;
-      }
-    })
+        // Update the current order's appliedCreators with the full Creator objects
+        if (state.currentOrder?._id === action.payload.orderId) {
+          state.currentOrder.appliedCreators = action.payload.creators;
+        }
+        // Update the order in the data array
+        const index = state.data.findIndex(order => order._id === action.payload.orderId);
+        if (index !== -1) {
+          state.data[index].appliedCreators = action.payload.creators;
+        }
+      })
       .addCase(getAppliedCreators.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
