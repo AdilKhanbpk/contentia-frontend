@@ -7,14 +7,27 @@ export const axiosInstance = axios.create({
     },
 });
 
-export const getAuthConfig = (accessToken: string, contentType = "application/json") => {
-    const config: any = {
-        headers: {
-            "Content-Type": contentType,
-        },
-    };
-    if (accessToken) {
-        config.headers["Authorization"] = `Bearer ${accessToken}`;
+axiosInstance.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
     }
-    return config;
-}
+)
+
+// export const getAuthConfig = (accessToken: string, contentType = "application/json") => {
+//     const config: any = {
+//         headers: {
+//             "Content-Type": contentType,
+//         },
+//     };
+//     if (accessToken) {
+//         config.headers["Authorization"] = `Bearer ${accessToken}`;
+//     }
+//     return config;
+// }

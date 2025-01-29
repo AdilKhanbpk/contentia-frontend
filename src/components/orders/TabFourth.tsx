@@ -195,7 +195,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                             <div className='flex justify-between space-x-4'>
                                 <label className='inline-flex items-center cursor-pointer mb-2 lg:mb-6'>
                                     <input
-                                        type='checkbox'
+                                        type='radio'
                                         value='product'
                                         {...register(
                                             "content_information.contentType"
@@ -210,7 +210,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
 
                                 <label className='inline-flex items-center cursor-pointer mb-2 lg:mb-6'>
                                     <input
-                                        type='checkbox'
+                                        type='radio'
                                         value='service'
                                         {...register(
                                             "content_information.contentType"
@@ -225,7 +225,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
 
                                 <label className='inline-flex items-center cursor-pointer mb-2 lg:mb-6'>
                                     <input
-                                        type='checkbox'
+                                        type='radio'
                                         value='space'
                                         {...register(
                                             "content_information.contentType"
