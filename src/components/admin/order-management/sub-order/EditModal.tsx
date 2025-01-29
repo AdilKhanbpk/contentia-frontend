@@ -45,7 +45,7 @@ interface Order {
         aspectRatio: string;
         share?: boolean;
         coverPicture?: boolean;
-        creatorType?: string;
+        creatorType?: boolean;
         productShipping?: boolean;
     };
     preferences?: {
