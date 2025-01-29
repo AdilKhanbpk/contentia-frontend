@@ -136,7 +136,7 @@ export const createOrder = createAsyncThunk(
         axiosError.response?.data || "Failed to create order";
       console.error("Error details:", errorMessage);
 
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(error);
     }
   }
 );
@@ -154,7 +154,7 @@ export const fetchOrders = createAsyncThunk(
       console.error("Error fetching orders:", error);
       const axiosError = error as AxiosError;
       return rejectWithValue(
-        axiosError.response?.data || "Failed to fetch orders"
+        error
       );
     }
   }
