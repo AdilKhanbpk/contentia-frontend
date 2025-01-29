@@ -128,15 +128,15 @@ export const createOrder = createAsyncThunk(
       const response = await axiosInstance.post("/orders", orderData);
 
       return response.data.data;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error occurred in createOrder thunk:", error);
 
       const axiosError = error as AxiosError;
       const errorMessage =
-        axiosError.response?.data || "Failed to create order";
+        axiosError.response?.data;
       console.error("Error details:", errorMessage);
 
-      return rejectWithValue(error);
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -153,9 +153,11 @@ export const fetchOrders = createAsyncThunk(
     } catch (error) {
       console.error("Error fetching orders:", error);
       const axiosError = error as AxiosError;
-      return rejectWithValue(
-        error
-      );
+      const errorMessage =
+        axiosError.response?.data;
+      console.error("Error details:", errorMessage);
+
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -174,9 +176,11 @@ export const fetchSingleOrder = createAsyncThunk(
     } catch (error) {
       console.error("Error fetching single order:", error);
       const axiosError = error as AxiosError;
-      return rejectWithValue(
-        axiosError.response?.data || `Failed to fetch order with ID ${orderId}`
-      );
+      const errorMessage =
+        axiosError.response?.data;
+      console.error("Error details:", errorMessage);
+
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -192,9 +196,11 @@ export const updateOrder = createAsyncThunk(
     } catch (error) {
       console.error("Error updating order:", error);
       const axiosError = error as AxiosError;
-      return rejectWithValue(
-        axiosError.response?.data || `Failed to update order with ID ${orderId}`
-      );
+      const errorMessage =
+        axiosError.response?.data;
+      console.error("Error details:", errorMessage);
+
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -213,9 +219,11 @@ export const deleteOrder = createAsyncThunk(
     } catch (error) {
       console.error("Error deleting order:", error);
       const axiosError = error as AxiosError;
-      return rejectWithValue(
-        axiosError.response?.data || `Failed to delete order with ID ${orderId}`
-      );
+      const errorMessage =
+        axiosError.response?.data;
+      console.error("Error details:", errorMessage);
+
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -234,10 +242,11 @@ export const createClaim = createAsyncThunk(
     } catch (error) {
       console.error("Error creating claim:", error);
       const axiosError = error as AxiosError;
-      return rejectWithValue(
-        axiosError.response?.data ||
-        `Failed to create claim for order ID ${orderId}`
-      );
+      const errorMessage =
+        axiosError.response?.data;
+      console.error("Error details:", errorMessage);
+
+      return rejectWithValue(errorMessage);
     }
   }
 );
