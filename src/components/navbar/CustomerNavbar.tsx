@@ -1,21 +1,35 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import BrandNames from "./sub-navbar/BrandNames";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "@/store/features/auth/loginSlice";
+import {
+    fetchProfile,
+    selectProfileUser,
+} from "@/store/features/profile/profileSlice";
+import { AppDispatch } from "@/store/store";
 
 export default function Navbar() {
+    const dispatch = useDispatch<AppDispatch>();
     const { t } = useTranslation();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
-    const user = useSelector(selectUser);
+    const user = useSelector(selectProfileUser);
     console.log("🚀 ~ Navbar ~ user:", user);
+
+    const token = localStorage.getItem("accessToken");
+
     const toggleSidebar = () => {
         setSidebarOpen(!isSidebarOpen);
     };
 
+    useEffect(() => {
+        if (token) {
+            dispatch(fetchProfile(token));
+        }
+    }, [dispatch]);
     return (
         <>
             <nav className='fixed top-0 z-50 w-full bg-white border-b border-gray-200  dark:bg-gray-800 dark:border-gray-700 px-2 sm:px-4 md:px-6 lg:px-10'>
@@ -137,9 +151,13 @@ export default function Navbar() {
                                     <span className='sr-only'>
                                         Open user menu
                                     </span>
-                                    <span className='inline-flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 text-white mr-2'>
-                                        SK
-                                    </span>
+                                    <Image
+                                        alt='user'
+                                        src={user?.profilePic}
+                                        width={40}
+                                        height={30}
+                                        className='h-10 w-10 border-2 mr-2 border-gray-600 rounded-full'
+                                    />
                                     <Image
                                         src='/dropDownIcon.png'
                                         alt='brand logo'

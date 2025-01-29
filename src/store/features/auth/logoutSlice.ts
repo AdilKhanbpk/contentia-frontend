@@ -27,6 +27,7 @@ export const logoutUser = createAsyncThunk(
         },
       });
       localStorage.removeItem('accessToken');
+      localStorage.removeItem('user');
       return true;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Logout failed');
