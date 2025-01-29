@@ -69,7 +69,7 @@ interface Order {
         aspectRatio: string;
         share?: boolean;
         coverPicture?: boolean;
-        creatorType?: boolean;
+        creatorType?: string;
         productShipping?: boolean;
     };
     preferences?: {
@@ -454,6 +454,7 @@ const Orders: React.FC = () => {
     // Update the filtering logic as well
     const filteredOrders = React.useMemo(() => {
         const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
+        console.log("🚀 ~ filteredOrders ~ orders:", orders);
         return orders?.filter((order) => {
             const owner = order.orderOwner;
             const fullNameMatch =
