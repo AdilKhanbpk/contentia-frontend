@@ -10,10 +10,10 @@ interface CreatorFormState {
 export const becomeCreatorThunk = createAsyncThunk(
   'becomeCreator/becomeCreatorThunk',
   async (_, { getState, rejectWithValue }) => {
-    console.log('Starting becomeCreatorThunk');
     try {
       const state: any = getState();
       const creatorFormData = state.becomeCreator.creatorFormData;
+      console.log("🚀 ~ creatorFormData:", creatorFormData)
       const response = await axiosInstance.post('/creators/create', creatorFormData);
       return response.data;
     } catch (error: any) {
@@ -38,14 +38,14 @@ const initialState: CreatorFormState = {
 const creatorFormSlice = createSlice({
   name: 'creatorForm',
   initialState,
-  reducers : {
-    setCreatorFormData : (state, action) => {
-        state.creatorFormData = {...state.creatorFormData, ...action.payload}
+  reducers: {
+    setCreatorFormData: (state, action) => {
+      state.creatorFormData = { ...state.creatorFormData, ...action.payload }
     },
-    resetCreatorFormData : (state) => {
-        state.creatorFormData = {}
-        }
-    },
+    resetCreatorFormData: (state) => {
+      state.creatorFormData = {}
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(becomeCreatorThunk.pending, (state) => {
