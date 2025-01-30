@@ -147,7 +147,7 @@ const ContentCreatorPreferences: React.FC<{
                                         <input
                                             type='checkbox'
                                             {...register(
-                                                "preferences.contentInformation.content_formats"
+                                                "preferences.contentInformation.contentFormats"
                                             )}
                                             value={format}
                                             className='hidden peer'

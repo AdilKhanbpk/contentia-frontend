@@ -140,7 +140,7 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                             <input
                                 type='number'
                                 {...register(
-                                    `preferences.socialInformation.platforms.${platform.label}.followerCount`,
+                                    `preferences.socialInformation.platforms.${platform.label}.followers`,
                                     {
                                         valueAsNumber: true,
                                         min: {
@@ -155,12 +155,12 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                             />
                             {errors.preferences?.socialInformation?.platforms?.[
                                 platform.label
-                            ]?.followerCount && (
+                            ]?.followers && (
                                 <span className='text-red-500 text-sm'>
                                     {
                                         errors.preferences.socialInformation
-                                            .platforms[platform.label]
-                                            .followerCount.message
+                                            .platforms[platform.label].followers
+                                            .message
                                     }
                                 </span>
                             )}
@@ -178,7 +178,7 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                         <input
                             type='url'
                             {...register(
-                                "preferences.socialInformation.instagramLink",
+                                "preferences.socialInformation.portfolioLink",
                                 {
                                     required: "Instagram linki gereklidir.",
                                     pattern: {
