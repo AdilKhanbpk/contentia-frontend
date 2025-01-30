@@ -17,7 +17,7 @@ import {
 export default function AdminNavbar() {
     const dispatch = useDispatch<AppDispatch>();
     const user = useSelector(selectProfileUser);
-    console.log("🚀 ~ AdminNavbar ~ user:", user);
+    // console.log("🚀 ~ AdminNavbar ~ user:", user);
     const token = localStorage.getItem("accessToken");
     const { t } = useTranslation();
     const [isSidebarOpen, setSidebarOpen] = useState(true);

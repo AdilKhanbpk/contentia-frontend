@@ -10,6 +10,7 @@ import {
     selectOrderFormData,
     selectOrderIsLoading,
 } from "@/store/features/profile/orderSlice";
+import { useFileContext } from "@/context/FileContext";
 
 const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
     setActiveTab,
@@ -18,8 +19,9 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
     const [minAge, setMinAge] = useState(18);
     const [maxAge, setMaxAge] = useState(65);
     const [token, setToken] = useState<string | null>(null);
-    const orderData = useSelector(selectOrderFormData);
     const orderLoading = useSelector(selectOrderIsLoading);
+    const { selectedFiles, setSelectedFiles } = useFileContext();
+    // console.log("🚀 ~ files:", selectedFiles);
 
     useEffect(() => {
         const storedToken = localStorage.getItem("accessToken");
@@ -62,13 +64,20 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                 },
             };
             dispatch(setOrderFormData(preferencesData));
-            console.log("🚀 ~ onSubmit ~ Full Order Data :", orderData);
+            // console.log("🚀 ~ onSubmit ~ formData:", preferencesData);
+            // console.log("🚀 ~ onSubmit ~ Full Order Data :", orderData);
             try {
-                const res = await dispatch(createOrder(token)).unwrap();
-                console.log("🚀 ~ onSubmit ~ formData:", preferencesData);
-                toast.success(res.message);
+                const res = await dispatch(
+                    createOrder({ token, selectedFiles })
+                )
+                    .unwrap()
+                    .then((res) => {
+                        setSelectedFiles([]);
+                        toast.success(res.message);
+                    });
             } catch (error: any) {
                 toast.error(error.message);
+                setSelectedFiles([]);
             }
         } catch (error: any) {
             console.error("Error submitting form:", error.message);

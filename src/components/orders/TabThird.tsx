@@ -8,6 +8,7 @@ import { fetchMyBrands } from "@/store/features/profile/brandSlice";
 import { setOrderFormData } from "@/store/features/profile/orderSlice";
 import CustomModelAdmin from "../modal/CustomModelAdmin";
 import ModelBrand from "./sub-orders/ModelBrand";
+import { useFileContext } from "@/context/FileContext";
 
 const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
     setActiveTab,
@@ -19,7 +20,8 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
     const [token, setToken] = useState<string | null>(null);
     const [selectedBrand, setSelectedBrand] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+    // const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+    const { selectedFiles, setSelectedFiles } = useFileContext();
 
     useEffect(() => {
         const storedToken = localStorage.getItem("accessToken");
@@ -62,7 +64,6 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
             uploadFiles: selectedFiles
                 ? Array.from(selectedFiles).map((file) => file.name)
                 : [],
-            uploadFileDate: new Date().toISOString(),
         };
 
         // Dispatch to Redux store
@@ -71,7 +72,7 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
         };
 
         await dispatch(setOrderFormData(formData));
-        console.log("🚀 ~ onSubmit ~ formData:", formData);
+        // console.log("🚀 ~ onSubmit ~ formData:", formData);
         toast.success("Order Brief Saved Successfully!");
         setActiveTab(3);
     };
@@ -278,7 +279,7 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                 </div>
                             </div>
                             <Controller
-                                name='files'
+                                name='uploadFiles'
                                 control={control}
                                 render={({ field: { onChange } }) => (
                                     <input

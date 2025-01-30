@@ -164,9 +164,9 @@ export default function TabFirst({
             },
         };
         dispatch(setOrderFormData(formData));
-        console.log("🚀 ~ handleSubmit ~ formData:", formData);
+        // console.log("🚀 ~ handleSubmit ~ formData:", formData);
         toast.success("Order Details Saved Successfully!");
-        setActiveTab(1);
+        setActiveTab(2);
     };
 
     return (

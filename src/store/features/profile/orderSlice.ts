@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { axiosInstance } from "@/store/axiosInstance";
 import { AxiosError } from "axios";
 import { RootState } from "@/store/store";
+import { useFileContext } from "@/context/FileContext";
 
 // Types and Interfaces
 interface LocationAddress {
@@ -39,7 +40,7 @@ interface BriefContent {
   productServiceDesc: string;
   scenario?: string;
   caseStudy?: string;
-  uploadFiles?: string[];
+  uploadFiles?: File[];
   uploadFileDate?: string;
 }
 
@@ -115,31 +116,81 @@ const initialState: OrderState = {
   orderFormData: {},
 };
 
+
+interface OrderData {
+  token: string;
+  selectedFiles: File[];
+}
+
 export const createOrder = createAsyncThunk(
   "order/createOrder",
-  async (token: string, { getState, rejectWithValue }) => {
+  async ({ token, selectedFiles }: OrderData, { getState, rejectWithValue }) => {
     try {
       const state: any = getState();
       const orderData = state.order.orderFormData;
-      console.log("🚀 ~ orderData:", orderData)
 
+      // console.log("🚀 ~ orderData:", orderData);
+
+      // Convert orderData to FormData
+      const formData = new FormData();
+      formData.append("noOfUgc", String(orderData.noOfUgc));
+      formData.append("totalPrice", String(orderData.totalPrice));
+
+      Object.entries(orderData.additionalServices).forEach(([key, value]) => {
+        formData.append(`additionalServices[${key}]`, String(value));
+      });
+
+      Object.entries(orderData.preferences).forEach(([key, value]) => {
+        if (key === "locationAddress" && typeof value === "object") {
+          if (value) {
+            Object.entries(value).forEach(([subKey, subValue]) => {
+              formData.append(`preferences[locationAddress][${subKey}]`, String(subValue));
+            });
+          }
+        } else {
+          formData.append(`preferences[${key}]`, String(value));
+        }
+      });
+
+      Object.entries(orderData.briefContent).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          value.forEach((item, index) => {
+            formData.append(`briefContent[${key}][${index}]`, item);
+          });
+        } else {
+          formData.append(`briefContent[${key}]`, String(value));
+        }
+      });
+
+      // Append selected files
+      selectedFiles.forEach((file) => {
+        formData.append("uploadFiles", file);
+      });
+
+      // Set Authorization header
       axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-      const response = await axiosInstance.post("/orders", orderData);
+      // Make API request
+      const response = await axiosInstance.postForm("/orders", formData);
 
       return response.data.data;
     } catch (error: any) {
       console.error("Error occurred in createOrder thunk:", error);
 
       const axiosError = error as AxiosError;
-      const errorMessage =
-        axiosError.response?.data;
+      const errorMessage = axiosError.response?.data;
       console.error("Error details:", errorMessage);
 
       return rejectWithValue(errorMessage);
     }
   }
 );
+
+
+
+
+
+
 
 
 // Fetch All Orders

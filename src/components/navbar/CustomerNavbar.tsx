@@ -17,7 +17,7 @@ export default function Navbar() {
     const { t } = useTranslation();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const user = useSelector(selectProfileUser);
-    console.log("🚀 ~ Navbar ~ user:", user);
+    // console.log("🚀 ~ Navbar ~ user:", user);
 
     const token = localStorage.getItem("accessToken");
 
