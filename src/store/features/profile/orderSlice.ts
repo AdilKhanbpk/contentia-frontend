@@ -243,7 +243,7 @@ export const updateOrder = createAsyncThunk(
     try {
       axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       const response = await axiosInstance.patch(`/orders/${orderId}`, data);
-      return response.data.data;
+      return response.data;
     } catch (error) {
       console.error("Error updating order:", error);
       const axiosError = error as AxiosError;
