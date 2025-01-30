@@ -1,10 +1,11 @@
 import ContentCreatorPreferences from "./SubCreatorComp/ContentCreatorPreferences";
 import SocialMediaInformation from "./SubCreatorComp/SocialMediaInformation";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import {
     becomeCreatorThunk,
+    selectBecomeCreatorIsLoading,
     setCreatorFormData,
 } from "@/store/becomeCreator/becomeCreatorSlice";
 import { useRouter } from "next/navigation";
@@ -20,6 +21,7 @@ const Preferences: React.FC = () => {
 
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
+    const loading = useSelector(selectBecomeCreatorIsLoading);
 
     const onSubmit: SubmitHandler<any> = async (data) => {
         try {
@@ -60,7 +62,7 @@ const Preferences: React.FC = () => {
                         type='submit'
                         className='ButtonBlue text-white text-lg font-bold rounded-xl p-1 px-8'
                     >
-                        Tamamla
+                        {loading ? "Tamamlama..." : " Tamamla"}
                     </button>
                 </div>
             </div>

@@ -1,8 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { axiosInstance } from '../axiosInstance';
+import { RootState } from '../store';
 
 interface CreatorFormState {
   creatorFormData: object;
+  loading: boolean,
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 }
@@ -32,6 +34,7 @@ export const becomeCreatorThunk = createAsyncThunk(
 const initialState: CreatorFormState = {
   creatorFormData: {},
   status: 'idle',
+  loading: false,
   error: null,
 }
 
@@ -68,5 +71,7 @@ const creatorFormSlice = createSlice({
 export const {
   setCreatorFormData
 } = creatorFormSlice.actions;
+
+export const selectBecomeCreatorIsLoading = (state: RootState) => state.becomeCreator.loading
 
 export default creatorFormSlice.reducer;
