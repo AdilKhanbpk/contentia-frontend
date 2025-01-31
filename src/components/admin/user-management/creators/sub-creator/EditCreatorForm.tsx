@@ -48,7 +48,7 @@ interface Creator {
     };
     preferences: {
         contentInformation: {
-            contentType: "product" | "service" | "location";
+            contentType: ("product" | "service" | "location")[];
             creatorType: "nano" | "micro";
             contentFormats: string[];
             areaOfInterest: string[];
@@ -169,9 +169,11 @@ const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
                         />
                         <div className='flex flex-col space-y-4 text-center'>
                             <h3 className='mt-4 text-xl font-semibold'>
-                                JWT User
+                                {customerData?.fullName}
                             </h3>
-                            <p className='text-gray-600'>UI/UX Designer</p>
+                            <p className='text-gray-600'>
+                                {customerData?.role}
+                            </p>
                             <div className='flex space-x-8 mt-2 justify-center'>
                                 <Image
                                     src='/BecomeCreator/facebook_icon..png'

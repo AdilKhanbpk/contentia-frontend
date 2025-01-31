@@ -42,7 +42,7 @@ interface Creator {
     };
     preferences: {
         contentInformation: {
-            contentType: "product" | "service" | "location";
+            contentType: ("product" | "service" | "location")[];
             creatorType: "nano" | "micro";
             contentFormats: string[];
             areaOfInterest: string[];
@@ -88,7 +88,6 @@ interface Creator {
     userAgreement: boolean;
     approvedCommercial: boolean;
 }
-
 interface ModalNewProps {
     isOpen: boolean;
     onClose: () => void;

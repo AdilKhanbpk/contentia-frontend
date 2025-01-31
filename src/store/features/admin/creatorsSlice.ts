@@ -70,7 +70,7 @@ export const fetchAdminCreators = createAsyncThunk(
             },
             preferences: {
               contentInformation: {
-                contentType: customer.preferences?.contentInformation?.contentType ?? 'other',
+                contentType: customer.preferences?.contentInformation?.contentType ?? [],
                 contentFormats: customer.preferences?.contentInformation?.contentFormats ?? [],
                 areaOfInterest: customer.preferences?.contentInformation?.areaOfInterest ?? [],
                 addressDetails: {

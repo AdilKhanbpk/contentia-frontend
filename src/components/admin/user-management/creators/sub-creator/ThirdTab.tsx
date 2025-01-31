@@ -56,7 +56,7 @@ interface Creator {
     };
     preferences: {
         contentInformation: {
-            contentType: "product" | "service" | "location";
+            contentType: ("product" | "service" | "location")[];
             creatorType: "nano" | "micro";
             contentFormats: string[];
             areaOfInterest: string[];
@@ -120,41 +120,70 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
                     contentInformation: {
                         contentType:
                             editCreatorForm.preferences.contentInformation
-                                .contentType,
+                                ?.contentType || [],
                         contentFormats:
                             editCreatorForm.preferences.contentInformation
-                                .contentFormats,
+                                ?.contentFormats || [],
                         areaOfInterest:
                             editCreatorForm.preferences.contentInformation
-                                .areaOfInterest,
+                                ?.areaOfInterest || [],
+                        addressDetails: {
+                            country:
+                                editCreatorForm.preferences.contentInformation
+                                    ?.addressDetails?.country || "",
+                            state:
+                                editCreatorForm.preferences.contentInformation
+                                    ?.addressDetails?.state || "",
+                            district:
+                                editCreatorForm.preferences.contentInformation
+                                    ?.addressDetails?.district || "",
+                            neighbourhood:
+                                editCreatorForm.preferences.contentInformation
+                                    ?.addressDetails?.neighbourhood || "",
+                            fullAddress:
+                                editCreatorForm.preferences.contentInformation
+                                    ?.addressDetails?.fullAddress || "",
+                        },
                     },
                     socialInformation: {
                         contentType:
                             editCreatorForm.preferences.socialInformation
-                                .contentType,
+                                ?.contentType,
                         platforms: {
-                            Instagram:
-                                editCreatorForm.preferences.socialInformation
-                                    .platforms.Instagram || {},
-                            TikTok:
-                                editCreatorForm.preferences.socialInformation
-                                    .platforms.TikTok || {},
-                            Facebook:
-                                editCreatorForm.preferences.socialInformation
-                                    .platforms.Facebook || {},
-                            Youtube:
-                                editCreatorForm.preferences.socialInformation
-                                    .platforms.Youtube || {},
-                            X:
-                                editCreatorForm.preferences.socialInformation
-                                    .platforms.X || {},
-                            Linkedin:
-                                editCreatorForm.preferences.socialInformation
-                                    .platforms.Linkedin || {},
+                            Instagram: editCreatorForm.preferences
+                                .socialInformation?.platforms?.Instagram || {
+                                followers: 0,
+                                username: "",
+                            },
+                            TikTok: editCreatorForm.preferences
+                                .socialInformation?.platforms?.TikTok || {
+                                followers: 0,
+                                username: "",
+                            },
+                            Facebook: editCreatorForm.preferences
+                                .socialInformation?.platforms?.Facebook || {
+                                followers: 0,
+                                username: "",
+                            },
+                            Youtube: editCreatorForm.preferences
+                                .socialInformation?.platforms?.Youtube || {
+                                followers: 0,
+                                username: "",
+                            },
+                            X: editCreatorForm.preferences.socialInformation
+                                ?.platforms?.X || {
+                                followers: 0,
+                                username: "",
+                            },
+                            Linkedin: editCreatorForm.preferences
+                                .socialInformation?.platforms?.Linkedin || {
+                                followers: 0,
+                                username: "",
+                            },
                         },
                         portfolioLink:
                             editCreatorForm.preferences.socialInformation
-                                .portfolioLink || [],
+                                ?.portfolioLink || [],
                     },
                 },
             });
@@ -177,18 +206,30 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
 
         try {
             const transformedData = {
+                creatorType: formData.creatorType,
                 preferences: {
                     contentInformation: {
-                        contentType: formData.contentType,
-                        creatorType: formData.creatorType,
-                        contentFormats: formData.contentFormats || [],
-                        areaOfInterest: formData.interests || [],
+                        contentType:
+                            formData.preferences.contentInformation
+                                .contentType || [],
+                        creatorType:
+                            formData.preferences.contentInformation.creatorType,
+                        contentFormats:
+                            formData.preferences.contentInformation
+                                .contentFormats || [],
+                        areaOfInterest:
+                            formData.preferences.contentInformation.interests ||
+                            [],
                     },
                     socialInformation: {
-                        contentType: formData.socialInformation.contentType,
-                        platforms: formData.socialInformation.platforms || [],
+                        contentType:
+                            formData.preferences.socialInformation.contentType,
+                        platforms:
+                            formData.preferences.socialInformation.platforms ||
+                            [],
                         portfolioLink:
-                            formData.socialInformation.portfolioLink || [],
+                            formData.preferences.socialInformation
+                                .portfolioLink || [],
                     },
                 },
             };
@@ -208,6 +249,7 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
                 toast.error("Failed to update creator. Please try again.");
             }
         } catch (error: any) {
+            console.log(error);
             toast.error(
                 `Error updating creator: ${error.message || "Unknown error"}`
             );

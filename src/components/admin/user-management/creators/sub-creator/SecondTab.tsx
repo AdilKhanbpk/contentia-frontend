@@ -49,7 +49,7 @@ interface Creator {
     };
     preferences: {
         contentInformation: {
-            contentType: "product" | "service" | "location";
+            contentType: ("product" | "service" | "location")[];
             creatorType: "nano" | "micro";
             contentFormats: string[];
             areaOfInterest: string[];
