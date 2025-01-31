@@ -20,112 +20,112 @@ const initialState: AdminCreatorsState = {
 
 // Fetch all customers
 export const fetchAdminCreators = createAsyncThunk(
-    'adminCreators/fetchAdminCreators',
-    async (token: string) => {
-      try {
-        const response = await axiosInstance.get('/admin/creators', {
-          headers: { Authorization: `Bearer ${token}` },
+  'adminCreators/fetchAdminCreators',
+  async (token: string) => {
+    try {
+      const response = await axiosInstance.get('/admin/creators', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.data && response.data.data) {
+        const customers = response.data.data.map((customer: any) => {
+          return {
+            id: customer._id ?? null,
+            fullName: customer.fullName ?? '',
+            creatorType: customer.creatorType ?? 'individual',
+            userType: customer.userType ?? '',
+            role: customer.role ?? '',
+            password: customer.password ?? '',
+            tckn: customer.tckn ?? '',
+            email: customer.email ?? '',
+            dateOfBirth: customer.dateOfBirth ?? '',
+            gender: customer.gender ?? 'other',
+            phoneNumber: customer.phoneNumber ?? '',
+            isVerified: customer.isVerified ?? 'pending',
+            accountType: customer.accountType ?? 'individual',
+            invoiceType: customer.invoiceType ?? 'individual',
+            addressDetails: {
+              addressOne: customer.addressDetails?.addressOne ?? '',
+              addressTwo: customer.addressDetails?.addressTwo ?? '',
+              country: customer.addressDetails?.country ?? '',
+              zipCode: customer.addressDetails?.zipCode ?? '',
+            },
+            paymentInformation: {
+              ibanNumber: customer.paymentInformation?.ibanNumber ?? '',
+              address: customer.paymentInformation?.address ?? '',
+              fullName: customer.paymentInformation?.fullName ?? '',
+              trId: customer.paymentInformation?.trId ?? '',
+              companyName: customer.paymentInformation?.companyName ?? '',
+              taxNumber: customer.paymentInformation?.taxNumber ?? '',
+              taxOffice: customer.paymentInformation?.taxOffice ?? '',
+            },
+            billingInformation: {
+              invoiceStatus: customer.billingInformation?.invoiceStatus ?? false,
+              address: customer.billingInformation?.address ?? '',
+              fullName: customer.billingInformation?.fullName ?? '',
+              trId: customer.billingInformation?.trId ?? '',
+              companyName: customer.billingInformation?.companyName ?? '',
+              taxNumber: customer.billingInformation?.taxNumber ?? '',
+              taxOffice: customer.billingInformation?.taxOffice ?? '',
+            },
+            preferences: {
+              contentInformation: {
+                contentType: customer.preferences?.contentInformation?.contentType ?? 'other',
+                contentFormats: customer.preferences?.contentInformation?.contentFormats ?? [],
+                areaOfInterest: customer.preferences?.contentInformation?.areaOfInterest ?? [],
+                addressDetails: {
+                  country: customer.preferences?.contentInformation?.addressDetails?.country ?? '',
+                  state: customer.preferences?.contentInformation?.addressDetails?.state ?? '',
+                  district: customer.preferences?.contentInformation?.addressDetails?.district ?? '',
+                  neighbourhood: customer.preferences?.contentInformation?.addressDetails?.neighbourhood ?? '',
+                  fullAddress: customer.preferences?.contentInformation?.addressDetails?.fullAddress ?? '',
+                },
+              },
+              socialInformation: {
+                contentType: customer.preferences?.socialInformation?.contentType ?? 'other',
+                platforms: {
+                  Instagram: {
+                    followers: customer.preferences?.socialInformation?.platforms?.Instagram?.followers ?? 0,
+                    username: customer.preferences?.socialInformation?.platforms?.Instagram?.username ?? '',
+                  },
+                  TikTok: {
+                    followers: customer.preferences?.socialInformation?.platforms?.TikTok?.followers ?? 0,
+                    username: customer.preferences?.socialInformation?.platforms?.TikTok?.username ?? '',
+                  },
+                  Youtube: {
+                    followers: customer.preferences?.socialInformation?.platforms?.Youtube?.followers ?? 0,
+                    username: customer.preferences?.socialInformation?.platforms?.Youtube?.username ?? '',
+                  },
+                  X: {
+                    followers: customer.preferences?.socialInformation?.platforms?.Instagram?.followers ?? 0,
+                    username: customer.preferences?.socialInformation?.platforms?.Instagram?.username ?? '',
+                  },
+                  Facebook: {
+                    followers: customer.preferences?.socialInformation?.platforms?.TikTok?.followers ?? 0,
+                    username: customer.preferences?.socialInformation?.platforms?.TikTok?.username ?? '',
+                  },
+                  Linkedin: {
+                    followers: customer.preferences?.socialInformation?.platforms?.Youtube?.followers ?? 0,
+                    username: customer.preferences?.socialInformation?.platforms?.Youtube?.username ?? '',
+                  },
+                },
+                portfolioLink: customer.preferences?.socialInformation?.portfolioLink ?? '',
+              },
+            },
+            userAgreement: customer.userAgreement ?? false,
+            approvedCommercial: customer.approvedCommercial ?? false,
+          };
         });
-  
-        if (response.data && response.data.data) {
-          const customers = response.data.data.map((customer: any) => {
-            return {
-              id: customer._id ?? null,
-              fullName: customer.fullName ?? '',
-              creatorType: customer.creatorType ?? 'individual',
-              userType: customer.userType ?? '',
-              role: customer.role ?? '',
-              password: customer.password ?? '',
-              identityNo: customer.identityNo ?? '',
-              email: customer.email ?? '',
-              dateOfBirth: customer.dateOfBirth ?? '',
-              gender: customer.gender ?? 'other',
-              phoneNumber: customer.phoneNumber ?? '',
-              isVerified: customer.isVerified ?? 'pending',
-              accountType: customer.accountType ?? 'individual',
-              invoiceType: customer.invoiceType ?? 'individual',
-              addressDetails: {
-                addressOne: customer.addressDetails?.addressOne ?? '',
-                addressTwo: customer.addressDetails?.addressTwo ?? '',
-                country: customer.addressDetails?.country ?? '',
-                zipCode: customer.addressDetails?.zipCode ?? '',
-              },
-              paymentInformation: {
-                ibanNumber: customer.paymentInformation?.ibanNumber ?? '',
-                address: customer.paymentInformation?.address ?? '',
-                fullName: customer.paymentInformation?.fullName ?? '',
-                trId: customer.paymentInformation?.trId ?? '',
-                companyName: customer.paymentInformation?.companyName ?? '',
-                taxNumber: customer.paymentInformation?.taxNumber ?? '',
-                taxOffice: customer.paymentInformation?.taxOffice ?? '',
-              },
-              billingInformation: {
-                invoiceStatus: customer.billingInformation?.invoiceStatus ?? false,
-                address: customer.billingInformation?.address ?? '',
-                fullName: customer.billingInformation?.fullName ?? '',
-                trId: customer.billingInformation?.trId ?? '',
-                companyName: customer.billingInformation?.companyName ?? '',
-                taxNumber: customer.billingInformation?.taxNumber ?? '',
-                taxOffice: customer.billingInformation?.taxOffice ?? '',
-              },
-              preferences: {
-                contentInformation: {
-                  contentType: customer.preferences?.contentInformation?.contentType ?? 'other',
-                  contentFormats: customer.preferences?.contentInformation?.contentFormats ?? [],
-                  areaOfInterest: customer.preferences?.contentInformation?.areaOfInterest ?? [],
-                  addressDetails: {
-                    country: customer.preferences?.contentInformation?.addressDetails?.country ?? '',
-                    state: customer.preferences?.contentInformation?.addressDetails?.state ?? '',
-                    district: customer.preferences?.contentInformation?.addressDetails?.district ?? '',
-                    neighbourhood: customer.preferences?.contentInformation?.addressDetails?.neighbourhood ?? '',
-                    fullAddress: customer.preferences?.contentInformation?.addressDetails?.fullAddress ?? '',
-                  },
-                },
-                socialInformation: {
-                  contentType: customer.preferences?.socialInformation?.contentType ?? 'other',
-                  platforms: {
-                    Instagram: {
-                      followers: customer.preferences?.socialInformation?.platforms?.Instagram?.followers ?? 0,
-                      username: customer.preferences?.socialInformation?.platforms?.Instagram?.username ?? '',
-                    },
-                    TikTok: {
-                      followers: customer.preferences?.socialInformation?.platforms?.TikTok?.followers ?? 0,
-                      username: customer.preferences?.socialInformation?.platforms?.TikTok?.username ?? '',
-                    },
-                    Youtube: {
-                      followers: customer.preferences?.socialInformation?.platforms?.Youtube?.followers ?? 0,
-                      username: customer.preferences?.socialInformation?.platforms?.Youtube?.username ?? '',
-                    },
-                    X: {
-                      followers: customer.preferences?.socialInformation?.platforms?.Instagram?.followers ?? 0,
-                      username: customer.preferences?.socialInformation?.platforms?.Instagram?.username ?? '',
-                    },
-                    Facebook: {
-                      followers: customer.preferences?.socialInformation?.platforms?.TikTok?.followers ?? 0,
-                      username: customer.preferences?.socialInformation?.platforms?.TikTok?.username ?? '',
-                    },
-                    Linkedin: {
-                      followers: customer.preferences?.socialInformation?.platforms?.Youtube?.followers ?? 0,
-                      username: customer.preferences?.socialInformation?.platforms?.Youtube?.username ?? '',
-                    },
-                  },
-                  portfolioLink: customer.preferences?.socialInformation?.portfolioLink ?? '',
-                },
-              },
-              userAgreement: customer.userAgreement ?? false,
-              approvedCommercial: customer.approvedCommercial ?? false,
-            };
-          });
-          return customers;
-        } else {
-          return [];
-        }
-      } catch (error) {
-        throw Error('Failed to fetch admin customers');
+        return customers;
+      } else {
+        return [];
       }
+    } catch (error) {
+      throw Error('Failed to fetch admin customers');
     }
-  );
-  
+  }
+);
+
 // Fetch a single customer by ID
 export const fetchAdminCreatorById = createAsyncThunk(
   'adminCreators/fetchAdminCreatorById',
@@ -148,9 +148,9 @@ export const createAdminCreator = createAsyncThunk(
     { data, token }: { data: AdminCreatorsState; token: string },
     { rejectWithValue }
   ) => {
-   
+
     try {
-    
+
       // Validate token
       if (!token) {
         return rejectWithValue('Authentication token is missing');
@@ -160,7 +160,7 @@ export const createAdminCreator = createAsyncThunk(
         '/admin/creators',
         data,
         {
-          headers: { 
+          headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
           },
@@ -171,7 +171,7 @@ export const createAdminCreator = createAsyncThunk(
     } catch (error) {
       const axiosError = error as AxiosError;
       return rejectWithValue(
-        axiosError.response?.data || 
+        axiosError.response?.data ||
         'Failed to create admin customer. Please check server logs for details.'
       );
     }

@@ -23,9 +23,11 @@ import claimSlice from './features/admin/claimSlice';
 import notificationSlice from './features/admin/notificationSlice';
 import socketSlice from './socket/socketSlice';
 import packageSlice from './features/admin/packageSlice';
+import dashboardReducer from './features/admin/dashboardSlice';
 
 const store = configureStore({
   reducer: {
+    dashboard: dashboardReducer,
     becomeCreator: becomeCreatorReducer,
     signup: signupReducer,
     login: loginReducer,

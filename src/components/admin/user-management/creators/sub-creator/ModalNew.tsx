@@ -14,9 +14,6 @@ interface Creator {
     gender: "male" | "female" | "other";
     phoneNumber: string;
     isVerified: "pending" | "approved" | "rejected";
-    identityNo: number;
-    addressOne: string;
-    addressTwo?: string;
     accountType: "individual" | "institutional";
     invoiceType: "individual" | "institutional";
     addressDetails: {
@@ -45,7 +42,8 @@ interface Creator {
     };
     preferences: {
         contentInformation: {
-            contentType: "product" | "service" | "other";
+            contentType: "product" | "service" | "location";
+            creatorType: "nano" | "micro";
             contentFormats: string[];
             areaOfInterest: string[];
             addressDetails: {
@@ -57,7 +55,7 @@ interface Creator {
             };
         };
         socialInformation: {
-            contentType: "product" | "service" | "other";
+            contentType: "yes" | "no";
             platforms: {
                 Instagram?: {
                     followers: number;
@@ -67,12 +65,24 @@ interface Creator {
                     followers: number;
                     username: string;
                 };
+                Facebook?: {
+                    followers: number;
+                    username: string;
+                };
                 Youtube?: {
                     followers: number;
                     username: string;
                 };
+                X?: {
+                    followers: number;
+                    username: string;
+                };
+                Linkedin?: {
+                    followers: number;
+                    username: string;
+                };
             };
-            portfolioLink?: string;
+            portfolioLink?: string[];
         };
     };
     userAgreement: boolean;
@@ -133,7 +143,9 @@ export default function ModalNew({ isOpen, onSubmit }: ModalNewProps) {
                             </label>
                             <input
                                 type='text'
-                                {...register("identityNo")}
+                                {...register("tckn", {
+                                    required: "Identity No is required",
+                                })}
                                 className='mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm'
                             />
                         </div>

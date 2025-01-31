@@ -15,7 +15,7 @@ interface Creator {
     userType: "customer" | "creator";
     role: "user" | "admin";
     password: string;
-    identityNo: number;
+    tckn: string;
     email: string;
     dateOfBirth: string;
     gender: "male" | "female" | "other";
@@ -49,7 +49,7 @@ interface Creator {
     };
     preferences: {
         contentInformation: {
-            contentType: "product" | "service" | "other";
+            contentType: "product" | "service" | "location";
             creatorType: "nano" | "micro";
             contentFormats: string[];
             areaOfInterest: string[];
@@ -62,7 +62,7 @@ interface Creator {
             };
         };
         socialInformation: {
-            contentType: "product" | "service";
+            contentType: "yes" | "no";
             platforms: {
                 Instagram?: {
                     followers: number;
@@ -112,12 +112,13 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
 
     useEffect(() => {
         if (editCreatorForm) {
+            console.log(editCreatorForm);
             reset({
-                name: editCreatorForm.fullName,
-                identityNo: editCreatorForm.identityNo?.toString() || "",
+                fullName: editCreatorForm.fullName,
+                tckn: editCreatorForm.tckn,
                 email: editCreatorForm.email,
                 dateOfBirth: editCreatorForm.dateOfBirth.split("T")[0],
-                contact: editCreatorForm.phoneNumber,
+                phoneNumber: editCreatorForm.phoneNumber,
                 gender: editCreatorForm.gender,
                 isVerified: editCreatorForm.isVerified,
                 addressDetails: {
@@ -137,22 +138,19 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
     useEffect(() => {
         if (editCreatorForm) {
             reset({
-                name: editCreatorForm.fullName,
-                identityNo: editCreatorForm.identityNo?.toString() || "",
+                fullName: editCreatorForm.fullName,
+                tckn: editCreatorForm.tckn,
                 email: editCreatorForm.email,
                 dateOfBirth: editCreatorForm.dateOfBirth.split("T")[0],
-                contact: editCreatorForm.phoneNumber,
+                phoneNumber: editCreatorForm.phoneNumber,
                 gender: editCreatorForm.gender,
                 isVerified: editCreatorForm.isVerified,
                 addressDetails: {
-                    addressOne:
-                        editCreatorForm.addressDetails?.addressOne || "",
-                    addressTwo:
-                        editCreatorForm.addressDetails?.addressTwo || "",
-                    country: editCreatorForm.addressDetails?.country || "",
+                    addressOne: editCreatorForm.addressDetails?.addressOne,
+                    addressTwo: editCreatorForm.addressDetails?.addressTwo,
+                    country: editCreatorForm.addressDetails?.country,
                     zipCode:
-                        editCreatorForm.addressDetails?.zipCode?.toString() ||
-                        "",
+                        editCreatorForm.addressDetails?.zipCode?.toString(),
                 },
             });
         }
@@ -172,11 +170,11 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
         }
 
         const updateData = {
-            fullName: formData.name,
-            identityNo: Number(formData.identityNo),
+            fullName: formData.fullName,
+            tckn: formData.tckn,
             email: formData.email,
             dateOfBirth: formData.dateOfBirth,
-            phoneNumber: formData.contact,
+            phoneNumber: formData.phoneNumber,
             gender: formData.gender,
             isVerified: formData.isVerified,
             addressDetails: {
@@ -235,15 +233,15 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                             </label>
                             <input
                                 type='text'
-                                {...register("name", {
-                                    required: "Name is required",
+                                {...register("fullName", {
+                                    required: "FullName is required",
                                 })}
                                 className='mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm'
                             />
-                            {errors.name &&
-                                typeof errors.name.message === "string" && (
+                            {errors.fullName &&
+                                typeof errors.fullName.message === "string" && (
                                     <p className='text-red-500 text-xs mt-1'>
-                                        {errors.name.message}
+                                        {errors.fullName.message}
                                     </p>
                                 )}
                         </div>
@@ -254,9 +252,17 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                             </label>
                             <input
                                 type='text'
-                                {...register("identityNo")}
+                                {...register("tckn", {
+                                    required: "Identity No is required",
+                                })}
                                 className='mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm'
                             />
+                            {errors.tckn &&
+                                typeof errors.tckn.message === "string" && (
+                                    <p className='text-red-500 text-xs mt-1'>
+                                        {errors.tckn.message}
+                                    </p>
+                                )}
                         </div>
 
                         <div>
@@ -295,8 +301,8 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                             </label>
                             <input
                                 type='tel'
-                                {...register("contact", {
-                                    required: "Contact is required",
+                                {...register("phoneNumber", {
+                                    required: "phoneNumber is required",
                                 })}
                                 className='mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm'
                             />
