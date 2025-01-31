@@ -380,7 +380,7 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
                                 "Sanal ve El İşleri",
                                 "Müzik",
                                 "Eğlence ve Oyun",
-                                "Yemek ve İçecek ",
+                                "Yemek ve İçecek",
                                 "Bilim ve Teknoloji",
                                 "Seyahat ve Kültür",
                                 "Kitap ve Edebiyat",
