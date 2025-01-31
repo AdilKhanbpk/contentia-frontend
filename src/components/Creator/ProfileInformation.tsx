@@ -38,6 +38,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
 
     const onSubmit = async (data: ProfileFormInputs) => {
         try {
+            console.log(data);
             const res = await dispatch(setCreatorFormData(data));
             if (res) {
                 toast.success("Profile information saved successfully");
@@ -139,7 +140,9 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                                 <div className='flex flex-col gap-4 w-full lg:w-1/2'>
                                     {/* TCKN Field */}
                                     <div>
-                                        <p className='text-base'>TCKN:</p>
+                                        <p className='text-base'>
+                                            Identity No (TCKN):
+                                        </p>
                                         <input
                                             {...register("tckn", {
                                                 required: "TCKN is required",
@@ -183,27 +186,29 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                                             </span>
                                         </label>
 
-                                        {["Kadın", "Erkek", "Diğer"].map(
-                                            (gender, index) => (
-                                                <label
-                                                    key={index}
-                                                    className='inline-flex items-center cursor-pointer mb-2 lg:mb-6'
-                                                >
-                                                    <input
-                                                        type='radio'
-                                                        value={gender}
-                                                        {...register("gender")}
-                                                        className='hidden peer'
-                                                    />
-                                                    <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>
-                                                        <div className='w-full h-full bg-white rounded-full'></div>
-                                                    </div>
-                                                    <span className='ml-0.5 text-base'>
-                                                        {gender}
-                                                    </span>
-                                                </label>
-                                            )
-                                        )}
+                                        {[
+                                            { label: "Kadın", value: "female" },
+                                            { label: "Erkek", value: "male" },
+                                            { label: "Diğer", value: "other" },
+                                        ].map((gender, index) => (
+                                            <label
+                                                key={index}
+                                                className='inline-flex items-center cursor-pointer mb-2 lg:mb-6'
+                                            >
+                                                <input
+                                                    type='radio'
+                                                    value={gender.value}
+                                                    {...register("gender")}
+                                                    className='hidden peer'
+                                                />
+                                                <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>
+                                                    <div className='w-full h-full bg-white rounded-full'></div>
+                                                </div>
+                                                <span className='ml-0.5 text-base'>
+                                                    {gender.label}
+                                                </span>
+                                            </label>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
