@@ -50,31 +50,31 @@ const Analytics: React.FC = () => {
                 <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
                     <AnalyticsDataCard
                         title='Total Customers'
-                        count={customers?.totalCustomersCount}
-                        percentage={customers?.percentageChange}
+                        count='78,250'
+                        percentage={70.5}
                     >
                         <UsersCardChart />
                     </AnalyticsDataCard>
                     <AnalyticsDataCard
                         title='Total Order'
-                        count={orders?.totalOrdersCount}
-                        percentage={orders?.percentageChange}
+                        count='18,800'
+                        percentage={27.4}
                         isLoss
                     >
                         <OrdersCardChart />
                     </AnalyticsDataCard>
-                    {/* <AnalyticsDataCard
+                    <AnalyticsDataCard
                         title='Total Sales'
                         count='$35,078'
                         percentage={27.4}
                         isLoss
                     >
                         <SalesCardChart />
-                    </AnalyticsDataCard> */}
+                    </AnalyticsDataCard>
                     <AnalyticsDataCard
                         title='Total Creators'
-                        count={creators?.totalCreatorsCount}
-                        percentage={creators?.percentageChange}
+                        count='$112,083'
+                        percentage={70.5}
                     >
                         <MarketingCardChart />
                     </AnalyticsDataCard>
