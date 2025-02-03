@@ -12,7 +12,9 @@ export const useAuth = () => {
   useEffect(() => {
     const checkAuth = () => {
       const token = localStorage.getItem('accessToken');
-      
+      const user = localStorage.getItem('user');
+      console.log("🚀 ~ checkAuth ~ token:", user)
+
       if (!token) {
         setIsLoading(false);
         router.push('/contentiaio/authentication');

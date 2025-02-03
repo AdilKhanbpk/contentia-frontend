@@ -1,7 +1,6 @@
-// src/app/layout.tsx
 "use client";
-import React from "react";
-import { usePathname } from "next/navigation";
+import React, { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import "../i18n";
 import { I18nextProvider } from "react-i18next";
@@ -24,7 +23,11 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
+    const router = useRouter();
     const { isAdmin, isUser, isLoading } = useAuth();
+    console.log("🚀 ~ isLoading:", isLoading);
+    console.log("🚀 ~ isUser:", isUser);
+    console.log("🚀 ~ isAdmin:", isAdmin);
 
     const isPublicPath =
         pathname === "/" ||
@@ -35,16 +38,27 @@ export default function RootLayout({
     const isAfterContentiaio =
         pathname === "/" ||
         pathname.startsWith("/contentiaio/") ||
-        pathname.startsWith("/blog") ||
-        pathname.startsWith("/blog/");
+        pathname.startsWith("/blog");
 
     const isOrdersPage =
         pathname === "/orders" || pathname.startsWith("/orders/");
 
     const isAdminPage = pathname === "/admin" || pathname.startsWith("/admin/");
 
-    // Render loading spinner while checking authentication
-    if (isLoading && !isPublicPath) {
+    // Redirect unauthorized users after first render
+    useEffect(() => {
+        if (!isLoading) {
+            if (!isPublicPath && !isUser && !isAdmin) {
+                router.replace("/contentiaio/authentication");
+            }
+            if (isAdminPage && !isAdmin) {
+                router.replace("/");
+            }
+        }
+    }, [isLoading, isUser, isAdmin, isPublicPath, isAdminPage, router]);
+
+    // Show loading spinner during authentication check
+    if (isLoading) {
         return (
             <html lang='en'>
                 <body>
@@ -54,16 +68,6 @@ export default function RootLayout({
         );
     }
 
-    // Protect non-public routes
-    if (!isPublicPath && !isLoading && !isUser) {
-        return null; // Return nothing while redirecting
-    }
-
-    // Protect admin routes
-    if (isAdminPage && !isLoading && !isAdmin) {
-        return null; // Return nothing while redirecting
-    }
-
     return (
         <html lang='en'>
             <body>
@@ -71,12 +75,15 @@ export default function RootLayout({
                     <Provider store={store}>
                         <I18nextProvider i18n={i18n}>
                             <InitializeSocket />
+
+                            {/* Navbar and Footer */}
                             {isAfterContentiaio && <Navbar />}
                             {isUser && isOrdersPage && <CustomerNavbar />}
                             {isAdmin && isAdminPage && <AdminNavbar />}
-                            {children}
-                            {(isAfterContentiaio ||
-                                (isUser && isOrdersPage)) && <Footer />}
+
+                            <main>{children}</main>
+
+                            {isAfterContentiaio && <Footer />}
                             <ToastContainer />
                         </I18nextProvider>
                     </Provider>

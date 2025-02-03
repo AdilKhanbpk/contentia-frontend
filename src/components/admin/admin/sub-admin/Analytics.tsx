@@ -50,38 +50,47 @@ const Analytics: React.FC = () => {
                 <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
                     <AnalyticsDataCard
                         title='Total Customers'
-                        count='78,250'
-                        percentage={70.5}
+                        count={creators?.totalCreatorsCount ?? 0}
+                        percentage={creators?.percentageChange}
                     >
-                        <UsersCardChart />
+                        <UsersCardChart
+                            creatorsByMonth={
+                                creators?.totalCreatorsByMonth ?? []
+                            }
+                        />
                     </AnalyticsDataCard>
                     <AnalyticsDataCard
                         title='Total Order'
-                        count='18,800'
-                        percentage={27.4}
-                        isLoss
+                        count={orders?.totalOrdersCount ?? 0}
+                        percentage={orders?.percentageChange}
                     >
-                        <OrdersCardChart />
+                        <OrdersCardChart
+                            ordersByMonth={orders?.totalOrdersByMonth ?? []}
+                        />
                     </AnalyticsDataCard>
-                    <AnalyticsDataCard
+                    {/* <AnalyticsDataCard
                         title='Total Sales'
                         count='$35,078'
                         percentage={27.4}
                         isLoss
                     >
                         <SalesCardChart />
-                    </AnalyticsDataCard>
+                    </AnalyticsDataCard> */}
                     <AnalyticsDataCard
                         title='Total Creators'
-                        count='$112,083'
-                        percentage={70.5}
+                        count={customers?.totalCustomersCount ?? 0}
+                        percentage={customers?.percentageChange}
                     >
-                        <MarketingCardChart />
+                        <MarketingCardChart
+                            customersByMonth={
+                                customers?.totalCustomersByMonth ?? []
+                            }
+                        />
                     </AnalyticsDataCard>
                 </div>
 
                 <div className='my-4'>
-                    <CircleChart></CircleChart>
+                    {orders && <CircleChart orders={orders}></CircleChart>}
                 </div>
 
                 <div className='my-4 flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4'>

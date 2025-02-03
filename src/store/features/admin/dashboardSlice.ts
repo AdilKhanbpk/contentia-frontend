@@ -4,11 +4,39 @@ import { AxiosError } from "axios";
 import { RootState } from "@/store/store";
 
 interface DashboardState {
-    totalCreators: number | null;
-    totalCustomers: number | null;
-    totalOrders: number | null;
+    totalCreators: CreatorAnalytics | null;
+    totalCustomers: CustomerAnalytics | null;
+    totalOrders: OrderAnalytics | null;
     loading: boolean;
     error: string | null;
+}
+export interface CreatorAnalytics {
+    totalCreatorsCount: number;
+    totalCreatorsByMonth: number[];
+    currentMonthCount: number;
+    previousMonthCount: number;
+    percentageChange: string;
+}
+
+export interface CustomerAnalytics {
+    totalCustomersCount: number;
+    totalCustomersByMonth: number[];
+    currentMonthCount: number;
+    previousMonthCount: number;
+    percentageChange: string;
+}
+
+export interface OrderAnalytics {
+    totalOrdersCount: number;
+    totalOrdersByMonth: number[];
+    currentMonthCount: number;
+    previousMonthCount: number;
+    percentageChange: string;
+    completedOrders: number;
+    pendingOrders: number;
+    activeOrders: number;
+    revisionOrders: number;
+    canceledOrders: number;
 }
 
 const initialState: DashboardState = {
@@ -81,7 +109,7 @@ const dashboardSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchTotalCreators.fulfilled, (state, action: PayloadAction<number>) => {
+            .addCase(fetchTotalCreators.fulfilled, (state, action: PayloadAction<CreatorAnalytics>) => {
                 state.loading = false;
                 state.totalCreators = action.payload;
             })
@@ -95,7 +123,7 @@ const dashboardSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchTotalCustomers.fulfilled, (state, action: PayloadAction<number>) => {
+            .addCase(fetchTotalCustomers.fulfilled, (state, action: PayloadAction<CustomerAnalytics>) => {
                 state.loading = false;
                 state.totalCustomers = action.payload;
             })
@@ -109,7 +137,7 @@ const dashboardSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchTotalOrders.fulfilled, (state, action: PayloadAction<number>) => {
+            .addCase(fetchTotalOrders.fulfilled, (state, action: PayloadAction<OrderAnalytics>) => {
                 state.loading = false;
                 state.totalOrders = action.payload;
             })
