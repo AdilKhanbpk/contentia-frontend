@@ -342,10 +342,13 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
                         </label>
                         <div className='grid grid-cols-1 gap-4 mt-2'>
                             {[
-                                "Instagram / TikTok Videosu (Dikey)",
-                                "Instagram Gönderi",
-                                "TikTok Videosu",
-                                "Linkedin Gönderisi",
+                                "Instagram Reels",
+                                "Instagram Story",
+                                "TikTok video",
+                                "Instagram Post",
+                                "Youtube Video",
+                                "Linkedin Post",
+                                "X-Flood",
                             ].map((format) => (
                                 <label
                                     key={format}

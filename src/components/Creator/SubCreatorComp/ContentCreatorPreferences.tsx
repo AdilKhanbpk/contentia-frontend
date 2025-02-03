@@ -135,10 +135,13 @@ const ContentCreatorPreferences: React.FC<{
                             </p>
                             <div className='w-full mt-2 grid-cols-1'>
                                 {[
-                                    "Instagram / TikTok Videosu (Dikey)",
-                                    "Instagram Gönderi",
-                                    "TikTok Videosu",
-                                    "Linkedin Gönderisi",
+                                    "Instagram Reels",
+                                    "Instagram Story",
+                                    "TikTok video",
+                                    "Instagram Post",
+                                    "Youtube Video",
+                                    "Linkedin Post",
+                                    "X-Flood",
                                 ].map((format, index) => (
                                     <label
                                         key={index}
