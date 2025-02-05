@@ -1,5 +1,5 @@
 import { CreatorInterface } from "@/types/interfaces";
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 
 interface ModalNewProps {
@@ -179,21 +179,25 @@ export default function ModalNew({ isOpen, onSubmit }: ModalNewProps) {
                     <div className='grid grid-cols-2 gap-4'>
                         <div>
                             <label className='block text-sm font-medium'>
-                                Address 01
+                                Full Address
                             </label>
                             <input
                                 type='text'
-                                {...register("addressDetails.addressOne")}
+                                {...register(
+                                    "preferences.contentInformation.addressDetails.fullAddress"
+                                )}
                                 className='mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm'
                             />
                         </div>
                         <div>
                             <label className='block text-sm font-medium'>
-                                Address 02
+                                State
                             </label>
                             <input
                                 type='text'
-                                {...register("addressDetails.addressTwo")}
+                                {...register(
+                                    "preferences.contentInformation.addressDetails.state"
+                                )}
                                 className='mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm'
                             />
                         </div>
@@ -203,25 +207,22 @@ export default function ModalNew({ isOpen, onSubmit }: ModalNewProps) {
                             </label>
                             <input
                                 type='text'
-                                {...register("addressDetails.country")}
+                                {...register(
+                                    "preferences.contentInformation.addressDetails.country"
+                                )}
                                 className='mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm'
                             />
-                            {errors.addressDetails?.country &&
-                                typeof errors.addressDetails?.country
-                                    .message === "string" && (
-                                    <p className='text-red-500 text-xs mt-1'>
-                                        {errors.addressDetails?.country.message}
-                                    </p>
-                                )}
                         </div>
 
                         <div>
                             <label className='block text-sm font-medium'>
-                                Zip Code
+                                District
                             </label>
                             <input
                                 type='text'
-                                {...register("addressDetails.zipCode")}
+                                {...register(
+                                    "preferences.contentInformation.addressDetails.district"
+                                )}
                                 className='mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm'
                             />
                         </div>

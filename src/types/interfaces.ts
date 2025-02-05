@@ -14,10 +14,11 @@ export interface CreatorInterface {
     accountType: "individual" | "institutional";
     invoiceType: "individual" | "institutional";
     addressDetails: {
-        addressOne: string;
-        addressTwo: string;
+        fullAddress: string;
+        state: string;
         country: string;
-        zipCode: number;
+        district: string;
+        neighborhood: string;
     };
     paymentInformation: {
         ibanNumber?: string;
@@ -47,7 +48,7 @@ export interface CreatorInterface {
                 country: string;
                 state: string;
                 district: string;
-                neighbourhood?: string;
+                neighborhood?: string;
                 fullAddress: string;
             };
         };

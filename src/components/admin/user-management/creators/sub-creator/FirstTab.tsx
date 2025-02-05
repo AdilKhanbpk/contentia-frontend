@@ -34,19 +34,23 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                 phoneNumber: editCreatorForm.phoneNumber,
                 gender: editCreatorForm.gender,
                 isVerified: editCreatorForm.isVerified,
-                addressDetails: {
-                    addressOne:
-                        editCreatorForm?.preferences?.contentInformation
-                            ?.addressDetails?.fullAddress || "",
-                    addressTwo:
-                        editCreatorForm?.preferences?.contentInformation
-                            ?.addressDetails?.district || "",
-                    country:
-                        editCreatorForm?.preferences?.contentInformation
-                            ?.addressDetails?.country || "",
-                    zipCode:
-                        editCreatorForm?.preferences?.contentInformation?.addressDetails?.fullAddress?.toString() ||
-                        "",
+                preferences: {
+                    contentInformation: {
+                        addressDetails: {
+                            fullAddress:
+                                editCreatorForm?.preferences?.contentInformation
+                                    ?.addressDetails?.fullAddress || "",
+                            state:
+                                editCreatorForm?.preferences?.contentInformation
+                                    ?.addressDetails?.state || "",
+                            country:
+                                editCreatorForm?.preferences?.contentInformation
+                                    ?.addressDetails?.country || "",
+                            district:
+                                editCreatorForm?.preferences?.contentInformation
+                                    ?.addressDetails?.district || "",
+                        },
+                    },
                 },
             });
         }
@@ -73,30 +77,22 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
             phoneNumber: formData.phoneNumber,
             gender: formData.gender,
             isVerified: formData.isVerified,
-            addressDetails: {
-                addressOne:
-                    formData.preferences?.contentInformation?.addressDetails
-                        ?.fullAddress?.addressDetails?.fullAddress,
-                addressTwo:
-                    formData.preferences.contentInformation.addressDetails
-                        ?.fullAddress?.addressDetails?.district,
-                country:
-                    formData.preferences?.contentInformation?.addressDetails
-                        ?.fullAddress?.addressDetails?.country,
-                zipCode: Number(
-                    formData.preferences?.contentInformation?.addressDetails
-                        ?.fullAddress?.addressDetails?.zipCode
-                ),
-            },
             preferences: {
                 ...editCreatorForm.preferences,
                 contentInformation: {
                     ...editCreatorForm.preferences.contentInformation,
                     addressDetails: {
-                        ...editCreatorForm.preferences.contentInformation
-                            .addressDetails,
-                        country: formData.country,
-                        district: formData.zipCode,
+                        fullAddress:
+                            formData.preferences?.contentInformation
+                                ?.addressDetails?.fullAddress,
+                        state: formData.preferences.contentInformation
+                            ?.addressDetails?.state,
+                        country:
+                            formData.preferences?.contentInformation
+                                ?.addressDetails?.country,
+                        district:
+                            formData.preferences?.contentInformation
+                                ?.addressDetails?.district,
                     },
                 },
             },
@@ -266,21 +262,25 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                     <div className='grid grid-cols-2 gap-4'>
                         <div>
                             <label className='block text-sm font-medium'>
-                                Address 01
+                                Full Address
                             </label>
                             <input
                                 type='text'
-                                {...register("addressDetails.addressOne")}
+                                {...register(
+                                    "preferences.contentInformation.addressDetails.fullAddress"
+                                )}
                                 className='mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm'
                             />
                         </div>
                         <div>
                             <label className='block text-sm font-medium'>
-                                Address 02
+                                State
                             </label>
                             <input
                                 type='text'
-                                {...register("addressDetails.addressTwo")}
+                                {...register(
+                                    "preferences.contentInformation.addressDetails.state"
+                                )}
                                 className='mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm'
                             />
                         </div>
@@ -290,7 +290,9 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                             </label>
                             <input
                                 type='text'
-                                {...register("addressDetails.country")}
+                                {...register(
+                                    "preferences.contentInformation.addressDetails.country"
+                                )}
                                 className='mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm'
                             />
                             {errors.country &&
@@ -303,11 +305,13 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
 
                         <div>
                             <label className='block text-sm font-medium'>
-                                Zip Code{" "}
+                                District
                             </label>
                             <input
                                 type='text'
-                                {...register("addressDetails.zipCode")}
+                                {...register(
+                                    "preferences.contentInformation.addressDetails.district"
+                                )}
                                 className='mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm'
                             />
                         </div>

@@ -52,9 +52,9 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
                             district:
                                 editCreatorForm.preferences.contentInformation
                                     ?.addressDetails?.district || "",
-                            neighbourhood:
+                            neighborhood:
                                 editCreatorForm.preferences.contentInformation
-                                    ?.addressDetails?.neighbourhood || "",
+                                    ?.addressDetails?.neighborhood || "",
                             fullAddress:
                                 editCreatorForm.preferences.contentInformation
                                     ?.addressDetails?.fullAddress || "",

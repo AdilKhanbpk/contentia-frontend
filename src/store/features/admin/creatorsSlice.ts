@@ -29,6 +29,7 @@ export const fetchAdminCreators = createAsyncThunk(
 
       if (response.data && response.data.data) {
         const creators = response.data.data.map((creator: CreatorInterface) => {
+          console.log(creator)
           return {
             _id: creator._id ?? null,
             fullName: creator.fullName ?? '',
@@ -44,12 +45,6 @@ export const fetchAdminCreators = createAsyncThunk(
             isVerified: creator.isVerified ?? 'pending',
             accountType: creator.accountType ?? 'individual',
             invoiceType: creator.invoiceType ?? 'individual',
-            addressDetails: {
-              addressOne: creator.addressDetails?.addressOne ?? '',
-              addressTwo: creator.addressDetails?.addressTwo ?? '',
-              country: creator.addressDetails?.country ?? '',
-              zipCode: creator.addressDetails?.zipCode ?? '',
-            },
             paymentInformation: {
               ibanNumber: creator.paymentInformation?.ibanNumber ?? '',
               address: creator.paymentInformation?.address ?? '',
@@ -78,7 +73,7 @@ export const fetchAdminCreators = createAsyncThunk(
                   country: creator.preferences?.contentInformation?.addressDetails?.country ?? '',
                   state: creator.preferences?.contentInformation?.addressDetails?.state ?? '',
                   district: creator.preferences?.contentInformation?.addressDetails?.district ?? '',
-                  neighbourhood: creator.preferences?.contentInformation?.addressDetails?.neighbourhood ?? '',
+                  neighborhood: creator.preferences?.contentInformation?.addressDetails?.neighborhood ?? '',
                   fullAddress: creator.preferences?.contentInformation?.addressDetails?.fullAddress ?? '',
                 },
               },
@@ -146,9 +141,10 @@ export const fetchAdminCreatorById = createAsyncThunk(
 export const createAdminCreator = createAsyncThunk(
   'adminCreators/createAdminCreator',
   async (
-    { data, token }: { data: AdminCreatorsState; token: string },
+    { data, token }: { data: any; token: string },
     { rejectWithValue }
   ) => {
+    console.log("🚀 ~THUNK data:", data)
 
     try {
 
@@ -168,6 +164,7 @@ export const createAdminCreator = createAsyncThunk(
         }
       );
 
+      console.log("🚀 ~ response:", response.data)
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -179,7 +176,6 @@ export const createAdminCreator = createAsyncThunk(
   }
 );
 
-// Update an existing creator with enhanced debugging and timeout
 export const updateAdminCreator = createAsyncThunk(
   'adminCreators/updateAdminCreator',
   async (
@@ -215,7 +211,6 @@ export const updateAdminCreator = createAsyncThunk(
   }
 );
 
-// Delete a creator by ID
 export const deleteAdminCreator = createAsyncThunk(
   'adminCreators/deleteAdminCreator',
   async ({ creatorId, token }: { creatorId: string; token: string }, { rejectWithValue }) => {

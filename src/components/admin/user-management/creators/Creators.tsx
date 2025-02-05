@@ -100,6 +100,7 @@ const Creators: React.FC = () => {
                     toast.success("Creator deleted successfully!");
                 })
                 .catch((error: any) => {
+                    console.log("🚀 ~ error:", error);
                     toast.error(
                         `Error deleting creator: ${
                             error?.message || "Unknown error"
@@ -120,6 +121,7 @@ const Creators: React.FC = () => {
     };
 
     const handleCreate = async (creatorData: any) => {
+        console.log("🚀 ~ handleCreate ~ creatorData:", creatorData);
         const tokenFromStorage = localStorage.getItem("accessToken");
         try {
             if (!tokenFromStorage) {
@@ -129,24 +131,54 @@ const Creators: React.FC = () => {
                 return;
             }
 
-            if (!creatorData || Object.keys(creatorData).length === 0) {
-                console.error("Creator data is empty");
-                toast.error("Please provide valid creator data.");
-                return;
-            }
+            const dataToUpdate = {
+                fullName: creatorData.fullName ?? "",
+                password: creatorData.password ?? "",
+                tckn: creatorData.tckn,
+                email: creatorData.email ?? "",
+                dateOfBirth: creatorData.dateOfBirth ?? "",
+                gender: creatorData.gender ?? "other",
+                phoneNumber: creatorData.phoneNumber ?? "",
+                isVerified: creatorData.isVerified ?? "pending",
+                preferences: {
+                    contentInformation: {
+                        creatorType:
+                            creatorData.preferences?.contentInformation
+                                ?.creatorType ?? "nano",
+                        addressDetails: {
+                            country:
+                                creatorData.preferences?.contentInformation
+                                    ?.addressDetails?.country ?? "",
+                            state:
+                                creatorData.preferences?.contentInformation
+                                    ?.addressDetails?.state ?? "",
+                            district:
+                                creatorData.preferences?.contentInformation
+                                    ?.addressDetails?.district ?? "",
+                            neighborhood:
+                                creatorData.preferences?.contentInformation
+                                    ?.addressDetails?.neighborhood ?? "",
+                            fullAddress:
+                                creatorData.preferences?.contentInformation
+                                    ?.addressDetails?.fullAddress ?? "",
+                        },
+                    },
+                },
+            };
 
-            const result = await dispatch(
+            const res = await dispatch(
                 createAdminCreator({
-                    data: creatorData,
+                    data: dataToUpdate,
                     token: tokenFromStorage,
                 })
             ).unwrap();
 
             setIsModalOpen(false);
 
-            toast.success("Creator added successfully!");
+            toast.success(res.message || "Creator added successfully!");
             await dispatch(fetchAdminCreators(tokenFromStorage));
         } catch (error) {
+            console.log("🚀 ~ handleCreate ~ error:", error);
             toast.error(`Error creating creator: 'Unknown error'}`);
         }
     };
@@ -163,16 +195,10 @@ const Creators: React.FC = () => {
                 email: creatorData.email ?? "",
                 dateOfBirth: creatorData.dateOfBirth ?? "",
                 gender: creatorData.gender ?? "other",
-                phoneNumber: creatorData.contact ?? "",
+                phoneNumber: creatorData.phoneNumber ?? "",
                 isVerified: creatorData.isVerified ?? "pending",
                 accountType: creatorData.accountType ?? "individual",
                 invoiceType: creatorData.invoiceType ?? "individual",
-                addressDetails: {
-                    addressOne: creatorData.addressDetails?.addressOne ?? "",
-                    addressTwo: creatorData.addressDetails?.addressTwo ?? "",
-                    country: creatorData.addressDetails?.country ?? "",
-                    zipCode: creatorData.addressDetails?.zipCode ?? "",
-                },
 
                 paymentInformation: {
                     ibanNumber:
@@ -223,9 +249,9 @@ const Creators: React.FC = () => {
                             district:
                                 creatorData.preferences?.contentInformation
                                     ?.addressDetails?.district ?? "",
-                            neighbourhood:
+                            neighborhood:
                                 creatorData.preferences?.contentInformation
-                                    ?.addressDetails?.neighbourhood ?? "",
+                                    ?.addressDetails?.neighborhood ?? "",
                             fullAddress:
                                 creatorData.preferences?.contentInformation
                                     ?.addressDetails?.fullAddress ?? "",
@@ -278,7 +304,7 @@ const Creators: React.FC = () => {
             };
 
             try {
-                await dispatch(
+                const res = await dispatch(
                     updateAdminCreator({
                         creatorId,
                         data: dataToUpdate,
@@ -288,6 +314,7 @@ const Creators: React.FC = () => {
                 await dispatch(fetchAdminCreators(token));
                 toast.success("Creator updated successfully!");
             } catch (error) {
+                console.log("🚀 ~ handleUpdate ~ error:", error);
                 toast.error("Failed to update creator. Please try again.");
             }
         } else {

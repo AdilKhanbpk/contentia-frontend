@@ -71,12 +71,18 @@ const ModalView: React.FC<ModalViewProps> = ({
                         Address Information
                     </div>
                     <div className='mb-4'>
-                        <strong>Address 1:</strong>{" "}
-                        {getDefault(creatorData.addressDetails.addressOne)}
+                        <strong>Full Address:</strong>{" "}
+                        {getDefault(
+                            creatorData.preferences.contentInformation
+                                .addressDetails.fullAddress
+                        )}
                     </div>
                     <div className='mb-4'>
-                        <strong>Address 2:</strong>{" "}
-                        {getDefault(creatorData.addressDetails.addressTwo)}
+                        <strong>State:</strong>{" "}
+                        {getDefault(
+                            creatorData.preferences.contentInformation
+                                .addressDetails.state
+                        )}
                     </div>
                     <div className='mb-4'>
                         <strong>Account Type:</strong>{" "}
@@ -130,8 +136,8 @@ const ModalView: React.FC<ModalViewProps> = ({
                         <strong>Invoice Status:</strong>{" "}
                         {getDefault(
                             creatorData.billingInformation?.invoiceStatus
-                                ? "Active"
-                                : "Inactive"
+                                ? "Yes"
+                                : "No"
                         )}
                     </div>
                     <div className='mb-4'>
@@ -215,10 +221,10 @@ const ModalView: React.FC<ModalViewProps> = ({
                         )}
                     </div>
                     <div className='mb-4'>
-                        <strong>Neighbourhood:</strong>{" "}
+                        <strong>Neighborhood:</strong>{" "}
                         {getDefault(
                             creatorData.preferences?.contentInformation
-                                ?.addressDetails?.neighbourhood
+                                ?.addressDetails?.neighborhood
                         )}
                     </div>
                     <div className='mb-4'>

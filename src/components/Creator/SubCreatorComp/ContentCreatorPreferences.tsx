@@ -167,9 +167,9 @@ const ContentCreatorPreferences: React.FC<{
                         </div>
                     </div>
 
-                    <div className='w-full lg:w-1/3'>
+                    <div className='w-full lg:w-1/3 mt-8'>
                         {/* If Mekan (preferences.contentInformation.addressDetails) selected */}
-                        {(contentTypes.includes("space") ||
+                        {(contentTypes.includes("location") ||
                             contentTypes.includes("product")) && (
                             <div className='lg:-mt-28'>
                                 <div className='flex flex-row'>
@@ -218,95 +218,48 @@ const ContentCreatorPreferences: React.FC<{
                                         <label className='block text-sm font-semibold mb-2'>
                                             Ülke
                                         </label>
-                                        <select
+                                        <input
                                             className='w-full px-3 py-2 border rounded-md focus:outline-none'
                                             {...register(
                                                 "preferences.contentInformation.addressDetails.country"
                                             )}
-                                        >
-                                            <option value=''>Seçiniz</option>
-                                            <option value='turkiye'>
-                                                Türkiye
-                                            </option>
-                                            <option value='kktc'>KKTC</option>
-                                            <option value='azerbaycan'>
-                                                Azerbaycan
-                                            </option>
-                                        </select>
+                                        />
                                     </div>
 
                                     <div>
                                         <label className='block text-sm font-semibold mb-2'>
                                             İl
                                         </label>
-                                        <select
+                                        <input
                                             className='w-full px-3 py-2 border rounded-md focus:outline-none'
                                             {...register(
                                                 "preferences.contentInformation.addressDetails.state"
                                             )}
-                                        >
-                                            <option value=''>Seçiniz</option>
-                                            <option value='istanbul'>
-                                                İstanbul
-                                            </option>
-                                            <option value='ankara'>
-                                                Ankara
-                                            </option>
-                                            <option value='izmir'>İzmir</option>
-                                            <option value='antalya'>
-                                                Antalya
-                                            </option>
-                                        </select>
+                                        />
                                     </div>
 
                                     <div>
                                         <label className='block text-sm font-semibold mb-2'>
                                             İlçe
                                         </label>
-                                        <select
+                                        <input
                                             className='w-full px-3 py-2 border rounded-md focus:outline-none'
                                             {...register(
                                                 "preferences.contentInformation.addressDetails.district"
                                             )}
-                                        >
-                                            <option value=''>Seçiniz</option>
-                                            <option value='kadikoy'>
-                                                Kadıköy
-                                            </option>
-                                            <option value='besiktas'>
-                                                Beşiktaş
-                                            </option>
-                                            <option value='uskudar'>
-                                                Üsküdar
-                                            </option>
-                                            <option value='sisli'>Şişli</option>
-                                        </select>
+                                        />
                                     </div>
 
                                     <div>
                                         <label className='block text-sm font-semibold mb-2'>
                                             Mahalle
                                         </label>
-                                        <select
+                                        <input
                                             className='w-full px-3 py-2 border rounded-md focus:outline-none'
                                             {...register(
                                                 "preferences.contentInformation.addressDetails.neighborhood"
                                             )}
-                                        >
-                                            <option value=''>Seçiniz</option>
-                                            <option value='caferaga'>
-                                                Caferağa
-                                            </option>
-                                            <option value='fenerbahce'>
-                                                Fenerbahçe
-                                            </option>
-                                            <option value='rasimpasa'>
-                                                Rasimpaşa
-                                            </option>
-                                            <option value='osmanaga'>
-                                                Osmanağa
-                                            </option>
-                                        </select>
+                                        />
                                     </div>
 
                                     <div className='col-span-2'>
@@ -316,7 +269,7 @@ const ContentCreatorPreferences: React.FC<{
                                         <textarea
                                             placeholder='Lütfen işletme adını ve açık adres bilgilerini girin.'
                                             className='w-full text-sm px-3 py-2 border rounded-md focus:outline-none'
-                                            rows={2}
+                                            rows={3}
                                             {...register(
                                                 "preferences.contentInformation.addressDetails.fullAddress"
                                             )}
