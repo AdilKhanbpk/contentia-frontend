@@ -106,6 +106,7 @@ const Creators: React.FC = () => {
                         }`
                     );
                 });
+            dispatch(fetchAdminCreators(tokenFromStorage));
         },
         [dispatch]
     );
@@ -297,7 +298,6 @@ const Creators: React.FC = () => {
     const handleEdit = (id: string) => {
         console.log(id);
         const creator = creators.find((creator) => {
-            console.log("🚀 ~ creator ~ creator:", creator);
             return creator._id === id;
         });
         if (creator) {
@@ -344,7 +344,7 @@ const Creators: React.FC = () => {
     const columns = React.useMemo(
         () => [
             {
-                name: "#Id",
+                name: "# Creator Id",
                 selector: (row: any) => row._id,
                 sortable: true,
             },

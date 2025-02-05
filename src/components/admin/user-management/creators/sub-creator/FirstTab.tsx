@@ -36,12 +36,16 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                 isVerified: editCreatorForm.isVerified,
                 addressDetails: {
                     addressOne:
-                        editCreatorForm.addressDetails?.addressOne || "",
+                        editCreatorForm?.preferences?.contentInformation
+                            ?.addressDetails?.fullAddress || "",
                     addressTwo:
-                        editCreatorForm.addressDetails?.addressTwo || "",
-                    country: editCreatorForm.addressDetails?.country || "",
+                        editCreatorForm?.preferences?.contentInformation
+                            ?.addressDetails?.district || "",
+                    country:
+                        editCreatorForm?.preferences?.contentInformation
+                            ?.addressDetails?.country || "",
                     zipCode:
-                        editCreatorForm.addressDetails?.zipCode?.toString() ||
+                        editCreatorForm?.preferences?.contentInformation?.addressDetails?.fullAddress?.toString() ||
                         "",
                 },
             });
@@ -70,10 +74,19 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
             gender: formData.gender,
             isVerified: formData.isVerified,
             addressDetails: {
-                addressOne: formData.addressDetails.addressOne,
-                addressTwo: formData.addressDetails.addressTwo,
-                country: formData.addressDetails.country,
-                zipCode: Number(formData.addressDetails.zipCode),
+                addressOne:
+                    formData.preferences?.contentInformation?.addressDetails
+                        ?.fullAddress?.addressDetails?.fullAddress,
+                addressTwo:
+                    formData.preferences.contentInformation.addressDetails
+                        ?.fullAddress?.addressDetails?.district,
+                country:
+                    formData.preferences?.contentInformation?.addressDetails
+                        ?.fullAddress?.addressDetails?.country,
+                zipCode: Number(
+                    formData.preferences?.contentInformation?.addressDetails
+                        ?.fullAddress?.addressDetails?.zipCode
+                ),
             },
             preferences: {
                 ...editCreatorForm.preferences,

@@ -1,4 +1,5 @@
 import { CreatorInterface, OrderInterface } from "@/types/interfaces";
+import { useForm } from "react-hook-form";
 
 interface EditModalProps {
     order: OrderInterface | null;
@@ -6,6 +7,8 @@ interface EditModalProps {
 
 export default function EditModal({ order }: EditModalProps) {
     console.log("order", order);
+    const { register, handleSubmit } = useForm<OrderInterface>();
+
     if (!order) return null;
     return (
         <>
