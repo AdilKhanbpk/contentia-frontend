@@ -136,8 +136,8 @@ export interface OrderInterface {
         fullName: string;
         email: string;
     };
-    assignedCreators: CreatorInterface[];
-    appliedCreators: CreatorInterface[];
+    assignedCreators: string[] | CreatorInterface[];
+    appliedCreators: string[] | CreatorInterface[];
     profilePic?: string;
     noOfUgc: number;
     totalPrice: number;

@@ -23,13 +23,10 @@ interface ThirdTabProps {
 
 const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const { register, handleSubmit, reset, watch } = useForm();
+    const { register, handleSubmit, reset } = useForm();
 
     useEffect(() => {
         if (editCreatorForm) {
-            console.log(
-                editCreatorForm.preferences.contentInformation.creatorType
-            );
             reset({
                 preferences: {
                     contentInformation: {
@@ -70,32 +67,32 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
                         platforms: {
                             Instagram: editCreatorForm.preferences
                                 .socialInformation?.platforms?.Instagram || {
-                                followers: 0,
+                                followers: "",
                                 username: "",
                             },
                             TikTok: editCreatorForm.preferences
                                 .socialInformation?.platforms?.TikTok || {
-                                followers: 0,
+                                followers: "",
                                 username: "",
                             },
                             Facebook: editCreatorForm.preferences
                                 .socialInformation?.platforms?.Facebook || {
-                                followers: 0,
+                                followers: "",
                                 username: "",
                             },
                             Youtube: editCreatorForm.preferences
                                 .socialInformation?.platforms?.Youtube || {
-                                followers: 0,
+                                followers: "0",
                                 username: "",
                             },
                             X: editCreatorForm.preferences.socialInformation
                                 ?.platforms?.X || {
-                                followers: 0,
+                                followers: "",
                                 username: "",
                             },
                             Linkedin: editCreatorForm.preferences
                                 .socialInformation?.platforms?.Linkedin || {
-                                followers: 0,
+                                followers: "",
                                 username: "",
                             },
                         },

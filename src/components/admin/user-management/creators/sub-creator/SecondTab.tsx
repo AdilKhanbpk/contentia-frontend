@@ -22,7 +22,6 @@ export default function SecondTab({ editCreatorForm }: SecondTabProps) {
 
     useEffect(() => {
         if (editCreatorForm) {
-            console.log(editCreatorForm.billingInformation.invoiceStatus);
             reset({
                 accountType: editCreatorForm.accountType,
                 invoiceType: editCreatorForm.invoiceType,

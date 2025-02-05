@@ -272,15 +272,13 @@ const Orders: React.FC = () => {
     const columns = React.useMemo(
         () => [
             {
-                name: "#",
+                name: "#Order Id",
                 selector: (row: OrderInterface) => row._id,
                 sortable: true,
-                width: "80px",
             },
             {
                 name: "Order Owner",
                 cell: (row: OrderInterface) => {
-                    // Comprehensive null check for orderOwner
                     const owner = row.orderOwner;
                     const isValidOwner =
                         owner && typeof owner === "object" && owner !== null;
@@ -310,25 +308,21 @@ const Orders: React.FC = () => {
                     );
                 },
                 sortable: false,
-                width: "300px",
             },
             {
                 name: "No of UGC",
                 selector: (row: OrderInterface) => row.noOfUgc,
                 sortable: true,
-                width: "150px",
             },
             {
                 name: "Creators Assigned",
                 selector: (row: OrderInterface) => row.assignedCreators.length,
                 sortable: true,
-                width: "150px",
             },
             {
                 name: "Contents Delivered",
                 selector: (row: OrderInterface) => row.contentsDelivered || 0,
                 sortable: true,
-                width: "150px",
             },
             {
                 name: "Order Status",
@@ -347,7 +341,6 @@ const Orders: React.FC = () => {
                     </span>
                 ),
                 sortable: true,
-                width: "150px",
             },
             {
                 name: "Actions",
@@ -360,7 +353,6 @@ const Orders: React.FC = () => {
                         id={row._id}
                     />
                 ),
-                width: "150px",
             },
         ],
         [handleDelete, handleEdit, handleView, handleRequest]
