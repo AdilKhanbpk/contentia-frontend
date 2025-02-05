@@ -217,7 +217,6 @@ export default function SecondTab({ editCreatorForm }: SecondTabProps) {
                         <label className='block text-sm font-medium'>
                             Invoice Status
                         </label>
-                        {/* TODO REOSOLVE THSI */}
                         <div className='mt-2 space-x-4'>
                             <label className='inline-flex items-center'>
                                 <input

@@ -432,7 +432,7 @@ const Creators: React.FC = () => {
                 creator.fullName?.toLowerCase().includes(lowerCaseSearchTerm) ||
                 creator.email?.toLowerCase().includes(lowerCaseSearchTerm) ||
                 creator.phoneNumber?.includes(lowerCaseSearchTerm) ||
-                creator.preferences.contentInformation.creatorType
+                creator?.preferences?.contentInformation?.creatorType
                     ?.toLowerCase()
                     .includes(lowerCaseSearchTerm)
         );

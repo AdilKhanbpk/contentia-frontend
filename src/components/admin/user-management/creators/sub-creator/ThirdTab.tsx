@@ -236,7 +236,6 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
                             </label>
                         </div>
 
-                        {/* TODO the creator type is not in become creator form */}
                         <div className='mb-4 w-full sm:w-1/2'>
                             <label className='block text-sm font-semibold text-gray-700'>
                                 Creator Type:
