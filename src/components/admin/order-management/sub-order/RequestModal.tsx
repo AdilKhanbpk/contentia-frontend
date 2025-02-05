@@ -6,95 +6,10 @@ import CustomTable from "@/components/custom-table/CustomTable";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { getAppliedCreators } from "@/store/features/admin/ordersSlice";
-
-// Update the Order interface to include the full Creator type
-interface Creator {
-    _id: string;
-    fullName: string;
-    email: string;
-    phoneNumber: string;
-    profilePic?: string;
-    isVerified: string;
-    preferences?: {
-        contentInformation?: {
-            contentType?: string;
-            contentFormats?: string[];
-            areaOfInterest?: string[];
-        };
-        socialInformation?: {
-            platforms?: {
-                [key: string]: {
-                    followers: number;
-                    username: string;
-                };
-            };
-        };
-    };
-}
-
-interface Order {
-    _id: string;
-    coupon?: string;
-    orderOwner: {
-        _id: string;
-        fullName: string;
-        email: string;
-    };
-    assignedCreators: string[];
-    appliedCreators: Creator[];
-    noOfUgc: number;
-    totalPrice: number;
-    orderStatus: "pending" | "active" | "completed" | "cancelled" | "revision";
-    paymentStatus: "paid" | "pending" | "refunded" | "cancelled";
-    contentsDelivered?: number;
-    additionalServices: {
-        platform: string;
-        duration: string;
-        edit: boolean;
-        aspectRatio: string;
-        share?: boolean;
-        coverPicture?: boolean;
-        creatorType?: boolean;
-        productShipping?: boolean;
-    };
-    preferences?: {
-        creatorGender?: string;
-        minCreatorAge?: number;
-        maxCreatorAge?: number;
-        interests?: string[];
-        contentType?: string;
-        locationAddress?: {
-            country?: string;
-            city?: string;
-            district?: string;
-            street?: string;
-            fullAddress?: string;
-        };
-    };
-    briefContent?: {
-        brandName?: string;
-        brief?: string;
-        productServiceName?: string;
-        productServiceDesc?: string;
-        scenario?: string;
-        caseStudy?: string;
-        uploadFiles?: string;
-        uploadFileDate?: string;
-    };
-    numberOfRequests?: number;
-    orderQuota?: number;
-    quotaLeft?: number;
-    uploadFiles?: Array<{
-        uploadedBy: string;
-        fileUrls: string[];
-        uploadedDate: Date;
-    }>;
-    createdAt?: Date;
-    updatedAt?: Date;
-}
+import { CreatorInterface, OrderInterface } from "@/types/interfaces";
 
 interface RequestModalProps {
-    order: Order | null;
+    order: OrderInterface | null;
     onApprove: (orderId: string, creatorId: string) => Promise<void>;
     onReject: (orderId: string, creatorId: string) => Promise<void>;
 }
@@ -176,13 +91,13 @@ const RequestModal: React.FC<RequestModalProps> = ({
     const columns = [
         {
             name: "#",
-            selector: (row: Creator) => row._id,
+            selector: (row: CreatorInterface) => row._id,
             sortable: true,
             width: "80px",
         },
         {
             name: "Creator Name",
-            cell: (row: Creator) => (
+            cell: (row: CreatorInterface) => (
                 <div className='flex items-center space-x-2'>
                     <Image
                         width={10}
@@ -204,13 +119,13 @@ const RequestModal: React.FC<RequestModalProps> = ({
         },
         {
             name: "Contact",
-            selector: (row: Creator) => row.phoneNumber,
+            selector: (row: CreatorInterface) => row.phoneNumber,
             sortable: true,
             width: "150px",
         },
         {
             name: "Status",
-            cell: (row: Creator) => (
+            cell: (row: CreatorInterface) => (
                 <span
                     className={`px-3 py-1 rounded-full text-sm font-semibold ${
                         row.isVerified === "approved"
@@ -228,7 +143,7 @@ const RequestModal: React.FC<RequestModalProps> = ({
         },
         {
             name: "Actions",
-            cell: (row: Creator) => (
+            cell: (row: CreatorInterface) => (
                 <div className='flex space-x-3'>
                     <button
                         className='text-green-500 hover:text-green-700'
@@ -249,8 +164,8 @@ const RequestModal: React.FC<RequestModalProps> = ({
     ];
 
     const filteredCreators = currentOrder?.appliedCreators
-        ? (currentOrder.appliedCreators as Creator[]).filter(
-              (creator: Creator) => {
+        ? (currentOrder.appliedCreators as CreatorInterface[]).filter(
+              (creator: CreatorInterface) => {
                   const searchLower = searchTerm.toLowerCase();
                   return (
                       creator.fullName?.toLowerCase().includes(searchLower) ||

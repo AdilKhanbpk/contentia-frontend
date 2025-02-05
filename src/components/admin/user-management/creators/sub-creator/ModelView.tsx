@@ -1,97 +1,10 @@
+import { CreatorInterface } from "@/types/interfaces";
 import React from "react";
-
-interface Creator {
-    id: number;
-    fullName: string;
-    creatorType: "individual" | "company";
-    userType: "customer" | "creator";
-    role: "user" | "admin";
-    password: string;
-    tckn: string;
-    email: string;
-    dateOfBirth: string;
-    gender: "male" | "female" | "other";
-    phoneNumber: string;
-    isVerified: "pending" | "approved" | "rejected";
-    accountType: "individual" | "institutional";
-    invoiceType: "individual" | "institutional";
-    addressDetails: {
-        addressOne: string;
-        addressTwo: string;
-        country: string;
-        zipCode: number;
-    };
-    paymentInformation: {
-        ibanNumber?: string;
-        address: string;
-        fullName: string;
-        trId?: string;
-        companyName?: string;
-        taxNumber?: string;
-        taxOffice?: string;
-    };
-    billingInformation: {
-        invoiceStatus: boolean;
-        address: string;
-        fullName: string;
-        trId?: string;
-        companyName?: string;
-        taxNumber?: string;
-        taxOffice?: string;
-    };
-    preferences: {
-        contentInformation: {
-            contentType: ("product" | "service" | "location")[];
-            creatorType: "nano" | "micro";
-            contentFormats: string[];
-            areaOfInterest: string[];
-            addressDetails: {
-                country: string;
-                state: string;
-                district: string;
-                neighbourhood?: string;
-                fullAddress: string;
-            };
-        };
-        socialInformation: {
-            contentType: "yes" | "no";
-            platforms: {
-                Instagram?: {
-                    followers: number;
-                    username: string;
-                };
-                TikTok?: {
-                    followers: number;
-                    username: string;
-                };
-                Facebook?: {
-                    followers: number;
-                    username: string;
-                };
-                Youtube?: {
-                    followers: number;
-                    username: string;
-                };
-                X?: {
-                    followers: number;
-                    username: string;
-                };
-                Linkedin?: {
-                    followers: number;
-                    username: string;
-                };
-            };
-            portfolioLink?: string[];
-        };
-    };
-    userAgreement: boolean;
-    approvedCommercial: boolean;
-}
 
 interface ModalViewProps {
     isOpen: boolean;
     onClose: () => void;
-    customerData: Creator | null;
+    creatorData: CreatorInterface | null;
 }
 
 const getDefault = (value: any, defaultValue: string = "N/A") => {
@@ -101,54 +14,52 @@ const getDefault = (value: any, defaultValue: string = "N/A") => {
 const ModalView: React.FC<ModalViewProps> = ({
     isOpen,
     onClose,
-    customerData,
+    creatorData,
 }) => {
-    if (!isOpen || !customerData) return null;
+    if (!isOpen || !creatorData) return null;
 
     return (
         <div className='p-2'>
             <div className='text-lg font-semibold px-4 py-2 border-b-2 border-gray-200'>
-                Customer Details
+                Creator Details
             </div>
             <div className='p-4 flex flex-col md:flex-row items-center'>
                 <div className='w-full mt-4 md:mt-0 md:pl-8'>
                     {/* Basic Information */}
                     <div className='mb-4'>
                         <strong>ID:</strong>{" "}
-                        {getDefault(customerData.id?.toString())}
+                        {getDefault(creatorData._id?.toString())}
                     </div>
                     <div className='mb-4'>
                         <strong>Full Name:</strong>{" "}
-                        {getDefault(customerData.fullName)}
+                        {getDefault(creatorData.fullName)}
                     </div>
                     <div className='mb-4'>
                         <strong>Creator Type:</strong>{" "}
-                        {getDefault(customerData.creatorType)}
+                        {getDefault(creatorData.creatorType)}
                     </div>
                     <div className='mb-4'>
-                        <strong>TCKN:</strong> {getDefault(customerData.tckn)}
+                        <strong>TCKN:</strong> {getDefault(creatorData.tckn)}
                     </div>
                     <div className='mb-4'>
-                        <strong>Email:</strong> {getDefault(customerData.email)}
+                        <strong>Email:</strong> {getDefault(creatorData.email)}
                     </div>
                     <div className='mb-4'>
                         <strong>Date of Birth:</strong>{" "}
-                        {getDefault(customerData.dateOfBirth)}
+                        {getDefault(creatorData.dateOfBirth)}
                     </div>
                     <div className='mb-4'>
                         <strong>Gender:</strong>{" "}
-                        {getDefault(customerData.gender)}
+                        {getDefault(creatorData.gender)}
                     </div>
                     <div className='mb-4'>
                         <strong>Phone Number:</strong>{" "}
-                        {getDefault(customerData.phoneNumber)}
+                        {getDefault(creatorData.phoneNumber)}
                     </div>
                     <div className='mb-4'>
                         <strong>Verification Status:</strong>{" "}
                         {getDefault(
-                            customerData.isVerified
-                                ? "Verified"
-                                : "Not Verified"
+                            creatorData.isVerified ? "Verified" : "Not Verified"
                         )}
                     </div>
 
@@ -158,19 +69,19 @@ const ModalView: React.FC<ModalViewProps> = ({
                     </div>
                     <div className='mb-4'>
                         <strong>Address 1:</strong>{" "}
-                        {getDefault(customerData.addressDetails.addressOne)}
+                        {getDefault(creatorData.addressDetails.addressOne)}
                     </div>
                     <div className='mb-4'>
                         <strong>Address 2:</strong>{" "}
-                        {getDefault(customerData.addressDetails.addressTwo)}
+                        {getDefault(creatorData.addressDetails.addressTwo)}
                     </div>
                     <div className='mb-4'>
                         <strong>Account Type:</strong>{" "}
-                        {getDefault(customerData.accountType)}
+                        {getDefault(creatorData.accountType)}
                     </div>
                     <div className='mb-4'>
                         <strong>Invoice Type:</strong>{" "}
-                        {getDefault(customerData.invoiceType)}
+                        {getDefault(creatorData.invoiceType)}
                     </div>
 
                     {/* Payment Information */}
@@ -179,35 +90,33 @@ const ModalView: React.FC<ModalViewProps> = ({
                     </div>
                     <div className='mb-4'>
                         <strong>IBAN Number:</strong>{" "}
-                        {getDefault(
-                            customerData.paymentInformation?.ibanNumber
-                        )}
+                        {getDefault(creatorData.paymentInformation?.ibanNumber)}
                     </div>
                     <div className='mb-4'>
                         <strong>Payment Address:</strong>{" "}
-                        {getDefault(customerData.paymentInformation?.address)}
+                        {getDefault(creatorData.paymentInformation?.address)}
                     </div>
                     <div className='mb-4'>
                         <strong>Payment Full Name:</strong>{" "}
-                        {getDefault(customerData.paymentInformation?.fullName)}
+                        {getDefault(creatorData.paymentInformation?.fullName)}
                     </div>
                     <div className='mb-4'>
                         <strong>Transaction ID:</strong>{" "}
-                        {getDefault(customerData.paymentInformation?.trId)}
+                        {getDefault(creatorData.paymentInformation?.trId)}
                     </div>
                     <div className='mb-4'>
                         <strong>Company Name:</strong>{" "}
                         {getDefault(
-                            customerData.paymentInformation?.companyName
+                            creatorData.paymentInformation?.companyName
                         )}
                     </div>
                     <div className='mb-4'>
                         <strong>Tax Number:</strong>{" "}
-                        {getDefault(customerData.paymentInformation?.taxNumber)}
+                        {getDefault(creatorData.paymentInformation?.taxNumber)}
                     </div>
                     <div className='mb-4'>
                         <strong>Tax Office:</strong>{" "}
-                        {getDefault(customerData.paymentInformation?.taxOffice)}
+                        {getDefault(creatorData.paymentInformation?.taxOffice)}
                     </div>
 
                     {/* Billing Information */}
@@ -217,36 +126,36 @@ const ModalView: React.FC<ModalViewProps> = ({
                     <div className='mb-4'>
                         <strong>Invoice Status:</strong>{" "}
                         {getDefault(
-                            customerData.billingInformation?.invoiceStatus
+                            creatorData.billingInformation?.invoiceStatus
                                 ? "Active"
                                 : "Inactive"
                         )}
                     </div>
                     <div className='mb-4'>
                         <strong>Billing Address:</strong>{" "}
-                        {getDefault(customerData.billingInformation?.address)}
+                        {getDefault(creatorData.billingInformation?.address)}
                     </div>
                     <div className='mb-4'>
                         <strong>Billing Full Name:</strong>{" "}
-                        {getDefault(customerData.billingInformation?.fullName)}
+                        {getDefault(creatorData.billingInformation?.fullName)}
                     </div>
                     <div className='mb-4'>
                         <strong>Billing TR ID:</strong>{" "}
-                        {getDefault(customerData.billingInformation?.trId)}
+                        {getDefault(creatorData.billingInformation?.trId)}
                     </div>
                     <div className='mb-4'>
                         <strong>Company Name:</strong>{" "}
                         {getDefault(
-                            customerData.billingInformation?.companyName
+                            creatorData.billingInformation?.companyName
                         )}
                     </div>
                     <div className='mb-4'>
                         <strong>Tax Number:</strong>{" "}
-                        {getDefault(customerData.billingInformation?.taxNumber)}
+                        {getDefault(creatorData.billingInformation?.taxNumber)}
                     </div>
                     <div className='mb-4'>
                         <strong>Tax Office:</strong>{" "}
-                        {getDefault(customerData.billingInformation?.taxOffice)}
+                        {getDefault(creatorData.billingInformation?.taxOffice)}
                     </div>
 
                     {/* Content Preferences */}
@@ -256,14 +165,14 @@ const ModalView: React.FC<ModalViewProps> = ({
                     <div className='mb-4'>
                         <strong>Content Type:</strong>{" "}
                         {getDefault(
-                            customerData.preferences?.contentInformation
+                            creatorData.preferences?.contentInformation
                                 ?.contentType
                         )}
                     </div>
                     <div className='mb-4'>
                         <strong>Content Formats:</strong>{" "}
                         {getDefault(
-                            customerData.preferences?.contentInformation?.contentFormats?.join(
+                            creatorData.preferences?.contentInformation?.contentFormats?.join(
                                 ", "
                             )
                         )}
@@ -271,7 +180,7 @@ const ModalView: React.FC<ModalViewProps> = ({
                     <div className='mb-4'>
                         <strong>Areas of Interest:</strong>{" "}
                         {getDefault(
-                            customerData.preferences?.contentInformation?.areaOfInterest?.join(
+                            creatorData.preferences?.contentInformation?.areaOfInterest?.join(
                                 ", "
                             )
                         )}
@@ -284,35 +193,35 @@ const ModalView: React.FC<ModalViewProps> = ({
                     <div className='mb-4'>
                         <strong>Country:</strong>{" "}
                         {getDefault(
-                            customerData.preferences?.contentInformation
+                            creatorData.preferences?.contentInformation
                                 ?.addressDetails?.country
                         )}
                     </div>
                     <div className='mb-4'>
                         <strong>State:</strong>{" "}
                         {getDefault(
-                            customerData.preferences?.contentInformation
+                            creatorData.preferences?.contentInformation
                                 ?.addressDetails?.state
                         )}
                     </div>
                     <div className='mb-4'>
                         <strong>District:</strong>{" "}
                         {getDefault(
-                            customerData.preferences?.contentInformation
+                            creatorData.preferences?.contentInformation
                                 ?.addressDetails?.district
                         )}
                     </div>
                     <div className='mb-4'>
                         <strong>Neighbourhood:</strong>{" "}
                         {getDefault(
-                            customerData.preferences?.contentInformation
+                            creatorData.preferences?.contentInformation
                                 ?.addressDetails?.neighbourhood
                         )}
                     </div>
                     <div className='mb-4'>
                         <strong>Full Address:</strong>{" "}
                         {getDefault(
-                            customerData.preferences?.contentInformation
+                            creatorData.preferences?.contentInformation
                                 ?.addressDetails?.fullAddress
                         )}
                     </div>
@@ -324,66 +233,66 @@ const ModalView: React.FC<ModalViewProps> = ({
                     <div className='mb-4'>
                         <strong>Social Content Type:</strong>{" "}
                         {getDefault(
-                            customerData.preferences?.socialInformation
+                            creatorData.preferences?.socialInformation
                                 ?.contentType
                         )}
                     </div>
 
                     {/* Instagram */}
-                    {customerData.preferences?.socialInformation?.platforms
+                    {creatorData.preferences?.socialInformation?.platforms
                         ?.Instagram && (
                         <>
                             <div className='mb-4'>
                                 <strong>Instagram Username:</strong>{" "}
                                 {getDefault(
-                                    customerData.preferences?.socialInformation
+                                    creatorData.preferences?.socialInformation
                                         ?.platforms?.Instagram?.username
                                 )}
                             </div>
                             <div className='mb-4'>
                                 <strong>Instagram Followers:</strong>{" "}
                                 {getDefault(
-                                    customerData.preferences?.socialInformation?.platforms?.Instagram?.followers?.toString()
+                                    creatorData.preferences?.socialInformation?.platforms?.Instagram?.followers?.toString()
                                 )}
                             </div>
                         </>
                     )}
 
                     {/* TikTok */}
-                    {customerData.preferences?.socialInformation?.platforms
+                    {creatorData.preferences?.socialInformation?.platforms
                         ?.TikTok && (
                         <>
                             <div className='mb-4'>
                                 <strong>TikTok Username:</strong>{" "}
                                 {getDefault(
-                                    customerData.preferences?.socialInformation
+                                    creatorData.preferences?.socialInformation
                                         ?.platforms?.TikTok?.username
                                 )}
                             </div>
                             <div className='mb-4'>
                                 <strong>TikTok Followers:</strong>{" "}
                                 {getDefault(
-                                    customerData.preferences?.socialInformation?.platforms?.TikTok?.followers?.toString()
+                                    creatorData.preferences?.socialInformation?.platforms?.TikTok?.followers?.toString()
                                 )}
                             </div>
                         </>
                     )}
 
                     {/* YouTube */}
-                    {customerData.preferences?.socialInformation?.platforms
+                    {creatorData.preferences?.socialInformation?.platforms
                         ?.Youtube && (
                         <>
                             <div className='mb-4'>
                                 <strong>YouTube Username:</strong>{" "}
                                 {getDefault(
-                                    customerData.preferences?.socialInformation
+                                    creatorData.preferences?.socialInformation
                                         ?.platforms?.Youtube?.username
                                 )}
                             </div>
                             <div className='mb-4'>
                                 <strong>YouTube Followers:</strong>{" "}
                                 {getDefault(
-                                    customerData.preferences?.socialInformation?.platforms?.Youtube?.followers?.toString()
+                                    creatorData.preferences?.socialInformation?.platforms?.Youtube?.followers?.toString()
                                 )}
                             </div>
                         </>
@@ -392,7 +301,7 @@ const ModalView: React.FC<ModalViewProps> = ({
                     <div className='mb-4'>
                         <strong>Portfolio Link:</strong>{" "}
                         {getDefault(
-                            customerData.preferences?.socialInformation
+                            creatorData.preferences?.socialInformation
                                 ?.portfolioLink
                         )}
                     </div>
@@ -404,7 +313,7 @@ const ModalView: React.FC<ModalViewProps> = ({
                     <div className='mb-4'>
                         <strong>User Agreement:</strong>{" "}
                         {getDefault(
-                            customerData.userAgreement
+                            creatorData.userAgreement
                                 ? "Accepted"
                                 : "Not Accepted"
                         )}
@@ -412,7 +321,7 @@ const ModalView: React.FC<ModalViewProps> = ({
                     <div className='mb-4'>
                         <strong>Commercial Agreement:</strong>{" "}
                         {getDefault(
-                            customerData.approvedCommercial
+                            creatorData.approvedCommercial
                                 ? "Approved"
                                 : "Not Approved"
                         )}

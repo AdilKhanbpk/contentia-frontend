@@ -7,109 +7,22 @@ import {
 } from "@/store/features/admin/creatorsSlice";
 import { AppDispatch } from "@/store/store";
 import { toast } from "react-toastify";
-
-interface Creator {
-    id: number;
-    fullName: string;
-    creatorType: "individual" | "company";
-    userType: "customer" | "creator";
-    role: "user" | "admin";
-    password: string;
-    tckn: string;
-    email: string;
-    dateOfBirth: string;
-    gender: "male" | "female" | "other";
-    phoneNumber: string;
-    isVerified: "pending" | "approved" | "rejected";
-    accountType: "individual" | "institutional";
-    invoiceType: "individual" | "institutional";
-    addressDetails: {
-        addressOne: string;
-        addressTwo: string;
-        country: string;
-        zipCode: number;
-    };
-    paymentInformation: {
-        ibanNumber?: string;
-        address: string;
-        fullName: string;
-        trId?: string;
-        companyName?: string;
-        taxNumber?: string;
-        taxOffice?: string;
-    };
-    billingInformation: {
-        invoiceStatus: boolean;
-        address: string;
-        fullName: string;
-        trId?: string;
-        companyName?: string;
-        taxNumber?: string;
-        taxOffice?: string;
-    };
-    preferences: {
-        contentInformation: {
-            contentType: ("product" | "service" | "location")[];
-            creatorType: "nano" | "micro";
-            contentFormats: string[];
-            areaOfInterest: string[];
-            addressDetails: {
-                country: string;
-                state: string;
-                district: string;
-                neighbourhood?: string;
-                fullAddress: string;
-            };
-        };
-        socialInformation: {
-            contentType: "yes" | "no";
-            platforms: {
-                Instagram?: {
-                    followers: number;
-                    username: string;
-                };
-                TikTok?: {
-                    followers: number;
-                    username: string;
-                };
-                Facebook?: {
-                    followers: number;
-                    username: string;
-                };
-                Youtube?: {
-                    followers: number;
-                    username: string;
-                };
-                X?: {
-                    followers: number;
-                    username: string;
-                };
-                Linkedin?: {
-                    followers: number;
-                    username: string;
-                };
-            };
-            portfolioLink?: string[];
-        };
-    };
-    userAgreement: boolean;
-    approvedCommercial: boolean;
-}
+import { CreatorInterface } from "@/types/interfaces";
 
 interface SecondTabProps {
-    editCreatorForm: Creator | null;
-    onSubmit: (data: Creator) => void;
+    editCreatorForm: CreatorInterface | null;
+    onSubmit: (data: CreatorInterface) => void;
 }
 
 export default function SecondTab({ editCreatorForm }: SecondTabProps) {
     const dispatch = useDispatch<AppDispatch>();
-    const { register, handleSubmit, reset, watch } = useForm();
+    const { register, handleSubmit, reset, watch, setValue } = useForm();
     const accountType = watch("accountType", "individual");
     const invoiceType = watch("invoiceType", "individual");
-    const hasInvoice = watch("billingInformation.invoiceStatus", false);
 
     useEffect(() => {
         if (editCreatorForm) {
+            console.log(editCreatorForm.billingInformation.invoiceStatus);
             reset({
                 accountType: editCreatorForm.accountType,
                 invoiceType: editCreatorForm.invoiceType,
@@ -123,8 +36,10 @@ export default function SecondTab({ editCreatorForm }: SecondTabProps) {
                     address: editCreatorForm.paymentInformation.address,
                 },
                 billingInformation: {
-                    invoiceStatus:
-                        editCreatorForm.billingInformation.invoiceStatus,
+                    invoiceStatus: editCreatorForm.billingInformation
+                        .invoiceStatus
+                        ? "true"
+                        : "false",
                     fullName: editCreatorForm.billingInformation.fullName,
                     trId: editCreatorForm.billingInformation.trId,
                     companyName: editCreatorForm.billingInformation.companyName,
@@ -137,7 +52,7 @@ export default function SecondTab({ editCreatorForm }: SecondTabProps) {
     }, [editCreatorForm, reset]);
 
     const onSubmit: SubmitHandler<any> = async (formData) => {
-        if (!editCreatorForm?.id) {
+        if (!editCreatorForm?._id) {
             toast.error(
                 "Error: No creator ID found. Please ensure the creator is selected."
             );
@@ -153,7 +68,7 @@ export default function SecondTab({ editCreatorForm }: SecondTabProps) {
         try {
             const resultAction = await dispatch(
                 updateAdminCreator({
-                    customerId: editCreatorForm.id.toString(),
+                    creatorId: editCreatorForm._id,
                     data: formData,
                     token,
                 })
@@ -303,6 +218,7 @@ export default function SecondTab({ editCreatorForm }: SecondTabProps) {
                         <label className='block text-sm font-medium'>
                             Invoice Status
                         </label>
+                        {/* TODO REOSOLVE THSI */}
                         <div className='mt-2 space-x-4'>
                             <label className='inline-flex items-center'>
                                 <input

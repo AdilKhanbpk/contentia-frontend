@@ -21,92 +21,7 @@ import {
 } from "@/store/features/admin/ordersSlice";
 import { RootState } from "@/store/store";
 import { toast } from "react-toastify";
-
-// Update the Order interface to include the full Creator type
-interface Creator {
-    _id: string;
-    fullName: string;
-    email: string;
-    phoneNumber: string;
-    profilePic?: string;
-    isVerified: string;
-    preferences?: {
-        contentInformation?: {
-            contentType?: string;
-            contentFormats?: string[];
-            areaOfInterest?: string[];
-        };
-        socialInformation?: {
-            platforms?: {
-                [key: string]: {
-                    followers: number;
-                    username: string;
-                };
-            };
-        };
-    };
-}
-
-interface Order {
-    _id: string;
-    coupon?: string;
-    orderOwner: {
-        _id: string;
-        fullName: string;
-        email: string;
-    };
-    assignedCreators: string[];
-    appliedCreators: Creator[];
-    noOfUgc: number;
-    totalPrice: number;
-    orderStatus: "pending" | "active" | "completed" | "cancelled" | "revision";
-    paymentStatus: "paid" | "pending" | "refunded" | "cancelled";
-    contentsDelivered?: number;
-    additionalServices: {
-        platform: string;
-        duration: string;
-        edit: boolean;
-        aspectRatio: string;
-        share?: boolean;
-        coverPicture?: boolean;
-        creatorType?: string;
-        productShipping?: boolean;
-    };
-    preferences?: {
-        creatorGender?: string;
-        minCreatorAge?: number;
-        maxCreatorAge?: number;
-        interests?: string[];
-        contentType?: string;
-        locationAddress?: {
-            country?: string;
-            city?: string;
-            district?: string;
-            street?: string;
-            fullAddress?: string;
-        };
-    };
-    briefContent?: {
-        brandName?: string;
-        brief?: string;
-        productServiceName?: string;
-        productServiceDesc?: string;
-        scenario?: string;
-        caseStudy?: string;
-        uploadFiles?: string;
-        uploadFileDate?: string;
-    };
-    numberOfRequests?: number;
-    orderQuota?: number;
-    quotaLeft?: number;
-    uploadFiles?: Array<{
-        uploadedBy: string;
-        fileUrls: string[];
-        uploadedDate: Date;
-    }>;
-    createdAt?: Date;
-    updatedAt?: Date;
-}
+import { CreatorInterface, OrderInterface } from "@/types/interfaces";
 
 interface SearchBarProps {
     onSearch: (value: string) => void;
@@ -358,13 +273,13 @@ const Orders: React.FC = () => {
         () => [
             {
                 name: "#",
-                selector: (row: Order) => row._id,
+                selector: (row: OrderInterface) => row._id,
                 sortable: true,
                 width: "80px",
             },
             {
                 name: "Order Owner",
-                cell: (row: Order) => {
+                cell: (row: OrderInterface) => {
                     // Comprehensive null check for orderOwner
                     const owner = row.orderOwner;
                     const isValidOwner =
@@ -399,25 +314,25 @@ const Orders: React.FC = () => {
             },
             {
                 name: "No of UGC",
-                selector: (row: Order) => row.noOfUgc,
+                selector: (row: OrderInterface) => row.noOfUgc,
                 sortable: true,
                 width: "150px",
             },
             {
                 name: "Creators Assigned",
-                selector: (row: Order) => row.assignedCreators.length,
+                selector: (row: OrderInterface) => row.assignedCreators.length,
                 sortable: true,
                 width: "150px",
             },
             {
                 name: "Contents Delivered",
-                selector: (row: Order) => row.contentsDelivered || 0,
+                selector: (row: OrderInterface) => row.contentsDelivered || 0,
                 sortable: true,
                 width: "150px",
             },
             {
                 name: "Order Status",
-                cell: (row: Order) => (
+                cell: (row: OrderInterface) => (
                     <span
                         className={`px-3 py-1 rounded-full text-sm font-semibold ${
                             row.orderStatus === "completed"
@@ -436,7 +351,7 @@ const Orders: React.FC = () => {
             },
             {
                 name: "Actions",
-                cell: (row: Order) => (
+                cell: (row: OrderInterface) => (
                     <TableActions
                         onDelete={handleDelete}
                         onEdit={handleEdit}

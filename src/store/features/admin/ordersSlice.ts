@@ -1,103 +1,18 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { axiosInstance } from '@/store/axiosInstance';
 import { AxiosError } from 'axios';
+import { OrderInterface } from '@/types/interfaces';
 
 interface ErrorResponse {
   message: string;
   status?: number;
 }
 
-// Update the Order interface to include the full Creator type
-interface Creator {
-  _id: string;
-  fullName: string;
-  email: string;
-  phoneNumber: string;
-  profilePic?: string;
-  isVerified: string;
-  preferences?: {
-    contentInformation?: {
-      contentType?: string;
-      contentFormats?: string[];
-      areaOfInterest?: string[];
-    };
-    socialInformation?: {
-      platforms?: {
-        [key: string]: {
-          followers: number;
-          username: string;
-        };
-      };
-    };
-  };
-}
-
-interface Order {
-  _id: string;
-  coupon?: string;
-  orderOwner: {
-    _id: string;
-    fullName: string;
-    email: string;
-  };
-  assignedCreators: string[];
-  appliedCreators: Creator[];
-  noOfUgc: number;
-  totalPrice: number;
-  orderStatus: 'pending' | 'active' | 'completed' | 'cancelled' | 'revision';
-  paymentStatus: 'paid' | 'pending' | 'refunded' | 'cancelled';
-  contentsDelivered?: number;
-  additionalServices: {
-    platform: string;
-    duration: string;
-    edit: boolean;
-    aspectRatio: string;
-    share?: boolean;
-    coverPicture?: boolean;
-    creatorType?: boolean;
-    productShipping?: boolean;
-  };
-  preferences?: {
-    creatorGender?: string;
-    minCreatorAge?: number;
-    maxCreatorAge?: number;
-    interests?: string[];
-    contentType?: string;
-    locationAddress?: {
-      country?: string;
-      city?: string;
-      district?: string;
-      street?: string;
-      fullAddress?: string;
-    };
-  };
-  briefContent?: {
-    brandName?: string;
-    brief?: string;
-    productServiceName?: string;
-    productServiceDesc?: string;
-    scenario?: string;
-    caseStudy?: string;
-    uploadFiles?: string;
-    uploadFileDate?: string;
-  };
-  numberOfRequests?: number;
-  orderQuota?: number;
-  quotaLeft?: number;
-  uploadFiles?: Array<{
-    uploadedBy: string;
-    fileUrls: string[];
-    uploadedDate: Date;
-  }>;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
 interface OrdersState {
-  data: Order[];
+  data: OrderInterface[];
   loading: boolean;
   error: string | null;
-  currentOrder: Order | null;
+  currentOrder: OrderInterface | null;
 }
 
 const initialState: OrdersState = {
@@ -109,7 +24,7 @@ const initialState: OrdersState = {
 
 export const createOrder = createAsyncThunk(
   'orders/createOrder',
-  async ({ data, token }: { data: Partial<Order>; token: string }, { rejectWithValue }) => {
+  async ({ data, token }: { data: Partial<OrderInterface>; token: string }, { rejectWithValue }) => {
     try {
       if (!token) {
         return rejectWithValue('Authentication token is missing');
@@ -208,7 +123,7 @@ export const fetchOrderById = createAsyncThunk(
 // Update Order
 export const updateOrder = createAsyncThunk(
   'orders/updateOrder',
-  async ({ orderId, data, token }: { orderId: string; data: Partial<Order>; token: string }, { rejectWithValue }) => {
+  async ({ orderId, data, token }: { orderId: string; data: Partial<OrderInterface>; token: string }, { rejectWithValue }) => {
 
     try {
       const response = await axiosInstance.put(`/admin/orders/${orderId}`, data, {
@@ -347,7 +262,7 @@ const ordersSlice = createSlice({
   name: 'orders',
   initialState,
   reducers: {
-    setCurrentOrder: (state, action: PayloadAction<Order>) => {
+    setCurrentOrder: (state, action: PayloadAction<OrderInterface>) => {
       state.currentOrder = action.payload;
     },
     clearCurrentOrder: (state) => {
@@ -389,7 +304,7 @@ const ordersSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(createOrder.fulfilled, (state, action: PayloadAction<Order>) => {
+      .addCase(createOrder.fulfilled, (state, action: PayloadAction<OrderInterface>) => {
         state.loading = false;
         state.data.unshift(action.payload);
       })
@@ -403,7 +318,7 @@ const ordersSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchOrders.fulfilled, (state, action: PayloadAction<Order[]>) => {
+      .addCase(fetchOrders.fulfilled, (state, action: PayloadAction<OrderInterface[]>) => {
         state.loading = false;
         state.data = action.payload;
       })
@@ -417,7 +332,7 @@ const ordersSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchOrderById.fulfilled, (state, action: PayloadAction<Order>) => {
+      .addCase(fetchOrderById.fulfilled, (state, action: PayloadAction<OrderInterface>) => {
         state.loading = false;
         state.currentOrder = action.payload;
       })
@@ -431,7 +346,7 @@ const ordersSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateOrder.fulfilled, (state, action: PayloadAction<Order>) => {
+      .addCase(updateOrder.fulfilled, (state, action: PayloadAction<OrderInterface>) => {
         state.loading = false;
         const index = state.data.findIndex(order => order._id === action.payload._id);
         if (index !== -1) {
@@ -468,7 +383,7 @@ const ordersSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(approveCreator.fulfilled, (state, action: PayloadAction<Order>) => {
+      .addCase(approveCreator.fulfilled, (state, action: PayloadAction<OrderInterface>) => {
         state.loading = false;
         const index = state.data.findIndex(order => order._id === action.payload._id);
         if (index !== -1) {

@@ -6,92 +6,93 @@ import { useDispatch } from "react-redux";
 import { createOrder } from "@/store/features/admin/ordersSlice";
 import { AppDispatch } from "@/store/store";
 import { toast } from "react-toastify";
+import { OrderInterface } from "@/types/interfaces";
 
 // Update the Order interface to include the full Creator type
-interface Creator {
-    _id: string;
-    fullName: string;
-    email: string;
-    phoneNumber: string;
-    profilePic?: string;
-    isVerified: string;
-    preferences?: {
-        contentInformation?: {
-            contentType?: string;
-            contentFormats?: string[];
-            areaOfInterest?: string[];
-        };
-        socialInformation?: {
-            platforms?: {
-                [key: string]: {
-                    followers: number;
-                    username: string;
-                };
-            };
-        };
-    };
-}
+// interface Creator {
+//     _id: string;
+//     fullName: string;
+//     email: string;
+//     phoneNumber: string;
+//     profilePic?: string;
+//     isVerified: string;
+//     preferences?: {
+//         contentInformation?: {
+//             contentType?: string;
+//             contentFormats?: string[];
+//             areaOfInterest?: string[];
+//         };
+//         socialInformation?: {
+//             platforms?: {
+//                 [key: string]: {
+//                     followers: number;
+//                     username: string;
+//                 };
+//             };
+//         };
+//     };
+// }
 
-interface Order {
-    _id: string;
-    coupon?: string;
-    orderOwner: {
-        _id: string;
-        fullName: string;
-        email: string;
-    };
-    assignedCreators: string[];
-    appliedCreators: Creator[];
-    noOfUgc: number;
-    totalPrice: number;
-    orderStatus: "pending" | "active" | "completed" | "cancelled" | "revision";
-    paymentStatus: "paid" | "pending" | "refunded" | "cancelled";
-    contentsDelivered?: number;
-    additionalServices: {
-        platform: string;
-        duration: string;
-        edit: boolean;
-        aspectRatio: string;
-        share?: boolean;
-        coverPicture?: boolean;
-        creatorType?: boolean;
-        productShipping?: boolean;
-    };
-    preferences?: {
-        creatorGender?: string;
-        minCreatorAge?: number;
-        maxCreatorAge?: number;
-        interests?: string[];
-        contentType?: string;
-        locationAddress?: {
-            country?: string;
-            city?: string;
-            district?: string;
-            street?: string;
-            fullAddress?: string;
-        };
-    };
-    briefContent?: {
-        brandName?: string;
-        brief?: string;
-        productServiceName?: string;
-        productServiceDesc?: string;
-        scenario?: string;
-        caseStudy?: string;
-        uploadFiles?: string;
-        uploadFileDate?: string;
-    };
-    numberOfRequests?: number;
-    orderQuota?: number;
-    quotaLeft?: number;
-    uploadFiles?: Array<{
-        uploadedBy: string;
-        fileUrls: string[];
-        uploadedDate: Date;
-    }>;
-    createdAt?: Date;
-    updatedAt?: Date;
-}
+// interface Order {
+//     _id: string;
+//     coupon?: string;
+//     orderOwner: {
+//         _id: string;
+//         fullName: string;
+//         email: string;
+//     };
+//     assignedCreators: string[];
+//     appliedCreators: Creator[];
+//     noOfUgc: number;
+//     totalPrice: number;
+//     orderStatus: "pending" | "active" | "completed" | "cancelled" | "revision";
+//     paymentStatus: "paid" | "pending" | "refunded" | "cancelled";
+//     contentsDelivered?: number;
+//     additionalServices: {
+//         platform: string;
+//         duration: string;
+//         edit: boolean;
+//         aspectRatio: string;
+//         share?: boolean;
+//         coverPicture?: boolean;
+//         creatorType?: boolean;
+//         productShipping?: boolean;
+//     };
+//     preferences?: {
+//         creatorGender?: string;
+//         minCreatorAge?: number;
+//         maxCreatorAge?: number;
+//         interests?: string[];
+//         contentType?: string;
+//         locationAddress?: {
+//             country?: string;
+//             city?: string;
+//             district?: string;
+//             street?: string;
+//             fullAddress?: string;
+//         };
+//     };
+//     briefContent?: {
+//         brandName?: string;
+//         brief?: string;
+//         productServiceName?: string;
+//         productServiceDesc?: string;
+//         scenario?: string;
+//         caseStudy?: string;
+//         uploadFiles?: string;
+//         uploadFileDate?: string;
+//     };
+//     numberOfRequests?: number;
+//     orderQuota?: number;
+//     quotaLeft?: number;
+//     uploadFiles?: Array<{
+//         uploadedBy: string;
+//         fileUrls: string[];
+//         uploadedDate: Date;
+//     }>;
+//     createdAt?: Date;
+//     updatedAt?: Date;
+// }
 
 export default function NewModal() {
     const dispatch = useDispatch<AppDispatch>();
@@ -104,7 +105,7 @@ export default function NewModal() {
     const [creatorType, setCreatorType] = useState<boolean>(false);
     const [isShipping, setIsShipping] = useState<boolean>(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const { register, handleSubmit, reset, control } = useForm<Order>({
+    const { register, handleSubmit, reset, control } = useForm<OrderInterface>({
         defaultValues: {
             additionalServices: {
                 platform: "TikTok",
@@ -113,7 +114,7 @@ export default function NewModal() {
                 aspectRatio: "9:16",
                 share: false,
                 coverPicture: false,
-                creatorType: false,
+                creatorType: "Nano",
                 productShipping: false,
             },
         },
@@ -128,7 +129,7 @@ export default function NewModal() {
             .map((id) => id.trim());
     };
 
-    const onSubmitForm: SubmitHandler<Order> = async (data) => {
+    const onSubmitForm: SubmitHandler<OrderInterface> = async (data) => {
         setIsSubmitting(true);
         const token = localStorage.getItem("accessToken");
         if (!token) {

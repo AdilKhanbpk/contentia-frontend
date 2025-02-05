@@ -6,98 +6,11 @@ import FirstTab from "./FirstTab";
 import SecondTab from "./SecondTab";
 import ThirdTab from "./ThirdTab";
 import FourthTab from "./FourthTab";
-
-interface Creator {
-    id: number;
-    fullName: string;
-    creatorType: "individual" | "company";
-    userType: "customer" | "creator";
-    role: "user" | "admin";
-    password: string;
-    tckn: string;
-    email: string;
-    dateOfBirth: string;
-    gender: "male" | "female" | "other";
-    phoneNumber: string;
-    isVerified: "pending" | "approved" | "rejected";
-    accountType: "individual" | "institutional";
-    invoiceType: "individual" | "institutional";
-    addressDetails: {
-        addressOne: string;
-        addressTwo: string;
-        country: string;
-        zipCode: number;
-    };
-    paymentInformation: {
-        ibanNumber?: string;
-        address: string;
-        fullName: string;
-        trId?: string;
-        companyName?: string;
-        taxNumber?: string;
-        taxOffice?: string;
-    };
-    billingInformation: {
-        invoiceStatus: boolean;
-        address: string;
-        fullName: string;
-        trId?: string;
-        companyName?: string;
-        taxNumber?: string;
-        taxOffice?: string;
-    };
-    preferences: {
-        contentInformation: {
-            contentType: ("product" | "service" | "location")[];
-            creatorType: "nano" | "micro";
-            contentFormats: string[];
-            areaOfInterest: string[];
-            addressDetails: {
-                country: string;
-                state: string;
-                district: string;
-                neighbourhood?: string;
-                fullAddress: string;
-            };
-        };
-        socialInformation: {
-            contentType: "yes" | "no";
-            platforms: {
-                Instagram?: {
-                    followers: number;
-                    username: string;
-                };
-                TikTok?: {
-                    followers: number;
-                    username: string;
-                };
-                Facebook?: {
-                    followers: number;
-                    username: string;
-                };
-                Youtube?: {
-                    followers: number;
-                    username: string;
-                };
-                X?: {
-                    followers: number;
-                    username: string;
-                };
-                Linkedin?: {
-                    followers: number;
-                    username: string;
-                };
-            };
-            portfolioLink?: string[];
-        };
-    };
-    userAgreement: boolean;
-    approvedCommercial: boolean;
-}
+import { CreatorInterface } from "@/types/interfaces";
 
 interface EditCreatorFormProps {
-    customerData: Creator | null;
-    onSubmit: (data: Creator) => void;
+    creatorData: CreatorInterface | null;
+    onSubmit: (data: CreatorInterface) => void;
 }
 
 const MemoizedFirstTab = React.memo(FirstTab);
@@ -106,7 +19,7 @@ const MemoizedThirdTab = React.memo(ThirdTab);
 const MemoizedFourthTab = React.memo(FourthTab);
 
 const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
-    customerData,
+    creatorData,
     onSubmit,
 }) => {
     const [activeSection, setActiveSection] = useState("personal-info");
@@ -119,13 +32,13 @@ const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
         handleSubmit,
         reset,
         formState: { errors },
-    } = useForm<Creator>();
+    } = useForm<CreatorInterface>();
 
     useEffect(() => {
-        if (customerData) {
-            reset(customerData);
+        if (creatorData) {
+            reset(creatorData);
         }
-    }, [customerData, reset]);
+    }, [creatorData, reset]);
 
     return (
         <div className='mt-10 flex flex-col space-y-8'>
@@ -169,11 +82,9 @@ const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
                         />
                         <div className='flex flex-col space-y-4 text-center'>
                             <h3 className='mt-4 text-xl font-semibold'>
-                                {customerData?.fullName}
+                                {creatorData?.fullName}
                             </h3>
-                            <p className='text-gray-600'>
-                                {customerData?.role}
-                            </p>
+                            <p className='text-gray-600'>{creatorData?.role}</p>
                             <div className='flex space-x-8 mt-2 justify-center'>
                                 <Image
                                     src='/BecomeCreator/facebook_icon..png'
@@ -296,19 +207,19 @@ const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
                 {/* Conditional Rendering of Content */}
                 {activeSection === "personal-info" && (
                     <MemoizedFirstTab
-                        editCreatorForm={customerData}
+                        editCreatorForm={creatorData}
                         onSubmit={onSubmit}
                     />
                 )}
                 {activeSection === "payment" && (
                     <MemoizedSecondTab
-                        editCreatorForm={customerData}
+                        editCreatorForm={creatorData}
                         onSubmit={onSubmit}
                     />
                 )}
                 {activeSection === "Preferences" && (
                     <MemoizedThirdTab
-                        editCreatorForm={customerData}
+                        editCreatorForm={creatorData}
                         onSubmit={onSubmit}
                     />
                 )}

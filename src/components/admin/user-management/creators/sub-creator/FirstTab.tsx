@@ -7,98 +7,11 @@ import {
 } from "@/store/features/admin/creatorsSlice";
 import { AppDispatch } from "@/store/store";
 import { toast } from "react-toastify";
-
-interface Creator {
-    id: number;
-    fullName: string;
-    creatorType: "individual" | "company";
-    userType: "customer" | "creator";
-    role: "user" | "admin";
-    password: string;
-    tckn: string;
-    email: string;
-    dateOfBirth: string;
-    gender: "male" | "female" | "other";
-    phoneNumber: string;
-    isVerified: "pending" | "approved" | "rejected";
-    accountType: "individual" | "institutional";
-    invoiceType: "individual" | "institutional";
-    addressDetails: {
-        addressOne: string;
-        addressTwo: string;
-        country: string;
-        zipCode: number;
-    };
-    paymentInformation: {
-        ibanNumber?: string;
-        address: string;
-        fullName: string;
-        trId?: string;
-        companyName?: string;
-        taxNumber?: string;
-        taxOffice?: string;
-    };
-    billingInformation: {
-        invoiceStatus: boolean;
-        address: string;
-        fullName: string;
-        trId?: string;
-        companyName?: string;
-        taxNumber?: string;
-        taxOffice?: string;
-    };
-    preferences: {
-        contentInformation: {
-            contentType: ("product" | "service" | "location")[];
-            creatorType: "nano" | "micro";
-            contentFormats: string[];
-            areaOfInterest: string[];
-            addressDetails: {
-                country: string;
-                state: string;
-                district: string;
-                neighbourhood?: string;
-                fullAddress: string;
-            };
-        };
-        socialInformation: {
-            contentType: "yes" | "no";
-            platforms: {
-                Instagram?: {
-                    followers: number;
-                    username: string;
-                };
-                TikTok?: {
-                    followers: number;
-                    username: string;
-                };
-                Facebook?: {
-                    followers: number;
-                    username: string;
-                };
-                Youtube?: {
-                    followers: number;
-                    username: string;
-                };
-                X?: {
-                    followers: number;
-                    username: string;
-                };
-                Linkedin?: {
-                    followers: number;
-                    username: string;
-                };
-            };
-            portfolioLink?: string[];
-        };
-    };
-    userAgreement: boolean;
-    approvedCommercial: boolean;
-}
+import { CreatorInterface } from "@/types/interfaces";
 
 interface FirstTabProps {
-    editCreatorForm: Creator | null;
-    onSubmit: (data: Creator) => void;
+    editCreatorForm: CreatorInterface | null;
+    onSubmit: (data: CreatorInterface) => void;
 }
 
 export default function FirstTab({ editCreatorForm }: FirstTabProps) {
@@ -117,7 +30,7 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                 fullName: editCreatorForm.fullName,
                 tckn: editCreatorForm.tckn,
                 email: editCreatorForm.email,
-                dateOfBirth: editCreatorForm.dateOfBirth.split("T")[0],
+                dateOfBirth: editCreatorForm?.dateOfBirth?.split("T")[0],
                 phoneNumber: editCreatorForm.phoneNumber,
                 gender: editCreatorForm.gender,
                 isVerified: editCreatorForm.isVerified,
@@ -135,29 +48,8 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
         }
     }, [editCreatorForm, reset]);
 
-    useEffect(() => {
-        if (editCreatorForm) {
-            reset({
-                fullName: editCreatorForm.fullName,
-                tckn: editCreatorForm.tckn,
-                email: editCreatorForm.email,
-                dateOfBirth: editCreatorForm.dateOfBirth.split("T")[0],
-                phoneNumber: editCreatorForm.phoneNumber,
-                gender: editCreatorForm.gender,
-                isVerified: editCreatorForm.isVerified,
-                addressDetails: {
-                    addressOne: editCreatorForm.addressDetails?.addressOne,
-                    addressTwo: editCreatorForm.addressDetails?.addressTwo,
-                    country: editCreatorForm.addressDetails?.country,
-                    zipCode:
-                        editCreatorForm.addressDetails?.zipCode?.toString(),
-                },
-            });
-        }
-    }, [editCreatorForm, reset]);
-
     const onSubmit: SubmitHandler<any> = async (formData) => {
-        if (!editCreatorForm?.id) {
+        if (!editCreatorForm?._id) {
             toast.error("Creator ID not found!");
             return;
         }
@@ -200,7 +92,7 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
         try {
             const resultAction = await dispatch(
                 updateAdminCreator({
-                    customerId: editCreatorForm.id.toString(),
+                    creatorId: editCreatorForm._id.toString(),
                     data: updateData,
                     token,
                 })

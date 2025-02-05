@@ -1,24 +1,24 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { axiosInstance } from '@/store/axiosInstance';
 import { AxiosError } from 'axios';
+import { CreatorInterface } from '@/types/interfaces';
 
-type Creator = { [key: string]: any };
 
 export interface AdminCreatorsState {
-  data: Creator[];
+  data: CreatorInterface[];
   loading: boolean;
   error: string | null;
-  selectedCustomer: Creator | null;
+  selectedCreator: CreatorInterface | null;
 }
 
 const initialState: AdminCreatorsState = {
   data: [],
   loading: false,
   error: null,
-  selectedCustomer: null,
+  selectedCreator: null,
 };
 
-// Fetch all customers
+// Fetch all creators
 export const fetchAdminCreators = createAsyncThunk(
   'adminCreators/fetchAdminCreators',
   async (token: string) => {
@@ -28,105 +28,106 @@ export const fetchAdminCreators = createAsyncThunk(
       });
 
       if (response.data && response.data.data) {
-        const customers = response.data.data.map((customer: any) => {
+        const creators = response.data.data.map((creator: CreatorInterface) => {
           return {
-            id: customer._id ?? null,
-            fullName: customer.fullName ?? '',
-            creatorType: customer.creatorType ?? 'individual',
-            userType: customer.userType ?? '',
-            role: customer.role ?? '',
-            password: customer.password ?? '',
-            tckn: customer.tckn ?? '',
-            email: customer.email ?? '',
-            dateOfBirth: customer.dateOfBirth ?? '',
-            gender: customer.gender ?? 'other',
-            phoneNumber: customer.phoneNumber ?? '',
-            isVerified: customer.isVerified ?? 'pending',
-            accountType: customer.accountType ?? 'individual',
-            invoiceType: customer.invoiceType ?? 'individual',
+            _id: creator._id ?? null,
+            fullName: creator.fullName ?? '',
+            userType: creator.userType ?? '',
+            role: creator.role ?? '',
+            password: creator.password ?? '',
+            tckn: creator.tckn ?? '',
+            email: creator.email ?? '',
+            profilePic: creator.profilePic ?? '',
+            dateOfBirth: creator.dateOfBirth ?? '',
+            gender: creator.gender ?? 'other',
+            phoneNumber: creator.phoneNumber ?? '',
+            isVerified: creator.isVerified ?? 'pending',
+            accountType: creator.accountType ?? 'individual',
+            invoiceType: creator.invoiceType ?? 'individual',
             addressDetails: {
-              addressOne: customer.addressDetails?.addressOne ?? '',
-              addressTwo: customer.addressDetails?.addressTwo ?? '',
-              country: customer.addressDetails?.country ?? '',
-              zipCode: customer.addressDetails?.zipCode ?? '',
+              addressOne: creator.addressDetails?.addressOne ?? '',
+              addressTwo: creator.addressDetails?.addressTwo ?? '',
+              country: creator.addressDetails?.country ?? '',
+              zipCode: creator.addressDetails?.zipCode ?? '',
             },
             paymentInformation: {
-              ibanNumber: customer.paymentInformation?.ibanNumber ?? '',
-              address: customer.paymentInformation?.address ?? '',
-              fullName: customer.paymentInformation?.fullName ?? '',
-              trId: customer.paymentInformation?.trId ?? '',
-              companyName: customer.paymentInformation?.companyName ?? '',
-              taxNumber: customer.paymentInformation?.taxNumber ?? '',
-              taxOffice: customer.paymentInformation?.taxOffice ?? '',
+              ibanNumber: creator.paymentInformation?.ibanNumber ?? '',
+              address: creator.paymentInformation?.address ?? '',
+              fullName: creator.paymentInformation?.fullName ?? '',
+              trId: creator.paymentInformation?.trId ?? '',
+              companyName: creator.paymentInformation?.companyName ?? '',
+              taxNumber: creator.paymentInformation?.taxNumber ?? '',
+              taxOffice: creator.paymentInformation?.taxOffice ?? '',
             },
             billingInformation: {
-              invoiceStatus: customer.billingInformation?.invoiceStatus ?? false,
-              address: customer.billingInformation?.address ?? '',
-              fullName: customer.billingInformation?.fullName ?? '',
-              trId: customer.billingInformation?.trId ?? '',
-              companyName: customer.billingInformation?.companyName ?? '',
-              taxNumber: customer.billingInformation?.taxNumber ?? '',
-              taxOffice: customer.billingInformation?.taxOffice ?? '',
+              invoiceStatus: creator.billingInformation?.invoiceStatus ?? false,
+              address: creator.billingInformation?.address ?? '',
+              fullName: creator.billingInformation?.fullName ?? '',
+              trId: creator.billingInformation?.trId ?? '',
+              companyName: creator.billingInformation?.companyName ?? '',
+              taxNumber: creator.billingInformation?.taxNumber ?? '',
+              taxOffice: creator.billingInformation?.taxOffice ?? '',
             },
             preferences: {
               contentInformation: {
-                contentType: customer.preferences?.contentInformation?.contentType ?? [],
-                contentFormats: customer.preferences?.contentInformation?.contentFormats ?? [],
-                areaOfInterest: customer.preferences?.contentInformation?.areaOfInterest ?? [],
+                creatorType: creator.preferences.contentInformation.creatorType ?? 'nano',
+                contentType: creator.preferences?.contentInformation?.contentType ?? [],
+                contentFormats: creator.preferences?.contentInformation?.contentFormats ?? [],
+                areaOfInterest: creator.preferences?.contentInformation?.areaOfInterest ?? [],
                 addressDetails: {
-                  country: customer.preferences?.contentInformation?.addressDetails?.country ?? '',
-                  state: customer.preferences?.contentInformation?.addressDetails?.state ?? '',
-                  district: customer.preferences?.contentInformation?.addressDetails?.district ?? '',
-                  neighbourhood: customer.preferences?.contentInformation?.addressDetails?.neighbourhood ?? '',
-                  fullAddress: customer.preferences?.contentInformation?.addressDetails?.fullAddress ?? '',
+                  country: creator.preferences?.contentInformation?.addressDetails?.country ?? '',
+                  state: creator.preferences?.contentInformation?.addressDetails?.state ?? '',
+                  district: creator.preferences?.contentInformation?.addressDetails?.district ?? '',
+                  neighbourhood: creator.preferences?.contentInformation?.addressDetails?.neighbourhood ?? '',
+                  fullAddress: creator.preferences?.contentInformation?.addressDetails?.fullAddress ?? '',
                 },
               },
               socialInformation: {
-                contentType: customer.preferences?.socialInformation?.contentType ?? 'other',
+                contentType: creator.preferences?.socialInformation?.contentType ?? 'other',
                 platforms: {
                   Instagram: {
-                    followers: customer.preferences?.socialInformation?.platforms?.Instagram?.followers ?? 0,
-                    username: customer.preferences?.socialInformation?.platforms?.Instagram?.username ?? '',
+                    followers: creator.preferences?.socialInformation?.platforms?.Instagram?.followers,
+                    username: creator.preferences?.socialInformation?.platforms?.Instagram?.username,
                   },
                   TikTok: {
-                    followers: customer.preferences?.socialInformation?.platforms?.TikTok?.followers ?? 0,
-                    username: customer.preferences?.socialInformation?.platforms?.TikTok?.username ?? '',
+                    followers: creator.preferences?.socialInformation?.platforms?.TikTok?.followers,
+                    username: creator.preferences?.socialInformation?.platforms?.TikTok?.username,
                   },
                   Youtube: {
-                    followers: customer.preferences?.socialInformation?.platforms?.Youtube?.followers ?? 0,
-                    username: customer.preferences?.socialInformation?.platforms?.Youtube?.username ?? '',
+                    followers: creator.preferences?.socialInformation?.platforms?.Youtube?.followers,
+                    username: creator.preferences?.socialInformation?.platforms?.Youtube?.username,
                   },
                   X: {
-                    followers: customer.preferences?.socialInformation?.platforms?.Instagram?.followers ?? 0,
-                    username: customer.preferences?.socialInformation?.platforms?.Instagram?.username ?? '',
+                    followers: creator.preferences?.socialInformation?.platforms?.Instagram?.followers,
+                    username: creator.preferences?.socialInformation?.platforms?.Instagram?.username,
                   },
                   Facebook: {
-                    followers: customer.preferences?.socialInformation?.platforms?.TikTok?.followers ?? 0,
-                    username: customer.preferences?.socialInformation?.platforms?.TikTok?.username ?? '',
+                    followers: creator.preferences?.socialInformation?.platforms?.TikTok?.followers,
+                    username: creator.preferences?.socialInformation?.platforms?.TikTok?.username,
                   },
                   Linkedin: {
-                    followers: customer.preferences?.socialInformation?.platforms?.Youtube?.followers ?? 0,
-                    username: customer.preferences?.socialInformation?.platforms?.Youtube?.username ?? '',
+                    followers: creator.preferences?.socialInformation?.platforms?.Youtube?.followers,
+                    username: creator.preferences?.socialInformation?.platforms?.Youtube?.username,
                   },
                 },
-                portfolioLink: customer.preferences?.socialInformation?.portfolioLink ?? '',
+                portfolioLink: creator.preferences?.socialInformation?.portfolioLink,
               },
             },
-            userAgreement: customer.userAgreement ?? false,
-            approvedCommercial: customer.approvedCommercial ?? false,
+            userAgreement: creator.userAgreement ?? false,
+            approvedCommercial: creator.approvedCommercial ?? false,
           };
         });
-        return customers;
+        return creators;
       } else {
         return [];
       }
     } catch (error) {
-      throw Error('Failed to fetch admin customers');
+      throw Error('Failed to fetch admin creators');
     }
   }
 );
 
-// Fetch a single customer by ID
+// Fetch a single creator by ID
 export const fetchAdminCreatorById = createAsyncThunk(
   'adminCreators/fetchAdminCreatorById',
   async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
@@ -137,7 +138,7 @@ export const fetchAdminCreatorById = createAsyncThunk(
       console.log("fetching creator in fetchCreator : ", response.data);
       return response.data;
     } catch (error) {
-      return rejectWithValue('Failed to fetch admin customer by ID');
+      return rejectWithValue('Failed to fetch admin creator by ID');
     }
   }
 );
@@ -172,22 +173,22 @@ export const createAdminCreator = createAsyncThunk(
       const axiosError = error as AxiosError;
       return rejectWithValue(
         axiosError.response?.data ||
-        'Failed to create admin customer. Please check server logs for details.'
+        'Failed to create admin creator. Please check server logs for details.'
       );
     }
   }
 );
 
-// Update an existing customer with enhanced debugging and timeout
+// Update an existing creator with enhanced debugging and timeout
 export const updateAdminCreator = createAsyncThunk(
   'adminCreators/updateAdminCreator',
   async (
-    { customerId, data, token }: { customerId: string; data: any; token: string },
+    { creatorId, data, token }: { creatorId: string; data: any; token: string },
     { rejectWithValue }
   ) => {
 
     try {
-      const response = await axiosInstance.patch(`/admin/creators/${customerId}`, data, {
+      const response = await axiosInstance.patch(`/admin/creators/${creatorId}`, data, {
         headers: { Authorization: `Bearer ${token}` },
         timeout: 10000,
       });
@@ -214,18 +215,18 @@ export const updateAdminCreator = createAsyncThunk(
   }
 );
 
-// Delete a customer by ID
+// Delete a creator by ID
 export const deleteAdminCreator = createAsyncThunk(
   'adminCreators/deleteAdminCreator',
-  async ({ customerId, token }: { customerId: string; token: string }, { rejectWithValue }) => {
+  async ({ creatorId, token }: { creatorId: string; token: string }, { rejectWithValue }) => {
 
     try {
-      const response = await axiosInstance.delete(`/admin/creators/${customerId}`, {
+      const response = await axiosInstance.delete(`/admin/creators/${creatorId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      return customerId;
+      return response.data;
     } catch (error) {
-      let errorMessage = 'Failed to delete admin customer';
+      let errorMessage = 'Failed to delete admin creator';
       return rejectWithValue(errorMessage);
     }
   }
@@ -237,38 +238,38 @@ const adminCreatorsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Fetch all customers
+      // Fetch all creators
       .addCase(fetchAdminCreators.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAdminCreators.fulfilled, (state, action: PayloadAction<Creator[]>) => {
+      .addCase(fetchAdminCreators.fulfilled, (state, action: PayloadAction<CreatorInterface[]>) => {
         state.loading = false;
         state.data = action.payload;
       })
       .addCase(fetchAdminCreators.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch admin customers';
+        state.error = action.error.message || 'Failed to fetch admin creators';
       })
-      // Fetch customer by ID
+      // Fetch creator by ID
       .addCase(fetchAdminCreatorById.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAdminCreatorById.fulfilled, (state, action: PayloadAction<Creator>) => {
+      .addCase(fetchAdminCreatorById.fulfilled, (state, action: PayloadAction<CreatorInterface>) => {
         state.loading = false;
-        state.selectedCustomer = action.payload;
+        state.selectedCreator = action.payload;
       })
       .addCase(fetchAdminCreatorById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
-      // Create new customer
+      // Create new creator
       .addCase(createAdminCreator.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(createAdminCreator.fulfilled, (state, action: PayloadAction<Creator>) => {
+      .addCase(createAdminCreator.fulfilled, (state, action: PayloadAction<CreatorInterface>) => {
         state.loading = false;
         state.data.push(action.payload);
       })
@@ -276,16 +277,16 @@ const adminCreatorsSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      // Update customer
+      // Update creator
       .addCase(updateAdminCreator.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateAdminCreator.fulfilled, (state, action: PayloadAction<Creator>) => {
+      .addCase(updateAdminCreator.fulfilled, (state, action: PayloadAction<CreatorInterface>) => {
         state.loading = false;
-        const updatedCustomer = action.payload;
-        const updatedData = state.data.map((customer) =>
-          customer.id === updatedCustomer.id ? updatedCustomer : customer
+        const updatedCreator = action.payload;
+        const updatedData = state.data.map((creator) =>
+          creator._id === updatedCreator._id ? updatedCreator : creator
         );
         state.data = updatedData;
       })
@@ -293,14 +294,16 @@ const adminCreatorsSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      // Delete customer
+      // Delete creator
       .addCase(deleteAdminCreator.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteAdminCreator.fulfilled, (state, action: PayloadAction<string>) => {
+      .addCase(deleteAdminCreator.fulfilled, (state, action: PayloadAction<CreatorInterface>) => {
         state.loading = false;
-        state.data = state.data.filter((customer) => customer.id !== action.payload);
+        console.log(action.payload);
+        const filteredCreators = state.data.filter((creator) => creator._id !== action.payload._id);
+        state.data = filteredCreators
       })
       .addCase(deleteAdminCreator.rejected, (state, action) => {
         state.loading = false;

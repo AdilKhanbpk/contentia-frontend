@@ -1,4 +1,5 @@
 import { setCreatorFormData } from "@/store/becomeCreator/becomeCreatorSlice";
+import { ProfileFormInputs } from "@/types/interfaces";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
@@ -6,23 +7,6 @@ import { toast } from "react-toastify";
 
 interface ProfileInformationProps {
     setActiveTab: (id: number) => void;
-}
-
-interface ProfileFormInputs {
-    fullName: string;
-    password: string;
-    email: string;
-    phoneNumber: string;
-    tckn: string;
-    dateOfBirth: string;
-    gender?: string;
-
-    addressDetails: {
-        addressOne: string;
-        addressTwo: string;
-        country: string;
-        zipCode: number;
-    };
 }
 
 const ProfileInformation: React.FC<ProfileInformationProps> = ({

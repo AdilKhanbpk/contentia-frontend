@@ -17,6 +17,7 @@ import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import EditCreatorForm from "./sub-creator/EditCreatorForm";
 import { toast } from "react-toastify";
+import { CreatorInterface } from "@/types/interfaces";
 
 const SearchBar = memo(
     ({ onSearch }: { onSearch: (value: string) => void }) => (
@@ -68,7 +69,7 @@ const TableActions = memo(
 
 TableActions.displayName = "TableActions";
 
-const Customers: React.FC = () => {
+const Creators: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { data: creators = [] } = useSelector(
         (state: RootState) => state.adminCreators
@@ -76,7 +77,9 @@ const Customers: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
-    const [currentCustomer, setCurrentCustomer] = useState<any>(null);
+    const [currentCreator, setCurrentCreator] = useState<CreatorInterface>(
+        {} as CreatorInterface
+    );
     const [editingCreator, setEditingCreator] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
 
@@ -89,17 +92,16 @@ const Customers: React.FC = () => {
                 );
                 return;
             }
-
             dispatch(
-                deleteAdminCreator({ customerId: id, token: tokenFromStorage })
+                deleteAdminCreator({ creatorId: id, token: tokenFromStorage })
             )
                 .unwrap()
                 .then(() => {
-                    toast.success("Customer deleted successfully!");
+                    toast.success("Creator deleted successfully!");
                 })
                 .catch((error: any) => {
                     toast.error(
-                        `Error deleting customer: ${
+                        `Error deleting creator: ${
                             error?.message || "Unknown error"
                         }`
                     );
@@ -109,12 +111,14 @@ const Customers: React.FC = () => {
     );
 
     const handleView = (id: string) => {
-        const customer = creators.find((customer) => customer.id === id);
-        setCurrentCustomer(customer);
+        const creator = creators.find((creator) => creator._id === id);
+        if (creator) {
+            setCurrentCreator(creator);
+        }
         setIsModalViewOpen(true);
     };
 
-    const handleCreate = async (customerData: any) => {
+    const handleCreate = async (creatorData: any) => {
         const tokenFromStorage = localStorage.getItem("accessToken");
         try {
             if (!tokenFromStorage) {
@@ -124,15 +128,15 @@ const Customers: React.FC = () => {
                 return;
             }
 
-            if (!customerData || Object.keys(customerData).length === 0) {
-                console.error("Customer data is empty");
-                toast.error("Please provide valid customer data.");
+            if (!creatorData || Object.keys(creatorData).length === 0) {
+                console.error("Creator data is empty");
+                toast.error("Please provide valid creator data.");
                 return;
             }
 
             const result = await dispatch(
                 createAdminCreator({
-                    data: customerData,
+                    data: creatorData,
                     token: tokenFromStorage,
                 })
             ).unwrap();
@@ -142,146 +146,148 @@ const Customers: React.FC = () => {
             toast.success("Creator added successfully!");
             await dispatch(fetchAdminCreators(tokenFromStorage));
         } catch (error) {
-            toast.error(`Error creating customer: 'Unknown error'}`);
+            toast.error(`Error creating creator: 'Unknown error'}`);
         }
     };
 
-    const handleUpdate = async (customerData: any) => {
+    const handleUpdate = async (creatorData: any) => {
         const token = localStorage.getItem("accessToken");
-        console.log(customerData);
+        console.log(creatorData);
         if (token) {
-            const customerId = customerData.id;
-            console.log(customerId);
+            const creatorId = creatorData._id;
             const dataToUpdate = {
-                fullName: customerData.fullName ?? "",
-                creatorType: customerData.creatorType ?? "individual",
-                password: customerData.password ?? "",
-                tckn: customerData.tckn,
-                email: customerData.email ?? "",
-                dateOfBirth: customerData.dateOfBirth ?? "",
-                gender: customerData.gender ?? "other",
-                phoneNumber: customerData.contact ?? "",
-                isVerified: customerData.isVerified ?? "pending",
-                accountType: customerData.accountType ?? "individual",
-                invoiceType: customerData.invoiceType ?? "individual",
+                fullName: creatorData.fullName ?? "",
+                password: creatorData.password ?? "",
+                tckn: creatorData.tckn,
+                email: creatorData.email ?? "",
+                dateOfBirth: creatorData.dateOfBirth ?? "",
+                gender: creatorData.gender ?? "other",
+                phoneNumber: creatorData.contact ?? "",
+                isVerified: creatorData.isVerified ?? "pending",
+                accountType: creatorData.accountType ?? "individual",
+                invoiceType: creatorData.invoiceType ?? "individual",
                 addressDetails: {
-                    addressOne: customerData.addressDetails?.addressOne ?? "",
-                    addressTwo: customerData.addressDetails?.addressTwo ?? "",
-                    country: customerData.addressDetails?.country ?? "",
-                    zipCode: customerData.addressDetails?.zipCode ?? "",
+                    addressOne: creatorData.addressDetails?.addressOne ?? "",
+                    addressTwo: creatorData.addressDetails?.addressTwo ?? "",
+                    country: creatorData.addressDetails?.country ?? "",
+                    zipCode: creatorData.addressDetails?.zipCode ?? "",
                 },
 
                 paymentInformation: {
                     ibanNumber:
-                        customerData.paymentInformation?.ibanNumber ?? "",
-                    address: customerData.paymentInformation?.address ?? "",
-                    fullName: customerData.paymentInformation?.fullName ?? "",
-                    trId: customerData.paymentInformation?.trId ?? "",
+                        creatorData.paymentInformation?.ibanNumber ?? "",
+                    address: creatorData.paymentInformation?.address ?? "",
+                    fullName: creatorData.paymentInformation?.fullName ?? "",
+                    trId: creatorData.paymentInformation?.trId ?? "",
                     companyName:
-                        customerData.paymentInformation?.companyName ?? "",
-                    taxNumber: customerData.paymentInformation?.taxNumber ?? "",
-                    taxOffice: customerData.paymentInformation?.taxOffice ?? "",
+                        creatorData.paymentInformation?.companyName ?? "",
+                    taxNumber: creatorData.paymentInformation?.taxNumber ?? "",
+                    taxOffice: creatorData.paymentInformation?.taxOffice ?? "",
                 },
 
                 billingInformation: {
                     invoiceStatus:
-                        customerData.billingInformation?.invoiceStatus ?? false,
-                    address: customerData.billingInformation?.address ?? "",
-                    fullName: customerData.billingInformation?.fullName ?? "",
-                    trId: customerData.billingInformation?.trId ?? "",
+                        creatorData.billingInformation?.invoiceStatus ?? false,
+                    address: creatorData.billingInformation?.address ?? "",
+                    fullName: creatorData.billingInformation?.fullName ?? "",
+                    trId: creatorData.billingInformation?.trId ?? "",
                     companyName:
-                        customerData.billingInformation?.companyName ?? "",
-                    taxNumber: customerData.billingInformation?.taxNumber ?? "",
-                    taxOffice: customerData.billingInformation?.taxOffice ?? "",
+                        creatorData.billingInformation?.companyName ?? "",
+                    taxNumber: creatorData.billingInformation?.taxNumber ?? "",
+                    taxOffice: creatorData.billingInformation?.taxOffice ?? "",
                 },
 
                 preferences: {
                     contentInformation: {
+                        creatorType:
+                            creatorData.preferences?.contentInformation
+                                ?.creatorType ?? "nano",
+
                         contentType:
-                            customerData.preferences?.contentInformation
+                            creatorData.preferences?.contentInformation
                                 ?.contentType ?? "other",
                         contentFormats:
-                            customerData.preferences?.contentInformation
+                            creatorData.preferences?.contentInformation
                                 ?.contentFormats ?? [],
                         areaOfInterest:
-                            customerData.preferences?.contentInformation
+                            creatorData.preferences?.contentInformation
                                 ?.areaOfInterest ?? [],
                         addressDetails: {
                             country:
-                                customerData.preferences?.contentInformation
+                                creatorData.preferences?.contentInformation
                                     ?.addressDetails?.country ?? "",
                             state:
-                                customerData.preferences?.contentInformation
+                                creatorData.preferences?.contentInformation
                                     ?.addressDetails?.state ?? "",
                             district:
-                                customerData.preferences?.contentInformation
+                                creatorData.preferences?.contentInformation
                                     ?.addressDetails?.district ?? "",
                             neighbourhood:
-                                customerData.preferences?.contentInformation
+                                creatorData.preferences?.contentInformation
                                     ?.addressDetails?.neighbourhood ?? "",
                             fullAddress:
-                                customerData.preferences?.contentInformation
+                                creatorData.preferences?.contentInformation
                                     ?.addressDetails?.fullAddress ?? "",
                         },
                     },
                     socialInformation: {
                         contentType:
-                            customerData.preferences?.socialInformation
+                            creatorData.preferences?.socialInformation
                                 ?.contentType ?? "other",
                         platforms: {
-                            Instagram: customerData.preferences
+                            Instagram: creatorData.preferences
                                 ?.socialInformation?.platforms?.Instagram ?? {
                                 followers: 0,
                                 username: "",
                             },
-                            TikTok: customerData.preferences?.socialInformation
+                            TikTok: creatorData.preferences?.socialInformation
                                 ?.platforms?.TikTok ?? {
                                 followers: 0,
                                 username: "",
                             },
-                            Youtube: customerData.preferences?.socialInformation
+                            Youtube: creatorData.preferences?.socialInformation
                                 ?.platforms?.Youtube ?? {
                                 followers: 0,
                                 username: "",
                             },
-                            X: customerData.preferences?.socialInformation
+                            X: creatorData.preferences?.socialInformation
                                 ?.platforms?.X ?? {
                                 followers: 0,
                                 username: "",
                             },
-                            Facebook: customerData.preferences
-                                ?.socialInformation?.platforms?.Facebook ?? {
+                            Facebook: creatorData.preferences?.socialInformation
+                                ?.platforms?.Facebook ?? {
                                 followers: 0,
                                 username: "",
                             },
-                            Linkedin: customerData.preferences
-                                ?.socialInformation?.platforms?.Linkedin ?? {
+                            Linkedin: creatorData.preferences?.socialInformation
+                                ?.platforms?.Linkedin ?? {
                                 followers: 0,
                                 username: "",
                             },
                         },
                         portfolioLink:
-                            customerData.preferences?.socialInformation
+                            creatorData.preferences?.socialInformation
                                 ?.portfolioLink ?? "",
                     },
                 },
 
-                userAgreement: customerData.userAgreement ?? false,
-                approvedCommercial: customerData.approvedCommercial ?? false,
+                userAgreement: creatorData.userAgreement ?? false,
+                approvedCommercial: creatorData.approvedCommercial ?? false,
             };
 
             try {
                 await dispatch(
                     updateAdminCreator({
-                        customerId,
+                        creatorId,
                         data: dataToUpdate,
                         token,
                     })
                 );
                 await dispatch(fetchAdminCreators(token));
-                toast.success("Customer updated successfully!");
+                toast.success("Creator updated successfully!");
             } catch (error) {
-                toast.error("Failed to update customer. Please try again.");
+                toast.error("Failed to update creator. Please try again.");
             }
         } else {
             toast.error("Authorization token is missing! Please log in again.");
@@ -289,8 +295,14 @@ const Customers: React.FC = () => {
     };
 
     const handleEdit = (id: string) => {
-        const creator = creators.find((creator) => creator.id === id);
-        setCurrentCustomer(creator);
+        console.log(id);
+        const creator = creators.find((creator) => {
+            console.log("🚀 ~ creator ~ creator:", creator);
+            return creator._id === id;
+        });
+        if (creator) {
+            setCurrentCreator(creator);
+        }
         setEditingCreator(true);
         setShowEditForm(true);
     };
@@ -305,18 +317,18 @@ const Customers: React.FC = () => {
             "Name",
             "Email",
             "Contact",
-            "Total Orders",
+            "User Type",
             "Country",
             "Status",
         ];
-        const data = creators.map((customer) => [
-            customer.id,
-            customer.name,
-            customer.email,
-            customer.contact,
-            customer.totalOrders,
-            customer.country,
-            customer.status,
+        const data = creators.map((creator) => [
+            creator._id,
+            creator.fullName,
+            creator.email,
+            creator.phoneNumber,
+            creator.userType,
+            creator.preferences.contentInformation.addressDetails.country,
+            creator.isVerified,
         ]);
 
         exportCsvFile({ data, headers, filename: "creators.csv" });
@@ -332,10 +344,9 @@ const Customers: React.FC = () => {
     const columns = React.useMemo(
         () => [
             {
-                name: "#",
-                selector: (row: any) => row.id,
+                name: "#Id",
+                selector: (row: any) => row._id,
                 sortable: true,
-                width: "80px",
             },
             {
                 name: "Creator",
@@ -344,7 +355,7 @@ const Customers: React.FC = () => {
                         <Image
                             width={10}
                             height={10}
-                            src='/icons/avatar.png'
+                            src={row.profilePic || "/icons/avatar.png"}
                             alt='avatar'
                             className='w-10 h-10 rounded-full'
                         />
@@ -363,7 +374,6 @@ const Customers: React.FC = () => {
                 ),
                 sortable: false,
                 grow: 2,
-                width: "280px",
             },
             {
                 name: "Contact",
@@ -371,10 +381,9 @@ const Customers: React.FC = () => {
                 sortable: true,
             },
             {
-                name: "Orders",
-                selector: (row: any) => row.totalOrders || "-",
+                name: "User Type",
+                selector: (row: any) => row.userType || "-",
                 sortable: true,
-                width: "100px",
             },
             {
                 name: "Country",
@@ -400,7 +409,6 @@ const Customers: React.FC = () => {
                     );
                 },
                 sortable: true,
-                width: "150px",
             },
             {
                 name: "Actions",
@@ -409,10 +417,9 @@ const Customers: React.FC = () => {
                         onDelete={handleDelete}
                         onEdit={handleEdit}
                         onView={handleView}
-                        id={row.id}
+                        id={row._id}
                     />
                 ),
-                width: "150px",
             },
         ],
         [handleDelete, handleEdit, handleView]
@@ -421,13 +428,11 @@ const Customers: React.FC = () => {
     const filteredCreators = React.useMemo(() => {
         const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
         return creators.filter(
-            (customer) =>
-                customer.fullName
-                    ?.toLowerCase()
-                    .includes(lowerCaseSearchTerm) ||
-                customer.email?.toLowerCase().includes(lowerCaseSearchTerm) ||
-                customer.phoneNumber?.includes(lowerCaseSearchTerm) ||
-                customer.creatorType
+            (creator) =>
+                creator.fullName?.toLowerCase().includes(lowerCaseSearchTerm) ||
+                creator.email?.toLowerCase().includes(lowerCaseSearchTerm) ||
+                creator.phoneNumber?.includes(lowerCaseSearchTerm) ||
+                creator.preferences.contentInformation.creatorType
                     ?.toLowerCase()
                     .includes(lowerCaseSearchTerm)
         );
@@ -435,7 +440,7 @@ const Customers: React.FC = () => {
 
     const handleCloseEdit = () => {
         setEditingCreator(false);
-        setCurrentCustomer(null);
+        setCurrentCreator({} as CreatorInterface);
     };
 
     return (
@@ -469,7 +474,7 @@ const Customers: React.FC = () => {
                 {/* Conditional render of the edit form */}
                 {showEditForm && (
                     <EditCreatorForm
-                        customerData={currentCustomer}
+                        creatorData={currentCreator}
                         onSubmit={(data) => {
                             handleUpdate(data);
                             handleCloseEdit();
@@ -478,7 +483,7 @@ const Customers: React.FC = () => {
                 )}
             </div>
 
-            {/* Modal for adding a new customer */}
+            {/* Modal for adding a new creator */}
             <CustomModelAdmin
                 isOpen={isModalOpen}
                 closeModal={() => setIsModalOpen(false)}
@@ -491,7 +496,7 @@ const Customers: React.FC = () => {
                 />
             </CustomModelAdmin>
 
-            {/* Modal for viewing a customer */}
+            {/* Modal for viewing a creator */}
             <CustomModelAdmin
                 isOpen={isModalViewOpen}
                 closeModal={() => setIsModalViewOpen(false)}
@@ -500,11 +505,11 @@ const Customers: React.FC = () => {
                 <ModalView
                     isOpen={isModalViewOpen}
                     onClose={() => setIsModalViewOpen(false)}
-                    customerData={currentCustomer}
+                    creatorData={currentCreator}
                 />
             </CustomModelAdmin>
         </div>
     );
 };
 
-export default Customers;
+export default Creators;

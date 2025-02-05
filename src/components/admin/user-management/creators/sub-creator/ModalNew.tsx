@@ -1,97 +1,11 @@
+import { CreatorInterface } from "@/types/interfaces";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
-interface Creator {
-    id: number;
-    fullName: string;
-    creatorType: "individual" | "company";
-    userType: "customer" | "creator";
-    role: "user" | "admin";
-    password: string;
-    tckn: string;
-    email: string;
-    dateOfBirth: string;
-    gender: "male" | "female" | "other";
-    phoneNumber: string;
-    isVerified: "pending" | "approved" | "rejected";
-    accountType: "individual" | "institutional";
-    invoiceType: "individual" | "institutional";
-    addressDetails: {
-        addressOne: string;
-        addressTwo: string;
-        country: string;
-        zipCode: number;
-    };
-    paymentInformation: {
-        ibanNumber?: string;
-        address: string;
-        fullName: string;
-        trId?: string;
-        companyName?: string;
-        taxNumber?: string;
-        taxOffice?: string;
-    };
-    billingInformation: {
-        invoiceStatus: boolean;
-        address: string;
-        fullName: string;
-        trId?: string;
-        companyName?: string;
-        taxNumber?: string;
-        taxOffice?: string;
-    };
-    preferences: {
-        contentInformation: {
-            contentType: ("product" | "service" | "location")[];
-            creatorType: "nano" | "micro";
-            contentFormats: string[];
-            areaOfInterest: string[];
-            addressDetails: {
-                country: string;
-                state: string;
-                district: string;
-                neighbourhood?: string;
-                fullAddress: string;
-            };
-        };
-        socialInformation: {
-            contentType: "yes" | "no";
-            platforms: {
-                Instagram?: {
-                    followers: number;
-                    username: string;
-                };
-                TikTok?: {
-                    followers: number;
-                    username: string;
-                };
-                Facebook?: {
-                    followers: number;
-                    username: string;
-                };
-                Youtube?: {
-                    followers: number;
-                    username: string;
-                };
-                X?: {
-                    followers: number;
-                    username: string;
-                };
-                Linkedin?: {
-                    followers: number;
-                    username: string;
-                };
-            };
-            portfolioLink?: string[];
-        };
-    };
-    userAgreement: boolean;
-    approvedCommercial: boolean;
-}
 interface ModalNewProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: Creator) => void;
+    onSubmit: (data: CreatorInterface) => void;
 }
 
 export default function ModalNew({ isOpen, onSubmit }: ModalNewProps) {
@@ -99,7 +13,7 @@ export default function ModalNew({ isOpen, onSubmit }: ModalNewProps) {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<Creator>();
+    } = useForm<CreatorInterface>();
 
     if (!isOpen) return null;
 

@@ -349,7 +349,7 @@ const ContentCreatorPreferences: React.FC<{
                             "Gönüllülük",
                             "Moda ve Güzellik",
                             "E-Ticaret",
-                            "Üretim ve Mühendislik",
+                            "Mühendislik",
                             "Sağlık",
                             "Eğitim",
                         ].map((item, index) => (
