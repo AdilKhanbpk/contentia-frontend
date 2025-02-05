@@ -36,7 +36,10 @@ const ModalView: React.FC<ModalViewProps> = ({
                     </div>
                     <div className='mb-4'>
                         <strong>Creator Type:</strong>{" "}
-                        {getDefault(creatorData.creatorType)}
+                        {getDefault(
+                            creatorData?.preferences?.contentInformation
+                                ?.creatorType
+                        )}
                     </div>
                     <div className='mb-4'>
                         <strong>TCKN:</strong> {getDefault(creatorData.tckn)}
