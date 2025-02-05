@@ -1,4 +1,4 @@
-import { OrderInterface } from "@/types/interfaces";
+import { CreatorInterface, OrderInterface } from "@/types/interfaces";
 
 interface EditModalProps {
     order: OrderInterface | null;
@@ -310,7 +310,11 @@ export default function EditModal({ order }: EditModalProps) {
                                                         file.fileUrls.map(
                                                             (f, j) => (
                                                                 <tr
-                                                                    key={`${creator._id}-${i}-${j}`}
+                                                                    key={`${
+                                                                        (
+                                                                            creator as CreatorInterface
+                                                                        )._id
+                                                                    }-${i}-${j}`}
                                                                 >
                                                                     {/* Index Column */}
                                                                     <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm'>
@@ -321,7 +325,10 @@ export default function EditModal({ order }: EditModalProps) {
                                                                     {/* Creator ID Column */}
                                                                     <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm'>
                                                                         {
-                                                                            creator?._id
+                                                                            (
+                                                                                creator as CreatorInterface
+                                                                            )
+                                                                                ?._id
                                                                         }
                                                                     </td>
 
@@ -352,7 +359,13 @@ export default function EditModal({ order }: EditModalProps) {
                                                         )
                                                 )
                                         ) : (
-                                            <tr key={creator._id}>
+                                            <tr
+                                                key={
+                                                    (
+                                                        creator as CreatorInterface
+                                                    )._id
+                                                }
+                                            >
                                                 {/* Index Column */}
                                                 <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm'>
                                                     {index + 1}
@@ -360,7 +373,11 @@ export default function EditModal({ order }: EditModalProps) {
 
                                                 {/* Creator ID Column */}
                                                 <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm'>
-                                                    {creator?._id}
+                                                    {
+                                                        (
+                                                            creator as CreatorInterface
+                                                        )?._id
+                                                    }
                                                 </td>
 
                                                 {/* No Files Uploaded Column */}
