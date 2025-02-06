@@ -20,7 +20,6 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
     const [token, setToken] = useState<string | null>(null);
     const [selectedBrand, setSelectedBrand] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
-    // const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const { selectedFiles, setSelectedFiles } = useFileContext();
 
     useEffect(() => {

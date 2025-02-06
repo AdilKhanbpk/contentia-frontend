@@ -159,13 +159,13 @@ export interface OrderInterface {
         creatorGender?: string;
         minCreatorAge?: number;
         maxCreatorAge?: number;
-        interests?: string[];
+        areaOfInterest?: string[];
         contentType?: string;
-        locationAddress?: {
+        addressDetails?: {
             country?: string;
-            city?: string;
+            state?: string;
             district?: string;
-            street?: string;
+            neighborhood?: string;
             fullAddress?: string;
         };
     };
