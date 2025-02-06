@@ -26,6 +26,60 @@ const Preferences: React.FC = () => {
     const onSubmit: SubmitHandler<any> = async (data) => {
         try {
             dispatch(setCreatorFormData(data));
+
+            const checkingContentType = (data: any) => {
+                if (
+                    data.preferences.contentInformation.contentType.length > 0
+                ) {
+                    return true;
+                }
+                return false;
+            };
+
+            const isValidContentType = checkingContentType(data);
+            if (!isValidContentType) {
+                toast.error("Please select at least one content type.");
+                return;
+            }
+
+            const checkingPlatformsIfEmptyWhenSocialInformationContentTypeIsYes =
+                (data: any) => {
+                    if (
+                        data.preferences.socialInformation.contentType === "yes"
+                    ) {
+                        const platforms =
+                            data.preferences.socialInformation.platforms;
+
+                        const isValid = Object.keys(platforms).some(
+                            (platformKey) => {
+                                const platform = platforms[platformKey];
+                                return (
+                                    (platform.username &&
+                                        platform.username.trim() !== "" &&
+                                        platform.followers) ||
+                                    (platform.followers &&
+                                        platform.followers.trim() !== "")
+                                );
+                            }
+                        );
+
+                        return isValid;
+                    }
+                    return true;
+                };
+
+            const isValidPlatforms =
+                checkingPlatformsIfEmptyWhenSocialInformationContentTypeIsYes(
+                    data
+                );
+
+            if (!isValidPlatforms) {
+                toast.error(
+                    "At least one platform should have both username and followers."
+                );
+                return;
+            }
+
             const res = await dispatch(becomeCreatorThunk()).unwrap();
 
             if (res.status === 201) {

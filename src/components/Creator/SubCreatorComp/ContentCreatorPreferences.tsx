@@ -75,6 +75,7 @@ const ContentCreatorPreferences: React.FC<{
                                         {...register(
                                             "preferences.contentInformation.contentType"
                                         )}
+                                        defaultChecked
                                         className='hidden peer'
                                     />
                                     <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>

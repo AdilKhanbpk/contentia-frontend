@@ -23,7 +23,12 @@ interface ThirdTabProps {
 
 const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const { register, handleSubmit, reset } = useForm();
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors, isSubmitting, isSubmitSuccessful },
+    } = useForm();
 
     useEffect(() => {
         if (editCreatorForm) {
@@ -82,7 +87,7 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
                             },
                             Youtube: editCreatorForm.preferences
                                 .socialInformation?.platforms?.Youtube || {
-                                followers: "0",
+                                followers: "",
                                 username: "",
                             },
                             X: editCreatorForm.preferences.socialInformation
@@ -148,6 +153,62 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
                     },
                 },
             };
+
+            const checkingContentType = (transformedData: any) => {
+                if (
+                    transformedData.preferences.contentInformation.contentType
+                        .length > 0
+                ) {
+                    return true;
+                }
+                return false;
+            };
+
+            const isValidContentType = checkingContentType(transformedData);
+            if (!isValidContentType) {
+                toast.error("Please select at least one content type.");
+                return;
+            }
+
+            const checkingPlatformsIfEmptyWhenSocialInformationContentTypeIsYes =
+                (transformedData: any) => {
+                    if (
+                        transformedData.preferences.socialInformation
+                            .contentType === "yes"
+                    ) {
+                        const platforms =
+                            transformedData.preferences.socialInformation
+                                .platforms;
+
+                        const isValid = Object.keys(platforms).some(
+                            (platformKey) => {
+                                const platform = platforms[platformKey];
+                                return (
+                                    (platform.username &&
+                                        platform.username.trim() !== "" &&
+                                        platform.followers) ||
+                                    (platform.followers &&
+                                        platform.followers.trim() !== "")
+                                );
+                            }
+                        );
+
+                        return isValid;
+                    }
+                    return true;
+                };
+
+            const isValidPlatforms =
+                checkingPlatformsIfEmptyWhenSocialInformationContentTypeIsYes(
+                    transformedData
+                );
+
+            if (!isValidPlatforms) {
+                toast.error(
+                    "At least one platform should have both username and followers."
+                );
+                return;
+            }
 
             const resultAction = await dispatch(
                 updateAdminCreator({
@@ -445,7 +506,7 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
                             type='submit'
                             className='ButtonBlue text-white px-4 py-2 rounded-md'
                         >
-                            Save Changes
+                            {isSubmitting ? "Saving..." : "Save Changes"}
                         </button>
                     </div>
                 </div>

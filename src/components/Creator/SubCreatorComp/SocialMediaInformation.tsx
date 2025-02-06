@@ -81,6 +81,7 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                                 {...register(
                                     "preferences.socialInformation.contentType"
                                 )}
+                                defaultChecked
                                 value='no'
                                 className='hidden peer'
                             />

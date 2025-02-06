@@ -249,7 +249,7 @@ const Orders: React.FC = () => {
         ];
 
         const data = orders.map((order) => ({
-            ID: order._id,
+            "# Order Id": order._id,
             "Order Owner": order.orderOwner,
             "No of UGC": order.noOfUgc,
             "Total Price": order.totalPrice,
@@ -308,6 +308,7 @@ const Orders: React.FC = () => {
                     );
                 },
                 sortable: false,
+                width: "300px",
             },
             {
                 name: "No of UGC",
@@ -358,10 +359,8 @@ const Orders: React.FC = () => {
         [handleDelete, handleEdit, handleView, handleRequest]
     );
 
-    // Update the filtering logic as well
     const filteredOrders = React.useMemo(() => {
         const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
-        console.log("🚀 ~ filteredOrders ~ orders:", orders);
         return orders?.filter((order) => {
             const owner = order.orderOwner;
             const fullNameMatch =
