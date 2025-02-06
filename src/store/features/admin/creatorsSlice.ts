@@ -93,8 +93,8 @@ export const fetchAdminCreators = createAsyncThunk(
                     username: creator.preferences?.socialInformation?.platforms?.Youtube?.username,
                   },
                   X: {
-                    followers: creator.preferences?.socialInformation?.platforms?.Instagram?.followers,
-                    username: creator.preferences?.socialInformation?.platforms?.Instagram?.username,
+                    followers: creator.preferences?.socialInformation?.platforms?.X?.followers,
+                    username: creator.preferences?.socialInformation?.platforms?.X?.username,
                   },
                   Facebook: {
                     followers: creator.preferences?.socialInformation?.platforms?.TikTok?.followers,
