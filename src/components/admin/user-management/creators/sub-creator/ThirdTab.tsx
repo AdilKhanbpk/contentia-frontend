@@ -27,7 +27,7 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
         register,
         handleSubmit,
         reset,
-        formState: { errors, isSubmitting, isSubmitSuccessful },
+        formState: { isSubmitting },
     } = useForm();
 
     useEffect(() => {

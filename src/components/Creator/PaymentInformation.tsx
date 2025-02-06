@@ -18,7 +18,7 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<PaymentInformationFormValues>();
 
     const dispatch = useDispatch();
@@ -557,7 +557,7 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
                             type='submit'
                             className='ButtonBlue text-white text-lg font-bold rounded-xl p-1 px-14'
                         >
-                            İleri
+                            {isSubmitting ? "Kaydediliyor..." : "Kaydet"}
                         </button>
                     </div>
                 </div>

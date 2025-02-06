@@ -177,26 +177,26 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                             paylaşımlarınızı bizimle paylaşabilirsiniz.
                         </p>
                         <input
-                            type='url'
+                            type='text'
                             {...register(
                                 "preferences.socialInformation.portfolioLink",
                                 {
-                                    required: "Instagram linki gereklidir.",
                                     pattern: {
-                                        value: /https?:\/\/.+/,
-                                        message: "Geçerli bir URL girin.",
+                                        value: /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
+                                        message:
+                                            "Örnek: https://www.instagram.com/contentia/reel/C5OCG4XBtFX",
                                     },
                                 }
                             )}
                             className='border focus:outline-none p-4 rounded w-full'
-                            placeholder='Ör: https://www.instagram.com/contentia/reel/C5OCG4XBtFX'
+                            placeholder='https://www.instagram.com,https://www.tiktok.com,https://www.x.com'
                         />
                         {errors.preferences?.socialInformation
-                            ?.instagramLink && (
+                            ?.portfolioLink && (
                             <span className='text-red-500 text-sm'>
                                 {
                                     errors.preferences.socialInformation
-                                        .instagramLink.message
+                                        .portfolioLink.message
                                 }
                             </span>
                         )}
@@ -219,11 +219,11 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                                 Kullanıcı Sözleşmesi'ni okudum, onaylıyorum.
                             </label>
                         </div>
-                        {errors.userAgreement && (
+                        {errors?.userAgreement && (
                             <span className='text-red-500 text-sm'>
                                 {
-                                    errors.preferences.socialInformation
-                                        .userAgreement.message
+                                    errors?.preferences?.socialInformation
+                                        ?.userAgreement?.message
                                 }
                             </span>
                         )}

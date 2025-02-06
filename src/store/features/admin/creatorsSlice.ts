@@ -78,7 +78,7 @@ export const fetchAdminCreators = createAsyncThunk(
                 },
               },
               socialInformation: {
-                contentType: creator.preferences?.socialInformation?.contentType ?? 'other',
+                contentType: creator.preferences?.socialInformation?.contentType ?? 'no',
                 platforms: {
                   Instagram: {
                     followers: creator.preferences?.socialInformation?.platforms?.Instagram?.followers,

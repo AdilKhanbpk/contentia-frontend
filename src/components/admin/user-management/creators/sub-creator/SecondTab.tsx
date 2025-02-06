@@ -16,7 +16,13 @@ interface SecondTabProps {
 
 export default function SecondTab({ editCreatorForm }: SecondTabProps) {
     const dispatch = useDispatch<AppDispatch>();
-    const { register, handleSubmit, reset, watch, setValue } = useForm();
+    const {
+        register,
+        handleSubmit,
+        reset,
+        watch,
+        formState: { isSubmitting },
+    } = useForm();
     const accountType = watch("accountType", "individual");
     const invoiceType = watch("invoiceType", "individual");
 
@@ -372,7 +378,7 @@ export default function SecondTab({ editCreatorForm }: SecondTabProps) {
                         type='submit'
                         className='ButtonBlue text-white px-4 py-2 rounded-md'
                     >
-                        Save Changes
+                        {isSubmitting ? "Saving..." : "Save Changes"}
                     </button>
                 </div>
             </form>

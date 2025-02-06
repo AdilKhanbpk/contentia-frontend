@@ -16,7 +16,7 @@ const Preferences: React.FC = () => {
         register,
         watch,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm();
 
     const router = useRouter();
@@ -116,7 +116,7 @@ const Preferences: React.FC = () => {
                         type='submit'
                         className='ButtonBlue text-white text-lg font-bold rounded-xl p-1 px-8'
                     >
-                        {loading ? "Tamamlama..." : " Tamamla"}
+                        {isSubmitting ? "Tamamlama..." : " Tamamla"}
                     </button>
                 </div>
             </div>

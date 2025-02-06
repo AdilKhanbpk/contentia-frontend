@@ -20,7 +20,7 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
         register,
         handleSubmit,
         reset,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm();
 
     useEffect(() => {
@@ -322,7 +322,7 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                             type='submit'
                             className='ButtonBlue text-white px-4 py-2 rounded-md'
                         >
-                            Save Changes
+                            {isSubmitting ? "Saving..." : "Save Changes"}
                         </button>
                     </div>
                 </form>

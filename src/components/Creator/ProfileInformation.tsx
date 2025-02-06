@@ -15,7 +15,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<ProfileFormInputs>();
 
     const dispatch = useDispatch();
@@ -196,76 +196,12 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                                     </div>
                                 </div>
                             </div>
-
-                            <div>
-                                <h2 className='text-xl font-semibold mt-6 mb-4'>
-                                    Address
-                                </h2>
-                                <div className='grid grid-cols-2 gap-4'>
-                                    <div>
-                                        <label className='block text-sm font-medium'>
-                                            Address 01
-                                        </label>
-                                        <input
-                                            type='text'
-                                            {...register(
-                                                "addressDetails.addressOne"
-                                            )}
-                                            className='mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm'
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className='block text-sm font-medium'>
-                                            Address 02
-                                        </label>
-                                        <input
-                                            type='text'
-                                            {...register(
-                                                "addressDetails.addressTwo"
-                                            )}
-                                            className='mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm'
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className='block text-sm font-medium'>
-                                            Country
-                                        </label>
-                                        <input
-                                            type='text'
-                                            {...register(
-                                                "addressDetails.country"
-                                            )}
-                                            className='mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm'
-                                        />
-                                        {errors?.addressDetails?.country && (
-                                            <p className='text-red-500 text-xs mt-1'>
-                                                {
-                                                    errors.addressDetails
-                                                        .country.message
-                                                }
-                                            </p>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <label className='block text-sm font-medium'>
-                                            Zip Code
-                                        </label>
-                                        <input
-                                            type='text'
-                                            {...register(
-                                                "addressDetails.zipCode"
-                                            )}
-                                            className='mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm'
-                                        />
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
                     <div className='flex justify-end'>
                         <button className='ButtonBlue text-white text-base font-semibold rounded-xl p-1 px-14'>
-                            İleri
+                            {isSubmitting ? "Yükleniyor..." : "Kaydet"}
                         </button>
                     </div>
                 </div>
