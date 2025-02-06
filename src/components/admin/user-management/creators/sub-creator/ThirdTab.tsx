@@ -129,6 +129,22 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
             const transformedData = {
                 preferences: {
                     contentInformation: {
+                        addressDetails: {
+                            country:
+                                editCreatorForm.preferences.contentInformation
+                                    .addressDetails.country,
+                            state: editCreatorForm.preferences
+                                .contentInformation.addressDetails.state,
+                            district:
+                                editCreatorForm.preferences.contentInformation
+                                    .addressDetails.district,
+                            neighborhood:
+                                editCreatorForm.preferences.contentInformation
+                                    .addressDetails.neighborhood,
+                            fullAddress:
+                                editCreatorForm.preferences.contentInformation
+                                    .addressDetails.fullAddress,
+                        },
                         creatorType:
                             formData.preferences.contentInformation.creatorType,
                         contentType:
