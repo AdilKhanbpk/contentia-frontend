@@ -21,7 +21,7 @@ import {
 } from "@/store/features/admin/ordersSlice";
 import { RootState } from "@/store/store";
 import { toast } from "react-toastify";
-import { CreatorInterface, OrderInterface } from "@/types/interfaces";
+import { OrderInterface } from "@/types/interfaces";
 
 interface SearchBarProps {
     onSearch: (value: string) => void;
@@ -92,7 +92,6 @@ const Orders: React.FC = () => {
         error,
         currentOrder,
     } = useSelector((state: RootState) => state.orders);
-    // console.log("orders fetched successfully", orders);
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);

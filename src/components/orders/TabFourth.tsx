@@ -38,9 +38,10 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
     const [showTooltipThree, setShowTooltipThree] = useState(false);
     const { register, handleSubmit, watch } = useForm();
 
-    const contentTypes = watch("content_information.contentType") || [];
+    const contentTypes = watch("preferences.contentType") || [];
 
     const onSubmit = async (data: any) => {
+        // console.log("🚀 ~ onSubmit ~ data:", data);
         if (!token) {
             toast.error("Please login first");
             return;
@@ -49,18 +50,20 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
         try {
             const preferencesData = {
                 preferences: {
-                    creatorGender: data.gender,
+                    creatorGender: data.preferences.creatorGender,
                     minCreatorAge: minAge,
                     maxCreatorAge: maxAge,
-                    interests: data.customCheckbox || [],
-                    contentType: data.content_information?.contentType || [],
-                    locationAddress: {
-                        country: data.place?.country || "",
-                        city: data.place?.city || "",
-                        district: data.place?.state || "",
-                        street: data.place?.neighborhood || "",
-                        fullAddress: data.place?.address || "",
-                    },
+                    areaOfInterest: data.preferences.areaOfInterest || [],
+                    contentType: data.preferences.contentType || [],
+                    addressDetails: data.preferences?.addressDetails
+                        ? { ...data.preferences.addressDetails } // Ensure this is an object
+                        : {
+                              country: "",
+                              state: "",
+                              district: "",
+                              neighborhood: "",
+                              fullAddress: "",
+                          }, // Default as an object,
                 },
             };
             dispatch(setOrderFormData(preferencesData));
@@ -134,25 +137,37 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                             </label>
 
                             {["Kadın", "Erkek", "Karışık"].map(
-                                (gender, index) => (
-                                    <label
-                                        key={index}
-                                        className='inline-flex items-center cursor-pointer mb-2 lg:mb-6'
-                                    >
-                                        <input
-                                            type='radio'
-                                            {...register("gender")}
-                                            value={gender}
-                                            className='hidden peer'
-                                        />
-                                        <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>
-                                            <div className='w-full h-full bg-white rounded-full'></div>
-                                        </div>
-                                        <span className='ml-1 text-sm'>
-                                            {gender}
-                                        </span>
-                                    </label>
-                                )
+                                (gender, index) => {
+                                    // Map Turkish labels to English values
+                                    const valueMap: Record<string, string> = {
+                                        Kadın: "female",
+                                        Erkek: "male",
+                                        Karışık: "other",
+                                    };
+
+                                    return (
+                                        <label
+                                            key={index}
+                                            className='inline-flex items-center cursor-pointer mb-2 lg:mb-6'
+                                        >
+                                            <input
+                                                type='radio'
+                                                {...register(
+                                                    "preferences.creatorGender"
+                                                )}
+                                                value={valueMap[gender]} // Use the mapped English value
+                                                className='hidden peer'
+                                            />
+                                            <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>
+                                                <div className='w-full h-full bg-white rounded-full'></div>
+                                            </div>
+                                            <span className='ml-1 text-sm'>
+                                                {gender}
+                                            </span>{" "}
+                                            {/* Display Turkish label */}
+                                        </label>
+                                    );
+                                }
                             )}
                         </div>
 
@@ -206,9 +221,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                     <input
                                         type='radio'
                                         value='product'
-                                        {...register(
-                                            "content_information.contentType"
-                                        )}
+                                        {...register("preferences.contentType")}
                                         className='hidden peer'
                                     />
                                     <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>
@@ -221,9 +234,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                     <input
                                         type='radio'
                                         value='service'
-                                        {...register(
-                                            "content_information.contentType"
-                                        )}
+                                        {...register("preferences.contentType")}
                                         className='hidden peer'
                                     />
                                     <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>
@@ -235,10 +246,8 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                 <label className='inline-flex items-center cursor-pointer mb-2 lg:mb-6'>
                                     <input
                                         type='radio'
-                                        value='space'
-                                        {...register(
-                                            "content_information.contentType"
-                                        )}
+                                        value='location'
+                                        {...register("preferences.contentType")}
                                         className='hidden peer'
                                     />
                                     <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>
@@ -339,7 +348,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                     "Gönüllülük",
                                     "Moda ve Güzellik",
                                     "E-Ticaret",
-                                    "Üretim ve Mühendislik",
+                                    "Mühendislik",
                                     "Sağlık",
                                     "Eğitim",
                                 ].map((item, index) => (
@@ -349,7 +358,9 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                     >
                                         <input
                                             type='checkbox'
-                                            {...register("customCheckbox")}
+                                            {...register(
+                                                "preferences.areaOfInterest"
+                                            )}
                                             value={item}
                                             className='hidden peer '
                                         />
@@ -364,7 +375,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                             </div>
                             <div className='w-full lg:w-1/3'>
                                 {/* If Mekan (Place) selected */}
-                                {(contentTypes.includes("space") ||
+                                {(contentTypes.includes("location") ||
                                     contentTypes.includes("product")) && (
                                     <div className='lg:-mt-28'>
                                         <div className='flex flex-row'>
@@ -419,105 +430,48 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                                 <label className='block text-sm font-semibold mb-2'>
                                                     Ülke
                                                 </label>
-                                                <select
+                                                <input
                                                     className='w-full px-3 py-2 border rounded-md focus:outline-none'
                                                     {...register(
-                                                        "place.country"
+                                                        "preferences.addressDetails.country"
                                                     )}
-                                                >
-                                                    <option value=''>
-                                                        Seçiniz
-                                                    </option>
-                                                    <option value='turkiye'>
-                                                        Türkiye
-                                                    </option>
-                                                    <option value='kktc'>
-                                                        KKTC
-                                                    </option>
-                                                    <option value='azerbaycan'>
-                                                        Azerbaycan
-                                                    </option>
-                                                </select>
+                                                />
                                             </div>
 
                                             <div>
                                                 <label className='block text-sm font-semibold mb-2'>
                                                     İl
                                                 </label>
-                                                <select
+                                                <input
                                                     className='w-full px-3 py-2 border rounded-md focus:outline-none'
-                                                    {...register("place.city")}
-                                                >
-                                                    <option value=''>
-                                                        Seçiniz
-                                                    </option>
-                                                    <option value='istanbul'>
-                                                        İstanbul
-                                                    </option>
-                                                    <option value='ankara'>
-                                                        Ankara
-                                                    </option>
-                                                    <option value='izmir'>
-                                                        İzmir
-                                                    </option>
-                                                    <option value='antalya'>
-                                                        Antalya
-                                                    </option>
-                                                </select>
+                                                    {...register(
+                                                        "preferences.addressDetails.state"
+                                                    )}
+                                                />
                                             </div>
 
                                             <div>
                                                 <label className='block text-sm font-semibold mb-2'>
                                                     İlçe
                                                 </label>
-                                                <select
+                                                <input
                                                     className='w-full px-3 py-2 border rounded-md focus:outline-none'
-                                                    {...register("place.state")}
-                                                >
-                                                    <option value=''>
-                                                        Seçiniz
-                                                    </option>
-                                                    <option value='kadikoy'>
-                                                        Kadıköy
-                                                    </option>
-                                                    <option value='besiktas'>
-                                                        Beşiktaş
-                                                    </option>
-                                                    <option value='uskudar'>
-                                                        Üsküdar
-                                                    </option>
-                                                    <option value='sisli'>
-                                                        Şişli
-                                                    </option>
-                                                </select>
+                                                    {...register(
+                                                        "preferences.addressDetails.district"
+                                                    )}
+                                                />
                                             </div>
 
                                             <div>
                                                 <label className='block text-sm font-semibold mb-2'>
                                                     Mahalle
                                                 </label>
-                                                <select
+                                                <input
                                                     className='w-full px-3 py-2 border rounded-md focus:outline-none'
                                                     {...register(
-                                                        "place.neighborhood"
+                                                        "preferences.addressDetails.neighborhood"
                                                     )}
-                                                >
-                                                    <option value=''>
-                                                        Seçiniz
-                                                    </option>
-                                                    <option value='caferaga'>
-                                                        Caferağa
-                                                    </option>
-                                                    <option value='fenerbahce'>
-                                                        Fenerbahçe
-                                                    </option>
-                                                    <option value='rasimpasa'>
-                                                        Rasimpaşa
-                                                    </option>
-                                                    <option value='osmanaga'>
-                                                        Osmanağa
-                                                    </option>
-                                                </select>
+                                                />
                                             </div>
 
                                             <div className='col-span-2'>
@@ -529,7 +483,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                                     className='w-full text-sm px-3 py-2 border rounded-md focus:outline-none'
                                                     rows={2}
                                                     {...register(
-                                                        "place.address"
+                                                        "preferences.addressDetails.fullAddress"
                                                     )}
                                                 />
                                             </div>

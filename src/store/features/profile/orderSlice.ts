@@ -2,14 +2,14 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { axiosInstance } from "@/store/axiosInstance";
 import { AxiosError } from "axios";
 import { RootState } from "@/store/store";
-import { useFileContext } from "@/context/FileContext";
+import { OrderInterface } from "@/types/interfaces";
 
 // Types and Interfaces
-interface LocationAddress {
+interface AddressDetails {
   country: string;
-  city: string;
+  state: string;
   district: string;
-  street: string;
+  neighborhood: string;
   fullAddress: string;
 }
 
@@ -28,9 +28,9 @@ interface Preferences {
   creatorGender?: string;
   minCreatorAge?: number;
   maxCreatorAge?: number;
-  interests?: string[];
+  areaOfInterest?: string[];
   contentType?: string;
-  locationAddress: LocationAddress;
+  addressDetails: AddressDetails;
 }
 
 interface BriefContent {
@@ -80,20 +80,6 @@ export interface OrderState {
   orderFormData: object;
 }
 
-// Payload Interfaces
-interface CreateOrderPayload {
-  data: {
-    noOfUgc: number;
-    totalPrice: number;
-    additionalServices: AdditionalServices;
-    preferences: Preferences;
-    briefContent: BriefContent;
-    orderQuota?: number;
-    numberOfRequests?: number;
-  };
-  token: string;
-}
-
 interface UpdateOrderPayload {
   orderId: string;
   data: Partial<Order>;
@@ -126,41 +112,54 @@ export const createOrder = createAsyncThunk(
   "order/createOrder",
   async ({ token, selectedFiles }: OrderData, { getState, rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const orderData = state.order.orderFormData;
+      const state = getState() as RootState;
+      const orderData: Partial<OrderInterface> = state.order.orderFormData;
 
-      // console.log("🚀 ~ orderData:", orderData);
+      if (!orderData) {
+        return rejectWithValue("Order data is missing");
+      }
 
       // Convert orderData to FormData
       const formData = new FormData();
-      formData.append("noOfUgc", String(orderData.noOfUgc));
-      formData.append("totalPrice", String(orderData.totalPrice));
+      formData.append("noOfUgc", String(orderData.noOfUgc || 0));
+      formData.append("totalPrice", String(orderData.totalPrice || 0));
 
-      Object.entries(orderData.additionalServices).forEach(([key, value]) => {
-        formData.append(`additionalServices[${key}]`, String(value));
-      });
+      // Append additional services if available
+      if (orderData.additionalServices) {
+        Object.entries(orderData.additionalServices).forEach(([key, value]) => {
+          formData.append(`additionalServices[${key}]`, String(value));
+        });
+      }
 
-      Object.entries(orderData.preferences).forEach(([key, value]) => {
-        if (key === "locationAddress" && typeof value === "object") {
-          if (value) {
+      // Append preferences if available
+      if (orderData.preferences) {
+        Object.entries(orderData.preferences).forEach(([key, value]) => {
+          if (key === "addressDetails" && typeof value === "object") {
             Object.entries(value).forEach(([subKey, subValue]) => {
-              formData.append(`preferences[locationAddress][${subKey}]`, String(subValue));
+              formData.append(`preferences[addressDetails][${subKey}]`, String(subValue));
             });
+          } else if (key === "areaOfInterest" && Array.isArray(value)) {
+            value.forEach((item, index) => {
+              formData.append(`preferences[areaOfInterest][${index}]`, item);
+            });
+          } else {
+            formData.append(`preferences[${key}]`, String(value));
           }
-        } else {
-          formData.append(`preferences[${key}]`, String(value));
-        }
-      });
+        });
+      }
 
-      Object.entries(orderData.briefContent).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          value.forEach((item, index) => {
-            formData.append(`briefContent[${key}][${index}]`, item);
-          });
-        } else {
-          formData.append(`briefContent[${key}]`, String(value));
-        }
-      });
+      // Append brief content if available
+      if (orderData.briefContent) {
+        Object.entries(orderData.briefContent).forEach(([key, value]) => {
+          if (Array.isArray(value)) {
+            value.forEach((item, index) => {
+              formData.append(`briefContent[${key}][${index}]`, item);
+            });
+          } else {
+            formData.append(`briefContent[${key}]`, String(value));
+          }
+        });
+      }
 
       // Append selected files
       selectedFiles.forEach((file) => {
@@ -174,12 +173,12 @@ export const createOrder = createAsyncThunk(
       const response = await axiosInstance.postForm("/orders", formData);
 
       return response.data.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error occurred in createOrder thunk:", error);
 
       const axiosError = error as AxiosError;
-      const errorMessage = axiosError.response?.data;
-      console.error("Error details:", errorMessage);
+      const errorMessage =
+        axiosError.response?.data || "An unknown error occurred";
 
       return rejectWithValue(errorMessage);
     }

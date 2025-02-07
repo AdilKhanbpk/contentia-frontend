@@ -25,6 +25,7 @@ const initialState: OrdersState = {
 export const createOrder = createAsyncThunk(
   'orders/createOrder',
   async ({ data, token }: { data: Partial<OrderInterface>; token: string }, { rejectWithValue }) => {
+    console.log("🚀 ~ data:", data)
     try {
       if (!token) {
         return rejectWithValue('Authentication token is missing');

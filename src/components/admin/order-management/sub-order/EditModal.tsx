@@ -8,33 +8,21 @@ import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import CustomModelAdmin from "@/components/modal/CustomModelAdmin";
+import { FaSpinner } from "react-icons/fa";
 
 interface EditModalProps {
     order: OrderInterface | null;
 }
 
 export default function EditModal({ order }: EditModalProps) {
-    console.log("order", order);
     const {
         register,
         handleSubmit,
         control,
         watch,
+        reset,
         formState: { errors, isSubmitting },
-    } = useForm<OrderInterface>({
-        defaultValues: {
-            additionalServices: {
-                platform: "TikTok",
-                duration: "15s",
-                edit: false,
-                aspectRatio: "9:16",
-                share: false,
-                coverPicture: false,
-                creatorType: false,
-                productShipping: false,
-            },
-        },
-    });
+    } = useForm<OrderInterface>();
     const dispatch = useDispatch<AppDispatch>();
     const [minAge, setMinAge] = useState(18);
     const [maxAge, setMaxAge] = useState(65);
@@ -46,18 +34,67 @@ export default function EditModal({ order }: EditModalProps) {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const { selectedFiles, setSelectedFiles } = useFileContext();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedPlatform, setSelectedPlatform] = useState<string>("TikTok");
-    const [duration, setDuration] = useState<string>("15s");
-    const [isEdit, setIsEdit] = useState<boolean>(false);
-    const [aspectRatio, setAspectRatio] = useState<string>("9:16");
-    const [isShare, setIsShare] = useState<boolean>(false);
-    const [isCoverPicture, setIsCoverPicture] = useState<boolean>(false);
-    const [creatorType, setCreatorType] = useState<boolean>(false);
-    const [isShipping, setIsShipping] = useState<boolean>(false);
 
     const brandRecords = useSelector(
         (state: RootState) => state.brand.myBrands
     );
+
+    useEffect(() => {
+        if (order) {
+            console.log("🚀 ~ useEffect ~ order:", order);
+            reset({
+                orderOwner: order.orderOwner,
+                assignedCreators: order.assignedCreators.map(
+                    (creator: any) => creator._id
+                ),
+                noOfUgc: order.noOfUgc,
+                totalPrice: order.totalPrice,
+                orderStatus: order.orderStatus,
+                paymentStatus: order.paymentStatus,
+                contentsDelivered: order.contentsDelivered,
+                additionalServices: {
+                    platform: order.additionalServices.platform,
+                    duration: order.additionalServices.duration,
+                    edit: order.additionalServices.edit,
+                    aspectRatio: order.additionalServices.aspectRatio,
+                    share: order.additionalServices.share,
+                    coverPicture: order.additionalServices.coverPicture,
+                    creatorType: order.additionalServices.creatorType,
+                    productShipping: order.additionalServices.productShipping,
+                },
+                preferences: {
+                    creatorGender: order.preferences?.creatorGender,
+                    minCreatorAge: order.preferences?.minCreatorAge,
+                    maxCreatorAge: order.preferences?.maxCreatorAge,
+                    areaOfInterest: order.preferences?.areaOfInterest,
+                    contentType: order.preferences?.contentType,
+                    addressDetails: {
+                        country: order.preferences?.addressDetails?.country,
+                        state: order.preferences?.addressDetails?.state,
+                        district: order.preferences?.addressDetails?.district,
+                        neighborhood:
+                            order.preferences?.addressDetails?.neighborhood,
+                        fullAddress:
+                            order.preferences?.addressDetails?.fullAddress,
+                    },
+                },
+                briefContent: {
+                    brandName: order.briefContent?.brandName,
+                    brief: order.briefContent?.brief,
+                    productServiceName: order.briefContent?.productServiceName,
+                    productServiceDesc: order.briefContent?.productServiceDesc,
+                    scenario: order.briefContent?.scenario,
+                    caseStudy: order.briefContent?.caseStudy,
+                    uploadFiles: order.briefContent?.uploadFiles,
+                    uploadFileDate: order.briefContent?.uploadFileDate,
+                },
+                numberOfRequests: order.numberOfRequests,
+                orderQuota: order.orderQuota,
+                quotaLeft: order.quotaLeft,
+                uploadFiles: order.uploadFiles,
+            });
+        }
+    }, [order, reset]);
 
     useEffect(() => {
         const storedToken = localStorage.getItem("accessToken");
@@ -124,6 +161,7 @@ export default function EditModal({ order }: EditModalProps) {
                                                 required:
                                                     "Customer id is required",
                                             })}
+                                            value={order.orderOwner._id}
                                         />
                                     </div>
 
@@ -163,11 +201,17 @@ export default function EditModal({ order }: EditModalProps) {
                                         <label className='block text-sm font-semibold mt-2'>
                                             Assign Creators:
                                         </label>
-                                        <input
-                                            type='text'
+                                        <textarea
+                                            rows={2}
                                             placeholder='Enter creator IDs'
                                             className='w-full px-3 py-1 border rounded-md focus:outline-none'
                                             {...register("assignedCreators")}
+                                            value={order?.assignedCreators
+                                                .map(
+                                                    (creator: any) =>
+                                                        creator._id
+                                                )
+                                                ?.join(", ")}
                                         />
                                     </div>
                                 </div>
@@ -186,35 +230,46 @@ export default function EditModal({ order }: EditModalProps) {
                                             <Controller
                                                 name='additionalServices.platform'
                                                 control={control}
-                                                defaultValue='TikTok'
+                                                defaultValue='tiktok'
                                                 render={({ field }) => (
                                                     <>
                                                         {[
-                                                            "TikTok",
-                                                            "Meta",
-                                                            "Diğer",
-                                                        ].map((platform) => (
-                                                            <button
-                                                                key={platform}
-                                                                type='button'
-                                                                className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
-                                                                    selectedPlatform ===
-                                                                    platform
-                                                                        ? "ButtonBlue text-white"
-                                                                        : "bg-gray-200"
-                                                                }`}
-                                                                onClick={() => {
-                                                                    setSelectedPlatform(
-                                                                        platform
-                                                                    );
-                                                                    field.onChange(
-                                                                        platform
-                                                                    );
-                                                                }}
-                                                            >
-                                                                {platform}
-                                                            </button>
-                                                        ))}
+                                                            {
+                                                                label: "TikTok",
+                                                                value: "tiktok",
+                                                            },
+                                                            {
+                                                                label: "Meta",
+                                                                value: "meta",
+                                                            },
+                                                            {
+                                                                label: "Other",
+                                                                value: "other",
+                                                            },
+                                                        ].map(
+                                                            ({
+                                                                label,
+                                                                value,
+                                                            }) => (
+                                                                <button
+                                                                    key={value}
+                                                                    type='button'
+                                                                    className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
+                                                                        field.value ===
+                                                                        value
+                                                                            ? "ButtonBlue text-white"
+                                                                            : "bg-gray-200"
+                                                                    }`}
+                                                                    onClick={() =>
+                                                                        field.onChange(
+                                                                            value
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    {label}
+                                                                </button>
+                                                            )
+                                                        )}
                                                     </>
                                                 )}
                                             />
@@ -240,19 +295,16 @@ export default function EditModal({ order }: EditModalProps) {
                                                                 key={dur}
                                                                 type='button'
                                                                 className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
-                                                                    duration ===
+                                                                    field.value ===
                                                                     dur
                                                                         ? "ButtonBlue text-white"
                                                                         : "bg-gray-200"
                                                                 }`}
-                                                                onClick={() => {
-                                                                    setDuration(
-                                                                        dur
-                                                                    );
+                                                                onClick={() =>
                                                                     field.onChange(
                                                                         dur
-                                                                    );
-                                                                }}
+                                                                    )
+                                                                }
                                                             >
                                                                 {dur}
                                                             </button>
@@ -270,6 +322,7 @@ export default function EditModal({ order }: EditModalProps) {
                                             <Controller
                                                 name='additionalServices.edit'
                                                 control={control}
+                                                defaultValue={false}
                                                 render={({ field }) => (
                                                     <>
                                                         {["Yes", "No"].map(
@@ -278,26 +331,18 @@ export default function EditModal({ order }: EditModalProps) {
                                                                     key={option}
                                                                     type='button'
                                                                     className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
-                                                                        (isEdit &&
-                                                                            option ===
-                                                                                "Yes") ||
-                                                                        (!isEdit &&
-                                                                            option ===
-                                                                                "No")
+                                                                        field.value ===
+                                                                        (option ===
+                                                                            "Yes")
                                                                             ? "ButtonBlue text-white"
                                                                             : "bg-gray-200"
                                                                     }`}
-                                                                    onClick={() => {
-                                                                        const newValue =
-                                                                            option ===
-                                                                            "Yes";
-                                                                        setIsEdit(
-                                                                            newValue
-                                                                        );
+                                                                    onClick={() =>
                                                                         field.onChange(
-                                                                            newValue
-                                                                        );
-                                                                    }}
+                                                                            option ===
+                                                                                "Yes"
+                                                                        )
+                                                                    }
                                                                 >
                                                                     {option}
                                                                 </button>
@@ -325,19 +370,16 @@ export default function EditModal({ order }: EditModalProps) {
                                                                     key={ratio}
                                                                     type='button'
                                                                     className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
-                                                                        aspectRatio ===
+                                                                        field.value ===
                                                                         ratio
                                                                             ? "ButtonBlue text-white"
                                                                             : "bg-gray-200"
                                                                     }`}
-                                                                    onClick={() => {
-                                                                        setAspectRatio(
-                                                                            ratio
-                                                                        );
+                                                                    onClick={() =>
                                                                         field.onChange(
                                                                             ratio
-                                                                        );
-                                                                    }}
+                                                                        )
+                                                                    }
                                                                 >
                                                                     {ratio}
                                                                 </button>
@@ -356,6 +398,7 @@ export default function EditModal({ order }: EditModalProps) {
                                             <Controller
                                                 name='additionalServices.share'
                                                 control={control}
+                                                defaultValue={false}
                                                 render={({ field }) => (
                                                     <>
                                                         {["Yes", "No"].map(
@@ -364,26 +407,18 @@ export default function EditModal({ order }: EditModalProps) {
                                                                     key={option}
                                                                     type='button'
                                                                     className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
-                                                                        (isShare &&
-                                                                            option ===
-                                                                                "Yes") ||
-                                                                        (!isShare &&
-                                                                            option ===
-                                                                                "No")
+                                                                        field.value ===
+                                                                        (option ===
+                                                                            "Yes")
                                                                             ? "ButtonBlue text-white"
                                                                             : "bg-gray-200"
                                                                     }`}
-                                                                    onClick={() => {
-                                                                        const newValue =
-                                                                            option ===
-                                                                            "Yes";
-                                                                        setIsShare(
-                                                                            newValue
-                                                                        );
+                                                                    onClick={() =>
                                                                         field.onChange(
-                                                                            newValue
-                                                                        );
-                                                                    }}
+                                                                            option ===
+                                                                                "Yes"
+                                                                        )
+                                                                    }
                                                                 >
                                                                     {option}
                                                                 </button>
@@ -402,6 +437,7 @@ export default function EditModal({ order }: EditModalProps) {
                                             <Controller
                                                 name='additionalServices.coverPicture'
                                                 control={control}
+                                                defaultValue={false}
                                                 render={({ field }) => (
                                                     <>
                                                         {["Yes", "No"].map(
@@ -410,26 +446,18 @@ export default function EditModal({ order }: EditModalProps) {
                                                                     key={option}
                                                                     type='button'
                                                                     className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
-                                                                        (isCoverPicture &&
-                                                                            option ===
-                                                                                "Yes") ||
-                                                                        (!isCoverPicture &&
-                                                                            option ===
-                                                                                "No")
+                                                                        field.value ===
+                                                                        (option ===
+                                                                            "Yes")
                                                                             ? "ButtonBlue text-white"
                                                                             : "bg-gray-200"
                                                                     }`}
-                                                                    onClick={() => {
-                                                                        const newValue =
-                                                                            option ===
-                                                                            "Yes";
-                                                                        setIsCoverPicture(
-                                                                            newValue
-                                                                        );
+                                                                    onClick={() =>
                                                                         field.onChange(
-                                                                            newValue
-                                                                        );
-                                                                    }}
+                                                                            option ===
+                                                                                "Yes"
+                                                                        )
+                                                                    }
                                                                 >
                                                                     {option}
                                                                 </button>
@@ -448,6 +476,7 @@ export default function EditModal({ order }: EditModalProps) {
                                             <Controller
                                                 name='additionalServices.creatorType'
                                                 control={control}
+                                                defaultValue={false}
                                                 render={({ field }) => (
                                                     <>
                                                         {["Nano", "Micro"].map(
@@ -456,26 +485,18 @@ export default function EditModal({ order }: EditModalProps) {
                                                                     key={option}
                                                                     type='button'
                                                                     className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
-                                                                        (creatorType &&
-                                                                            option ===
-                                                                                "Micro") ||
-                                                                        (!creatorType &&
-                                                                            option ===
-                                                                                "Nano")
+                                                                        field.value ===
+                                                                        (option ===
+                                                                            "Micro")
                                                                             ? "ButtonBlue text-white"
                                                                             : "bg-gray-200"
                                                                     }`}
-                                                                    onClick={() => {
-                                                                        const val =
-                                                                            option ===
-                                                                            "Micro";
-                                                                        setCreatorType(
-                                                                            val
-                                                                        );
+                                                                    onClick={() =>
                                                                         field.onChange(
-                                                                            val
-                                                                        );
-                                                                    }}
+                                                                            option ===
+                                                                                "Micro"
+                                                                        )
+                                                                    }
                                                                 >
                                                                     {option}
                                                                 </button>
@@ -494,6 +515,7 @@ export default function EditModal({ order }: EditModalProps) {
                                             <Controller
                                                 name='additionalServices.productShipping'
                                                 control={control}
+                                                defaultValue={false}
                                                 render={({ field }) => (
                                                     <>
                                                         {["Yes", "No"].map(
@@ -502,26 +524,18 @@ export default function EditModal({ order }: EditModalProps) {
                                                                     key={option}
                                                                     type='button'
                                                                     className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
-                                                                        (isShipping &&
-                                                                            option ===
-                                                                                "Yes") ||
-                                                                        (!isShipping &&
-                                                                            option ===
-                                                                                "No")
+                                                                        field.value ===
+                                                                        (option ===
+                                                                            "Yes")
                                                                             ? "ButtonBlue text-white"
                                                                             : "bg-gray-200"
                                                                     }`}
-                                                                    onClick={() => {
-                                                                        const newValue =
-                                                                            option ===
-                                                                            "Yes";
-                                                                        setIsShipping(
-                                                                            newValue
-                                                                        );
+                                                                    onClick={() =>
                                                                         field.onChange(
-                                                                            newValue
-                                                                        );
-                                                                    }}
+                                                                            option ===
+                                                                                "Yes"
+                                                                        )
+                                                                    }
                                                                 >
                                                                     {option}
                                                                 </button>
@@ -579,12 +593,9 @@ export default function EditModal({ order }: EditModalProps) {
 
                                     <select
                                         {...register("briefContent.brandName", {
-                                            required: false,
+                                            required: true,
                                         })}
-                                        value={selectedBrand}
-                                        onChange={(e) =>
-                                            setSelectedBrand(e.target.value)
-                                        }
+                                        value={order.briefContent?.brandName}
                                         className='w-64 p-2 border border-gray-300 rounded-md shadow-sm focus:border-none bg-white text-gray-900'
                                     >
                                         <option
@@ -602,11 +613,6 @@ export default function EditModal({ order }: EditModalProps) {
                                             </option>
                                         ))}
                                     </select>
-                                    {/* {errors.brand && (
-                                <span className='text-red-500'>
-                                    Marka Seçimi zorunludur
-                                </span>
-                            )} */}
                                 </div>
 
                                 {/* Brief Section */}
@@ -641,11 +647,6 @@ export default function EditModal({ order }: EditModalProps) {
                                         placeholder='Ürün / Hizmet Adı'
                                         className='w-full px-3 py-2 border rounded-md focus:outline-none overflow-auto'
                                     />
-                                    {/* {errors.briefContent.productServiceName && (
-                                <span className='text-red-500'>
-                                    Ürün adı zorunludur
-                                </span>
-                            )} */}
                                 </div>
 
                                 {/* Scenario */}
@@ -836,27 +837,40 @@ export default function EditModal({ order }: EditModalProps) {
                                     </label>
 
                                     {["Kadın", "Erkek", "Karışık"].map(
-                                        (gender, index) => (
-                                            <label
-                                                key={index}
-                                                className='inline-flex items-center cursor-pointer mb-2 lg:mb-6'
-                                            >
-                                                <input
-                                                    type='radio'
-                                                    {...register(
-                                                        "preferences.creatorGender"
-                                                    )}
-                                                    value={gender}
-                                                    className='hidden peer'
-                                                />
-                                                <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>
-                                                    <div className='w-full h-full bg-white rounded-full'></div>
-                                                </div>
-                                                <span className='ml-1 text-sm'>
-                                                    {gender}
-                                                </span>
-                                            </label>
-                                        )
+                                        (gender, index) => {
+                                            // Map Turkish labels to English values
+                                            const valueMap: Record<
+                                                string,
+                                                string
+                                            > = {
+                                                Kadın: "female",
+                                                Erkek: "male",
+                                                Karışık: "other",
+                                            };
+
+                                            return (
+                                                <label
+                                                    key={index}
+                                                    className='inline-flex items-center cursor-pointer mb-2 lg:mb-6'
+                                                >
+                                                    <input
+                                                        type='radio'
+                                                        {...register(
+                                                            "preferences.creatorGender"
+                                                        )}
+                                                        value={valueMap[gender]} // Use the mapped English value
+                                                        className='hidden peer'
+                                                    />
+                                                    <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>
+                                                        <div className='w-full h-full bg-white rounded-full'></div>
+                                                    </div>
+                                                    <span className='ml-1 text-sm'>
+                                                        {gender}
+                                                    </span>{" "}
+                                                    {/* Display Turkish label */}
+                                                </label>
+                                            );
+                                        }
                                     )}
                                 </div>
 
@@ -960,76 +974,64 @@ export default function EditModal({ order }: EditModalProps) {
                                     </div>
                                 </div>
                             </div>
+                            <div className='w-4/12 lg:w-3/12 relative mt-2'>
+                                {/* Track background and active track */}
+                                <div className='absolute w-full h-2 bg-gray-200 rounded-full' />
+                                <div
+                                    className='absolute h-2 bg-blue-600 rounded-full'
+                                    style={{
+                                        left: `${
+                                            ((minAge - 18) / (65 - 18)) * 100
+                                        }%`,
+                                        right: `${
+                                            100 -
+                                            ((maxAge - 18) / (65 - 18)) * 100
+                                        }%`,
+                                    }}
+                                />
 
-                            <div className='my-5 flex flex-col'>
-                                <div className='my-5 flex flex-col'>
-                                    <label className='block text-sm font-semibold text-gray-700'>
-                                        Yaş Aralığı:{" "}
-                                        <span className='font-medium'>
-                                            (Opsiyonel)
-                                        </span>
-                                    </label>
+                                {/* Min age slider */}
+                                <input
+                                    type='range'
+                                    min='18'
+                                    max='65'
+                                    defaultValue={minAge}
+                                    className='absolute w-full pointer-events-none appearance-none bg-transparent'
+                                    style={{
+                                        height: "2rem",
+                                        margin: "-0.8rem 0",
+                                        zIndex: 3,
+                                    }}
+                                    {...register("preferences.minCreatorAge", {
+                                        onChange(event) {
+                                            setMinAge(event.target.value);
+                                        },
+                                    })}
+                                />
 
-                                    <div className='w-4/12 lg:w-3/12 relative mt-2'>
-                                        {/* Track background and active track */}
-                                        <div className='absolute w-full h-2 bg-gray-200 rounded-full' />
-                                        <div
-                                            className='absolute h-2 bg-blue-600 rounded-full'
-                                            style={{
-                                                left: `${
-                                                    ((minAge - 18) /
-                                                        (65 - 18)) *
-                                                    100
-                                                }%`,
-                                                right: `${
-                                                    100 -
-                                                    ((maxAge - 18) /
-                                                        (65 - 18)) *
-                                                        100
-                                                }%`,
-                                            }}
-                                        />
+                                {/* Max age slider */}
+                                <input
+                                    type='range'
+                                    min='18'
+                                    max='65'
+                                    defaultValue={maxAge}
+                                    className='absolute w-full pointer-events-none appearance-none bg-transparent'
+                                    style={{
+                                        height: "2rem",
+                                        margin: "-0.8rem 0",
+                                        zIndex: 4,
+                                    }}
+                                    {...register("preferences.maxCreatorAge", {
+                                        onChange(event) {
+                                            setMaxAge(event.target.value);
+                                        },
+                                    })}
+                                />
 
-                                        {/* Min age slider */}
-                                        <input
-                                            type='range'
-                                            min='18'
-                                            max='65'
-                                            value={minAge}
-                                            className='absolute w-full pointer-events-none appearance-none bg-transparent'
-                                            style={{
-                                                height: "2rem",
-                                                margin: "-0.8rem 0",
-                                                zIndex: 3,
-                                            }}
-                                            {...register(
-                                                "preferences.maxCreatorAge"
-                                            )}
-                                        />
-
-                                        {/* Max age slider */}
-                                        <input
-                                            type='range'
-                                            min='18'
-                                            max='65'
-                                            value={maxAge}
-                                            className='absolute w-full pointer-events-none appearance-none bg-transparent'
-                                            style={{
-                                                height: "2rem",
-                                                margin: "-0.8rem 0",
-                                                zIndex: 4,
-                                            }}
-                                            {...register(
-                                                "preferences.minCreatorAge"
-                                            )}
-                                        />
-
-                                        {/* Display age values */}
-                                        <div className='flex justify-between text-sm text-gray-500 mt-4'>
-                                            <span>{minAge}</span>
-                                            <span>{maxAge}</span>
-                                        </div>
-                                    </div>
+                                {/* Display age values */}
+                                <div className='flex justify-between text-sm text-gray-500 mt-4'>
+                                    <span>{minAge}</span>
+                                    <span>{maxAge}</span>
                                 </div>
                             </div>
 
@@ -1054,7 +1056,7 @@ export default function EditModal({ order }: EditModalProps) {
                                             "Gönüllülük",
                                             "Moda ve Güzellik",
                                             "E-Ticaret",
-                                            "Üretim ve Mühendislik",
+                                            "Mühendislik",
                                             "Sağlık",
                                             "Eğitim",
                                         ].map((item, index) => (
@@ -1140,109 +1142,48 @@ export default function EditModal({ order }: EditModalProps) {
                                                         <label className='block text-sm font-semibold mb-2'>
                                                             Ülke
                                                         </label>
-                                                        <select
+                                                        <input
                                                             className='w-full px-3 py-2 border rounded-md focus:outline-none'
                                                             {...register(
                                                                 "preferences.addressDetails.country"
                                                             )}
-                                                        >
-                                                            <option value=''>
-                                                                Seçiniz
-                                                            </option>
-                                                            <option value='turkiye'>
-                                                                Türkiye
-                                                            </option>
-                                                            <option value='kktc'>
-                                                                KKTC
-                                                            </option>
-                                                            <option value='azerbaycan'>
-                                                                Azerbaycan
-                                                            </option>
-                                                        </select>
+                                                        />
                                                     </div>
 
                                                     <div>
                                                         <label className='block text-sm font-semibold mb-2'>
                                                             İl
                                                         </label>
-                                                        <select
+                                                        <input
                                                             className='w-full px-3 py-2 border rounded-md focus:outline-none'
                                                             {...register(
                                                                 "preferences.addressDetails.state"
                                                             )}
-                                                        >
-                                                            <option value=''>
-                                                                Seçiniz
-                                                            </option>
-                                                            <option value='istanbul'>
-                                                                İstanbul
-                                                            </option>
-                                                            <option value='ankara'>
-                                                                Ankara
-                                                            </option>
-                                                            <option value='izmir'>
-                                                                İzmir
-                                                            </option>
-                                                            <option value='antalya'>
-                                                                Antalya
-                                                            </option>
-                                                        </select>
+                                                        />
                                                     </div>
 
                                                     <div>
                                                         <label className='block text-sm font-semibold mb-2'>
                                                             İlçe
                                                         </label>
-                                                        <select
+                                                        <input
                                                             className='w-full px-3 py-2 border rounded-md focus:outline-none'
                                                             {...register(
                                                                 "preferences.addressDetails.district"
                                                             )}
-                                                        >
-                                                            <option value=''>
-                                                                Seçiniz
-                                                            </option>
-                                                            <option value='kadikoy'>
-                                                                Kadıköy
-                                                            </option>
-                                                            <option value='besiktas'>
-                                                                Beşiktaş
-                                                            </option>
-                                                            <option value='uskudar'>
-                                                                Üsküdar
-                                                            </option>
-                                                            <option value='sisli'>
-                                                                Şişli
-                                                            </option>
-                                                        </select>
+                                                        />
                                                     </div>
 
                                                     <div>
                                                         <label className='block text-sm font-semibold mb-2'>
                                                             Mahalle
                                                         </label>
-                                                        <select
+                                                        <input
                                                             className='w-full px-3 py-2 border rounded-md focus:outline-none'
                                                             {...register(
                                                                 "preferences.addressDetails.neighborhood"
                                                             )}
-                                                        >
-                                                            <option value=''>
-                                                                Seçiniz
-                                                            </option>
-                                                            <option value='caferaga'>
-                                                                Caferağa
-                                                            </option>
-                                                            <option value='fenerbahce'>
-                                                                Fenerbahçe
-                                                            </option>
-                                                            <option value='rasimpasa'>
-                                                                Rasimpaşa
-                                                            </option>
-                                                            <option value='osmanaga'>
-                                                                Osmanağa
-                                                            </option>
-                                                        </select>
+                                                        />
                                                     </div>
 
                                                     <div className='col-span-2'>
@@ -1266,7 +1207,7 @@ export default function EditModal({ order }: EditModalProps) {
                             </div>
                             <div className='flex justify-end'>
                                 <button className='ButtonBlue text-white px-8 py-1 rounded-lg font-semibold'>
-                                    Save
+                                    {isSubmitting ? <FaSpinner /> : "Kaydet"}
                                 </button>
                             </div>
                         </div>
@@ -1274,7 +1215,7 @@ export default function EditModal({ order }: EditModalProps) {
                 </form>
 
                 {/* Table */}
-                <div className='bg-white px-4 sm:px-6 md:px-12 lg:px-24'>
+                <div className='bg-white my-8 px-4 sm:px-6 md:px-12 lg:px-24'>
                     {order?.assignedCreators?.length > 0 ? (
                         <table className='text-xs lg:text-sm w-auto lg:min-w-full bg-white'>
                             <thead>
