@@ -1081,7 +1081,7 @@ export default function EditModal({ order }: EditModalProps) {
                                             </label>
                                         ))}
                                     </div>
-                                    <div className='w-full lg:w-1/3'>
+                                    <div className='w-full mt-12 lg:w-1/3'>
                                         {/* If Mekan (Place) selected */}
                                         {(contentType === "product" ||
                                             contentType === "location") && (
