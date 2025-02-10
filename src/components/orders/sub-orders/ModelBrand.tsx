@@ -35,7 +35,7 @@ const ModelBrand: React.FC = () => {
                         brandCategory: data.brandCategory,
                         brandWebsite: data.brandWebsite,
                         brandCountry: data.brandCountry,
-                        brandImage: data.brandImage,
+                        // brandImage: data.brandImage,
                     },
                     token,
                 })
