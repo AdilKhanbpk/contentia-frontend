@@ -9,6 +9,8 @@ import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import CustomModelAdmin from "@/components/modal/CustomModelAdmin";
 import { FaSpinner } from "react-icons/fa";
+import { updateOrder } from "@/store/features/admin/ordersSlice";
+import { toast } from "react-toastify";
 
 interface EditModalProps {
     order: OrderInterface | null;
@@ -104,7 +106,7 @@ export default function EditModal({ order }: EditModalProps) {
         }
     }, [dispatch]);
 
-    const brands = brandRecords.map((record) => record.brandName);
+    const brands = brandRecords.map((record: any) => record.brandName);
     const contentType = watch("preferences.contentType");
     const handleDivClick = () => {
         if (fileInputRef.current) {
@@ -124,6 +126,22 @@ export default function EditModal({ order }: EditModalProps) {
 
     const submitForm = async (data: OrderInterface) => {
         console.log("data", data);
+if (!token) {  
+    toast.error("No token found. Please log in again.");
+    return;}
+
+
+       try {
+         const res = await dispatch(updateOrder({orderId:data._id,data, token})).unwrap();
+         if (res) {
+            toast.success("Order updated successfully");
+            setIsModalOpen(false);
+        }
+       } catch (error) {
+         console.error("Error updating order:", error);
+       }
+
+      
     };
 
     if (!order) return null;
@@ -1043,22 +1061,38 @@ export default function EditModal({ order }: EditModalProps) {
                                 <div className='flex flex-col lg:flex-row justify-between lg:space-x-4'>
                                     <div className=' w-full lg:w-2/3 mt-2  grid-cols-2 sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-4'>
                                         {[
-                                            "Spor ve Aktivite",
-                                            "Sanal ve El İşleri",
-                                            "Müzik",
-                                            "Eğlence ve Oyun",
-                                            "Yemek ve İçecek",
-                                            "Bilim ve Teknoloji",
-                                            "Seyahat ve Kültür",
-                                            "Kitap ve Edebiyat",
-                                            "Film ve Dizi",
-                                            "Doğa ve Hayvanlar",
-                                            "Gönüllülük",
-                                            "Moda ve Güzellik",
-                                            "E-Ticaret",
-                                            "Mühendislik",
-                                            "Sağlık",
+                                            "Moda",
+                                            "Giyim",
+                                            "Makyaj ve Kozmetik",
+                                            "Saç ve Bakım",
+                                            "Cilt Bakımı",
+                                            "Ayakkabı",
+                                            "Evcil Hayvanlar",
+                                            "Araba",
+                                            "Motorsiklet",
+                                            "Gayrimenkul",
+                                            "Yemek Tarifi",
+                                            "Restoranlar",
+                                            "Gastronomi Yeme İçme",
+                                            "Seyahat",
+                                            "Fitness ve Sağlık",
+                                            "Spor",
+                                            "Teknoloji",
+                                            "Elektronik",
                                             "Eğitim",
+                                            "Kişisel Gelişim",
+                                            "Fotoğrafçılık",
+                                            "Müzik",
+                                            "Film ve Dizi",
+                                            "Tiyatro",
+                                            "Edebiyat",
+                                            "E-Ticaret",
+                                            "Finans Piyasaları",
+                                            "İş / Business",
+                                            "Eğlence ve Oyun",
+                                            "Sağlık",
+                                            "İnşaat ve Tadilat",
+                                            "Doğa",
                                         ].map((item, index) => (
                                             <label
                                                 key={index}

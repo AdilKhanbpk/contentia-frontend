@@ -127,7 +127,7 @@ export const updateOrder = createAsyncThunk(
   async ({ orderId, data, token }: { orderId: string; data: Partial<OrderInterface>; token: string }, { rejectWithValue }) => {
 
     try {
-      const response = await axiosInstance.put(`/admin/orders/${orderId}`, data, {
+      const response = await axiosInstance.patch(`/admin/orders/${orderId}`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
