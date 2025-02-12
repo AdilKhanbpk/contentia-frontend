@@ -132,9 +132,10 @@ if (!token) {
     return;}
 
     console.log(data._id)
+    console.log(data._id.toString())
 
        try {
-         const res = await dispatch(updateOrder({data, token})).unwrap();
+         const res = await dispatch(updateOrder({orderId:data._id,data, token})).unwrap();
          if (res) {
             toast.success("Order updated successfully");
             setIsModalOpen(false);
