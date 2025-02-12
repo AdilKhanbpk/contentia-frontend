@@ -140,7 +140,7 @@ export default function EditModal({ order }: EditModalProps) {
     };
 
     const submitForm = async (data: OrderInterface) => {
-        console.log("Submitting data", data);
+        // console.log("Submitting data", data);
         if (!token) {
             toast.error("No token found. Please log in again.");
             return;
