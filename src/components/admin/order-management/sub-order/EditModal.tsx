@@ -45,6 +45,7 @@ export default function EditModal({ order }: EditModalProps) {
         if (order) {
             console.log("🚀 ~ useEffect ~ order:", order);
             reset({
+                _id: order._id,
                 orderOwner: order.orderOwner,
                 assignedCreators: order.assignedCreators.map(
                     (creator: any) => creator._id
@@ -130,9 +131,10 @@ if (!token) {
     toast.error("No token found. Please log in again.");
     return;}
 
+    console.log(data._id)
 
        try {
-         const res = await dispatch(updateOrder({orderId:data._id,data, token})).unwrap();
+         const res = await dispatch(updateOrder({data, token})).unwrap();
          if (res) {
             toast.success("Order updated successfully");
             setIsModalOpen(false);
