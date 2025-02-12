@@ -124,6 +124,14 @@ export default function EditModal({ order }: EditModalProps) {
             setSelectedFiles((prevFiles) => [...prevFiles, ...newFiles]);
         }
     };
+    const formatAssignedCreators = (creators: string): string[] => {
+        if (!creators) return [];
+
+        return creators
+            .split(",")
+            .filter((id) => id.trim() !== "")
+            .map((id) => id.trim());
+    };
 
     const submitForm = async (data: OrderInterface) => {
         console.log("Submitting data", data);
@@ -131,6 +139,10 @@ export default function EditModal({ order }: EditModalProps) {
             toast.error("No token found. Please log in again.");
             return;
         }
+
+        data.assignedCreators = formatAssignedCreators(
+            data.assignedCreators as unknown as string
+        );
 
         try {
             const res = await dispatch(
