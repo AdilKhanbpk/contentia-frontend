@@ -46,7 +46,7 @@ export default function EditModal({ order }: EditModalProps) {
             console.log("🚀 ~ useEffect ~ order:", order);
             reset({
                 _id: order._id,
-                orderOwner: order.orderOwner,
+                orderOwner: order.orderOwner._id as any,
                 assignedCreators: order.assignedCreators.map(
                     (creator: any) => creator._id
                 ),
@@ -126,25 +126,23 @@ export default function EditModal({ order }: EditModalProps) {
     };
 
     const submitForm = async (data: OrderInterface) => {
-        console.log("data", data);
-if (!token) {  
-    toast.error("No token found. Please log in again.");
-    return;}
-
-    console.log(data._id)
-    console.log(data._id.toString())
-
-       try {
-         const res = await dispatch(updateOrder({orderId:data._id,data, token})).unwrap();
-         if (res) {
-            toast.success("Order updated successfully");
-            setIsModalOpen(false);
+        console.log("Submitting data", data);
+        if (!token) {
+            toast.error("No token found. Please log in again.");
+            return;
         }
-       } catch (error) {
-         console.error("Error updating order:", error);
-       }
 
-      
+        try {
+            const res = await dispatch(
+                updateOrder({ orderId: data._id, data, token })
+            ).unwrap();
+            if (res) {
+                toast.success("Order updated successfully");
+                setIsModalOpen(false);
+            }
+        } catch (error) {
+            console.error("Error updating order:", error);
+        }
     };
 
     if (!order) return null;
@@ -183,6 +181,7 @@ if (!token) {
                                                     "Customer id is required",
                                             })}
                                             value={order.orderOwner._id}
+                                            readOnly
                                         />
                                     </div>
 
@@ -198,6 +197,7 @@ if (!token) {
                                             {...register("noOfUgc", {
                                                 required:
                                                     "Number of UGC is required",
+                                                valueAsNumber: true,
                                             })}
                                         />
                                     </div>
@@ -208,11 +208,11 @@ if (!token) {
                                             Select Price:
                                         </label>
                                         <input
-                                            type='number'
                                             placeholder='Enter price'
                                             className='w-full px-3 py-1 border rounded-md focus:outline-none'
                                             {...register("totalPrice", {
                                                 required: "Price is required",
+                                                valueAsNumber: true,
                                             })}
                                         />
                                     </div>
@@ -227,7 +227,7 @@ if (!token) {
                                             placeholder='Enter creator IDs'
                                             className='w-full px-3 py-1 border rounded-md focus:outline-none'
                                             {...register("assignedCreators")}
-                                            value={order?.assignedCreators
+                                            defaultValue={order?.assignedCreators
                                                 .map(
                                                     (creator: any) =>
                                                         creator._id
@@ -1050,7 +1050,7 @@ if (!token) {
                                 />
 
                                 {/* Display age values */}
-                                <div className='flex justify-between text-sm text-gray-500 mt-4'>
+                                <div className='flex justify-between text-sm text-gray-500 pt-3 mt-4'>
                                     <span>{minAge}</span>
                                     <span>{maxAge}</span>
                                 </div>
