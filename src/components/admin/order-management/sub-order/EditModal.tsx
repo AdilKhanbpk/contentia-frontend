@@ -124,9 +124,15 @@ export default function EditModal({ order }: EditModalProps) {
             setSelectedFiles((prevFiles) => [...prevFiles, ...newFiles]);
         }
     };
-    const formatAssignedCreators = (creators: string): string[] => {
+    const formatAssignedCreators = (creators: string | string[]): string[] => {
         if (!creators) return [];
 
+        // If creators is already an array, return it directly
+        if (Array.isArray(creators)) {
+            return creators;
+        }
+
+        // Otherwise, split the string into an array
         return creators
             .split(",")
             .filter((id) => id.trim() !== "")
@@ -144,9 +150,73 @@ export default function EditModal({ order }: EditModalProps) {
             data.assignedCreators as unknown as string
         );
 
+        // Create a new FormData object
+        const formData = new FormData();
+        formData.append("orderOwner", String(data.orderOwner));
+        // Append basic fields
+        formData.append("noOfUgc", String(data.noOfUgc || 0));
+        formData.append("totalPrice", String(data.totalPrice || 0));
+
+        // Append additional services if available
+        if (data.additionalServices) {
+            Object.entries(data.additionalServices).forEach(([key, value]) => {
+                formData.append(`additionalServices[${key}]`, String(value));
+            });
+        }
+
+        // Append preferences if available
+        if (data.preferences) {
+            Object.entries(data.preferences).forEach(([key, value]) => {
+                if (key === "addressDetails" && typeof value === "object") {
+                    Object.entries(value).forEach(([subKey, subValue]) => {
+                        formData.append(
+                            `preferences[addressDetails][${subKey}]`,
+                            String(subValue)
+                        );
+                    });
+                } else if (key === "areaOfInterest" && Array.isArray(value)) {
+                    value.forEach((item, index) => {
+                        formData.append(
+                            `preferences[areaOfInterest][${index}]`,
+                            item
+                        );
+                    });
+                } else {
+                    formData.append(`preferences[${key}]`, String(value));
+                }
+            });
+        }
+
+        // Append brief content if available
+        if (data.briefContent) {
+            Object.entries(data.briefContent).forEach(([key, value]) => {
+                if (Array.isArray(value)) {
+                    value.forEach((item, index) => {
+                        formData.append(`briefContent[${key}][${index}]`, item);
+                    });
+                } else {
+                    formData.append(`briefContent[${key}]`, String(value));
+                }
+            });
+        }
+
+        // Append assigned creators (array handling)
+        if (Array.isArray(data.assignedCreators)) {
+            data.assignedCreators.forEach((creator, index) => {
+                formData.append(`assignedCreators[${index}]`, String(creator));
+            });
+        }
+
+        // Append selected files if present
+        if (selectedFiles.length > 0) {
+            selectedFiles.forEach((file) => {
+                formData.append("uploadFiles", file);
+            });
+        }
+
         try {
             const res = await dispatch(
-                updateOrder({ orderId: data._id, data, token })
+                updateOrder({ orderId: data._id, data: formData, token })
             ).unwrap();
             if (res) {
                 toast.success("Order updated successfully");
@@ -628,7 +698,9 @@ export default function EditModal({ order }: EditModalProps) {
                                         {...register("briefContent.brandName", {
                                             required: true,
                                         })}
-                                        value={order.briefContent?.brandName}
+                                        defaultValue={
+                                            order.briefContent?.brandName
+                                        }
                                         className='w-64 p-2 border border-gray-300 rounded-md shadow-sm focus:border-none bg-white text-gray-900'
                                     >
                                         <option

@@ -124,10 +124,14 @@ export const fetchOrderById = createAsyncThunk(
 // Update Order
 export const updateOrder = createAsyncThunk(
   'orders/updateOrder',
-  async ({ orderId, data, token }: { orderId: string; data: Partial<OrderInterface>; token: string }, { rejectWithValue }) => {
+  async ({ orderId, data, token }: { orderId: string; data: FormData; token: string }, { rejectWithValue }) => {
+
+    // data.forEach((value, key) => {
+    //   console.log(`${key}:`, value);
+    // });
 
     try {
-      const response = await axiosInstance.patch(`/admin/orders/${orderId}`, data, {
+      const response = await axiosInstance.patchForm(`/admin/orders/${orderId}`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
