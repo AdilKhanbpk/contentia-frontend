@@ -29,6 +29,7 @@ interface CreateBrandPayload {
     brandCategory: string;
     brandWebsite?: string;
     brandCountry: string;
+    brandImage?: File; // New field for image upload
   };
   token: string;
 }
@@ -40,9 +41,11 @@ interface UpdateBrandPayload {
     brandCategory?: string;
     brandWebsite?: string;
     brandCountry?: string;
+    brandImage?: File; // New field for image upload
   };
   token: string;
 }
+
 
 interface DeleteBrandPayload {
   brandId: string;
@@ -63,27 +66,26 @@ const initialState: BrandState = {
   error: null,
 };
 
-// Create Brand
 export const createBrand = createAsyncThunk(
-    "brand/createBrand",
-    async ({ data, token }: CreateBrandPayload, { rejectWithValue }) => {
-      try {
-        axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        const response = await axiosInstance.post("/brands", data);
-        return response.data.data;
-      } catch (error) {
-        console.error("===== Error in createBrand Function =====");
-        const axiosError = error as AxiosError;
-        const errorMessage =
-          axiosError.response?.data ||
-          axiosError.response?.data ||
-          "Failed to create brand due to an unknown error.";
-        console.warn("Rejecting with error message:", errorMessage);
-        return rejectWithValue(errorMessage);
-      }
+  "brand/createBrand",
+  async ({ data, token }: CreateBrandPayload, { rejectWithValue }) => {
+    try {
+      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const response = await axiosInstance.post("/brands", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      return response.data.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      return rejectWithValue(
+        axiosError.response?.data || "Failed to create brand"
+      );
     }
-  );
-  
+  }
+);
+
+
 // Fetch All Brands
 export const fetchBrands = createAsyncThunk(
   "brand/fetchBrands",
@@ -120,16 +122,17 @@ export const fetchSingleBrand = createAsyncThunk(
   }
 );
 
-// Update Brand
 export const updateBrand = createAsyncThunk(
   "brand/updateBrand",
   async ({ brandId, data, token }: UpdateBrandPayload, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      const response = await axiosInstance.patch(`/brands/${brandId}`, data);
+      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const response = await axiosInstance.patch(`/brands/${brandId}`, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
       return response.data.data;
     } catch (error) {
-      console.error("Error updating brand:", error);
       const axiosError = error as AxiosError;
       return rejectWithValue(
         axiosError.response?.data || `Failed to update Brand with ID ${brandId}`

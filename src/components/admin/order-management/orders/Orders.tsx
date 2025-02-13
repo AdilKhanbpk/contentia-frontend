@@ -22,6 +22,7 @@ import {
 import { RootState } from "@/store/store";
 import { toast } from "react-toastify";
 import { OrderInterface } from "@/types/interfaces";
+import { fetchMyBrands } from "@/store/features/profile/brandSlice";
 
 interface SearchBarProps {
     onSearch: (value: string) => void;
@@ -111,7 +112,20 @@ const Orders: React.FC = () => {
                 toast.error(error.message);
             }
         };
-
+        const fetchBrands = async () => {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                toast.error("No token found. Please log in again.");
+                return;
+            }
+            try {
+                const res = await dispatch(fetchMyBrands(token)).unwrap();
+                toast.success(res.message);
+            } catch (error: any) {
+                toast.error(error.message);
+            }
+        };
+        fetchBrands();
         fetchOrdersData();
     }, [dispatch]);
 
