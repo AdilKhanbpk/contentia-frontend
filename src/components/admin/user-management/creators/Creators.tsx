@@ -74,6 +74,9 @@ const Creators: React.FC = () => {
     const { data: creators = [] } = useSelector(
         (state: RootState) => state.adminCreators
     );
+
+    // console.log("All CREATORS : ", creators);
+
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
@@ -121,7 +124,7 @@ const Creators: React.FC = () => {
     };
 
     const handleCreate = async (creatorData: any) => {
-        console.log("🚀 ~ handleCreate ~ creatorData:", creatorData);
+        // console.log("🚀 ~ handleCreate ~ creatorData:", creatorData);
         const tokenFromStorage = localStorage.getItem("accessToken");
         try {
             if (!tokenFromStorage) {
@@ -185,7 +188,7 @@ const Creators: React.FC = () => {
 
     const handleUpdate = async (creatorData: any) => {
         const token = localStorage.getItem("accessToken");
-        console.log(creatorData);
+        // console.log(creatorData);
         if (token) {
             const creatorId = creatorData._id;
             const dataToUpdate = {
@@ -323,7 +326,7 @@ const Creators: React.FC = () => {
     };
 
     const handleEdit = (id: string) => {
-        console.log(id);
+        // console.log(id);
         const creator = creators.find((creator) => {
             return creator._id === id;
         });
@@ -360,6 +363,8 @@ const Creators: React.FC = () => {
 
         exportCsvFile({ data, headers, filename: "creators.csv" });
     }, [creators]);
+
+    // console.log("CURRENT CREATOR : ", currentCreator);
 
     useEffect(() => {
         const tokenFromStorage = localStorage.getItem("accessToken");

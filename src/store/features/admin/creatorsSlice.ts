@@ -29,7 +29,7 @@ export const fetchAdminCreators = createAsyncThunk(
 
       if (response.data && response.data.data) {
         const creators = response.data.data.map((creator: CreatorInterface) => {
-          console.log(creator)
+          // console.log(creator)
           return {
             _id: creator._id ?? null,
             fullName: creator.fullName ?? '',
@@ -97,12 +97,12 @@ export const fetchAdminCreators = createAsyncThunk(
                     username: creator.preferences?.socialInformation?.platforms?.X?.username,
                   },
                   Facebook: {
-                    followers: creator.preferences?.socialInformation?.platforms?.TikTok?.followers,
-                    username: creator.preferences?.socialInformation?.platforms?.TikTok?.username,
+                    followers: creator.preferences?.socialInformation?.platforms?.Facebook?.followers,
+                    username: creator.preferences?.socialInformation?.platforms?.Facebook?.username,
                   },
                   Linkedin: {
-                    followers: creator.preferences?.socialInformation?.platforms?.Youtube?.followers,
-                    username: creator.preferences?.socialInformation?.platforms?.Youtube?.username,
+                    followers: creator.preferences?.socialInformation?.platforms?.Linkedin?.followers,
+                    username: creator.preferences?.socialInformation?.platforms?.Linkedin?.username,
                   },
                 },
                 portfolioLink: creator.preferences?.socialInformation?.portfolioLink,
@@ -130,7 +130,7 @@ export const fetchAdminCreatorById = createAsyncThunk(
       const response = await axiosInstance.get(`/admin/creators/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("fetching creator in fetchCreator : ", response.data);
+      // console.log("fetching creator in fetchCreator : ", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue('Failed to fetch admin creator by ID');
@@ -144,7 +144,7 @@ export const createAdminCreator = createAsyncThunk(
     { data, token }: { data: any; token: string },
     { rejectWithValue }
   ) => {
-    console.log("🚀 ~THUNK data:", data)
+    // console.log("🚀 ~THUNK data:", data)
 
     try {
 
@@ -164,7 +164,7 @@ export const createAdminCreator = createAsyncThunk(
         }
       );
 
-      console.log("🚀 ~ response:", response.data)
+      // console.log("🚀 ~ response:", response.data)
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -296,7 +296,7 @@ const adminCreatorsSlice = createSlice({
       })
       .addCase(deleteAdminCreator.fulfilled, (state, action: PayloadAction<CreatorInterface>) => {
         state.loading = false;
-        console.log(action.payload);
+        // console.log(action.payload);
         const filteredCreators = state.data.filter((creator) => creator._id !== action.payload._id);
         state.data = filteredCreators
       })
