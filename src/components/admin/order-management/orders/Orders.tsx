@@ -249,7 +249,7 @@ const Orders: React.FC = () => {
 
         const data = orders.map((order) => ({
             "# Order Id": order._id,
-            "Order Owner": order.orderOwner,
+            "Order Title": order.associatedBrands?.brandName,
             "No of UGC": order.noOfUgc,
             "Total Price": order.totalPrice,
             "Order Status": order.orderStatus,
@@ -276,7 +276,7 @@ const Orders: React.FC = () => {
                 sortable: true,
             },
             {
-                name: "Order Owner",
+                name: "Order Title",
                 cell: (row: OrderInterface) => {
                     const owner = row.orderOwner;
                     const isValidOwner =
@@ -285,17 +285,21 @@ const Orders: React.FC = () => {
                     return (
                         <div className='flex items-center space-x-2'>
                             <Image
-                                width={10}
-                                height={10}
-                                src='/icons/avatar.png'
+                                width={100}
+                                height={100}
+                                src={
+                                    row.associatedBrands?.brandImage ||
+                                    "/icons/avatar.png"
+                                }
                                 alt='avatar'
                                 className='w-10 h-10 rounded-full'
                             />
                             <div>
                                 <p className='font-semibold'>
-                                    {isValidOwner && owner.fullName
-                                        ? owner.fullName
-                                        : "No Name"}
+                                    {row.associatedBrands &&
+                                    row.associatedBrands.brandName
+                                        ? row.associatedBrands.brandName
+                                        : "No Title"}
                                 </p>
                                 <p className='text-sm text-gray-500'>
                                     {isValidOwner && owner.email
@@ -315,13 +319,14 @@ const Orders: React.FC = () => {
                 sortable: true,
             },
             {
-                name: "Creators Assigned",
-                selector: (row: OrderInterface) => row.assignedCreators.length,
+                name: "Total Price",
+                selector: (row: OrderInterface) => row.totalPrice,
                 sortable: true,
             },
             {
-                name: "Contents Delivered",
-                selector: (row: OrderInterface) => row.contentsDelivered || 0,
+                name: "Creators Assigned",
+                selector: (row: OrderInterface) =>
+                    row.assignedCreators.length || 0,
                 sortable: true,
             },
             {

@@ -385,8 +385,8 @@ const Creators: React.FC = () => {
                 cell: (row: any) => (
                     <div className='flex items-center space-x-2'>
                         <Image
-                            width={10}
-                            height={10}
+                            width={100}
+                            height={100}
                             src={row.profilePic || "/icons/avatar.png"}
                             alt='avatar'
                             className='w-10 h-10 rounded-full'

@@ -220,6 +220,7 @@ export default function EditModal({ order }: EditModalProps) {
             ).unwrap();
             if (res) {
                 toast.success("Order updated successfully");
+                setSelectedFiles([]);
                 setIsModalOpen(false);
             }
         } catch (error) {

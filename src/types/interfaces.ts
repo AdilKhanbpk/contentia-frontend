@@ -139,6 +139,10 @@ export interface OrderInterface {
     };
     assignedCreators: string[] | CreatorInterface[];
     appliedCreators: string[] | CreatorInterface[];
+    associatedBrands?: {
+        brandName: string;
+        brandImage: string;
+    };
     profilePic?: string;
     noOfUgc: number;
     totalPrice: number;

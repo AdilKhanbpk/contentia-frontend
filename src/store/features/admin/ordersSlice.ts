@@ -79,10 +79,11 @@ export const fetchOrders = createAsyncThunk(
   'orders/fetchOrders',
   async (token: string, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/admin/orders', {
+      const response = await axiosInstance.get('/orders', {
         headers: { Authorization: `Bearer ${token}` },
       });
 
+      console.log("🚀 ~ response.data.data:", response.data.data)
       return response.data.data;
 
     } catch (error) {
