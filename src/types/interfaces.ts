@@ -180,7 +180,7 @@ export interface OrderInterface {
         productServiceDesc?: string;
         scenario?: string;
         caseStudy?: string;
-        uploadFiles?: string;
+        uploadFiles?: [string];
         uploadFileDate?: string;
     };
     numberOfRequests?: number;

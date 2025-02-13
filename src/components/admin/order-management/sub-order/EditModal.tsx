@@ -41,6 +41,11 @@ export default function EditModal({ order }: EditModalProps) {
         (state: RootState) => state.brand.myBrands
     );
 
+    const handleRemoveFile = (index: number) => {
+        const updatedFiles = selectedFiles.filter((_, i) => i !== index);
+        setSelectedFiles(updatedFiles);
+    };
+
     useEffect(() => {
         if (order) {
             console.log("🚀 ~ useEffect ~ order:", order);
@@ -867,20 +872,83 @@ export default function EditModal({ order }: EditModalProps) {
                                         <h3 className='text-sm font-semibold mb-2'>
                                             Seçilen Dosyalar:
                                         </h3>
-                                        <ul className='flex flex-row list-disc list-inside text-sm text-gray-700'>
+                                        <div className='grid grid-cols-8 gap-4'>
                                             {selectedFiles.map(
                                                 (file, index) => (
-                                                    <p
-                                                        className='mr-2'
+                                                    <div
                                                         key={index}
+                                                        className='relative'
                                                     >
-                                                        {file.name}
-                                                    </p>
+                                                        {file.type.startsWith(
+                                                            "image/"
+                                                        ) ? (
+                                                            <img
+                                                                src={URL.createObjectURL(
+                                                                    file
+                                                                )}
+                                                                alt={file.name}
+                                                                className='w-24 h-24 object-cover rounded-lg shadow-md'
+                                                            />
+                                                        ) : (
+                                                            <div className='flex items-center justify-center w-24 h-24 bg-gray-200 rounded-lg shadow-md'>
+                                                                <p className='text-xs text-gray-700 text-center'>
+                                                                    {file.name}
+                                                                </p>
+                                                            </div>
+                                                        )}
+                                                        <p
+                                                            className='cursor-pointer absolute top-0 left-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs'
+                                                            onClick={() =>
+                                                                handleRemoveFile(
+                                                                    index
+                                                                )
+                                                            }
+                                                        >
+                                                            &times;
+                                                        </p>
+                                                    </div>
                                                 )
                                             )}
-                                        </ul>
+                                        </div>
                                     </div>
                                 )}
+
+                                {/* {Display database images} */}
+                                {order?.briefContent?.uploadFiles?.length !==
+                                    undefined &&
+                                    order.briefContent.uploadFiles?.length >
+                                        0 && (
+                                        <div className='mt-4'>
+                                            <h3 className='text-sm font-semibold mb-2'>
+                                                Mevcut Dosyalar:
+                                            </h3>
+                                            <div className='grid grid-cols-8 gap-4'>
+                                                {order?.briefContent
+                                                    ?.uploadFiles?.length !==
+                                                    undefined &&
+                                                    order.briefContent
+                                                        .uploadFiles?.length >
+                                                        0 &&
+                                                    order.briefContent.uploadFiles.map(
+                                                        (file, index) => (
+                                                            <div
+                                                                key={index}
+                                                                className='relative'
+                                                            >
+                                                                <img
+                                                                    src={file}
+                                                                    alt={
+                                                                        file ||
+                                                                        "Uploaded Image"
+                                                                    }
+                                                                    className='w-24 h-24 object-cover rounded-lg shadow-md'
+                                                                />
+                                                            </div>
+                                                        )
+                                                    )}
+                                            </div>
+                                        </div>
+                                    )}
                             </div>
                         </div>
                     </section>
