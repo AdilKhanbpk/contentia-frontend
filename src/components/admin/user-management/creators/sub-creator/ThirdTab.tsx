@@ -452,7 +452,7 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
                                 <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>
                                     <div className='w-full h-full bg-white rounded-full'></div>
                                 </div>
-                                <span className='ml-1 text-sm'>Evit</span>
+                                <span className='ml-1 text-sm'>Evet</span>
                             </label>
 
                             <label className='inline-flex items-center cursor-pointer mb-2 lg:mb-6'>
