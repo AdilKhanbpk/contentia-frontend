@@ -25,7 +25,6 @@ const ModalEdit: React.FC<ModalEditProps> = ({
 
     useEffect(() => {
         if (customerData) {
-            console.log("🚀 ~ useEffect ~ customerData:", customerData);
             reset(customerData);
             setInvoiceType(customerData?.invoiceType ?? "individual");
         }

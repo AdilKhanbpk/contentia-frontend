@@ -155,6 +155,7 @@ const Customers: React.FC = () => {
     };
 
     const handleUpdate = async (customerData: Customer) => {
+        console.log("🚀 ~ handleUpdate ~ customerData:", customerData);
         const token = localStorage.getItem("accessToken");
         if (token) {
             const customerId = customerData._id;
@@ -182,6 +183,7 @@ const Customers: React.FC = () => {
             };
 
             try {
+                console.log(customerId, dataToUpdate);
                 customerId &&
                     (await dispatch(
                         updateAdminCustomer({
@@ -201,7 +203,7 @@ const Customers: React.FC = () => {
     };
 
     const handleEdit = (id: string) => {
-        const customer = customers.find((customer: any) => customer.id === id);
+        const customer = customers.find((customer: any) => customer._id === id);
         if (customer) {
             setCurrentCustomer({ ...customer });
             setIsModalEditOpen(true);
@@ -239,7 +241,7 @@ const Customers: React.FC = () => {
         () => [
             {
                 name: "# Customer Id",
-                selector: (row: any) => row.id,
+                selector: (row: any) => row._id,
                 sortable: true,
             },
             {
@@ -305,7 +307,7 @@ const Customers: React.FC = () => {
                         onDelete={handleDelete}
                         onEdit={handleEdit}
                         onView={handleView}
-                        id={row.id}
+                        id={row._id}
                     />
                 ),
                 width: "150px",

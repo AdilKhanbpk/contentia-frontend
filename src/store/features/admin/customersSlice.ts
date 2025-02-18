@@ -30,7 +30,7 @@ export const fetchAdminCustomers = createAsyncThunk(
 
       if (response.data && response.data.data) {
         const customers = response.data.data.map((customer: Customer) => ({
-          id: customer._id ?? null,
+          _id: customer._id ?? null,
           fullName: customer.fullName ?? '',
           email: customer.email ?? '',
           profilePic: customer.profilePic ?? '',
