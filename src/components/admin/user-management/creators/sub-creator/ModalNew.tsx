@@ -149,7 +149,7 @@ export default function ModalNew({ isOpen, onSubmit }: ModalNewProps) {
                                 })}
                                 className='mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm'
                             >
-                                <option value='approved'>approved</option>
+                                <option value='approved'>Approved</option>
                                 <option value='pending'>Pending</option>
                                 <option value='rejected'>Rejected</option>
                             </select>
@@ -161,17 +161,10 @@ export default function ModalNew({ isOpen, onSubmit }: ModalNewProps) {
                             <input
                                 type='password'
                                 {...register("password", {
-                                    required: "Contact is required",
+                                    required: "Password is required",
                                 })}
                                 className='mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm'
                             />
-                            {errors.phoneNumber &&
-                                typeof errors.phoneNumber.message ===
-                                    "string" && (
-                                    <p className='text-red-500 text-xs mt-1'>
-                                        {errors.phoneNumber.message}
-                                    </p>
-                                )}
                         </div>
                     </div>
 
@@ -214,6 +207,18 @@ export default function ModalNew({ isOpen, onSubmit }: ModalNewProps) {
                             />
                         </div>
 
+                        <div>
+                            <label className='block text-sm font-medium'>
+                                Neighborhood
+                            </label>
+                            <input
+                                type='text'
+                                {...register(
+                                    "preferences.contentInformation.addressDetails.neighborhood"
+                                )}
+                                className='mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm'
+                            />
+                        </div>
                         <div>
                             <label className='block text-sm font-medium'>
                                 District

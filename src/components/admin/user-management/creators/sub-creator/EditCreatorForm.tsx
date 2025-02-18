@@ -6,6 +6,12 @@ import FirstTab from "./FirstTab";
 import SecondTab from "./SecondTab";
 import ThirdTab from "./ThirdTab";
 import FourthTab from "./FourthTab";
+import instIcon from "../../../../../../public/BecomeCreator/Instagram_icon.png";
+import facebookIcon from "../../../../../../public/BecomeCreator/facebook_icon..png";
+import youtubeIcon from "../../../../../../public/BecomeCreator/youtube_iconpng.png";
+import linkdinIcon from "../../../../../../public/BecomeCreator/linkedin_icon.png";
+import xIcon from "../../../../../../public/BecomeCreator/x_icon.png";
+import tiktokIcon from "../../../../../../public/BecomeCreator/tiktik_icon.png";
 import { CreatorInterface } from "@/types/interfaces";
 
 interface EditCreatorFormProps {
@@ -75,53 +81,106 @@ const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
                 <div className='w-full sm:w-1/3 bg-white rounded-lg flex flex-col space-y-8'>
                     <div className='flex flex-col items-center'>
                         <Image
-                            src='/icons/avatar.png'
+                            src={creatorData?.profilePic || "/icons/avatar.png"}
                             alt='Avatar'
-                            width={120}
-                            height={120}
-                            className='rounded-full'
+                            width={100}
+                            height={100}
+                            className='rounded-full h-40 w-40 object-cover'
                         />
                         <div className='flex flex-col space-y-4 text-center'>
                             <h3 className='mt-4 text-xl font-semibold'>
                                 {creatorData?.fullName}
                             </h3>
-                            <p className='text-gray-600'>{creatorData?.role}</p>
+                            <p className='text-gray-600'>
+                                {creatorData?.userType}
+                            </p>
                             <div className='flex space-x-8 mt-2 justify-center'>
-                                <Image
-                                    src='/BecomeCreator/facebook_icon..png'
-                                    alt='Facebook'
-                                    width={20}
-                                    height={20}
-                                />
-                                <Image
-                                    src='/BecomeCreator/x_icon.png'
-                                    alt='Twitter'
-                                    width={20}
-                                    height={20}
-                                />
-                                <Image
-                                    src='/BecomeCreator/linkedin_icon.png'
-                                    alt='LinkedIn'
-                                    width={20}
-                                    height={20}
-                                />
+                                {creatorData?.preferences?.socialInformation
+                                    ?.platforms?.Instagram?.username &&
+                                    creatorData?.preferences?.socialInformation
+                                        ?.platforms?.Instagram?.followers && (
+                                        <Image
+                                            src={instIcon}
+                                            alt='Instagram'
+                                            width={20}
+                                            height={20}
+                                        />
+                                    )}
+
+                                {creatorData?.preferences?.socialInformation
+                                    ?.platforms?.Facebook?.username &&
+                                    creatorData?.preferences?.socialInformation
+                                        ?.platforms?.Facebook?.followers && (
+                                        <Image
+                                            src={facebookIcon}
+                                            alt='Facebook'
+                                            width={20}
+                                            height={20}
+                                        />
+                                    )}
+
+                                {creatorData?.preferences?.socialInformation
+                                    ?.platforms?.Youtube?.username &&
+                                    creatorData?.preferences?.socialInformation
+                                        ?.platforms?.Youtube?.followers && (
+                                        <Image
+                                            src={youtubeIcon}
+                                            alt='YouTube'
+                                            width={20}
+                                            height={20}
+                                        />
+                                    )}
+
+                                {creatorData?.preferences?.socialInformation
+                                    ?.platforms?.Linkedin?.username &&
+                                    creatorData?.preferences?.socialInformation
+                                        ?.platforms?.Linkedin?.followers && (
+                                        <Image
+                                            src={linkdinIcon}
+                                            alt='LinkedIn'
+                                            width={20}
+                                            height={20}
+                                        />
+                                    )}
+
+                                {creatorData?.preferences?.socialInformation
+                                    ?.platforms?.X?.username &&
+                                    creatorData?.preferences?.socialInformation
+                                        ?.platforms?.X?.followers && (
+                                        <Image
+                                            src={xIcon}
+                                            alt='X'
+                                            width={20}
+                                            height={20}
+                                        />
+                                    )}
+
+                                {creatorData?.preferences?.socialInformation
+                                    ?.platforms?.TikTok?.username &&
+                                    creatorData?.preferences?.socialInformation
+                                        ?.platforms?.TikTok?.followers && (
+                                        <Image
+                                            src={tiktokIcon}
+                                            alt='TikTok'
+                                            width={20}
+                                            height={20}
+                                        />
+                                    )}
                             </div>
                         </div>
                     </div>
 
                     <div className='flex justify-between bg-white p-4 '>
                         <div className='text-center'>
-                            <span className='block text-lg font-bold'>86</span>
+                            <span className='block text-lg font-bold'>0</span>
                             <span className='text-gray-500'>Post</span>
                         </div>
                         <div className='text-center'>
-                            <span className='block text-lg font-bold'>40</span>
+                            <span className='block text-lg font-bold'>0</span>
                             <span className='text-gray-500'>Project</span>
                         </div>
                         <div className='text-center'>
-                            <span className='block text-lg font-bold'>
-                                4.5K
-                            </span>
+                            <span className='block text-lg font-bold'>0</span>
                             <span className='text-gray-500'>Members</span>
                         </div>
                     </div>

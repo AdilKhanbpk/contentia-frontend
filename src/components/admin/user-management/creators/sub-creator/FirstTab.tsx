@@ -49,6 +49,9 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                             district:
                                 editCreatorForm?.preferences?.contentInformation
                                     ?.addressDetails?.district || "",
+                            neighborhood:
+                                editCreatorForm?.preferences?.contentInformation
+                                    ?.addressDetails?.neighborhood || "",
                         },
                     },
                 },
@@ -93,6 +96,9 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                         district:
                             formData.preferences?.contentInformation
                                 ?.addressDetails?.district,
+                        neighborhood:
+                            formData.preferences?.contentInformation
+                                ?.addressDetails?.neighborhood,
                     },
                 },
             },
@@ -301,6 +307,18 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                                         {errors.country.message}
                                     </p>
                                 )}
+                        </div>
+                        <div>
+                            <label className='block text-sm font-medium'>
+                                Neighborhood
+                            </label>
+                            <input
+                                type='text'
+                                {...register(
+                                    "preferences.contentInformation.addressDetails.neighborhood"
+                                )}
+                                className='mt-1 px-2 py-1 block w-full border border-gray-300 rounded-md shadow-sm'
+                            />
                         </div>
 
                         <div>
