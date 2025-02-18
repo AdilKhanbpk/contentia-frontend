@@ -18,6 +18,7 @@ import ModalView from "./sub-customer/ModelView";
 import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import { toast } from "react-toastify";
+import { Customer } from "@/types/interfaces";
 
 const SearchBar = memo(
     ({ onSearch }: { onSearch: (value: string) => void }) => (
@@ -106,9 +107,13 @@ const Customers: React.FC = () => {
     );
 
     const handleView = (id: string) => {
-        const customer = customers.find((customer) => customer.id === id);
-        setCurrentCustomer(customer);
-        setIsModalViewOpen(true);
+        const customer = customers.find((customer: any) => customer.id === id);
+        if (customer) {
+            setCurrentCustomer({ ...customer }); // Ensure a new reference
+            setIsModalViewOpen(true);
+        } else {
+            toast.error("Customer not found.");
+        }
     };
 
     const handleCreate = async (customerData: any) => {
@@ -149,16 +154,15 @@ const Customers: React.FC = () => {
         }
     };
 
-    const handleUpdate = async (customerData: any) => {
+    const handleUpdate = async (customerData: Customer) => {
         const token = localStorage.getItem("accessToken");
         if (token) {
-            const customerId = customerData.id;
+            const customerId = customerData._id;
             const dataToUpdate = {
                 fullName: customerData.fullName ?? "",
                 email: customerData.email ?? "",
-                phoneNumber: customerData.contact ?? "",
                 age: customerData.age ?? null,
-                country: customerData.country ?? "",
+                phoneNumber: customerData.phoneNumber ?? "",
                 customerStatus: customerData.customerStatus ?? "",
                 invoiceType: customerData.invoiceType ?? "",
                 billingInformation: {
@@ -178,13 +182,14 @@ const Customers: React.FC = () => {
             };
 
             try {
-                await dispatch(
-                    updateAdminCustomer({
-                        customerId,
-                        data: dataToUpdate,
-                        token,
-                    })
-                );
+                customerId &&
+                    (await dispatch(
+                        updateAdminCustomer({
+                            customerId,
+                            data: dataToUpdate,
+                            token,
+                        })
+                    ));
                 await dispatch(fetchAdminCustomers(token));
                 toast.success("Customer updated successfully!");
             } catch (error) {
@@ -196,9 +201,13 @@ const Customers: React.FC = () => {
     };
 
     const handleEdit = (id: string) => {
-        const customer = customers.find((customer) => customer.id === id);
-        setCurrentCustomer(customer);
-        setIsModalEditOpen(true);
+        const customer = customers.find((customer: any) => customer.id === id);
+        if (customer) {
+            setCurrentCustomer({ ...customer });
+            setIsModalEditOpen(true);
+        } else {
+            toast.error("Customer not found.");
+        }
     };
 
     const handleSearch = useCallback((value: string) => {
@@ -206,22 +215,13 @@ const Customers: React.FC = () => {
     }, []);
 
     const handleExport = useCallback(() => {
-        const headers = [
-            "ID",
-            "Name",
-            "Email",
-            "Contact",
-            "Age",
-            "Country",
-            "Status",
-        ];
+        const headers = ["ID", "Name", "Email", "Phone", "Age", "Status"];
         const data = customers.map((customer) => ({
-            ID: customer.id,
-            Name: customer.name,
+            ID: customer._id,
+            Name: customer.fullName,
             Email: customer.email,
-            Contact: customer.contact,
+            Phone: customer.phoneNumber,
             Age: customer.age,
-            Country: customer.country,
             Status: customer.status,
         }));
 
@@ -238,24 +238,25 @@ const Customers: React.FC = () => {
     const columns = React.useMemo(
         () => [
             {
-                name: "#",
+                name: "# Customer Id",
                 selector: (row: any) => row.id,
                 sortable: true,
-                width: "80px",
             },
             {
-                name: "User Info",
-                cell: (row: any) => (
+                name: "Customer Info",
+                cell: (row: Customer) => (
                     <div className='flex items-center space-x-2'>
                         <Image
-                            width={10}
-                            height={10}
-                            src='/icons/avatar.png'
+                            width={100}
+                            height={100}
+                            src={row?.profilePic || "/icons/avatar.png"}
                             alt='avatar'
                             className='w-10 h-10 rounded-full'
                         />
                         <div>
-                            <p className='font-semibold'>{row.fullName}</p>
+                            <p className='font-semibold'>
+                                {row.fullName || "No Name"}
+                            </p>
                             <p className='text-sm whitespace-nowrap text-gray-500'>
                                 {row.email.length > 12
                                     ? `${row.email.substring(0, 20)}...`
@@ -269,24 +270,19 @@ const Customers: React.FC = () => {
                 width: "280px",
             },
             {
-                name: "Contact",
-                selector: (row: any) => row.contact,
+                name: "Phone No",
+                selector: (row: Customer) => row.phoneNumber || "-",
                 sortable: true,
             },
             {
                 name: "Age",
-                selector: (row: any) => row.age,
+                selector: (row: Customer) => row.age || "-",
                 sortable: true,
                 width: "100px",
             },
             {
-                name: "Country",
-                selector: (row: any) => row.country,
-                sortable: true,
-            },
-            {
                 name: "Status",
-                cell: (row: any) => (
+                cell: (row: Customer) => (
                     <span
                         className={`px-3 py-1 rounded-full text-sm font-semibold ${
                             row.customerStatus === "approved"
@@ -325,9 +321,7 @@ const Customers: React.FC = () => {
                 customer.fullName
                     ?.toLowerCase()
                     .includes(lowerCaseSearchTerm) ||
-                customer.email?.toLowerCase().includes(lowerCaseSearchTerm) ||
-                customer.contact?.includes(lowerCaseSearchTerm) ||
-                customer.country?.toLowerCase().includes(lowerCaseSearchTerm)
+                customer.email?.toLowerCase().includes(lowerCaseSearchTerm)
         );
     }, [customers, searchTerm]);
 

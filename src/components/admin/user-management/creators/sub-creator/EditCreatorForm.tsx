@@ -173,15 +173,15 @@ const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
                     <div className='flex justify-between bg-white p-4 '>
                         <div className='text-center'>
                             <span className='block text-lg font-bold'>0</span>
-                            <span className='text-gray-500'>Post</span>
+                            <span className='text-gray-500'>Orders</span>
                         </div>
                         <div className='text-center'>
                             <span className='block text-lg font-bold'>0</span>
-                            <span className='text-gray-500'>Project</span>
+                            <span className='text-gray-500'>Active Orders</span>
                         </div>
                         <div className='text-center'>
                             <span className='block text-lg font-bold'>0</span>
-                            <span className='text-gray-500'>Members</span>
+                            <span className='text-gray-500'>Earnings</span>
                         </div>
                     </div>
 
