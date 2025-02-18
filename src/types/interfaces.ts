@@ -194,3 +194,40 @@ export interface OrderInterface {
     createdAt?: Date;
     updatedAt?: Date;
 }
+
+interface BillingInformation {
+    invoiceStatus?: boolean;
+    trId?: string;
+    address?: string;
+    fullName?: string;
+    companyName?: string;
+    taxNumber?: string;
+    taxOffice?: string;
+}
+
+export interface Customer {
+    _id?: string;
+    authProvider: "google" | "credentials";
+    status: "approved" | "waiting" | "rejected";
+    userType: string;
+    role: "admin" | "user";
+    profilePic?: string;
+    fullName?: string;
+    email: string;
+    age?: number;
+    phoneNumber?: string;
+    customerStatus: "waiting" | "approved" | "rejected";
+    password?: string;
+    invoiceType?: "individual" | "institutional";
+    billingInformation?: BillingInformation;
+    refreshToken?: string;
+    rememberMe?: boolean;
+    termsAndConditionsApproved?: boolean;
+    createdAt?: Date;
+    updatedAt?: Date;
+
+    // Methods
+    AccessToken(): string;
+    RefreshToken(): string;
+    ComparePassword(password: string): Promise<boolean>;
+}

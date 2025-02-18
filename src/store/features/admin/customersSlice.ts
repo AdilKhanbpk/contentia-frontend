@@ -1,8 +1,9 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { axiosInstance } from '@/store/axiosInstance';
 import { AxiosError } from 'axios';
+import { Customer } from '@/types/interfaces';
+import { profile } from 'console';
 
-type Customer = { [key: string]: any };
 
 export interface AdminCustomersState {
   data: Customer[];
@@ -28,13 +29,13 @@ export const fetchAdminCustomers = createAsyncThunk(
       });
 
       if (response.data && response.data.data) {
-        const customers = response.data.data.map((customer: any) => ({
+        const customers = response.data.data.map((customer: Customer) => ({
           id: customer._id ?? null,
           fullName: customer.fullName ?? '',
           email: customer.email ?? '',
-          contact: customer.phoneNumber ?? '',
+          profilePic: customer.profilePic ?? '',
+          phoneNumber: customer.phoneNumber ?? '',
           age: customer.age ?? null,
-          country: customer.country ?? '',
           status: customer.status ?? '',
           invoiceType: customer.invoiceType ?? '',
           customerStatus: customer.customerStatus ?? '',
@@ -93,7 +94,7 @@ export const createAdminCustomer = createAsyncThunk(
         '/admin/customers',
         data,
         {
-          headers: { 
+          headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
           },
@@ -104,7 +105,7 @@ export const createAdminCustomer = createAsyncThunk(
     } catch (error) {
       const axiosError = error as AxiosError;
       return rejectWithValue(
-        axiosError.response?.data || 
+        axiosError.response?.data ||
         'Failed to create admin customer. Please check server logs for details.'
       );
     }
@@ -210,7 +211,7 @@ const adminCustomersSlice = createSlice({
         state.loading = false;
         const updatedCustomer = action.payload;
         const updatedData = state.data.map((customer) =>
-          customer.id === updatedCustomer.id ? updatedCustomer : customer
+          customer._id === updatedCustomer._id ? updatedCustomer : customer
         );
         state.data = updatedData;
       })
@@ -225,7 +226,7 @@ const adminCustomersSlice = createSlice({
       })
       .addCase(deleteAdminCustomer.fulfilled, (state, action: PayloadAction<string>) => {
         state.loading = false;
-        state.data = state.data.filter((customer) => customer.id !== action.payload);
+        state.data = state.data.filter((customer) => customer._id !== action.payload);
       })
       .addCase(deleteAdminCustomer.rejected, (state, action) => {
         state.loading = false;
