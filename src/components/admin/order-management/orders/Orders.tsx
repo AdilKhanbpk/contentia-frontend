@@ -23,6 +23,7 @@ import { RootState } from "@/store/store";
 import { toast } from "react-toastify";
 import { OrderInterface } from "@/types/interfaces";
 import { fetchMyBrands } from "@/store/features/profile/brandSlice";
+import ViewModal from "../sub-order/ViewModal";
 
 interface SearchBarProps {
     onSearch: (value: string) => void;
@@ -96,6 +97,7 @@ const Orders: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
+    const [isModalViewOpen, setIsViewModalOpen] = useState(false);
     const [isModalRequestsOpen, setIsModalRequestsOpen] = useState(false);
 
     useEffect(() => {
@@ -158,6 +160,7 @@ const Orders: React.FC = () => {
             try {
                 await dispatch(fetchOrderById({ orderId: id, token })).unwrap();
                 toast.success("Order details fetched successfully!");
+                setIsViewModalOpen(true);
             } catch (error) {
                 toast.error("Error fetching order details.");
             }
@@ -279,6 +282,7 @@ const Orders: React.FC = () => {
         setIsModalOpen(false);
         setIsModalEditOpen(false);
         setIsModalRequestsOpen(false);
+        setIsViewModalOpen(false);
         dispatch(clearCurrentOrder());
     }, [dispatch]);
 
@@ -426,15 +430,23 @@ const Orders: React.FC = () => {
             <CustomModelAdmin
                 isOpen={isModalOpen}
                 closeModal={handleCloseModals}
-                title=''
+                title='Add Order'
             >
                 <NewModal />
             </CustomModelAdmin>
 
             <CustomModelAdmin
+                isOpen={isModalViewOpen}
+                closeModal={handleCloseModals}
+                title='View Order'
+            >
+                <ViewModal order={currentOrder} />
+            </CustomModelAdmin>
+
+            <CustomModelAdmin
                 isOpen={isModalEditOpen}
                 closeModal={handleCloseModals}
-                title=''
+                title='Update Order'
             >
                 <EditModal order={currentOrder} />
             </CustomModelAdmin>
@@ -442,7 +454,7 @@ const Orders: React.FC = () => {
             <CustomModelAdmin
                 isOpen={isModalRequestsOpen}
                 closeModal={handleCloseModals}
-                title=''
+                title='Requests On Modal'
             >
                 <RequestModal
                     order={currentOrder}

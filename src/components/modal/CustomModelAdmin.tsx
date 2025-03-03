@@ -59,7 +59,7 @@ const Modal: React.FC<ModalProps> = ({
                                 <DialogPanel className=' transform overflow-hidden rounded bg-white  text-left align-middle shadow-xl transition-all'>
                                     <DialogTitle
                                         as='h3'
-                                        className='text-lg font-medium leading-6 text-gray-900 '
+                                        className='text-lg p-6 font-bold leading-6 text-gray-900 '
                                     >
                                         {title}
                                     </DialogTitle>
