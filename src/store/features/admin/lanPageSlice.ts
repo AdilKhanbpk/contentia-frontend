@@ -5,12 +5,12 @@ import { AxiosError } from 'axios';
 type Video = string;
 
 export interface LandingPage {
-    _id: string;
-    carouselHeroTitle: string;
-    staticHeroTitle: string;
-    heroSubTitle: string;
-    videos: Video[];
-  }
+  _id: string;
+  carouselHeroTitle: string;
+  staticHeroTitle: string;
+  heroSubTitle: string;
+  videos: Video[];
+}
 
 export interface LandingPageState {
   data: LandingPage | null;
@@ -65,32 +65,36 @@ export const fetchLandingPage = createAsyncThunk(
 
 // Update the landing page
 export const updateLandingPage = createAsyncThunk(
-    'landingPage/updateLandingPage',
-    async (
-      { id, data, token }: { id: string; data: FormData; token: string },
-      { rejectWithValue }
-    ) => {
-      try {
-        const response = await axiosInstance.patch(
-          `/admin/landingPage/${id}`,
-          data,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'multipart/form-data',
-            },
-          }
-        );
-        return response.data.data;
-      } catch (error) {
-        const axiosError = error as AxiosError;
-        return rejectWithValue(
-          axiosError.response?.data || 'Failed to update landing page'
-        );
-      }
+  'landingPage/updateLandingPage',
+  async (
+    { id, data, token }: { id: string; data: FormData; token: string },
+    { rejectWithValue }
+  ) => {
+    try {
+
+      data.forEach((value, key) => {
+        console.log(`${key}:`, value);
+      })
+
+      const response = await axiosInstance.patchForm(
+        `/admin/landingPage/${id}`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      return rejectWithValue(
+        axiosError.response?.data || 'Failed to update landing page'
+      );
     }
-  );
-  
+  }
+);
+
 const landingPageSlice = createSlice({
   name: 'landingPage',
   initialState,

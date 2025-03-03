@@ -17,7 +17,7 @@ export default function TabFirst({
     const [activeEdit, setActiveEdit] = useState(false);
     const [activeRatio, setActiveRatio] = useState<string>("9:16");
     const [activeDuration, setActiveDuration] = useState<string>("15s");
-    const [activePlatform, setActivePlatform] = useState<string>("tiktok");
+    const [selectedPlatform, setSelectedPlatform] = useState<string>("tiktok");
 
     const [token, setToken] = useState<string>("");
     const dispatch = useDispatch();
@@ -67,7 +67,7 @@ export default function TabFirst({
     };
 
     const handlePlatformChange = (platform: string) => {
-        setActivePlatform(platform);
+        setSelectedPlatform(platform);
     };
 
     const handleQuantityChange = (change: number) => {
@@ -153,7 +153,7 @@ export default function TabFirst({
                 getPrice(selectedQuantity, selectedCard, totalAdditionalCharges)
             ),
             additionalServices: {
-                platform: activePlatform,
+                platform: selectedPlatform,
                 duration: activeDuration,
                 edit: activeEdit,
                 aspectRatio: activeRatio,
@@ -192,67 +192,51 @@ export default function TabFirst({
                                     <h3 className='text-sm font-semibold mb-1 w-1/4'>
                                         Platform:
                                     </h3>
-                                    <div className='flex space-x-2'>
-                                        <label
-                                            className={`text-sm px-3 py-1 rounded cursor-pointer ${
-                                                activePlatform === "tiktok"
-                                                    ? "ButtonBlue text-white"
-                                                    : "bg-white text-black"
-                                            }`}
-                                        >
-                                            <input
-                                                type='radio'
-                                                value='tiktok'
-                                                name='platform'
-                                                className='hidden'
-                                                onChange={() =>
-                                                    handlePlatformChange(
-                                                        "tiktok"
-                                                    )
-                                                }
-                                            />
-                                            TikTok
-                                        </label>
-
-                                        <label
-                                            className={`text-sm px-3 py-1 rounded cursor-pointer ${
-                                                activePlatform === "meta"
-                                                    ? "ButtonBlue text-white"
-                                                    : "bg-white text-black"
-                                            }`}
-                                        >
-                                            <input
-                                                type='radio'
-                                                value='meta'
-                                                name='platform'
-                                                className='hidden'
-                                                onChange={() =>
-                                                    handlePlatformChange("meta")
-                                                }
-                                            />
-                                            Meta
-                                        </label>
-
-                                        <label
-                                            className={`text-sm px-3 py-1 rounded cursor-pointer ${
-                                                activePlatform === "other"
-                                                    ? "ButtonBlue text-white"
-                                                    : "bg-white text-black"
-                                            }`}
-                                        >
-                                            <input
-                                                type='radio'
-                                                value='other'
-                                                name='platform'
-                                                className='hidden'
-                                                onChange={() =>
-                                                    handlePlatformChange(
-                                                        "other"
-                                                    )
-                                                }
-                                            />
-                                            Diğer
-                                        </label>
+                                    <div className='flex space-x-4'>
+                                        {[
+                                            {
+                                                label: "TikTok",
+                                                value: "tiktok",
+                                            },
+                                            {
+                                                label: "Facebook",
+                                                value: "facebook",
+                                            },
+                                            {
+                                                label: "Instagram",
+                                                value: "instagram",
+                                            },
+                                            {
+                                                label: "Youtube",
+                                                value: "youtube",
+                                            },
+                                            {
+                                                label: "X - Twitter",
+                                                value: "x",
+                                            },
+                                            {
+                                                label: "Linkedin",
+                                                value: "linkedin",
+                                            },
+                                        ].map((platform) => (
+                                            <button
+                                                key={platform.value}
+                                                type='button'
+                                                className={`px-1 py-1 min-w-16 max-w-20 border text-xs rounded-sm ${
+                                                    selectedPlatform ===
+                                                    platform.value
+                                                        ? "ButtonBlue text-white"
+                                                        : "bg-gray-100"
+                                                }`}
+                                                onClick={() => {
+                                                    setSelectedPlatform(
+                                                        platform.value
+                                                    );
+                                                }}
+                                            >
+                                                {platform.label}
+                                            </button>
+                                        ))}
                                     </div>
                                 </div>
 

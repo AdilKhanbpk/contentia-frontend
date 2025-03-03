@@ -348,12 +348,24 @@ export default function EditModal({ order }: EditModalProps) {
                                                                 value: "tiktok",
                                                             },
                                                             {
-                                                                label: "Meta",
-                                                                value: "meta",
+                                                                label: "Facebook",
+                                                                value: "facebook",
                                                             },
                                                             {
-                                                                label: "Other",
-                                                                value: "other",
+                                                                label: "Instagram",
+                                                                value: "instagram",
+                                                            },
+                                                            {
+                                                                label: "Youtube",
+                                                                value: "youtube",
+                                                            },
+                                                            {
+                                                                label: "X",
+                                                                value: "x",
+                                                            },
+                                                            {
+                                                                label: "Linkedin",
+                                                                value: "linkedin",
                                                             },
                                                         ].map(
                                                             ({

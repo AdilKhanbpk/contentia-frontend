@@ -174,29 +174,50 @@ export default function NewModal() {
                                         render={({ field }) => (
                                             <>
                                                 {[
-                                                    "TikTok",
-                                                    "Meta",
-                                                    "Diğer",
+                                                    {
+                                                        label: "TikTok",
+                                                        value: "tiktok",
+                                                    },
+                                                    {
+                                                        label: "Facebook",
+                                                        value: "facebook",
+                                                    },
+                                                    {
+                                                        label: "Instagram",
+                                                        value: "instagram",
+                                                    },
+                                                    {
+                                                        label: "Youtube",
+                                                        value: "youtube",
+                                                    },
+                                                    {
+                                                        label: "X",
+                                                        value: "x",
+                                                    },
+                                                    {
+                                                        label: "Linkedin",
+                                                        value: "linkedin",
+                                                    },
                                                 ].map((platform) => (
                                                     <button
-                                                        key={platform}
+                                                        key={platform.value}
                                                         type='button'
                                                         className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
                                                             selectedPlatform ===
-                                                            platform
+                                                            platform.value
                                                                 ? "ButtonBlue text-white"
                                                                 : "bg-gray-200"
                                                         }`}
                                                         onClick={() => {
                                                             setSelectedPlatform(
-                                                                platform
+                                                                platform.value
                                                             );
                                                             field.onChange(
-                                                                platform
+                                                                platform.value
                                                             );
                                                         }}
                                                     >
-                                                        {platform}
+                                                        {platform.label}
                                                     </button>
                                                 ))}
                                             </>
