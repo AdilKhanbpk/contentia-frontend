@@ -10,7 +10,8 @@ import { OrderInterface } from "@/types/interfaces";
 
 export default function NewModal() {
     const dispatch = useDispatch<AppDispatch>();
-    const [selectedPlatform, setSelectedPlatform] = useState<string>("TikTok");
+    const [selectedPlatform, setSelectedPlatform] =
+        useState<string>("instagram");
     const [duration, setDuration] = useState<string>("15s");
     const [isEdit, setIsEdit] = useState<boolean>(false);
     const [aspectRatio, setAspectRatio] = useState<string>("9:16");
@@ -22,7 +23,7 @@ export default function NewModal() {
     const { register, handleSubmit, reset, control } = useForm<OrderInterface>({
         defaultValues: {
             additionalServices: {
-                platform: "TikTok",
+                platform: "instagram",
                 duration: "15s",
                 edit: false,
                 aspectRatio: "9:16",
@@ -166,14 +167,18 @@ export default function NewModal() {
                                 <div className='text-gray-700 font-semibold'>
                                     Platform:
                                 </div>
-                                <div className='flex space-x-4'>
+                                <div className='flex gap-4 flex-wrap'>
                                     <Controller
                                         name='additionalServices.platform'
                                         control={control}
-                                        defaultValue='TikTok'
+                                        defaultValue='Tiktok'
                                         render={({ field }) => (
                                             <>
                                                 {[
+                                                    {
+                                                        label: "Instagram",
+                                                        value: "instagram",
+                                                    },
                                                     {
                                                         label: "TikTok",
                                                         value: "tiktok",
@@ -181,10 +186,6 @@ export default function NewModal() {
                                                     {
                                                         label: "Facebook",
                                                         value: "facebook",
-                                                    },
-                                                    {
-                                                        label: "Instagram",
-                                                        value: "instagram",
                                                     },
                                                     {
                                                         label: "Youtube",
@@ -202,7 +203,7 @@ export default function NewModal() {
                                                     <button
                                                         key={platform.value}
                                                         type='button'
-                                                        className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
+                                                        className={`px-2 py-0.5 min-w-16 max-w-18 border text-xs rounded-sm ${
                                                             selectedPlatform ===
                                                             platform.value
                                                                 ? "ButtonBlue text-white"

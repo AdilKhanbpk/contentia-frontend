@@ -335,14 +335,18 @@ export default function EditModal({ order }: EditModalProps) {
                                         <div className='text-gray-700 font-semibold'>
                                             Platform:
                                         </div>
-                                        <div className='flex space-x-4'>
+                                        <div className='flex gap-2 flex-wrap'>
                                             <Controller
                                                 name='additionalServices.platform'
                                                 control={control}
-                                                defaultValue='tiktok'
+                                                defaultValue='instagram'
                                                 render={({ field }) => (
                                                     <>
                                                         {[
+                                                            {
+                                                                label: "Instagram",
+                                                                value: "instagram",
+                                                            },
                                                             {
                                                                 label: "TikTok",
                                                                 value: "tiktok",
@@ -350,10 +354,6 @@ export default function EditModal({ order }: EditModalProps) {
                                                             {
                                                                 label: "Facebook",
                                                                 value: "facebook",
-                                                            },
-                                                            {
-                                                                label: "Instagram",
-                                                                value: "instagram",
                                                             },
                                                             {
                                                                 label: "Youtube",
@@ -375,7 +375,7 @@ export default function EditModal({ order }: EditModalProps) {
                                                                 <button
                                                                     key={value}
                                                                     type='button'
-                                                                    className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
+                                                                    className={`px-1 py-0.5 min-w-16 max-w-18 border text-xs rounded-sm ${
                                                                         field.value ===
                                                                         value
                                                                             ? "ButtonBlue text-white"

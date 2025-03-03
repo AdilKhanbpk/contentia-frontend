@@ -115,16 +115,16 @@ export default function Home() {
                                             <>
                                                 {[
                                                     {
+                                                        label: "Instagram",
+                                                        value: "instagram",
+                                                    },
+                                                    {
                                                         label: "TikTok",
                                                         value: "tiktok",
                                                     },
                                                     {
                                                         label: "Facebook",
                                                         value: "facebook",
-                                                    },
-                                                    {
-                                                        label: "Instagram",
-                                                        value: "instagram",
                                                     },
                                                     {
                                                         label: "Youtube",

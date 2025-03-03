@@ -17,7 +17,8 @@ export default function TabFirst({
     const [activeEdit, setActiveEdit] = useState(false);
     const [activeRatio, setActiveRatio] = useState<string>("9:16");
     const [activeDuration, setActiveDuration] = useState<string>("15s");
-    const [selectedPlatform, setSelectedPlatform] = useState<string>("tiktok");
+    const [selectedPlatform, setSelectedPlatform] =
+        useState<string>("instagram");
 
     const [token, setToken] = useState<string>("");
     const dispatch = useDispatch();
@@ -195,16 +196,16 @@ export default function TabFirst({
                                     <div className='flex space-x-4'>
                                         {[
                                             {
+                                                label: "Instagram",
+                                                value: "instagram",
+                                            },
+                                            {
                                                 label: "TikTok",
                                                 value: "tiktok",
                                             },
                                             {
                                                 label: "Facebook",
                                                 value: "facebook",
-                                            },
-                                            {
-                                                label: "Instagram",
-                                                value: "instagram",
                                             },
                                             {
                                                 label: "Youtube",
