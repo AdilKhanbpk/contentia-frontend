@@ -49,6 +49,7 @@ const menuItems = [
         links: [
             { name: "Orders", href: "/admin/order-management/orders" },
             { name: "Packages", href: "/admin/order-management/packages" },
+            { name: "Brands", href: "/admin/order-management/brands" },
         ],
     },
     {

@@ -36,15 +36,10 @@ interface CreateBrandPayload {
 
 interface UpdateBrandPayload {
   brandId: string;
-  data: {
-    brandName?: string;
-    brandCategory?: string;
-    brandWebsite?: string;
-    brandCountry?: string;
-    brandImage?: File; // New field for image upload
-  };
+  data: FormData; // ✅ Allow FormData explicitly
   token: string;
 }
+
 
 
 interface DeleteBrandPayload {
@@ -205,6 +200,9 @@ const brandSlice = createSlice({
     setCurrentBrand: (state, action: PayloadAction<Brand | null>) => {
       state.currentBrand = action.payload;
     },
+    clearCurrentBrand: (state) => {
+      state.currentBrand = null;
+    },
     addBrandToState: (state, action: PayloadAction<Brand>) => {
       state.brands.push(action.payload);
     },
@@ -343,6 +341,7 @@ export const {
   setCurrentBrand,
   addBrandToState,
   updateBrandInState,
+  clearCurrentBrand,
   removeBrandFromState
 } = brandSlice.actions;
 
