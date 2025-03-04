@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { axiosInstance } from '@/store/axiosInstance';
 import { AxiosError } from 'axios';
 import { Customer } from '@/types/interfaces';
-import { profile } from 'console';
 
 
 export interface AdminCustomersState {
@@ -31,6 +30,50 @@ export const fetchAdminCustomers = createAsyncThunk(
       if (response.data && response.data.data) {
         const customers = response.data.data.map((customer: Customer) => ({
           _id: customer._id ?? null,
+          role: customer.role ?? 'user',
+          fullName: customer.fullName ?? '',
+          email: customer.email ?? '',
+          profilePic: customer.profilePic ?? '',
+          phoneNumber: customer.phoneNumber ?? '',
+          age: customer.age ?? null,
+          status: customer.status ?? '',
+          invoiceType: customer.invoiceType ?? '',
+          customerStatus: customer.customerStatus ?? '',
+          billingInformation: {
+            invoiceStatus: customer.billingInformation?.invoiceStatus ?? false,
+            trId: customer.billingInformation?.trId ?? '',
+            address: customer.billingInformation?.address ?? '',
+            fullName: customer.billingInformation?.fullName ?? '',
+            companyName: customer.billingInformation?.companyName ?? '',
+            taxNumber: customer.billingInformation?.taxNumber ?? '',
+            taxOffice: customer.billingInformation?.taxOffice ?? ''
+          },
+          rememberMe: customer.rememberMe ?? false,
+          termsAndConditionsApproved: customer.termsAndConditionsApproved ?? false
+        }));
+
+        return customers;
+      } else {
+        console.warn('Response data does not contain the expected data field.');
+        return [];
+      }
+    } catch (error) {
+      throw Error('Failed to fetch admin customers');
+    }
+  }
+);
+export const fetchAdmins = createAsyncThunk(
+  'adminCustomers/fetchAdmins',
+  async (token: string) => {
+    try {
+      const response = await axiosInstance.get('/admin/customers/admins', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.data && response.data.data) {
+        const customers = response.data.data.map((customer: Customer) => ({
+          _id: customer._id ?? null,
+          role: customer.role,
           fullName: customer.fullName ?? '',
           email: customer.email ?? '',
           profilePic: customer.profilePic ?? '',
@@ -176,6 +219,18 @@ const adminCustomersSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch admin customers';
       })
+      .addCase(fetchAdmins.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAdmins.fulfilled, (state, action: PayloadAction<Customer[]>) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(fetchAdmins.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to fetch admins ';
+      })
       // Fetch customer by ID
       .addCase(fetchAdminCustomerById.pending, (state) => {
         state.loading = true;
@@ -235,4 +290,8 @@ const adminCustomersSlice = createSlice({
   },
 });
 
+
+
 export default adminCustomersSlice.reducer;
+
+
