@@ -6,6 +6,7 @@ import { Customer } from '@/types/interfaces';
 
 export interface AdminCustomersState {
   data: Customer[];
+  adminData: Customer[];
   loading: boolean;
   error: string | null;
   selectedCustomer: Customer | null;
@@ -13,6 +14,7 @@ export interface AdminCustomersState {
 
 const initialState: AdminCustomersState = {
   data: [],
+  adminData: [],
   loading: false,
   error: null,
   selectedCustomer: null,
@@ -225,7 +227,7 @@ const adminCustomersSlice = createSlice({
       })
       .addCase(fetchAdmins.fulfilled, (state, action: PayloadAction<Customer[]>) => {
         state.loading = false;
-        state.data = action.payload;
+        state.adminData = action.payload;
       })
       .addCase(fetchAdmins.rejected, (state, action) => {
         state.loading = false;

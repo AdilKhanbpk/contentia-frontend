@@ -74,7 +74,7 @@ TableActions.displayName = "TableActions";
 
 const Admins: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { data: customers = [] } = useSelector(
+    const { adminData: customers = [] } = useSelector(
         (state: RootState) => state.adminCustomers
     );
 
@@ -99,10 +99,10 @@ const Admins: React.FC = () => {
             )
                 .unwrap()
                 .then(() => {
-                    toast.success("Customer deleted successfully!");
+                    toast.success("Admin deleted successfully!");
                 })
                 .catch((error: any) => {
-                    toast.error("Failed to delete customer. Please try again.");
+                    toast.error("Failed to delete admin. Please try again.");
                 });
         },
         [dispatch]
@@ -114,7 +114,7 @@ const Admins: React.FC = () => {
             setCurrentCustomer({ ...customer }); // Ensure a new reference
             setIsModalViewOpen(true);
         } else {
-            toast.error("Customer not found.");
+            toast.error("Admin not found.");
         }
     };
 
@@ -130,7 +130,7 @@ const Admins: React.FC = () => {
             }
 
             if (!customerData || Object.keys(customerData).length === 0) {
-                toast.error("Customer data is missing or empty.");
+                toast.error("Admin data is missing or empty.");
                 return;
             }
 
@@ -149,10 +149,10 @@ const Admins: React.FC = () => {
             ).unwrap();
 
             setIsModalOpen(false);
-            await dispatch(fetchAdminCustomers(tokenFromStorage));
-            toast.success("Customer created successfully!");
+            await dispatch(fetchAdmins(tokenFromStorage));
+            toast.success("Admin created successfully!");
         } catch (error) {
-            toast.error("Failed to create customer. Please try again.");
+            toast.error("Failed to create admin. Please try again.");
         }
     };
 
@@ -194,10 +194,10 @@ const Admins: React.FC = () => {
                             token,
                         })
                     ));
-                await dispatch(fetchAdminCustomers(token));
-                toast.success("Customer updated successfully!");
+                await dispatch(fetchAdmins(token));
+                toast.success("Admin updated successfully!");
             } catch (error) {
-                toast.error("Failed to update customer. Please try again.");
+                toast.error("Failed to update admin. Please try again.");
             }
         } else {
             toast.error("Authorization token is missing. Please log in again.");
@@ -219,14 +219,13 @@ const Admins: React.FC = () => {
     }, []);
 
     const handleExport = useCallback(() => {
-        const headers = ["ID", "Name", "Email", "Phone", "Age", "Status"];
+        const headers = ["ID", "Name", "Email", "Phone", "Age"];
         const data = customers.map((customer) => ({
             ID: customer._id,
             Name: customer.fullName,
             Email: customer.email,
             Phone: customer.phoneNumber,
             Age: customer.age,
-            Status: customer.status,
         }));
 
         exportCsvFile({ data, headers, filename: "customers.csv" });
@@ -284,24 +283,24 @@ const Admins: React.FC = () => {
                 sortable: true,
                 width: "100px",
             },
-            {
-                name: "Status",
-                cell: (row: Customer) => (
-                    <span
-                        className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                            row.customerStatus === "approved"
-                                ? "text-green-700 bg-green-100"
-                                : row.customerStatus === "waiting"
-                                ? "text-yellow-700 bg-yellow-100"
-                                : "text-red-700 bg-red-100"
-                        }`}
-                    >
-                        {row.customerStatus}
-                    </span>
-                ),
-                sortable: true,
-                width: "150px",
-            },
+            // {
+            //     name: "Status",
+            //     cell: (row: Customer) => (
+            //         <span
+            //             className={`px-3 py-1 rounded-full text-sm font-semibold ${
+            //                 row.customerStatus === "approved"
+            //                     ? "text-green-700 bg-green-100"
+            //                     : row.customerStatus === "waiting"
+            //                     ? "text-yellow-700 bg-yellow-100"
+            //                     : "text-red-700 bg-red-100"
+            //             }`}
+            //         >
+            //             {row.customerStatus}
+            //         </span>
+            //     ),
+            //     sortable: true,
+            //     width: "150px",
+            // },
             {
                 name: "Actions",
                 cell: (row: any) => (
@@ -342,7 +341,7 @@ const Admins: React.FC = () => {
                             onClick={() => setIsModalOpen(true)}
                             className='px-4 py-2 ButtonBlue text-white rounded-md'
                         >
-                            Add Customer
+                            Add Admin
                         </button>
                         <button
                             onClick={handleExport}
