@@ -217,14 +217,13 @@ const Customers: React.FC = () => {
     }, []);
 
     const handleExport = useCallback(() => {
-        const headers = ["ID", "Name", "Email", "Phone", "Age", "Status"];
+        const headers = ["ID", "Name", "Email", "Phone", "Age"];
         const data = customers.map((customer) => ({
             ID: customer._id,
             Name: customer.fullName,
             Email: customer.email,
             Phone: customer.phoneNumber,
             Age: customer.age,
-            Status: customer.status,
         }));
 
         exportCsvFile({ data, headers, filename: "customers.csv" });
@@ -282,24 +281,24 @@ const Customers: React.FC = () => {
                 sortable: true,
                 width: "100px",
             },
-            {
-                name: "Status",
-                cell: (row: Customer) => (
-                    <span
-                        className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                            row.customerStatus === "approved"
-                                ? "text-green-700 bg-green-100"
-                                : row.customerStatus === "waiting"
-                                ? "text-yellow-700 bg-yellow-100"
-                                : "text-red-700 bg-red-100"
-                        }`}
-                    >
-                        {row.customerStatus}
-                    </span>
-                ),
-                sortable: true,
-                width: "150px",
-            },
+            // {
+            //     name: "Status",
+            //     cell: (row: Customer) => (
+            //         <span
+            //             className={`px-3 py-1 rounded-full text-sm font-semibold ${
+            //                 row.customerStatus === "approved"
+            //                     ? "text-green-700 bg-green-100"
+            //                     : row.customerStatus === "waiting"
+            //                     ? "text-yellow-700 bg-yellow-100"
+            //                     : "text-red-700 bg-red-100"
+            //             }`}
+            //         >
+            //             {row.customerStatus}
+            //         </span>
+            //     ),
+            //     sortable: true,
+            //     width: "150px",
+            // },
             {
                 name: "Actions",
                 cell: (row: any) => (
