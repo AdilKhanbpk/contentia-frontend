@@ -1,81 +1,131 @@
+import { useForm } from "react-hook-form";
 
-export default function Modal() {
+export default function CreateInvoiceModal() {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
+
+    const onSubmit = (data: any) => {
+        console.log("Invoice Created:", data);
+    };
+
     return (
-        <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">
-
-            <div className="grid grid-cols-1 gap-8">
-
-                {/* Customer Information */}
-                <div className="flex flex-col sm:flex-row space-x-9">
-                    <h3 className="text-sm whitespace-nowrap font-semibold mb-4">Customer Information:</h3>
-                    <div className="space-y-2">
-                        <div className="flex justify-between space-x-4">
-                            <span className="text-sm whitespace-nowrap  text-gray-600">Creator Name:</span>
-                            <span className="text-sm whitespace-nowrap  font-semibold">Saud</span>
-                        </div>
-                        <div className="flex justify-between space-x-4">
-                            <span className="text-sm whitespace-nowrap  text-gray-600">Creator Surname:</span>
-                            <span className="text-sm whitespace-nowrap  font-semibold">Khan</span>
-                        </div>
-                        <div className="flex justify-between space-x-4">
-                            <span className="text-sm whitespace-nowrap  text-gray-600">Customer ID:</span>
-                            <span className="text-sm whitespace-nowrap  font-semibold">12411591</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex flex-col lg:flex-row lg:space-x-12">
-
-                    {/* Payment Information */}
-                    <div className="flex flex-col sm:flex-row  w-full lg:w-1/2 space-x-9 lg:space-x-4">
-                        <h3 className="text-sm whitespace-nowrap font-semibold mb-4">Payment Information:</h3>
-                        <div className="space-y-2">
-                            <div className="flex justify-between space-x-4">
-                                <span className="text-sm whitespace-nowrap  text-gray-600">Payment Type:</span>
-                                <span className="text-sm whitespace-nowrap  font-semibold">Credit Card</span>
-                            </div>
-                            <div className="flex justify-between space-x-4">
-                                <span className="text-sm whitespace-nowrap  text-gray-600">Order ID:</span>
-                                <span className="text-sm whitespace-nowrap  font-semibold">201240184112</span>
-                            </div>
-                            <div className="flex justify-between space-x-4">
-                                <span className="text-sm whitespace-nowrap  text-gray-600">Payment ID:</span>
-                                <span className="text-sm whitespace-nowrap  font-semibold">9080124</span>
-                            </div>
-                            <div className="flex justify-between space-x-4">
-                                <span className="text-sm whitespace-nowrap  text-gray-600">Payment Date:</span>
-                                <span className="text-sm whitespace-nowrap  font-semibold">19/09/2024</span>
-                            </div>
-                            <div className="flex justify-between space-x-4">
-                                <span className="text-sm whitespace-nowrap  text-gray-600">Amount Paid:</span>
-                                <span className="text-sm whitespace-nowrap  font-semibold">25.000 TL</span>
-                            </div>
-                        </div>
+        <div className='flex justify-center items-center min-h-screen bg-gray-100'>
+            <div className='bg-white p-6 rounded-lg w-96 shadow-md'>
+                <h2 className='text-xl font-semibold mb-4'>Create Invoice</h2>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className='mb-2'>
+                        <label className='block text-sm font-medium'>
+                            Invoice ID
+                        </label>
+                        <input
+                            type='number'
+                            {...register("id", { required: true })}
+                            className='w-full p-2 border rounded'
+                        />
+                        {errors.id && (
+                            <p className='text-red-500 text-xs'>
+                                Invoice ID is required
+                            </p>
+                        )}
                     </div>
 
-                    {/* Invoice Information */}
-                    <div className="mt-4 lg:mt-0 flex-col sm:flex-row  w-full lg:w-1/2  space-x-9 lg:space-x-4">
-                        <h3 className="text-sm whitespace-nowrap font-semibold mb-4">Invoice Information:</h3>
-                        <div className="space-y-2">
-                            <div className="flex justify-between space-x-4">
-                                <span className="text-sm whitespace-nowrap  text-gray-600">Invoice Type:</span>
-                                <span className="text-sm whitespace-nowrap  font-semibold">Individual</span>
-                            </div>
-                            <div className="flex justify-between space-x-4">
-                                <span className="text-sm whitespace-nowrap  text-gray-600">Name</span>
-                                <span className="text-sm whitespace-nowrap  font-semibold">Saud Khan</span>
-                            </div>
-                            <div className="flex justify-between space-x-4">
-                                <span className="text-sm whitespace-nowrap  text-gray-600">Identity No:</span>
-                                <span className="text-sm whitespace-nowrap  font-semibold">4902189275</span>
-                            </div>
-                            <div className="flex justify-between space-x-4">
-                                <span className="text-sm whitespace-nowrap  text-gray-600">Invoice Address:</span>
-                                <span className="text-sm whitespace-nowrap  font-semibold">Istanbul</span>
-                            </div>
-                        </div>
+                    <div className='mb-2'>
+                        <label className='block text-sm font-medium'>
+                            Payment ID
+                        </label>
+                        <input
+                            type='number'
+                            {...register("paymentID", { required: true })}
+                            className='w-full p-2 border rounded'
+                        />
+                        {errors.paymentID && (
+                            <p className='text-red-500 text-xs'>
+                                Payment ID is required
+                            </p>
+                        )}
                     </div>
-                </div>
+
+                    <div className='mb-2'>
+                        <label className='block text-sm font-medium'>
+                            Payment Date
+                        </label>
+                        <input
+                            type='date'
+                            {...register("paymentDate", { required: true })}
+                            className='w-full p-2 border rounded'
+                        />
+                        {errors.paymentDate && (
+                            <p className='text-red-500 text-xs'>
+                                Payment Date is required
+                            </p>
+                        )}
+                    </div>
+
+                    <div className='mb-2'>
+                        <label className='block text-sm font-medium'>
+                            Amount Paid
+                        </label>
+                        <input
+                            type='text'
+                            {...register("amountPaid", { required: true })}
+                            className='w-full p-2 border rounded'
+                        />
+                        {errors.amountPaid && (
+                            <p className='text-red-500 text-xs'>
+                                Amount Paid is required
+                            </p>
+                        )}
+                    </div>
+
+                    <div className='mb-2'>
+                        <label className='block text-sm font-medium'>
+                            Payment Status
+                        </label>
+                        <select
+                            {...register("paymentStatus", { required: true })}
+                            className='w-full p-2 border rounded'
+                        >
+                            <option value='Success'>Success</option>
+                            <option value='Pending'>Pending</option>
+                            <option value='Failed'>Failed</option>
+                        </select>
+                        {errors.paymentStatus && (
+                            <p className='text-red-500 text-xs'>
+                                Payment Status is required
+                            </p>
+                        )}
+                    </div>
+
+                    <div className='mb-2'>
+                        <label className='block text-sm font-medium'>
+                            Cancel / Refund
+                        </label>
+                        <select
+                            {...register("cancelRefund", { required: true })}
+                            className='w-full p-2 border rounded'
+                        >
+                            <option value='Not Refunded'>Not Refunded</option>
+                            <option value='Refunded'>Refunded</option>
+                        </select>
+                        {errors.cancelRefund && (
+                            <p className='text-red-500 text-xs'>
+                                Cancel / Refund status is required
+                            </p>
+                        )}
+                    </div>
+
+                    <div className='flex justify-end space-x-2 mt-4'>
+                        <button
+                            type='submit'
+                            className='px-4 py-2 bg-blue-500 text-white rounded'
+                        >
+                            Create Invoice
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     );
