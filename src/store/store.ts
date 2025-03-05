@@ -23,6 +23,7 @@ import claimSlice from './features/admin/claimSlice';
 import notificationSlice from './features/admin/notificationSlice';
 import socketSlice from './socket/socketSlice';
 import packageSlice from './features/admin/packageSlice';
+import customPackageSlice from './features/admin/customPackageSlice';
 import dashboardReducer from './features/admin/dashboardSlice';
 
 const store = configureStore({
@@ -52,6 +53,7 @@ const store = configureStore({
     notification: notificationSlice,
     socket: socketSlice,
     package: packageSlice,
+    customPackages: customPackageSlice,
   },
 });
 

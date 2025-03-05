@@ -231,3 +231,41 @@ export interface Customer {
     RefreshToken(): string;
     ComparePassword(password: string): Promise<boolean>;
 }
+
+export interface PackageInterface {
+    _id: string;
+    coupon?: string;
+    packageCreator: {
+        _id: string;
+        fullName: string;
+        profilePic: string;
+        email: string;
+    };
+    packageCustomer: {
+        _id: string;
+        fullName: string;
+        profilePic: string;
+        email: string;
+    },
+    noOfUgc: number;
+    packageTotalPrice: number;
+    packageStatus: "pending" | "active" | "completed" | "cancelled" | "revision";
+    paymentStatus: "paid" | "pending" | "refunded" | "cancelled";
+    contentsDelivered?: number;
+    additionalServices: {
+        platform: string;
+        duration: string;
+        edit: boolean;
+        aspectRatio: string;
+        share?: boolean;
+        coverPicture?: boolean;
+        creatorType?: boolean;
+        productShipping?: boolean;
+    };
+    numberOfRequests?: number;
+    orderQuota?: number;
+    quotaLeft?: number;
+    createdAt?: Date;
+    updatedAt?: Date;
+
+}

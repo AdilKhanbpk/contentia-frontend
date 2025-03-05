@@ -1,205 +1,376 @@
 "use client";
-import React, { useState } from "react";
-import { FaEdit, FaTrashAlt, FaFileCsv, FaEye } from "react-icons/fa";
-import Image from "next/image";
-import dynamic from "next/dynamic";
-import { useForm } from "react-hook-form";
-import CustomModelAdmin from '../../../modal/CustomModelAdmin'
-import NewPackage from "../sub-order/NewPackage";
-import EditPackage from "../sub-order/EditPackage";
-const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
 
-export interface Order {
-    id: number;
-    customerName: string;
-    customerID: number;
-    packageID: number;
-    paymentID: number;
-    paymentDate: string;
-    packageType: number;
-    contentsLeft: number;
-    packageStatus: "Verified" | "Pending" | "Rejected";
+import React, { useState, useCallback, memo, useEffect } from "react";
+import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
+import Image from "next/image";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/store/store";
+// import CustomModelAdmin from "../../../modal/CustomModelAdmin";
+// import NewModal from "../sub-package/NewModal";
+// import EditModal from "../sub-package/EditModal";
+// import ViewModal from "../sub-package/ViewModal";
+import CustomTable from "@/components/custom-table/CustomTable";
+import { exportCsvFile } from "@/utils/exportCsvFile";
+import {
+    fetchPackages,
+    deletePackage,
+    fetchPackageById,
+    clearCurrentPackage,
+} from "@/store/features/admin/customPackageSlice";
+import { RootState } from "@/store/store";
+import { toast } from "react-toastify";
+import { PackageInterface } from "@/types/interfaces";
+import { fetchMyBrands } from "@/store/features/profile/brandSlice";
+
+interface SearchBarProps {
+    onSearch: (value: string) => void;
 }
 
-const initialOrders: Order[] = [
-    { id: 100, customerName: "Earl Parrini", customerID: 12412904, packageID: 901481, paymentID: 9284221, paymentDate: "21/10/2024", packageType: 3, contentsLeft: 2, packageStatus: "Verified" },
-    { id: 99, customerName: "Nora Willis", customerID: 1903790, packageID: 201435, paymentID: 4254210, paymentDate: "14/09/2024", packageType: 12, contentsLeft: 8, packageStatus: "Pending" },
-    { id: 98, customerName: "Lella Blanchi", customerID: 912041, packageID: 501657, paymentID: 4524108, paymentDate: "08/09/2024", packageType: 6, contentsLeft: 0, packageStatus: "Rejected" },
-];
+interface TableActionsProps {
+    onDelete: (id: string) => void;
+    onEdit: (id: string) => void;
+    onView: (id: string) => void;
+    id: string;
+}
 
- const Packages: React.FC = () => {
-    const [customers, setCustomers] = useState(initialOrders);
-    const [editingCustomer, setEditingCustomer] = useState<Order | null>(null);
-    const [showEditForm, setShowEditForm] = useState(false);
+const SearchBar = memo(({ onSearch }: SearchBarProps) => (
+    <input
+        type='text'
+        placeholder='Search...'
+        onChange={(e) => onSearch(e.target.value)}
+        className='p-2 bpackage bpackage-gray-300 rounded-lg'
+    />
+));
+
+SearchBar.displayName = "SearchBar";
+
+const TableActions = memo(
+    ({ onDelete, onEdit, onView, id }: TableActionsProps) => (
+        <div className='flex space-x-3'>
+            <button
+                className='text-gray-500 hover:text-gray-700'
+                onClick={() => onView(id)}
+            >
+                <FaEye className='text-lg' />
+            </button>
+            <button
+                className='text-blue-500 hover:text-blue-700'
+                onClick={() => onEdit(id)}
+            >
+                <FaEdit className='text-lg' />
+            </button>
+            <button
+                className='text-red-500 hover:text-red-700'
+                onClick={() => onDelete(id)}
+            >
+                <FaTrashAlt className='text-md' />
+            </button>
+        </div>
+    )
+);
+
+TableActions.displayName = "TableActions";
+
+const Packages: React.FC = () => {
+    const dispatch = useDispatch<AppDispatch>();
+    const {
+        data: packages,
+        loading,
+        error,
+        currentPackage,
+    } = useSelector((state: RootState) => state.customPackages);
     const [searchTerm, setSearchTerm] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalEditOpen, setIsModalEditOpen] = useState(false);
+    const [isModalViewOpen, setIsViewModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState("All");
 
-    const {
-        reset,
-    } = useForm<Order>();
+    useEffect(() => {
+        const fetchPackagesData = async () => {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                toast.error("No token found. Please log in again.");
+                return;
+            }
+            try {
+                const res = await dispatch(fetchPackages(token)).unwrap();
+                toast.success(res.message);
+            } catch (error: any) {
+                toast.error(error.message);
+            }
+        };
+        const fetchBrands = async () => {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                toast.error("No token found. Please log in again.");
+                return;
+            }
+            try {
+                const res = await dispatch(fetchMyBrands(token)).unwrap();
+                toast.success(res.message);
+            } catch (error: any) {
+                toast.error(error.message);
+            }
+        };
+        fetchBrands();
+        fetchPackagesData();
+    }, [dispatch]);
 
-    const handleDelete = (id: number) => {
-        setCustomers((prev) => prev.filter((customer) => customer.id !== id));
-    };
+    const handleDelete = useCallback(
+        async (id: string) => {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                toast.error("No token found. Please log in again.");
+                return;
+            }
 
-    const filteredCustomers = customers.filter((customer) =>
-        customer.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.customerID.toString().includes(searchTerm) ||
-        customer.packageID.toString().includes(searchTerm)
+            try {
+                await dispatch(
+                    deletePackage({ packageId: id, token })
+                ).unwrap();
+                toast.success("Package deleted successfully!");
+            } catch (error) {
+                toast.error("Error deleting package.");
+            }
+        },
+        [dispatch]
     );
 
-    const [isModalEditOpen, setIsModalEditOpen] = useState(false);
+    const handleView = useCallback(
+        async (id: string) => {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                toast.error("No token found. Please log in again.");
+                return;
+            }
 
-    const openModalEdit = () => setIsModalEditOpen(true);
-    const closeModalEdit = () => setIsModalEditOpen(false);
+            try {
+                await dispatch(
+                    fetchPackageById({ packageId: id, token })
+                ).unwrap();
+                toast.success("Package details fetched successfully!");
+                setIsViewModalOpen(true);
+            } catch (error) {
+                toast.error("Error fetching package details.");
+            }
+        },
+        [dispatch]
+    );
 
-    const columns = [
-        {
-            name: "#",
-            selector: (row: any) => row.id,
-            sortable: true,
-            width: "80px",
-        },
-        {
-            name: "Customer Name",
-            cell: (row: any) => (
-                <div className="flex items-center space-x-2">
-                    <Image width={10} height={10} src="/icons/avatar.png" alt="avatar" className="w-10 h-10 rounded-full" />
-                    <div>
-                        <p className="font-semibold">{row.customerName}</p>
-                        <p className="text-sm whitespace-nowrap text-gray-500">{row.customerID}</p>
-                    </div>
-                </div>
-            ),
-            sortable: false,
-            width: "200px",
-        },
-        {
-            name: "Package ID",
-            selector: (row: any) => row.packageID,
-            sortable: true,
-            width: "200px",
-        },
-        {
-            name: "Payment ID",
-            selector: (row: any) => row.paymentID,
-            sortable: true,
-            width: "200px",
-        },
-        {
-            name: "Payment Date",
-            selector: (row: any) => row.paymentDate,
-            sortable: true,
-            width: "200px",
-        },
-        {
-            name: "Package Type",
-            selector: (row: any) => row.packageType,
-            sortable: true,
-            width: "200px",
-        },
-        {
-            name: "Contents Left",
-            selector: (row: any) => row.contentsLeft,
-            sortable: true,
-            width: "200px",
-        },
-        {
-            name: "Package Status",
-            cell: (row: any) => (
-                <span
-                    className={`px-3 py-1 rounded-full text-sm font-semibold ${row.packageStatus === "Verified"
-                        ? "text-green-700 bg-green-100"
-                        : row.packageStatus === "Pending"
-                            ? "text-yellow-700 bg-yellow-100"
-                            : "text-red-700 bg-red-100"
-                        }`}
-                >
-                    {row.packageStatus}
-                </span>
-            ),
-            sortable: true,
-            width: "150px",
-        },
-        {
-            name: "Actions",
-            cell: (row: any) => (
-                <div className="flex space-x-3">
-                    <button className="text-gray-500 hover:text-gray-700">
-                        <FaEye className="text-lg" />
-                    </button>
+    const handleEdit = useCallback(
+        async (id: string) => {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                toast.error("No token found. Please log in again.");
+                return;
+            }
 
-                    <button className="text-blue-500 hover:text-blue-700" onClick={openModalEdit}>
-                        <FaEdit className="text-lg" />
-                    </button>
-
-                    <button className="text-red-500 hover:text-red-700" onClick={() => handleDelete(row.id)}>
-                        <FaTrashAlt className="text-md" />
-                    </button>
-
-                </div>
-            ),
-            width: "150px",
+            try {
+                await dispatch(
+                    fetchPackageById({ packageId: id, token })
+                ).unwrap();
+                setIsModalEditOpen(true);
+                toast.success("Package fetched successfully for editing.");
+            } catch (error) {
+                toast.error("Error fetching package for editing.");
+            }
         },
-    ];
+        [dispatch]
+    );
 
-    const exportToCSV = () => {
-        const csvRows = [
-            ["ID", "Customer Name", "Customer ID", "Package ID", " Payment ID", "Payment Date", "Package Type", "Contents Left", "Package Status"],
-            ...initialOrders.map(order => [order.id, order.customerName, order.customerID, order.packageID, order.paymentID, order.paymentDate, order.packageType, order.contentsLeft, order.packageStatus]),
+    const handleSearch = useCallback((value: string) => {
+        setSearchTerm(value);
+    }, []);
+
+    const handleExport = useCallback(() => {
+        const headers = [
+            "ID",
+            "No of UGC",
+            "Total Price",
+            "Package Status",
+            "Payment Status",
+            "Contents Delivered",
+            "Created At",
         ];
-        const csvContent = "data:text/csv;charset=utf-8," + csvRows.map(e => e.join(",")).join("\n");
-        const link = document.createElement("a");
-        link.setAttribute("href", encodeURI(csvContent));
-        link.setAttribute("download", "orders.csv");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+        const data = packages.map((customPackage) => ({
+            "# Package Id": customPackage._id,
+            "No of UGC": customPackage.noOfUgc,
+            "Total Price": customPackage.packageTotalPrice,
+            "Package Status": customPackage.packageStatus,
+            "Payment Status": customPackage.paymentStatus,
+            "Contents Delivered": customPackage.contentsDelivered || 0,
+            "Created At": customPackage.createdAt,
+        }));
 
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
+        exportCsvFile({ data, headers, filename: "packages.csv" });
+    }, [packages]);
+
+    const handleCloseModals = useCallback(() => {
+        setIsModalOpen(false);
+        setIsModalEditOpen(false);
+        setIsViewModalOpen(false);
+        dispatch(clearCurrentPackage());
+    }, [dispatch]);
+
+    const columns = React.useMemo(
+        () => [
+            {
+                name: "#Package Id",
+                selector: (row: PackageInterface) => row._id,
+                sortable: true,
+            },
+            {
+                name: "Package Creator",
+                cell: (row: PackageInterface) => {
+                    const owner = row.packageCreator;
+                    const isValidOwner =
+                        owner && typeof owner === "object" && owner !== null;
+
+                    return (
+                        <div className='flex items-center space-x-2'>
+                            <Image
+                                width={100}
+                                height={100}
+                                src={owner?.profilePic || "/icons/avatar.png"}
+                                alt='avatar'
+                                className='w-10 h-10 rounded-full'
+                            />
+                            <div>
+                                <p className='text-sm text-gray-500'>
+                                    {isValidOwner && owner.email
+                                        ? owner.email
+                                        : "No Email"}
+                                </p>
+                            </div>
+                        </div>
+                    );
+                },
+                sortable: false,
+                width: "200px",
+            },
+
+            {
+                name: "No of UGC",
+                selector: (row: PackageInterface) => row.noOfUgc,
+                sortable: true,
+            },
+            {
+                name: "Package Owner",
+                cell: (row: PackageInterface) => {
+                    const owner = row.packageCustomer;
+                    const isValidOwner =
+                        owner && typeof owner === "object" && owner !== null;
+
+                    return (
+                        <div className='flex items-center space-x-2'>
+                            <Image
+                                width={100}
+                                height={100}
+                                src={owner?.profilePic || "/icons/avatar.png"}
+                                alt='avatar'
+                                className='w-10 h-10 rounded-full'
+                            />
+                            <div>
+                                <p className='text-sm text-gray-500'>
+                                    {isValidOwner && owner.email
+                                        ? owner.email
+                                        : "No Email"}
+                                </p>
+                            </div>
+                        </div>
+                    );
+                },
+                sortable: false,
+                width: "200px",
+            },
+            {
+                name: "Total Price",
+                selector: (row: PackageInterface) => row.packageTotalPrice,
+                sortable: true,
+            },
+
+            {
+                name: "Package Status",
+                cell: (row: PackageInterface) => (
+                    <span
+                        className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                            row.packageStatus === "completed"
+                                ? "text-green-700 bg-green-100"
+                                : row.packageStatus === "pending"
+                                ? "text-yellow-700 bg-yellow-100"
+                                : "text-red-700 bg-red-100"
+                        }`}
+                    >
+                        {row.packageStatus.charAt(0).toUpperCase() +
+                            row.packageStatus.slice(1)}
+                    </span>
+                ),
+                sortable: true,
+            },
+            {
+                name: "Actions",
+                cell: (row: PackageInterface) => (
+                    <TableActions
+                        onDelete={handleDelete}
+                        onEdit={handleEdit}
+                        onView={handleView}
+                        id={row._id}
+                    />
+                ),
+            },
+        ],
+        [handleDelete, handleEdit, handleView]
+    );
+
+    const filteredPackages = React.useMemo(() => {
+        const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
+        return packages?.filter((customPackage) => {
+            const owner = customPackage.packageCreator;
+            const fullNameMatch =
+                owner &&
+                typeof owner === "object" &&
+                owner.fullName &&
+                owner.fullName.toLowerCase().includes(lowerCaseSearchTerm);
+            const idMatch = customPackage._id
+                ?.toLowerCase()
+                .includes(lowerCaseSearchTerm);
+            return fullNameMatch || idMatch;
+        });
+    }, [packages, searchTerm]);
 
     return (
-        <div className=" bg-white rounded-lg ">
+        <div className='bg-white rounded-lg'>
             <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
-                <div className="flex justify-between mb-4">
-                    <div className="flex items-center">
-                        <input
-                            type="text"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            placeholder="Search..."
-                            className="p-2 border border-gray-300 rounded-lg mr-4"
-                        />
+                <div className='flex flex-row justify-between items-center mb-4 space-x-2'>
+                    <div className='flex justify-center items-center'>
+                        <SearchBar onSearch={handleSearch} />
                     </div>
-                    <div className="flex flex-col md:flex-row lg:space-x-2">
-                        <button
-                            className="px-1 md:px-4 py-0.5 md:py-2 ButtonBlue text-white rounded-md"
-                            onClick={openModal}
-                        >
-                            New Package
-                        </button>
-                        <CustomModelAdmin isOpen={isModalOpen} closeModal={closeModal} title="">
-                            <NewPackage></NewPackage>
-                        </CustomModelAdmin>
 
+                    <div className='flex flex-row space-x-2'>
                         <button
-                            className="px-1 md:px-4 py-0.5 md:py-2 bg-green-500 text-white rounded-md"
-                            onClick={exportToCSV}
+                            onClick={() => setIsModalOpen(true)}
+                            className='px-4 py-2 ButtonBlue text-white rounded-md'
                         >
-                            Export CSV <FaFileCsv className="inline ml-2" />
+                            Add Package
+                        </button>
+                        <button
+                            onClick={handleExport}
+                            className='px-4 py-2 bg-green-500 text-white rounded-md'
+                        >
+                            Export CSV
                         </button>
                     </div>
                 </div>
-
-                <div className="flex justify-between mb-4">
-                    <ul className="flex space-x-4">
+                <div className='flex justify-between mb-4'>
+                    <ul className='flex space-x-4'>
                         <li>
                             <button
-                                className={`px-1 md:px-4 py-0.5 md:py-2 ${activeTab === "All" ? "bg-gray-500 rounded  text-white" : "text-gray-500 hover:text-gray-700"}`}
+                                className={`px-1 md:px-4 py-0.5 md:py-2 ${
+                                    activeTab === "All"
+                                        ? "bg-gray-500 rounded  text-white"
+                                        : "text-gray-500 hover:text-gray-700"
+                                }`}
                                 onClick={() => setActiveTab("All")}
                             >
                                 All
@@ -207,7 +378,11 @@ const initialOrders: Order[] = [
                         </li>
                         <li>
                             <button
-                                className={`px-1 md:px-4 py-0.5 md:py-2 ${activeTab === "Active" ? "bg-gray-500 rounded  text-white" : "text-gray-500 hover:text-gray-700"}`}
+                                className={`px-1 md:px-4 py-0.5 md:py-2 ${
+                                    activeTab === "Active"
+                                        ? "bg-gray-500 rounded  text-white"
+                                        : "text-gray-500 hover:text-gray-700"
+                                }`}
                                 onClick={() => setActiveTab("Active")}
                             >
                                 Active
@@ -215,7 +390,11 @@ const initialOrders: Order[] = [
                         </li>
                         <li>
                             <button
-                                className={`px-1 md:px-4 py-0.5 md:py-2 ${activeTab === "Completed" ? "bg-gray-500 rounded  text-white" : "text-gray-500 hover:text-gray-700"}`}
+                                className={`px-1 md:px-4 py-0.5 md:py-2 ${
+                                    activeTab === "Completed"
+                                        ? "bg-gray-500 rounded  text-white"
+                                        : "text-gray-500 hover:text-gray-700"
+                                }`}
                                 onClick={() => setActiveTab("Completed")}
                             >
                                 Completed
@@ -223,7 +402,11 @@ const initialOrders: Order[] = [
                         </li>
                         <li>
                             <button
-                                className={`px-1 md:px-4 py-0.5 md:py-2 ${activeTab === "Cancelled" ? "bg-gray-500 rounded  text-white" : "text-gray-500 hover:text-gray-700"}`}
+                                className={`px-1 md:px-4 py-0.5 md:py-2 ${
+                                    activeTab === "Cancelled"
+                                        ? "bg-gray-500 rounded  text-white"
+                                        : "text-gray-500 hover:text-gray-700"
+                                }`}
                                 onClick={() => setActiveTab("Cancelled")}
                             >
                                 Cancelled
@@ -232,47 +415,52 @@ const initialOrders: Order[] = [
                     </ul>
                 </div>
 
-                <div className="shadow-md">
-                    <DataTable
+                <div>
+                    <CustomTable
                         columns={columns}
-                        data={filteredCustomers.filter(customer => {
+                        data={filteredPackages.filter((customPackage) => {
                             if (activeTab === "All") return true;
-                            if (activeTab === "Active") return customer.packageStatus === "Pending";
-                            if (activeTab === "Completed") return customer.packageStatus === "Verified";
-                            if (activeTab === "Cancelled") return customer.packageStatus === "Rejected";
+                            if (activeTab === "Active")
+                                return (
+                                    customPackage.packageStatus === "pending"
+                                );
+                            if (activeTab === "Completed")
+                                return (
+                                    customPackage.packageStatus === "completed"
+                                );
+                            if (activeTab === "Cancelled")
+                                return (
+                                    customPackage.packageStatus === "cancelled"
+                                );
                             return false;
                         })}
-                        pagination
-                        customStyles={{
-                            rows: {
-                                style: {
-                                    fontSize: "14px",
-                                    fontWeight: "500",
-                                },
-                            },
-                            headRow: {
-                                style: {
-                                    fontSize: "16px",
-                                    fontWeight: "600",
-                                    backgroundColor: "#f8f8f8",
-                                },
-                            },
-                            headCells: {
-                                style: {
-                                    fontWeight: "600",
-                                    color: "#333",
-                                },
-                            },
-                        }}
                     />
-
                 </div>
             </div>
 
-            <CustomModelAdmin isOpen={isModalEditOpen} closeModal={closeModalEdit} title="">
-                <EditPackage />
+            {/* <CustomModelAdmin
+                isOpen={isModalOpen}
+                closeModal={handleCloseModals}
+                title='Add Package'
+            >
+                <NewModal />
             </CustomModelAdmin>
 
+            <CustomModelAdmin
+                isOpen={isModalViewOpen}
+                closeModal={handleCloseModals}
+                title='View Package'
+            >
+                <ViewModal package={currentPackage} />
+            </CustomModelAdmin>
+
+            <CustomModelAdmin
+                isOpen={isModalEditOpen}
+                closeModal={handleCloseModals}
+                title='Update Package'
+            >
+                <EditModal package={currentPackage} />
+            </CustomModelAdmin> */}
         </div>
     );
 };

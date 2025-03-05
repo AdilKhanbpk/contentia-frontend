@@ -293,7 +293,9 @@ export default function AdminNavbar() {
                         >
                             <ul className='p-2 text-sm'>
                                 <li className='p-2 hover:bg-gray-100 cursor-pointer'>
-                                    Admin Management
+                                    <Link href='/admin/user-management/admins'>
+                                        Admin Management
+                                    </Link>
                                 </li>
                             </ul>
                         </Dropdown>
