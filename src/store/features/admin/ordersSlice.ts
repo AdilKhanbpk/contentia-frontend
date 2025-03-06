@@ -263,6 +263,27 @@ export const getAppliedCreators = createAsyncThunk(
     }
   }
 );
+export const getAssignedOrders = createAsyncThunk(
+  'orders/getAssignedCreators',
+  async (token: string, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`/admin/orders/assigned-orders`, {
+        headers: { Authorization: `Bearer ${token}` },
+        timeout: 10000,
+      });
+
+      return response.data.data
+
+    } catch (error) {
+      if ((error as AxiosError).isAxiosError) {
+        const axiosError = error as AxiosError<ErrorResponse>;
+        return rejectWithValue(axiosError.response?.data?.message || 'Failed to fetch applied creators');
+      }
+
+      return rejectWithValue('Failed to fetch applied creators');
+    }
+  }
+);
 
 const ordersSlice = createSlice({
   name: 'orders',
@@ -302,6 +323,18 @@ const ordersSlice = createSlice({
         }
       })
       .addCase(getAppliedCreators.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(getAssignedOrders.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAssignedOrders.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(getAssignedOrders.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

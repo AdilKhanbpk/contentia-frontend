@@ -137,7 +137,11 @@ export interface OrderInterface {
         fullName: string;
         email: string;
     };
-    assignedCreators: string[] | CreatorInterface[];
+    assignedCreators: string[] | CreatorInterface[] | [{
+        _id: string;
+        fullName: string;
+        email: string;
+    }];
     appliedCreators: string[] | CreatorInterface[];
     associatedBrands?: {
         brandName: string;
