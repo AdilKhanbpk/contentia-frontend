@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { fetchAdditionalServices } from "@/store/features/admin/addPriceSlice";
 import { setOrderFormData } from "@/store/features/profile/orderSlice";
+import { fetchPricePlans } from "@/store/features/admin/pricingSlice";
 
 export default function TabFirst({
     setActiveTab,
@@ -27,7 +28,7 @@ export default function TabFirst({
         (state: RootState) => state.addPrice
     );
 
-    const { loading, error } = useSelector((state: RootState) => state.order);
+    const { data: pricing } = useSelector((state: RootState) => state.pricing);
 
     const [selectedServices, setSelectedServices] = useState<{
         [key: string]: boolean;
@@ -44,6 +45,7 @@ export default function TabFirst({
     const [isOpen, setIsOpen] = useState(true);
 
     useEffect(() => {
+        dispatch(fetchPricePlans() as any);
         const storedToken = localStorage.getItem("accessToken") || "";
         setToken(storedToken);
         if (storedToken) {
@@ -169,6 +171,49 @@ export default function TabFirst({
         toast.success("Order Details Saved Successfully!");
         setActiveTab(2);
     };
+
+    const services = [
+        {
+            id: 1,
+            key: "share",
+            image: "/videoCarousal.png",
+            alt: "Sosyal Medyada Paylaşım",
+            title: "Sosyal Medyada Paylaşılsın",
+            description:
+                "Hazırlanan içerikler onaylandıktan sonra Contentia.io ve içerik üreticilerinin hesaplarından paylaşılır.",
+            price: additionalService?.sharePrice || 0,
+        },
+        {
+            id: 2,
+            key: "cover",
+            image: "/videoCarousal.png",
+            alt: "Kapak Görseli",
+            title: "Kapak Görseli",
+            description:
+                "Hazırlanacak her video için orijinal resim ve kapak görseli hazırlanır.",
+            price: additionalService?.coverPicPrice || 0,
+        },
+        {
+            id: 3,
+            key: "influencer",
+            image: "/videoCarousal.png",
+            alt: "Influencer Paketi",
+            title: "Influencer Paketi",
+            description:
+                "Videolarınız Micro Influencerlar tarafından üretilsin.",
+            price: additionalService?.creatorTypePrice || 0,
+        },
+        {
+            id: 4,
+            key: "shipping",
+            image: "/videoCarousal.png",
+            alt: "Ürün Gönderimi Kargo Ücreti",
+            title: "Ürün Gönderimi Kargo Ücreti",
+            description:
+                "İçeriklerinizde tanıtımını yapmak istediğiniz ürünü, içerik üreticilerin adreslerine kargolamanız gerekir. Kargo kodu ile gönderimini ek ücret ödemeden sağlayabilirsiniz.",
+            price: additionalService?.shippingPrice || 0,
+        },
+    ];
 
     return (
         <>
@@ -405,101 +450,51 @@ export default function TabFirst({
                             UGC Adedini Seç:
                         </h2>
                         <div className='grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8'>
-                            {/* 3 Videos */}
-                            <div
-                                onClick={() => handleCardSelect(3)}
-                                className={`p-2 sm:p-3 md:p-4 lg:p-4 rounded-lg shadow-xl cursor-pointer ${
-                                    selectedCard === 3
-                                        ? "border-2 BlueBorder sectionBG"
-                                        : "bg-white"
-                                }`}
-                            >
-                                <h3 className='text-sm font-bold'>
-                                    3 Farklı Video,
-                                </h3>
-                                <p className='text-sm font-bold mb-2'>
-                                    3 Farklı İçerik Üretici
-                                </p>
-                                <div className='mb-2'>
-                                    <button className='ButtonBlue text-white font-medium rounded-md px-1 py-0.5 text-xs'>
-                                        450 TL İndirim
-                                    </button>
-                                </div>
-                                <span className='text-sm font-semibold line-through'>
-                                    9.000 TL
-                                </span>
-                                <p className='mt-2 text-sm BlueText font-semibold'>
-                                    8.550 TL
-                                    <span className='text-xs text-black font-thin'>
-                                        {" "}
-                                        / 3 Video
-                                    </span>
-                                </p>
-                            </div>
-
-                            {/* 6 Videos */}
-                            <div
-                                onClick={() => handleCardSelect(6)}
-                                className={`p-2 sm:p-3 md:p-4 lg:p-4 rounded-lg shadow-xl cursor-pointer ${
-                                    selectedCard === 6
-                                        ? "border-2 BlueBorder sectionBG"
-                                        : "bg-white"
-                                }`}
-                            >
-                                <h3 className='text-sm font-bold'>
-                                    6 Farklı Video,
-                                </h3>
-                                <p className='text-sm font-bold mb-2'>
-                                    6 Farklı İçerik Üretici
-                                </p>
-                                <div className='mb-2'>
-                                    <button className='ButtonBlue text-white font-medium rounded-md px-1 py-0.5 text-xs'>
-                                        2.401 TL İndirim
-                                    </button>
-                                </div>
-                                <span className='text-sm font-semibold line-through'>
-                                    18.000 TL
-                                </span>
-                                <p className='mt-2 text-sm BlueText font-semibold'>
-                                    15.599 TL
-                                    <span className='text-xs text-black font-thin'>
-                                        {" "}
-                                        / 6 Video
-                                    </span>
-                                </p>
-                            </div>
-
-                            {/* 12 Videos */}
-                            <div
-                                onClick={() => handleCardSelect(12)}
-                                className={`p-2 sm:p-3 md:p-4 lg:p-4 rounded-lg shadow-xl cursor-pointer ${
-                                    selectedCard === 12
-                                        ? "border-2 BlueBorder sectionBG"
-                                        : "bg-white"
-                                }`}
-                            >
-                                <h3 className='text-sm font-bold'>
-                                    12 Farklı Video,
-                                </h3>
-                                <p className='text-sm font-bold mb-2'>
-                                    12 Farklı İçerik Üretici
-                                </p>
-                                <div className='mb-2'>
-                                    <button className='ButtonBlue text-white font-medium rounded-md px-1 py-0.5 text-xs'>
-                                        8.401 TL İndirim
-                                    </button>
-                                </div>
-                                <span className='text-sm font-semibold line-through'>
-                                    36.000 TL
-                                </span>
-                                <p className='mt-2 text-sm BlueText font-semibold'>
-                                    27.599 TL
-                                    <span className='text-xs text-black font-thin'>
-                                        {" "}
-                                        / 12 Video
-                                    </span>
-                                </p>
-                            </div>
+                            {pricing &&
+                                pricing
+                                    .filter(
+                                        (option: any) => option.videoCount !== 1
+                                    )
+                                    .map((option, index) => (
+                                        <div
+                                            key={option._id}
+                                            onClick={() =>
+                                                handleCardSelect(index)
+                                            }
+                                            className={`p-2 sm:p-3 md:p-4 lg:p-4 rounded-lg shadow-xl cursor-pointer ${
+                                                selectedCard === index
+                                                    ? "border-2 BlueBorder sectionBG"
+                                                    : "bg-white"
+                                            }`}
+                                        >
+                                            <h3 className='text-sm font-bold'>
+                                                {option.videoCount} Farklı
+                                                Video,
+                                            </h3>
+                                            <p className='text-sm font-bold mb-2'>
+                                                {option.videoCount} Farklı
+                                                İçerik Üretici
+                                            </p>
+                                            <div className='mb-2'>
+                                                <button className='ButtonBlue text-white font-medium rounded-md px-1 py-0.5 text-xs'>
+                                                    {option.strikeThroughPrice &&
+                                                        option.strikeThroughPrice -
+                                                            option.finalPrice}{" "}
+                                                    TL İndirim
+                                                </button>
+                                            </div>
+                                            <span className='text-sm font-semibold line-through'>
+                                                {option.strikeThroughPrice} TL
+                                            </span>
+                                            <p className='mt-2 text-sm BlueText font-semibold'>
+                                                {option.finalPrice} TL
+                                                <span className='text-xs text-black font-thin'>
+                                                    {" "}
+                                                    / {option.videoCount} Video
+                                                </span>
+                                            </p>
+                                        </div>
+                                    ))}
 
                             {/* Quantity Selector */}
                             <div
@@ -543,7 +538,7 @@ export default function TabFirst({
                                         selectedCard,
                                         totalAdditionalCharges
                                     )}{" "}
-                                    TL{" "}
+                                    TL
                                     <span className='text-xs text-black font-thin'>
                                         {" "}
                                         / Video
@@ -585,197 +580,55 @@ export default function TabFirst({
 
                         {isOpen && (
                             <div className='space-y-4'>
-                                {/* Card 1 - Share */}
-                                <div className='bg-white p-2 sm:p-3 md:p-4 lg:p-4 rounded-lg shadow-md flex flex-col lg:flex-row justify-between items-center'>
-                                    <Image
-                                        src='/videoCarousal.png'
-                                        alt='Sosyal Medyada Paylaşım'
-                                        width={250}
-                                        height={300}
-                                        className='rounded-lg object-cover'
-                                    />
-                                    <div className='w-2/3 ml-2 sm:ml-3 md:ml-4 lg:ml-4 flex flex-col'>
-                                        <h3 className='text-md font-semibold'>
-                                            Sosyal Medyada Paylaşılsın
-                                        </h3>
-                                        <p className='text-gray-600'>
-                                            Hazırlanan içerikler onaylandıktan
-                                            sonra Contentia.io ve içerik
-                                            üreticilerinin hesaplarından
-                                            paylaşılır.
-                                        </p>
-                                        <span className='font-semibold text-black'>
-                                            {additionalService?.sharePrice}
-                                            <span className='text-sm font-thin'>
-                                                {" "}
-                                                / Video
+                                {services.map((service) => (
+                                    <div
+                                        key={service.id}
+                                        className='bg-white p-2 sm:p-3 md:p-4 lg:p-4 rounded-lg shadow-md flex flex-col lg:flex-row justify-between items-center'
+                                    >
+                                        <Image
+                                            src={service.image}
+                                            alt={service.alt}
+                                            width={250}
+                                            height={300}
+                                            className='rounded-lg object-cover'
+                                        />
+                                        <div className='w-2/3 ml-2 sm:ml-3 md:ml-4 lg:ml-4 flex flex-col'>
+                                            <h3 className='text-md font-semibold'>
+                                                {service.title}
+                                            </h3>
+                                            <p className='text-gray-600'>
+                                                {service.description}
+                                            </p>
+                                            <span className='font-semibold text-black'>
+                                                {service.price}
+                                                <span className='text-sm font-thin'>
+                                                    {" "}
+                                                    / Video
+                                                </span>
                                             </span>
-                                        </span>
-                                        <button
-                                            type='button'
-                                            className={`mt-2 px-2 py-1 border-2 rounded-md font-semibold w-20 ${
-                                                selectedServices.share
-                                                    ? "border-red-500 text-red-500 hover:bg-red-50"
-                                                    : "BlueBorder BlueText hover:bg-blue-50"
-                                            }`}
-                                            onClick={() =>
-                                                handleAddService(
-                                                    "share",
-                                                    additionalService?.sharePrice ||
-                                                        0
-                                                )
-                                            }
-                                        >
-                                            {selectedServices.share
-                                                ? "Kaldır"
-                                                : "Ekle"}
-                                        </button>
+                                            <button
+                                                type='button'
+                                                className={`mt-2 px-2 py-1 border-2 rounded-md font-semibold w-20 ${
+                                                    selectedServices[
+                                                        service.key
+                                                    ]
+                                                        ? "border-red-500 text-red-500 hover:bg-red-50"
+                                                        : "BlueBorder BlueText hover:bg-blue-50"
+                                                }`}
+                                                onClick={() =>
+                                                    handleAddService(
+                                                        service.key,
+                                                        service.price || 0
+                                                    )
+                                                }
+                                            >
+                                                {selectedServices[service.key]
+                                                    ? "Kaldır"
+                                                    : "Ekle"}
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-
-                                {/* Card 2 - Cover Picture */}
-                                <div className='bg-white p-2 sm:p-3 md:p-4 lg:p-4 rounded-lg shadow-md flex flex-col lg:flex-row justify-between items-center'>
-                                    <Image
-                                        src='/videoCarousal.png'
-                                        alt='Kapak Görseli'
-                                        width={250}
-                                        height={300}
-                                        className='rounded-lg object-cover'
-                                    />
-                                    <div className='w-2/3 ml-2 sm:ml-3 md:ml-4 lg:ml-4 flex flex-col'>
-                                        <h3 className='text-md font-semibold'>
-                                            Kapak Görseli
-                                        </h3>
-                                        <p className='text-gray-600'>
-                                            Hazırlanacak her video için orijinal
-                                            resim ve kapak görseli hazırlanır.
-                                        </p>
-                                        <span className='font-semibold text-black'>
-                                            {additionalService?.coverPicPrice}
-                                            <span className='text-sm font-thin'>
-                                                {" "}
-                                                / Video
-                                            </span>
-                                        </span>
-                                        <button
-                                            type='button'
-                                            className={`mt-2 px-2 py-1 border-2 rounded-md font-semibold w-20 ${
-                                                selectedServices.cover
-                                                    ? "border-red-500 text-red-500 hover:bg-red-50"
-                                                    : "BlueBorder BlueText hover:bg-blue-50"
-                                            }`}
-                                            onClick={() =>
-                                                handleAddService(
-                                                    "cover",
-                                                    additionalService?.coverPicPrice ||
-                                                        0
-                                                )
-                                            }
-                                        >
-                                            {selectedServices.cover
-                                                ? "Kaldır"
-                                                : "Ekle"}
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {/* Card 3 - Influencer */}
-                                <div className='bg-white p-2 sm:p-3 md:p-4 lg:p-4 rounded-lg shadow-md flex flex-col lg:flex-row justify-between items-center'>
-                                    <Image
-                                        src='/videoCarousal.png'
-                                        alt='Influencer Paketi'
-                                        width={250}
-                                        height={300}
-                                        className='rounded-lg object-cover'
-                                    />
-                                    <div className='w-2/3 ml-2 sm:ml-3 md:ml-4 lg:ml-4 flex flex-col'>
-                                        <h3 className='text-md font-semibold'>
-                                            Influencer Paketi
-                                        </h3>
-                                        <p className='text-gray-600'>
-                                            Videolarınız Micro Influencerlar
-                                            tarafından üretilsin.
-                                        </p>
-                                        <span className='font-semibold text-black'>
-                                            {
-                                                additionalService?.creatorTypePrice
-                                            }
-                                            <span className='text-sm font-thin'>
-                                                {" "}
-                                                / Video
-                                            </span>
-                                        </span>
-                                        <button
-                                            type='button'
-                                            className={`mt-2 px-2 py-1 border-2 rounded-md font-semibold w-20 ${
-                                                selectedServices.influencer
-                                                    ? "border-red-500 text-red-500 hover:bg-red-50"
-                                                    : "BlueBorder BlueText hover:bg-blue-50"
-                                            }`}
-                                            onClick={() =>
-                                                handleAddService(
-                                                    "influencer",
-                                                    additionalService?.creatorTypePrice ||
-                                                        0
-                                                )
-                                            }
-                                        >
-                                            {selectedServices.influencer
-                                                ? "Kaldır"
-                                                : "Ekle"}
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {/* Card 4 - Shipping */}
-                                <div className='bg-white p-2 sm:p-3 md:p-4 lg:p-4 rounded-lg shadow-md flex flex-col lg:flex-row justify-between items-center'>
-                                    <Image
-                                        src='/videoCarousal.png'
-                                        alt='Ürün Gönderimi Kargo Ücreti'
-                                        width={250}
-                                        height={300}
-                                        className='rounded-lg object-cover'
-                                    />
-                                    <div className='w-2/3 ml-2 sm:ml-3 md:ml-4 lg:ml-4 flex flex-col'>
-                                        <h3 className='text-md font-semibold'>
-                                            Ürün Gönderimi Kargo Ücreti
-                                        </h3>
-                                        <p className='text-gray-600'>
-                                            İçeriklerinizde tanıtımını yapmak
-                                            istediğiniz ürünü, içerik
-                                            üreticilerin adreslerine
-                                            kargolamanız gerekir. Kargo kodu ile
-                                            gönderimini ek ücret ödemeden
-                                            sağlayabilirsiniz
-                                        </p>
-                                        <span className='font-semibold text-black'>
-                                            {additionalService?.shippingPrice}
-                                            <span className='text-sm font-thin'>
-                                                {" "}
-                                                / Video
-                                            </span>
-                                        </span>
-                                        <button
-                                            type='button'
-                                            className={`mt-2 px-2 py-1 border-2 rounded-md font-semibold w-20 ${
-                                                selectedServices.shipping
-                                                    ? "border-red-500 text-red-500 hover:bg-red-50"
-                                                    : "BlueBorder BlueText hover:bg-blue-50"
-                                            }`}
-                                            onClick={() =>
-                                                handleAddService(
-                                                    "shipping",
-                                                    additionalService?.shippingPrice ||
-                                                        0
-                                                )
-                                            }
-                                        >
-                                            {selectedServices.shipping
-                                                ? "Kaldır"
-                                                : "Ekle"}
-                                        </button>
-                                    </div>
-                                </div>
+                                ))}
                             </div>
                         )}
                     </div>

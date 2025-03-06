@@ -11,9 +11,12 @@ import {
     selectProfileUser,
 } from "@/store/features/profile/profileSlice";
 import { AppDispatch } from "@/store/store";
+import { Dropdown } from "./AdminNavbar";
 
 export default function Navbar() {
     const dispatch = useDispatch<AppDispatch>();
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
+
     const { t } = useTranslation();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const user = useSelector(selectProfileUser);
@@ -24,6 +27,7 @@ export default function Navbar() {
     const toggleSidebar = () => {
         setSidebarOpen(!isSidebarOpen);
     };
+    const handleLogout = () => console.log("User logged out");
 
     useEffect(() => {
         if (token) {
@@ -151,20 +155,38 @@ export default function Navbar() {
                                     <span className='sr-only'>
                                         Open user menu
                                     </span>
-                                    <Image
-                                        alt='user'
-                                        src={user?.profilePic}
-                                        width={40}
-                                        height={30}
-                                        className='h-10 w-10 border-2 mr-2 border-gray-600 rounded-full'
-                                    />
-                                    <Image
-                                        src='/dropDownIcon.png'
-                                        alt='brand logo'
-                                        height={20}
-                                        width={20}
-                                        className='rounded-full'
-                                    />
+                                    {/* Profile Dropdown */}
+                                    <Dropdown
+                                        isOpen={isProfileOpen}
+                                        setIsOpen={setIsProfileOpen}
+                                        icon={
+                                            <Image
+                                                className='w-12 h-12 rounded-full border-2 border-gray-600'
+                                                src={
+                                                    user?.profilePic ||
+                                                    "/defaultProfile.png"
+                                                }
+                                                alt='Profile'
+                                                width={100}
+                                                height={100}
+                                            />
+                                        }
+                                    >
+                                        <ul className='p-2 text-sm'>
+                                            <li className='p-2 hover:bg-gray-100 cursor-pointer'>
+                                                Profile Settings
+                                            </li>
+                                            <li className='p-2 hover:bg-gray-100 cursor-pointer'>
+                                                Preferences
+                                            </li>
+                                            <li
+                                                className='p-2 hover:bg-red-100 cursor-pointer text-red-600'
+                                                onClick={handleLogout}
+                                            >
+                                                Logout
+                                            </li>
+                                        </ul>
+                                    </Dropdown>
                                 </button>
                             </div>
                         </div>

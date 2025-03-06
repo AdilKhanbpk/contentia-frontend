@@ -110,7 +110,7 @@ const menuItems = [
     },
 ];
 
-const Dropdown = ({ isOpen, setIsOpen, icon, children }: any) => {
+export const Dropdown = ({ isOpen, setIsOpen, icon, children }: any) => {
     return (
         <div className='relative dropdown'>
             <button

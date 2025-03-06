@@ -28,19 +28,19 @@ const initialState: PricePlanState = {
 export const createPricePlan = createAsyncThunk(
   'pricePlan/createPricePlan',
   async (
-    { data, token }: { 
-      data: { 
-        videoCount: number; 
-        strikeThroughPrice?: number; 
-        finalPrice: number 
-      }; 
-      token: string 
+    { data, token }: {
+      data: {
+        videoCount: number;
+        strikeThroughPrice?: number;
+        finalPrice: number
+      };
+      token: string
     },
     { rejectWithValue }
   ) => {
     try {
       const response = await axiosInstance.post('/admin/pricing', data, {
-        headers: { 
+        headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
@@ -58,11 +58,9 @@ export const createPricePlan = createAsyncThunk(
 // Fetch All Price Plans
 export const fetchPricePlans = createAsyncThunk(
   'pricePlan/fetchPricePlans',
-  async (token: string, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/admin/pricing', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.get('/admin/pricing');
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -96,24 +94,24 @@ export const fetchPricePlanById = createAsyncThunk(
 export const updatePricePlan = createAsyncThunk(
   'pricePlan/updatePricePlan',
   async (
-    { 
-      id, 
-      data, 
-      token 
-    }: { 
-      id: string; 
-      data: { 
-        videoCount?: number; 
-        strikeThroughPrice?: number; 
-        finalPrice?: number 
-      }; 
-      token: string 
+    {
+      id,
+      data,
+      token
+    }: {
+      id: string;
+      data: {
+        videoCount?: number;
+        strikeThroughPrice?: number;
+        finalPrice?: number
+      };
+      token: string
     },
     { rejectWithValue }
   ) => {
     try {
       const response = await axiosInstance.patch(`/admin/pricing/${id}`, data, {
-        headers: { 
+        headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
@@ -172,7 +170,7 @@ const pricePlanSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      
+
       // Fetch Price Plans
       .addCase(fetchPricePlans.pending, (state) => {
         state.loading = true;
@@ -186,7 +184,7 @@ const pricePlanSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      
+
       // Fetch Price Plan by ID
       .addCase(fetchPricePlanById.pending, (state) => {
         state.loading = true;
@@ -200,7 +198,7 @@ const pricePlanSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      
+
       // Update Price Plan
       .addCase(updatePricePlan.pending, (state) => {
         state.loading = true;
@@ -209,7 +207,7 @@ const pricePlanSlice = createSlice({
       .addCase(updatePricePlan.fulfilled, (state, action: PayloadAction<PricePlan>) => {
         state.loading = false;
         state.currentPlan = action.payload;
-        
+
         // Update the plan in the data array if it exists
         if (state.data) {
           const index = state.data.findIndex(plan => plan._id === action.payload._id);
@@ -222,7 +220,7 @@ const pricePlanSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      
+
       // Delete Price Plan
       .addCase(deletePricePlan.pending, (state) => {
         state.loading = true;
@@ -230,12 +228,12 @@ const pricePlanSlice = createSlice({
       })
       .addCase(deletePricePlan.fulfilled, (state, action: PayloadAction<string>) => {
         state.loading = false;
-        
+
         // Remove the plan from the data array
         if (state.data) {
           state.data = state.data.filter(plan => plan._id !== action.payload);
         }
-        
+
         // Clear current plan if it was the deleted one
         if (state.currentPlan?._id === action.payload) {
           state.currentPlan = null;
