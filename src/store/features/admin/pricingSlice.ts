@@ -4,6 +4,8 @@ import { AxiosError } from 'axios';
 
 export interface PricePlan {
   _id: string;
+  title: string;
+  description: string;
   videoCount: number;
   strikeThroughPrice?: number;
   finalPrice: number;
@@ -101,6 +103,8 @@ export const updatePricePlan = createAsyncThunk(
     }: {
       id: string;
       data: {
+        title?: string;
+        description?: string;
         videoCount?: number;
         strikeThroughPrice?: number;
         finalPrice?: number
