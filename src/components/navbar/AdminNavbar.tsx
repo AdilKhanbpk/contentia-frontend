@@ -27,7 +27,7 @@ const menuItems = [
     {
         title: "Services",
         links: [
-            { name: "Packages", href: "/admin/services/packages" },
+            // { name: "Packages", href: "/admin/services/packages" },
             { name: "Pricing", href: "/admin/services/pricing" },
             {
                 name: "Additional Services",

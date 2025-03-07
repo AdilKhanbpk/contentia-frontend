@@ -9,7 +9,7 @@ interface Metadata {
   author_role: string;
 }
 
-interface Notification {
+export interface Notification {
   _id: string;
   userType: 'creator' | 'customer' | 'all';
   title: string;
@@ -223,10 +223,10 @@ const notificationSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.notifications = Array.isArray(state.notifications)
-        ? [...state.notifications, action.payload]
-        : [action.payload];
-      state.totalCount = state.totalCount + 1;
-    })
+          ? [...state.notifications, action.payload]
+          : [action.payload];
+        state.totalCount = state.totalCount + 1;
+      })
       .addCase(createNotification.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
@@ -327,8 +327,9 @@ export default notificationSlice.reducer;
 export const { setNotifications, clearNotification } = notificationSlice.actions;
 
 // Selectors
-export const selectNotifications = (state: { notification: NotificationState }) => 
+export const selectNotifications = (state: { notification: NotificationState }) =>
   state.notification.notifications || [];
+export const selectCurrentNotification = (state: { notification: NotificationState }) => state.notification.notification;
 export const selectNotification = (state: { notification: NotificationState }) => state.notification.notification;
 export const selectNotificationLoading = (state: { notification: NotificationState }) => state.notification.loading;
 export const selectNotificationError = (state: { notification: NotificationState }) => state.notification.error;
