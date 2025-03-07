@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { fetchLandingPage } from "@/store/features/admin/lanPageSlice";
-import { fetchPackages } from "@/store/features/admin/packageSlice";
+import { fetchPricePlans } from "@/store/features/admin/pricingSlice";
 
 const CARDS = [
     {
@@ -112,13 +112,13 @@ export default function Contentiaio() {
         data: packages,
         loading: packagesLoading,
         error: packagesError,
-    } = useSelector((state: RootState) => state.package);
+    } = useSelector((state: RootState) => state.pricing);
 
     const router = useRouter();
 
     useEffect(() => {
         dispatch(fetchLandingPage());
-        dispatch(fetchPackages());
+        dispatch(fetchPricePlans());
     }, [dispatch]);
 
     const handleOrderClick = () => {
@@ -372,10 +372,11 @@ export default function Contentiaio() {
                                         key={index}
                                         title={pkg.title}
                                         description={pkg.description}
+                                        videoCount={pkg.videoCount}
                                         durationOptions={["15s", "30s", "60s"]}
                                         editingOptions={["yes", "no"]}
                                         aspectRatioOptions={["9:16", "16:9"]}
-                                        price={pkg.price}
+                                        price={pkg.finalPrice}
                                         onOrderClick={handleOrderClick}
                                     />
                                 ))

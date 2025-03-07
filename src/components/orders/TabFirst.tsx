@@ -1,34 +1,33 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { fetchAdditionalServices } from "@/store/features/admin/addPriceSlice";
 import { setOrderFormData } from "@/store/features/profile/orderSlice";
 import { fetchPricePlans } from "@/store/features/admin/pricingSlice";
+import Image from "next/image";
 
 export default function TabFirst({
     setActiveTab,
 }: {
     setActiveTab: (id: number) => void;
 }) {
-    const [showTooltipOne, setShowTooltipOne] = useState(false);
+    const dispatch = useDispatch();
+
+    // State Management
+    const [token, setToken] = useState<string>("");
+    const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
+    const [selectedCard, setSelectedCard] = useState<number | string>("");
+    console.log("🚀 ~ selectedCard:", selectedCard);
+    const [additionalCharges, setAdditionalCharges] = useState<number[]>([]);
     const [activeEdit, setActiveEdit] = useState(false);
+    const [showTooltipOne, setShowTooltipOne] = useState(false);
     const [activeRatio, setActiveRatio] = useState<string>("9:16");
     const [activeDuration, setActiveDuration] = useState<string>("15s");
     const [selectedPlatform, setSelectedPlatform] =
         useState<string>("instagram");
-
-    const [token, setToken] = useState<string>("");
-    const dispatch = useDispatch();
-
-    const { data: additionalService } = useSelector(
-        (state: RootState) => state.addPrice
-    );
-
-    const { data: pricing } = useSelector((state: RootState) => state.pricing);
 
     const [selectedServices, setSelectedServices] = useState<{
         [key: string]: boolean;
@@ -39,11 +38,17 @@ export default function TabFirst({
         shipping: false,
     });
 
-    const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
-    const [selectedCard, setSelectedCard] = useState<number | null>(null);
-    const [additionalCharges, setAdditionalCharges] = useState<number[]>([]);
-    const [isOpen, setIsOpen] = useState(true);
+    // Fetch Redux State
+    const { data: additionalService } = useSelector(
+        (state: RootState) => state.addPrice
+    );
+    const { data: pricing } = useSelector((state: RootState) => state.pricing);
 
+    const oneVideoPrice =
+        pricing?.find((option: any) => option.videoCount === 1)?.finalPrice ||
+        3000;
+
+    // Fetch data on component mount
     useEffect(() => {
         dispatch(fetchPricePlans() as any);
         const storedToken = localStorage.getItem("accessToken") || "";
@@ -53,52 +58,32 @@ export default function TabFirst({
         }
     }, [dispatch]);
 
-    const handleEditChange = (edit: boolean) => {
-        setActiveEdit(edit);
-    };
-
-    const handleRatioChange = (ratio: string) => {
-        setActiveRatio(ratio);
-    };
-
-    const handleToggle = () => {
-        setIsOpen(!isOpen);
-    };
-
-    const handleDurationChange = (duration: string) => {
-        setActiveDuration(duration);
-    };
-
-    const handlePlatformChange = (platform: string) => {
-        setSelectedPlatform(platform);
-    };
-
     const handleQuantityChange = (change: number) => {
         setSelectedQuantity((prevQuantity) =>
             Math.max(1, prevQuantity + change)
         );
-    };
 
-    const handleCardSelect = (cardId: number) => {
-        setSelectedCard(cardId);
-        switch (cardId) {
-            case 3:
-                setSelectedQuantity(3);
-                break;
-            case 6:
-                setSelectedQuantity(6);
-                break;
-            case 12:
-                setSelectedQuantity(12);
-                break;
-            case 4:
-                break;
+        // Only reset selected plan if it's already selected
+        if (selectedCard) {
+            setSelectedCard("");
         }
     };
 
+    const handleCardSelect = (cardId: string | number) => {
+        setSelectedCard(cardId);
+        const selectedOption = pricing?.find(
+            (option: any) => option._id === cardId
+        );
+
+        if (selectedOption) {
+            setSelectedQuantity(selectedOption.videoCount); // Set quantity based on the selected plan
+        }
+    };
+
+    // Handle additional service selection
     const handleAddService = (
         serviceType: keyof typeof selectedServices,
-        charge: number | undefined
+        charge?: number
     ) => {
         if (charge !== undefined) {
             setSelectedServices((prev) => ({
@@ -114,33 +99,32 @@ export default function TabFirst({
         }
     };
 
+    // Calculate total additional charges
     const totalAdditionalCharges = additionalCharges.reduce(
         (acc, charge) => acc + charge,
         0
     );
 
+    // Calculate final price
     const getPrice = (
         quantity: number,
-        cardId: number | null,
+        cardId: number | string,
         additionalCharges: number
     ): string => {
-        let pricePerVideo = 3000;
-        let totalPrice = 0;
-
-        if (cardId === 3) {
-            totalPrice = 9000 - 450;
-        } else if (cardId === 6) {
-            totalPrice = 18000 - 2401;
-        } else if (cardId === 12) {
-            totalPrice = 36000 - 8401;
-        } else {
-            totalPrice = quantity * pricePerVideo;
+        if (cardId) {
+            const selectedPackage = pricing?.find(
+                (option: any) => option._id === cardId
+            );
+            if (selectedPackage) {
+                return (selectedPackage.finalPrice + additionalCharges).toFixed(
+                    2
+                );
+            }
         }
-
-        totalPrice += additionalCharges;
-        return totalPrice.toFixed(2);
+        return (quantity * oneVideoPrice + additionalCharges).toFixed(2);
     };
 
+    // Handle form submission
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
@@ -149,7 +133,7 @@ export default function TabFirst({
             return;
         }
 
-        // Only dispatch the form data without creating an order
+        // Construct form data
         const formData = {
             noOfUgc: selectedQuantity,
             totalPrice: Number(
@@ -166,12 +150,13 @@ export default function TabFirst({
                 productShipping: selectedServices.shipping,
             },
         };
+
         dispatch(setOrderFormData(formData));
-        // console.log("🚀 ~ handleSubmit ~ formData:", formData);
         toast.success("Order Details Saved Successfully!");
         setActiveTab(2);
     };
 
+    // Available additional services
     const services = [
         {
             id: 1,
@@ -299,7 +284,7 @@ export default function TabFirst({
                                                     : "bg-white text-black"
                                             }`}
                                             onClick={() =>
-                                                handleDurationChange("15s")
+                                                setActiveDuration("15s")
                                             }
                                         >
                                             15s
@@ -313,7 +298,7 @@ export default function TabFirst({
                                                     : "bg-white text-black"
                                             }`}
                                             onClick={() =>
-                                                handleDurationChange("30s")
+                                                setActiveDuration("30s")
                                             }
                                         >
                                             30s
@@ -327,7 +312,7 @@ export default function TabFirst({
                                                     : "bg-white text-black"
                                             }`}
                                             onClick={() =>
-                                                handleDurationChange("Diger")
+                                                setActiveDuration("60s")
                                             }
                                         >
                                             Diğer
@@ -348,9 +333,7 @@ export default function TabFirst({
                                                     ? "ButtonBlue text-white"
                                                     : "bg-white text-black"
                                             }`}
-                                            onClick={() =>
-                                                handleEditChange(true)
-                                            }
+                                            onClick={() => setActiveEdit(true)}
                                         >
                                             Evet
                                         </button>
@@ -362,9 +345,7 @@ export default function TabFirst({
                                                     ? "ButtonBlue text-white"
                                                     : "bg-white text-black"
                                             }`}
-                                            onClick={() =>
-                                                handleEditChange(false)
-                                            }
+                                            onClick={() => setActiveEdit(false)}
                                         >
                                             Hayır
                                         </button>
@@ -421,7 +402,7 @@ export default function TabFirst({
                                                     : "bg-white text-black"
                                             }`}
                                             onClick={() =>
-                                                handleRatioChange("9:16")
+                                                setActiveDuration("9:16")
                                             }
                                         >
                                             9:16
@@ -434,7 +415,7 @@ export default function TabFirst({
                                                     : "bg-white text-black"
                                             }`}
                                             onClick={() =>
-                                                handleRatioChange("16:9")
+                                                setActiveRatio("16:9")
                                             }
                                         >
                                             16:9
@@ -450,19 +431,20 @@ export default function TabFirst({
                             UGC Adedini Seç:
                         </h2>
                         <div className='grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8'>
+                            {/* Displaying pricing where videoCount is NOT 1 */}
                             {pricing &&
                                 pricing
                                     .filter(
                                         (option: any) => option.videoCount !== 1
                                     )
-                                    .map((option, index) => (
+                                    .map((option) => (
                                         <div
                                             key={option._id}
                                             onClick={() =>
-                                                handleCardSelect(index)
+                                                handleCardSelect(option._id)
                                             }
                                             className={`p-2 sm:p-3 md:p-4 lg:p-4 rounded-lg shadow-xl cursor-pointer ${
-                                                selectedCard === index
+                                                selectedCard === option._id
                                                     ? "border-2 BlueBorder sectionBG"
                                                     : "bg-white"
                                             }`}
@@ -476,12 +458,12 @@ export default function TabFirst({
                                                 İçerik Üretici
                                             </p>
                                             <div className='mb-2'>
-                                                <button className='ButtonBlue text-white font-medium rounded-md px-1 py-0.5 text-xs'>
+                                                <p className='ButtonBlue w-24 text-white font-medium rounded-md px-1 py-0.5 text-xs'>
                                                     {option.strikeThroughPrice &&
                                                         option.strikeThroughPrice -
                                                             option.finalPrice}{" "}
                                                     TL İndirim
-                                                </button>
+                                                </p>
                                             </div>
                                             <span className='text-sm font-semibold line-through'>
                                                 {option.strikeThroughPrice} TL
@@ -496,61 +478,70 @@ export default function TabFirst({
                                         </div>
                                     ))}
 
-                            {/* Quantity Selector */}
-                            <div
-                                onClick={() => handleCardSelect(4)}
-                                className={`bg-white rounded-lg p-2 sm:p-3 md:p-4 lg:p-4 shadow-xl cursor-pointer ${
-                                    selectedCard === 4
-                                        ? "border-2 BlueBorder sectionBG"
-                                        : "sectionBG"
-                                }`}
-                            >
-                                <h3 className='text-base font-bold mb-2'>
-                                    İçerik Adedi Seç:
-                                </h3>
-                                <div className='flex items-center gap-4'>
-                                    <button
-                                        type='button'
-                                        onClick={() => handleQuantityChange(-1)}
-                                        disabled={selectedQuantity === 1}
-                                        className='border-2 BlueBorder text-white font-medium py-2 w-16 rounded-full flex items-center justify-center'
-                                    >
-                                        <span className='BlueText text-3xl font-extrabold'>
-                                            -
-                                        </span>
-                                    </button>
-                                    <span className='text-sm BlueText font-semibold'>
-                                        {selectedQuantity} Video
-                                    </span>
-                                    <button
-                                        type='button'
-                                        onClick={() => handleQuantityChange(1)}
-                                        className='border-2 BlueBorder text-white font-medium py-2 w-16 rounded-full flex items-center justify-center'
-                                    >
-                                        <span className='BlueText text-3xl font-extrabold'>
-                                            +
-                                        </span>
-                                    </button>
-                                </div>
-                                <p className='mt-6 text-sm BlueText font-semibold'>
-                                    {getPrice(
-                                        selectedQuantity,
-                                        selectedCard,
-                                        totalAdditionalCharges
-                                    )}{" "}
-                                    TL
-                                    <span className='text-xs text-black font-thin'>
-                                        {" "}
-                                        / Video
-                                    </span>
-                                </p>
-                            </div>
+                            {/* Pricing Option Where videoCount === 1 */}
+                            {pricing &&
+                                pricing
+                                    .filter(
+                                        (option: any) => option.videoCount === 1
+                                    )
+                                    .map((option: any) => (
+                                        <div
+                                            key={option._id}
+                                            className={`bg-white rounded-lg p-2 sm:p-3 md:p-4 lg:p-4 shadow-xl cursor-pointer ${
+                                                selectedCard === option._id
+                                                    ? "border-2 BlueBorder sectionBG"
+                                                    : "sectionBG"
+                                            }`}
+                                        >
+                                            <h3 className='text-base font-bold mb-2'>
+                                                İçerik Adedi Seç:
+                                            </h3>
+                                            <div className='flex items-center gap-4'>
+                                                <button
+                                                    type='button'
+                                                    onClick={() =>
+                                                        handleQuantityChange(-1)
+                                                    }
+                                                    disabled={
+                                                        selectedQuantity === 1
+                                                    }
+                                                    className='border-2 BlueBorder text-white font-medium py-2 w-16 rounded-full flex items-center justify-center'
+                                                >
+                                                    <span className='BlueText text-3xl font-extrabold'>
+                                                        -
+                                                    </span>
+                                                </button>
+                                                <span className='text-sm BlueText font-semibold'>
+                                                    {selectedQuantity} Video
+                                                </span>
+                                                <button
+                                                    type='button'
+                                                    onClick={() =>
+                                                        handleQuantityChange(1)
+                                                    }
+                                                    className='border-2 BlueBorder text-white font-medium py-2 w-16 rounded-full flex items-center justify-center'
+                                                >
+                                                    <span className='BlueText text-3xl font-extrabold'>
+                                                        +
+                                                    </span>
+                                                </button>
+                                            </div>
+                                            <p className='mt-6 text-sm BlueText font-semibold'>
+                                                {oneVideoPrice}
+                                                TL
+                                                <span className='text-xs text-black font-thin'>
+                                                    {" "}
+                                                    / Video
+                                                </span>
+                                            </p>
+                                        </div>
+                                    ))}
                         </div>
                     </div>
 
                     {/* //////////////// */}
                     <div className='bg-white px-4 py-2 sm:px-6 sm:py-3 md:px-10 md:py-4 lg:px-16 lg:py-6 rounded-lg '>
-                        <div onClick={handleToggle}>
+                        <div>
                             <div className='flex flex-row justify-between '>
                                 {/* Section Header */}
                                 <h2 className='text-lg font-semibold mb-4'>
@@ -562,11 +553,7 @@ export default function TabFirst({
                                         alt='brand logo'
                                         height={20}
                                         width={20}
-                                        className={`rounded-full ml-2 ${
-                                            !isOpen
-                                                ? "rotate-180 rounded-full"
-                                                : "rounded-full"
-                                        }`}
+                                        className=' ml-2  rounded-full'
                                     />
                                 </div>
                             </div>
@@ -578,66 +565,62 @@ export default function TabFirst({
                             </div>
                         </div>
 
-                        {isOpen && (
-                            <div className='space-y-4'>
-                                {services.map((service) => (
-                                    <div
-                                        key={service.id}
-                                        className='bg-white p-2 sm:p-3 md:p-4 lg:p-4 rounded-lg shadow-md flex flex-col lg:flex-row justify-between items-center'
-                                    >
-                                        <Image
-                                            src={service.image}
-                                            alt={service.alt}
-                                            width={250}
-                                            height={300}
-                                            className='rounded-lg object-cover'
-                                        />
-                                        <div className='w-2/3 ml-2 sm:ml-3 md:ml-4 lg:ml-4 flex flex-col'>
-                                            <h3 className='text-md font-semibold'>
-                                                {service.title}
-                                            </h3>
-                                            <p className='text-gray-600'>
-                                                {service.description}
-                                            </p>
-                                            <span className='font-semibold text-black'>
-                                                {service.price}
-                                                <span className='text-sm font-thin'>
-                                                    {" "}
-                                                    / Video
-                                                </span>
+                        <div className='space-y-4'>
+                            {services.map((service) => (
+                                <div
+                                    key={service.id}
+                                    className='bg-white p-2 sm:p-3 md:p-4 lg:p-4 rounded-lg shadow-md flex flex-col lg:flex-row justify-between items-center'
+                                >
+                                    <Image
+                                        src={service.image}
+                                        alt={service.alt}
+                                        width={250}
+                                        height={300}
+                                        className='rounded-lg object-cover'
+                                    />
+                                    <div className='w-2/3 ml-2 sm:ml-3 md:ml-4 lg:ml-4 flex flex-col'>
+                                        <h3 className='text-md font-semibold'>
+                                            {service.title}
+                                        </h3>
+                                        <p className='text-gray-600'>
+                                            {service.description}
+                                        </p>
+                                        <span className='font-semibold text-black'>
+                                            {service.price}
+                                            <span className='text-sm font-thin'>
+                                                {" "}
+                                                / Video
                                             </span>
-                                            <button
-                                                type='button'
-                                                className={`mt-2 px-2 py-1 border-2 rounded-md font-semibold w-20 ${
-                                                    selectedServices[
-                                                        service.key
-                                                    ]
-                                                        ? "border-red-500 text-red-500 hover:bg-red-50"
-                                                        : "BlueBorder BlueText hover:bg-blue-50"
-                                                }`}
-                                                onClick={() =>
-                                                    handleAddService(
-                                                        service.key,
-                                                        service.price || 0
-                                                    )
-                                                }
-                                            >
-                                                {selectedServices[service.key]
-                                                    ? "Kaldır"
-                                                    : "Ekle"}
-                                            </button>
-                                        </div>
+                                        </span>
+                                        <button
+                                            type='button'
+                                            className={`mt-2 px-2 py-1 border-2 rounded-md font-semibold w-20 ${
+                                                selectedServices[service.key]
+                                                    ? "border-red-500 text-red-500 hover:bg-red-50"
+                                                    : "BlueBorder BlueText hover:bg-blue-50"
+                                            }`}
+                                            onClick={() =>
+                                                handleAddService(
+                                                    service.key,
+                                                    service.price || 0
+                                                )
+                                            }
+                                        >
+                                            {selectedServices[service.key]
+                                                ? "Kaldır"
+                                                : "Ekle"}
+                                        </button>
                                     </div>
-                                ))}
-                            </div>
-                        )}
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
                     <div className='bg-white my-2 py-2 px-4 sm:my-3 sm:py-3 sm:px-5 md:my-4 md:py-4 md:px-6 lg:my-4 lg:py-4 lg:px-6 flex justify-end items-center border-gray-300'>
                         {/* Left Section */}
                         <div className='mr-4'>
                             <p className='text-lg font-semibold text-indigo-700'>
-                                1 Video x 3.000 TL
+                                1 Video x {oneVideoPrice} TL
                             </p>
                             <p className='text-sm text-indigo-500'>
                                 Toplam:{" "}

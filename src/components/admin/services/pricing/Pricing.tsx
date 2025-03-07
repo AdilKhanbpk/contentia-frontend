@@ -16,6 +16,7 @@ const VideoIcon = () => <span className='text-3xl'>📹</span>;
 type Plan = {
     id: string;
     title: string;
+    videoCount: number;
     description: string;
     strikethroughPrice: string;
     finalPrice: string;
@@ -58,6 +59,7 @@ const PricingPlans = () => {
                     id: plan._id,
                     title: plan.title,
                     description: plan.description,
+                    videoCount: plan.videoCount,
                     strikethroughPrice:
                         plan.strikeThroughPrice?.toString() || "",
                     finalPrice: plan.finalPrice.toString(),
@@ -91,7 +93,7 @@ const PricingPlans = () => {
                     data: {
                         title: data.title,
                         description: data.description,
-                        videoCount: Number(data.title.match(/\d+/)?.[0]) || 0,
+                        videoCount: Number(data.videoCount) || 0,
                         strikeThroughPrice:
                             Number(data.strikethroughPrice) || 0,
                         finalPrice: Number(data.finalPrice) || 0,
@@ -158,6 +160,14 @@ const PricingPlans = () => {
                                     placeholder='Description'
                                 ></textarea>
                                 <input
+                                    type='number'
+                                    {...register("videoCount", {
+                                        required: true,
+                                    })}
+                                    className='w-full p-2 border rounded'
+                                    placeholder='Video Count'
+                                />
+                                <input
                                     type='text'
                                     {...register("strikethroughPrice")}
                                     className='w-full p-2 border rounded'
@@ -189,6 +199,12 @@ const PricingPlans = () => {
                                 </div>
                                 <p className='text-gray-600'>
                                     {plan.description}
+                                </p>
+                                <p className='text-sm font-medium text-gray-700'>
+                                    Video Count:{" "}
+                                    <span className='pl-3 text-xl font-semibold'>
+                                        {plan.videoCount || "N/A"}
+                                    </span>
                                 </p>
                                 <p className='text-xl line-through text-gray-500'>
                                     ${plan.strikethroughPrice}
