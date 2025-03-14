@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { fetchLandingPage } from "@/store/features/admin/lanPageSlice";
 import { fetchPricePlans } from "@/store/features/admin/pricingSlice";
+import DOMPurify from "dompurify";
 
 const CARDS = [
     {
@@ -185,11 +186,20 @@ export default function Contentiaio() {
                                         {landingPage?.staticHeroTitle}
                                     </span>
                                 </h1>
+
                                 <div className='mx-3'>
-                                    <p className='paraText mb-5'>
-                                        {landingPage?.heroSubTitle}
-                                    </p>
+                                    {landingPage?.heroSubTitle && (
+                                        <p
+                                            className='paraText mb-5'
+                                            dangerouslySetInnerHTML={{
+                                                __html: DOMPurify.sanitize(
+                                                    landingPage.heroSubTitle
+                                                ),
+                                            }}
+                                        />
+                                    )}
                                 </div>
+
                                 {landingPage && (
                                     <div>
                                         <button className='Button text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>
