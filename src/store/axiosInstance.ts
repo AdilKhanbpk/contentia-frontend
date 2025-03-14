@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const url = "https://contentia-backend-s4pw.onrender.com/api/v1"
-// const url = "http://localhost:3001/api/v1"
+// const url = "https://contentia-backend-s4pw.onrender.com/api/v1"
+const url = "http://localhost:3001/api/v1"
 
 
 export const axiosInstance = axios.create({
