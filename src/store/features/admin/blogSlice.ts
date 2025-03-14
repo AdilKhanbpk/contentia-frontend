@@ -129,17 +129,8 @@ export const updateBlog = createAsyncThunk(
     { blogId, data, token }: { blogId: string; data: FormData; token: string },
     { rejectWithValue }
   ) => {
-    console.log('updateBlog called'); // Log when the function is called
-    console.log('Payload:', { blogId, data, token }); // Log the incoming payload
 
     try {
-      console.log('Sending PATCH request to:', `/admin/blogs/${blogId}`);
-      console.log('Request Headers:', {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data',
-      });
-      console.log('Request Data (FormData):', data); // Log the FormData object
-
       const response = await axiosInstance.patch(
         `/admin/blogs/${blogId}`,
         data,
@@ -150,9 +141,6 @@ export const updateBlog = createAsyncThunk(
           },
         }
       );
-
-      console.log('Response Received:', response); // Log the entire response
-      console.log('Response Data:', response.data.data); // Log the relevant data
       return response.data.data;
     } catch (error) {
       console.error('Error occurred during PATCH request:', error); // Log the error
