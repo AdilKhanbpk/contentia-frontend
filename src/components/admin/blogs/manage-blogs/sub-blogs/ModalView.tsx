@@ -29,8 +29,10 @@ export function ModalView({ blogData, onClose }: BlogViewModelProps) {
                 <label className='block text-sm font-semibold'>Keywords</label>
                 <div className='w-full px-3 py-2 border border-gray-200 rounded-md bg-gray-50'>
                     {blogData.metaKeywords?.length
-                        ? blogData.metaKeywords.join(", ")
-                        : "No keywords added"}
+                        ? blogData.metaKeywords
+                              .map((keyword) => keyword)
+                              .join(", ")
+                        : "No keywords provided"}
                 </div>
             </div>
 

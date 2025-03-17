@@ -41,14 +41,17 @@ export default function NewBlogs() {
             // Explicitly append each field
             formData.append("title", data.title);
             formData.append("category", data.category);
-            formData.append(
-                "metaKeywords",
-                data.metaKeywords
-                    .join(",")
-                    .split(",")
-                    .map((keyword) => keyword.trim())
-                    .join(",")
-            );
+            if (Array.isArray(data.metaKeywords)) {
+                formData.append(
+                    "metaKeywords",
+                    JSON.stringify(data.metaKeywords)
+                );
+            } else {
+                formData.append(
+                    "metaKeywords",
+                    JSON.stringify([data.metaKeywords])
+                );
+            }
             formData.append("content", data.content);
             formData.append("metaDescription", data.metaDescription);
 
@@ -61,7 +64,7 @@ export default function NewBlogs() {
 
             // Dispatch create blog action
             const result = await dispatch(
-                createBlog({ data: formData, token })
+                createBlog({ blog: formData, token })
             );
 
             if (createBlog.fulfilled.match(result)) {

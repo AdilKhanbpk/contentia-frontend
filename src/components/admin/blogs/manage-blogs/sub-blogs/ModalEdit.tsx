@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import { BlogInterface } from "@/types/interfaces";
@@ -17,6 +17,16 @@ export function ModalEdit({ blogData, onClose, onSubmit }: BlogEditModelProps) {
         useForm<BlogInterface>({
             defaultValues: blogData,
         });
+    const [previewImage, setPreviewImage] = useState<string | null>(
+        typeof blogData?.bannerImage === "string" ? blogData.bannerImage : null
+    );
+
+    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            setPreviewImage(URL.createObjectURL(file)); // Replace preview with the new image
+        }
+    };
 
     useEffect(() => {
         if (blogData) {
@@ -109,18 +119,38 @@ export function ModalEdit({ blogData, onClose, onSubmit }: BlogEditModelProps) {
                             width: "100%",
                             maxWidth: "500px",
                             height: "125px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            position: "relative",
                         }}
                     >
+                        {/* Show the preview image (DB image initially, new image if selected) */}
+                        {previewImage && (
+                            <img
+                                src={previewImage}
+                                alt='Blog Banner'
+                                className='absolute inset-0 w-full h-full object-cover rounded-md'
+                            />
+                        )}
+
+                        {/* File input */}
                         <input
                             type='file'
+                            {...register("bannerImage")}
                             className='absolute inset-0 w-full h-full opacity-0 cursor-pointer'
                             accept='image/*'
+                            onChange={handleImageChange} // Replace preview when new image is selected
                         />
-                        <div className='flex flex-col justify-center items-center h-full pointer-events-none'>
-                            <span className='text-gray-500 font-medium text-lg'>
-                                2000 x 500
-                            </span>
-                        </div>
+
+                        {/* Placeholder if no image exists */}
+                        {!previewImage && (
+                            <div className='flex flex-col justify-center items-center h-full pointer-events-none'>
+                                <span className='text-gray-500 font-medium text-lg'>
+                                    2000 x 500
+                                </span>
+                            </div>
+                        )}
                     </div>
                 </div>
 

@@ -23,14 +23,14 @@ const initialState: BlogState = {
 export const createBlog = createAsyncThunk(
   'blog/createBlog',
   async (
-    { blogs, token }: { blogs: FormData; token: string },
+    { blog, token }: { blog: FormData; token: string },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.post('/admin/blogs', blogs, {
+      const response = await axiosInstance.post('/admin/blogs', blog, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-blogs',
+          'Content-Type': 'multipart/form-data',
         },
       });
       return response.data.data;
@@ -42,6 +42,7 @@ export const createBlog = createAsyncThunk(
     }
   }
 );
+
 
 // Fetch all blogs
 export const fetchBlogs = createAsyncThunk(
@@ -86,37 +87,32 @@ export const fetchBlogById = createAsyncThunk(
 export const updateBlog = createAsyncThunk(
   'blog/updateBlog',
   async (
-    { blogId, blogs, token }: { blogId: string; blogs: FormData; token: string },
+    { blogId, blogData, token }: { blogId: string; blogData: FormData; token: string },
     { rejectWithValue }
   ) => {
-
     try {
       const response = await axiosInstance.patch(
         `/admin/blogs/${blogId}`,
-        blogs,
+        blogData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-blogs',
+            'Content-Type': 'multipart/form-data',
           },
         }
       );
       return response.data.data;
     } catch (error) {
-      console.error('Error occurred during PATCH request:', error); // Log the error
+      console.error('Error updating blog:', error);
 
       const axiosError = error as AxiosError;
-      console.error(
-        'Axios Error Details:',
-        axiosError.response?.data || 'No additional error details available'
-      );
-
       return rejectWithValue(
         axiosError.response?.data || 'Failed to update blog'
       );
     }
   }
 );
+
 
 
 // Update blog banner image

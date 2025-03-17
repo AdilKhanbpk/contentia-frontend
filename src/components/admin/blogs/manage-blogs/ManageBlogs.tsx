@@ -122,79 +122,93 @@ const ManageBlogs: React.FC = () => {
         setIsModalViewOpen(true);
     };
 
-    const handleCreate = async (blogData: BlogInterface) => {
-        const tokenFromStorage = localStorage.getItem("accessToken");
-
-        try {
-            if (!tokenFromStorage) {
-                toast.error("Authorization token is missing");
-                return;
-            }
-
-            if (!blogData || Object.keys(blogData).length === 0) {
-                toast.error("Blog data is empty");
-                return;
-            }
-
-            const formData = new FormData();
-            Object.entries(blogData).forEach(([key, value]) => {
-                if (
-                    key === "bannerImage" &&
-                    value instanceof FileList &&
-                    value.length > 0
-                ) {
-                    formData.append(key, value[0]);
-                } else if (value && typeof value !== "object") {
-                    formData.append(key, value.toString());
-                } else if (Array.isArray(value)) {
-                    formData.append(key, JSON.stringify(value));
-                }
-            });
-
-            await dispatch(
-                createBlog({ blogs: formData, token: tokenFromStorage })
-            ).unwrap();
-            toast.success("Blog created successfully");
-            setIsModalOpen(false);
-            await dispatch(fetchBlogs(tokenFromStorage));
-        } catch (error: any) {
-            const errorMessage = error?.message || "Something went wrong";
-            toast.error(`Blog creation failed: ${errorMessage}`);
-            console.error("Blog creation error:", error);
-        }
-    };
-
     const handleUpdate = async (blogData: BlogInterface) => {
         const token = localStorage.getItem("accessToken");
 
-        if (token && blogData._id) {
-            const formData = new FormData();
-
-            Object.entries(blogData).forEach(([key, value]) => {
-                if (key === "bannerImage") {
-                    if (value instanceof FileList && value.length > 0) {
-                        formData.append(key, value[0]);
-                    }
-                } else if (value && typeof value !== "object") {
-                    formData.append(key, value.toString());
-                } else if (Array.isArray(value)) {
-                    formData.append(key, JSON.stringify(value));
-                }
-            });
-
-            try {
-                await dispatch(
-                    updateBlog({ blogId: blogData._id, blogs: formData, token })
-                ).unwrap();
-                toast.success("Blog updated successfully");
-                await dispatch(fetchBlogs(token));
-                setIsModalEditOpen(false);
-            } catch (error) {
-                toast.error("Blog update failed");
-                console.error("Blog update failed:", error);
-            }
-        } else {
+        if (!token) {
             toast.error("Authorization token is missing!");
+            return;
+        }
+
+        if (!blogData._id) {
+            toast.error("Blog ID is missing!");
+            return;
+        }
+
+        const formData = new FormData();
+
+        Object.entries(blogData).forEach(([key, value]) => {
+            if (
+                key === "bannerImage" &&
+                value instanceof FileList &&
+                value.length > 0
+            ) {
+                formData.append(key, value[0]); // Append only if new file is selected
+            } else if (key === "metaKeywords" && typeof value === "string") {
+                formData.append(key, value); // Send as a simple comma-separated string
+            } else if (value !== null && value !== undefined) {
+                formData.append(key, value.toString());
+            }
+        });
+
+        try {
+            await dispatch(
+                updateBlog({ blogId: blogData._id, blogData: formData, token })
+            ).unwrap();
+            toast.success("Blog updated successfully");
+            await dispatch(fetchBlogs(token));
+            setIsModalEditOpen(false);
+        } catch (error: any) {
+            toast.error(
+                `Blog update failed: ${
+                    error?.message || "Something went wrong"
+                }`
+            );
+            console.error("Blog update failed:", error);
+        }
+    };
+
+    const handleCreate = async (blogData: BlogInterface) => {
+        const token = localStorage.getItem("accessToken");
+
+        if (!token) {
+            toast.error("Authorization token is missing");
+            return;
+        }
+
+        if (!blogData || Object.keys(blogData).length === 0) {
+            toast.error("Blog data is empty");
+            return;
+        }
+
+        const formData = new FormData();
+
+        Object.entries(blogData).forEach(([key, value]) => {
+            if (
+                key === "bannerImage" &&
+                value instanceof FileList &&
+                value.length > 0
+            ) {
+                formData.append(key, value[0]); // Append only if a file is selected
+            } else if (key === "metaKeywords" && typeof value === "string") {
+                formData.append(key, value); // Send as a simple comma-separated string
+            } else if (value !== null && value !== undefined) {
+                formData.append(key, value.toString());
+            }
+        });
+
+        try {
+            await dispatch(createBlog({ blog: formData, token })).unwrap();
+            toast.success("Blog created successfully");
+            setIsModalOpen(false);
+            await dispatch(fetchBlogs(token));
+        } catch (error: any) {
+            toast.error(
+                `Blog creation failed: ${
+                    error?.message || "Something went wrong"
+                }`
+            );
+            console.error("Blog creation error:", error);
         }
     };
 
