@@ -13,8 +13,6 @@ interface BlogEditModelProps {
 }
 
 export function ModalEdit({ blogData, onClose, onSubmit }: BlogEditModelProps) {
-    console.log("blog data from modal edit", blogData);
-
     const { register, handleSubmit, setValue, control } =
         useForm<BlogInterface>({
             defaultValues: blogData,

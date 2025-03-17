@@ -6,14 +6,14 @@ import { BlogInterface } from '@/types/interfaces';
 
 
 export interface BlogState {
-  data: BlogInterface[];
+  blogs: BlogInterface[];
   currentBlog: BlogInterface | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: BlogState = {
-  data: [],
+  blogs: [],
   currentBlog: null,
   loading: false,
   error: null,
@@ -23,14 +23,14 @@ const initialState: BlogState = {
 export const createBlog = createAsyncThunk(
   'blog/createBlog',
   async (
-    { data, token }: { data: FormData; token: string },
+    { blogs, token }: { blogs: FormData; token: string },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.post('/admin/blogs', data, {
+      const response = await axiosInstance.post('/admin/blogs', blogs, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'multipart/form-blogs',
         },
       });
       return response.data.data;
@@ -86,18 +86,18 @@ export const fetchBlogById = createAsyncThunk(
 export const updateBlog = createAsyncThunk(
   'blog/updateBlog',
   async (
-    { blogId, data, token }: { blogId: string; data: FormData; token: string },
+    { blogId, blogs, token }: { blogId: string; blogs: FormData; token: string },
     { rejectWithValue }
   ) => {
 
     try {
       const response = await axiosInstance.patch(
         `/admin/blogs/${blogId}`,
-        data,
+        blogs,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
+            'Content-Type': 'multipart/form-blogs',
           },
         }
       );
@@ -123,17 +123,17 @@ export const updateBlog = createAsyncThunk(
 export const updateBlogBannerImage = createAsyncThunk(
   'blog/updateBlogBannerImage',
   async (
-    { blogId, data, token }: { blogId: string; data: FormData; token: string },
+    { blogId, blogs, token }: { blogId: string; blogs: FormData; token: string },
     { rejectWithValue }
   ) => {
     try {
       const response = await axiosInstance.patch(
         `/admin/blogs/${blogId}/banner-image`,
-        data,
+        blogs,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
+            'Content-Type': 'multipart/form-blogs',
           },
         }
       );
@@ -172,9 +172,27 @@ const blogSlice = createSlice({
   name: 'blog',
   initialState,
   reducers: {
+    setCurrentBlog: (state, action: PayloadAction<BlogInterface | null>) => {
+      state.currentBlog = action.payload;
+    },
     clearCurrentBlog: (state) => {
       state.currentBlog = null;
     },
+    addBlogToState: (state, action: PayloadAction<BlogInterface>) => {
+      state.blogs.push(action.payload);
+    },
+    updateBlogInState: (state, action: PayloadAction<BlogInterface>) => {
+      const index = state.blogs.findIndex(blog => blog._id === action.payload._id);
+      if (index !== -1) {
+        state.blogs[index] = action.payload;
+      }
+    },
+    removeBlogFromState: (state, action: PayloadAction<string>) => {
+      state.blogs = state.blogs.filter(blog => blog._id !== action.payload);
+    },
+    setClearBlog: (state) => {
+      state.currentBlog = null
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -185,7 +203,7 @@ const blogSlice = createSlice({
       })
       .addCase(createBlog.fulfilled, (state, action: PayloadAction<BlogInterface>) => {
         state.loading = false;
-        state.data = state.data ? [...state.data, action.payload] : [action.payload];
+        state.blogs.push(action.payload)
       })
       .addCase(createBlog.rejected, (state, action) => {
         state.loading = false;
@@ -198,7 +216,7 @@ const blogSlice = createSlice({
       })
       .addCase(fetchBlogs.fulfilled, (state, action: PayloadAction<BlogInterface[]>) => {
         state.loading = false;
-        state.data = action.payload;
+        state.blogs = action.payload;
       })
       .addCase(fetchBlogs.rejected, (state, action) => {
         state.loading = false;
@@ -224,11 +242,14 @@ const blogSlice = createSlice({
       })
       .addCase(updateBlog.fulfilled, (state, action: PayloadAction<BlogInterface>) => {
         state.loading = false;
-        state.currentBlog = action.payload;
-        if (state.data) {
-          state.data = state.data.map((blog) =>
-            blog._id === action.payload._id ? action.payload : blog
-          );
+        const index = state.blogs.findIndex(
+          (blog) => blog._id === action.payload._id
+        );
+        if (index !== -1) {
+          state.blogs[index] = action.payload;
+        }
+        if (state.currentBlog?._id === action.payload._id) {
+          state.currentBlog = action.payload;
         }
       })
       .addCase(updateBlog.rejected, (state, action) => {
@@ -243,8 +264,8 @@ const blogSlice = createSlice({
       .addCase(updateBlogBannerImage.fulfilled, (state, action: PayloadAction<BlogInterface>) => {
         state.loading = false;
         state.currentBlog = action.payload;
-        if (state.data) {
-          state.data = state.data.map((blog) =>
+        if (state.blogs) {
+          state.blogs = state.blogs.map((blog) =>
             blog._id === action.payload._id ? action.payload : blog
           );
         }
@@ -260,9 +281,9 @@ const blogSlice = createSlice({
       })
       .addCase(deleteBlog.fulfilled, (state, action: PayloadAction<BlogInterface>) => {
         state.loading = false;
-        if (state.data) {
-          state.data = state.data.filter((blog) => blog._id !== action.payload._id);
-        }
+        state.blogs = state.blogs.filter(
+          (blog) => blog._id !== action.payload._id
+        );
         if (state.currentBlog?._id === action.payload._id) {
           state.currentBlog = null;
         }
@@ -274,5 +295,5 @@ const blogSlice = createSlice({
   },
 });
 
-export const { clearCurrentBlog } = blogSlice.actions;
+export const { addBlogToState, clearCurrentBlog, removeBlogFromState, setClearBlog, setCurrentBlog, updateBlogInState } = blogSlice.actions;
 export default blogSlice.reducer;

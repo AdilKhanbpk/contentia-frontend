@@ -17,6 +17,7 @@ import {
     deleteBlog,
     createBlog,
     updateBlog,
+    fetchBlogById,
 } from "@/store/features/admin/blogSlice";
 import CustomModelAdmin from "../../../modal/CustomModelAdmin";
 import Modal from "./sub-blogs/Modal";
@@ -79,9 +80,8 @@ TableActions.displayName = "TableActions";
 
 const ManageBlogs: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { data: blogs = [] } = useSelector((state: RootState) => state.blog);
-    const [currentBlog, setCurrentBlog] = useState<BlogInterface>(
-        {} as BlogInterface
+    const { blogs = [], currentBlog } = useSelector(
+        (state: RootState) => state.blog
     );
 
     const [searchTerm, setSearchTerm] = useState("");
@@ -111,15 +111,14 @@ const ManageBlogs: React.FC = () => {
         [dispatch]
     );
 
-    const handleView = (id: string) => {
+    const handleView = async (id: string) => {
         console.log("🚀 ~ blog ~ blogs:", blogs);
-        const blog = blogs?.find((blog) => {
-            console.log("🚀 ~ handleView ~ blog:", blog);
-            return blog._id === id;
-        });
-        if (blog) {
-            setCurrentBlog(blog);
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+            toast.error("No token found. Please log in again.");
+            return;
         }
+        await dispatch(fetchBlogById({ blogId: id, token })).unwrap();
         setIsModalViewOpen(true);
     };
 
@@ -153,7 +152,7 @@ const ManageBlogs: React.FC = () => {
             });
 
             await dispatch(
-                createBlog({ data: formData, token: tokenFromStorage })
+                createBlog({ blogs: formData, token: tokenFromStorage })
             ).unwrap();
             toast.success("Blog created successfully");
             setIsModalOpen(false);
@@ -185,7 +184,7 @@ const ManageBlogs: React.FC = () => {
 
             try {
                 await dispatch(
-                    updateBlog({ blogId: blogData._id, data: formData, token })
+                    updateBlog({ blogId: blogData._id, blogs: formData, token })
                 ).unwrap();
                 toast.success("Blog updated successfully");
                 await dispatch(fetchBlogs(token));
@@ -199,13 +198,13 @@ const ManageBlogs: React.FC = () => {
         }
     };
 
-    const handleEdit = (id: string) => {
-        const blog = blogs.find((blog) => blog._id === id);
-
-        if (blog) {
-            setCurrentBlog(blog);
+    const handleEdit = async (id: string) => {
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+            toast.error("No token found. Please log in again.");
+            return;
         }
-
+        await dispatch(fetchBlogById({ blogId: id, token })).unwrap();
         setIsModalEditOpen(true);
     };
 

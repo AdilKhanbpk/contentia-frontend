@@ -18,7 +18,7 @@ export default function Modal({ onSubmit, onClose }: ModalProps) {
     const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (files && files.length > 0) {
-            setValue("bannerImage", files); // Update to set the file name as string
+            setValue("bannerImage", files);
         }
     };
 
