@@ -83,7 +83,6 @@ const Creators: React.FC = () => {
     const [currentCreator, setCurrentCreator] = useState<CreatorInterface>(
         {} as CreatorInterface
     );
-    const [editingCreator, setEditingCreator] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
 
     const handleDelete = useCallback(
@@ -116,6 +115,7 @@ const Creators: React.FC = () => {
     );
 
     const handleView = (id: string) => {
+        console.log("🚀 ~ handleView ~ creators:", creators);
         const creator = creators.find((creator) => creator._id === id);
         if (creator) {
             setCurrentCreator(creator);
@@ -333,7 +333,6 @@ const Creators: React.FC = () => {
         if (creator) {
             setCurrentCreator(creator);
         }
-        setEditingCreator(true);
         setShowEditForm(true);
     };
 
@@ -471,7 +470,6 @@ const Creators: React.FC = () => {
     }, [creators, searchTerm]);
 
     const handleCloseEdit = () => {
-        setEditingCreator(false);
         setCurrentCreator({} as CreatorInterface);
     };
 

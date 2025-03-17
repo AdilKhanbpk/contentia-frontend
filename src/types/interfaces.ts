@@ -273,3 +273,45 @@ export interface PackageInterface {
     updatedAt?: Date;
 
 }
+
+export interface BlogInterface {
+    _id: string;
+    status: string;
+    title: string;
+    category: string;
+    bannerImage: FileList | string;
+    content: string;
+    metaDescription: string;
+    metaKeywords: string[];
+    createdAt: string;
+    updatedAt: string;
+    author: {
+        billingInformation: {
+            invoiceStatus: boolean;
+            trId: string;
+            address: string;
+            fullName: string;
+            companyName: string;
+            taxNumber: string;
+            taxOffice: string;
+        };
+        _id: string;
+        profilePic: string;
+        authProvider: string;
+        status: string;
+        userType: string;
+        role: string;
+        email: string;
+        customerStatus: string;
+        password: string;
+        rememberMe: boolean;
+        termsAndConditionsApproved: boolean;
+        createdAt: string;
+        updatedAt: string;
+        __v: number;
+        age: number;
+        fullName: string;
+        invoiceType: string;
+        phoneNumber: string;
+    };
+}

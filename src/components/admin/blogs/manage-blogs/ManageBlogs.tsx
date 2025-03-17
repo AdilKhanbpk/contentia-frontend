@@ -1,6 +1,13 @@
 "use client";
 
-import React, { useEffect, useState, useCallback, memo } from "react";
+import React, {
+    useEffect,
+    useState,
+    useCallback,
+    memo,
+    useDeferredValue,
+    useMemo,
+} from "react";
 import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +17,6 @@ import {
     deleteBlog,
     createBlog,
     updateBlog,
-    Blog,
 } from "@/store/features/admin/blogSlice";
 import CustomModelAdmin from "../../../modal/CustomModelAdmin";
 import Modal from "./sub-blogs/Modal";
@@ -19,18 +25,7 @@ import { ModalView } from "./sub-blogs/ModalView";
 import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import { toast } from "react-toastify";
-
-interface BlogFormData {
-    _id?: string;
-    title: string;
-    category: string;
-    bannerImage?: FileList | string;
-    content: string;
-    metaDescription: string;
-    metaKeywords: string[];
-    status: string;
-    author: string;
-}
+import { BlogInterface } from "@/types/interfaces";
 
 const SearchBar = memo(
     ({ onSearch }: { onSearch: (value: string) => void }) => (
@@ -85,12 +80,14 @@ TableActions.displayName = "TableActions";
 const ManageBlogs: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { data: blogs = [] } = useSelector((state: RootState) => state.blog);
+    const [currentBlog, setCurrentBlog] = useState<BlogInterface>(
+        {} as BlogInterface
+    );
 
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
-    const [currentBlog, setCurrentBlog] = useState<BlogFormData | null>(null);
 
     const handleDelete = useCallback(
         (id: string) => {
@@ -115,26 +112,18 @@ const ManageBlogs: React.FC = () => {
     );
 
     const handleView = (id: string) => {
-        const blog = blogs?.find((blog) => blog._id === id);
-        console.log(blog);
+        console.log("🚀 ~ blog ~ blogs:", blogs);
+        const blog = blogs?.find((blog) => {
+            console.log("🚀 ~ handleView ~ blog:", blog);
+            return blog._id === id;
+        });
         if (blog) {
-            const formattedBlog: BlogFormData = {
-                _id: blog._id,
-                title: blog.title,
-                category: blog.category,
-                bannerImage: blog.bannerImage,
-                content: blog.content,
-                metaDescription: blog.metaDescription,
-                metaKeywords: blog.metaKeywords,
-                status: blog.status,
-                author: blog.author.fullName || "",
-            };
-            setCurrentBlog(formattedBlog);
+            setCurrentBlog(blog);
         }
         setIsModalViewOpen(true);
     };
 
-    const handleCreate = async (blogData: BlogFormData) => {
+    const handleCreate = async (blogData: BlogInterface) => {
         const tokenFromStorage = localStorage.getItem("accessToken");
 
         try {
@@ -169,13 +158,14 @@ const ManageBlogs: React.FC = () => {
             toast.success("Blog created successfully");
             setIsModalOpen(false);
             await dispatch(fetchBlogs(tokenFromStorage));
-        } catch (error) {
-            toast.error("Blog creation failed");
-            console.error("Blog creation failed:", error);
+        } catch (error: any) {
+            const errorMessage = error?.message || "Something went wrong";
+            toast.error(`Blog creation failed: ${errorMessage}`);
+            console.error("Blog creation error:", error);
         }
     };
 
-    const handleUpdate = async (blogData: BlogFormData) => {
+    const handleUpdate = async (blogData: BlogInterface) => {
         const token = localStorage.getItem("accessToken");
 
         if (token && blogData._id) {
@@ -210,20 +200,12 @@ const ManageBlogs: React.FC = () => {
     };
 
     const handleEdit = (id: string) => {
-        const blog = blogs?.find((blog) => blog._id === id);
+        const blog = blogs.find((blog) => blog._id === id);
+
         if (blog) {
-            const formattedBlog: BlogFormData = {
-                _id: blog._id,
-                title: blog.title,
-                category: blog.category,
-                content: blog.content,
-                metaDescription: blog.metaDescription,
-                metaKeywords: blog.metaKeywords,
-                status: blog.status,
-                author: blog.author.fullName || "",
-            };
-            setCurrentBlog(formattedBlog);
+            setCurrentBlog(blog);
         }
+
         setIsModalEditOpen(true);
     };
 
@@ -260,13 +242,13 @@ const ManageBlogs: React.FC = () => {
         () => [
             {
                 name: "#",
-                selector: (row: Blog) => row._id,
+                selector: (row: BlogInterface) => row._id,
                 sortable: true,
                 width: "80px",
             },
             {
                 name: "Blog Info",
-                cell: (row: Blog) => (
+                cell: (row: BlogInterface) => (
                     <div className='flex items-center space-x-2'>
                         <Image
                             width={40}
@@ -295,12 +277,12 @@ const ManageBlogs: React.FC = () => {
             },
             {
                 name: "Author",
-                selector: (row: Blog) => row.author.fullName || "",
+                selector: (row: BlogInterface) => row.author.fullName || "",
                 sortable: true,
             },
             {
                 name: "Status",
-                cell: (row: Blog) => (
+                cell: (row: BlogInterface) => (
                     <span
                         className={`px-3 py-1 rounded-full text-sm font-semibold ${
                             row.status === "Published"
@@ -318,7 +300,7 @@ const ManageBlogs: React.FC = () => {
             },
             {
                 name: "Actions",
-                cell: (row: Blog) => (
+                cell: (row: BlogInterface) => (
                     <TableActions
                         onDelete={() => handleDelete(row._id)}
                         onEdit={() => handleEdit(row._id)}
@@ -332,10 +314,10 @@ const ManageBlogs: React.FC = () => {
         [handleDelete]
     );
 
-    const filteredBlogs = React.useMemo(() => {
+    const deferredSearchTerm = useDeferredValue(searchTerm);
+    const filteredBlogs = useMemo(() => {
         if (!blogs) return [];
-
-        const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
+        const lowerCaseSearchTerm = deferredSearchTerm.toLowerCase().trim();
         return blogs.filter(
             (blog) =>
                 blog.title.toLowerCase().includes(lowerCaseSearchTerm) ||
@@ -345,7 +327,7 @@ const ManageBlogs: React.FC = () => {
                 blog.category.toLowerCase().includes(lowerCaseSearchTerm) ||
                 blog.status.toLowerCase().includes(lowerCaseSearchTerm)
         );
-    }, [blogs, searchTerm]);
+    }, [blogs, deferredSearchTerm]);
 
     return (
         <div className='bg-white rounded-lg'>

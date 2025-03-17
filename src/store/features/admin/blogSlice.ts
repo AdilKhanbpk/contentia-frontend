@@ -1,59 +1,19 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { axiosInstance } from '@/store/axiosInstance';
 import { AxiosError } from 'axios';
+import { BlogInterface } from '@/types/interfaces';
 
-export interface Blog {
-  _id: string;
-  status: string;
-  author: {
-    billingInformation: {
-      invoiceStatus: boolean;
-      trId: string;
-      address: string;
-      fullName: string;
-      companyName: string;
-      taxNumber: string;
-      taxOffice: string;
-    };
-    _id: string;
-    profilePic: string;
-    authProvider: string;
-    status: string;
-    userType: string;
-    role: string;
-    email: string;
-    customerStatus: string;
-    password: string;
-    rememberMe: boolean;
-    termsAndConditionsApproved: boolean;
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-    age: number;
-    fullName: string;
-    invoiceType: string;
-    phoneNumber: string;
-  };
-  title: string;
-  category: string;
-  bannerImage: string;
-  content: string;
-  metaDescription: string;
-  metaKeywords: string[];
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-}
+
 
 export interface BlogState {
-  data: Blog[] | null;
-  currentBlog: Blog | null;
+  data: BlogInterface[];
+  currentBlog: BlogInterface | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: BlogState = {
-  data: null,
+  data: [],
   currentBlog: null,
   loading: false,
   error: null,
@@ -83,7 +43,7 @@ export const createBlog = createAsyncThunk(
   }
 );
 
-// Fetch all blogssss
+// Fetch all blogs
 export const fetchBlogs = createAsyncThunk(
   'blog/fetchBlogs',
   async (token: string, { rejectWithValue }) => {
@@ -223,7 +183,7 @@ const blogSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(createBlog.fulfilled, (state, action: PayloadAction<Blog>) => {
+      .addCase(createBlog.fulfilled, (state, action: PayloadAction<BlogInterface>) => {
         state.loading = false;
         state.data = state.data ? [...state.data, action.payload] : [action.payload];
       })
@@ -236,7 +196,7 @@ const blogSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchBlogs.fulfilled, (state, action: PayloadAction<Blog[]>) => {
+      .addCase(fetchBlogs.fulfilled, (state, action: PayloadAction<BlogInterface[]>) => {
         state.loading = false;
         state.data = action.payload;
       })
@@ -249,7 +209,7 @@ const blogSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchBlogById.fulfilled, (state, action: PayloadAction<Blog>) => {
+      .addCase(fetchBlogById.fulfilled, (state, action: PayloadAction<BlogInterface>) => {
         state.loading = false;
         state.currentBlog = action.payload;
       })
@@ -262,7 +222,7 @@ const blogSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateBlog.fulfilled, (state, action: PayloadAction<Blog>) => {
+      .addCase(updateBlog.fulfilled, (state, action: PayloadAction<BlogInterface>) => {
         state.loading = false;
         state.currentBlog = action.payload;
         if (state.data) {
@@ -280,7 +240,7 @@ const blogSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateBlogBannerImage.fulfilled, (state, action: PayloadAction<Blog>) => {
+      .addCase(updateBlogBannerImage.fulfilled, (state, action: PayloadAction<BlogInterface>) => {
         state.loading = false;
         state.currentBlog = action.payload;
         if (state.data) {
@@ -298,7 +258,7 @@ const blogSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteBlog.fulfilled, (state, action: PayloadAction<Blog>) => {
+      .addCase(deleteBlog.fulfilled, (state, action: PayloadAction<BlogInterface>) => {
         state.loading = false;
         if (state.data) {
           state.data = state.data.filter((blog) => blog._id !== action.payload._id);
