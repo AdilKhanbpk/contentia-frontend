@@ -1,7 +1,15 @@
 "use client";
 
 import React, { useState, useCallback, memo, useEffect } from "react";
-import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
+import {
+    FaEdit,
+    FaTrashAlt,
+    FaEye,
+    FaGrav,
+    FaFan,
+    FaCheck,
+    FaTimes,
+} from "react-icons/fa";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/store/store";
@@ -18,6 +26,8 @@ import {
     approveCreator,
     rejectCreator,
     clearCurrentOrder,
+    markTheOrderAsCompleted,
+    markTheOrderAsRejected,
 } from "@/store/features/admin/ordersSlice";
 import { RootState } from "@/store/store";
 import { toast } from "react-toastify";
@@ -34,6 +44,8 @@ interface TableActionsProps {
     onEdit: (id: string) => void;
     onView: (id: string) => void;
     onRequest: (id: string) => void;
+    onMarkAsCompleted: (id: string) => void;
+    onMarkAsRejected: (id: string) => void;
     id: string;
 }
 
@@ -49,8 +61,28 @@ const SearchBar = memo(({ onSearch }: SearchBarProps) => (
 SearchBar.displayName = "SearchBar";
 
 const TableActions = memo(
-    ({ onDelete, onEdit, onView, onRequest, id }: TableActionsProps) => (
+    ({
+        onDelete,
+        onEdit,
+        onView,
+        onRequest,
+        onMarkAsCompleted,
+        onMarkAsRejected,
+        id,
+    }: TableActionsProps) => (
         <div className='flex space-x-3'>
+            <button
+                onClick={() => onMarkAsCompleted(id)}
+                className='text-green-500 hover:text-green-700'
+            >
+                <FaCheck />
+            </button>
+            <button
+                onClick={() => onMarkAsRejected(id)}
+                className='text-red-500 hover:text-red-700'
+            >
+                <FaTimes />
+            </button>
             <button
                 className='text-gray-500 hover:text-gray-700'
                 onClick={() => onView(id)}
@@ -144,6 +176,46 @@ const Orders: React.FC = () => {
                 toast.success("Order deleted successfully!");
             } catch (error) {
                 toast.error("Error deleting order.");
+            }
+        },
+        [dispatch]
+    );
+
+    const handleMarkTheOrderAsCompleted = useCallback(
+        async (id: string) => {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                toast.error("No token found. Please log in again.");
+                return;
+            }
+
+            try {
+                await dispatch(
+                    markTheOrderAsCompleted({ orderId: id, token })
+                ).unwrap();
+                toast.success("Order marked as completed successfully!");
+            } catch (error) {
+                toast.error("Error marking the order as completed.");
+            }
+        },
+        [dispatch]
+    );
+
+    const handleMarkTheOrderAsRejected = useCallback(
+        async (id: string) => {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                toast.error("No token found. Please log in again.");
+                return;
+            }
+
+            try {
+                await dispatch(
+                    markTheOrderAsRejected({ orderId: id, token })
+                ).unwrap();
+                toast.success("Order marked as rejected successfully!");
+            } catch (error) {
+                toast.error("Error marking the order as rejected.");
             }
         },
         [dispatch]
@@ -373,9 +445,12 @@ const Orders: React.FC = () => {
                         onEdit={handleEdit}
                         onView={handleView}
                         onRequest={handleRequest}
+                        onMarkAsCompleted={handleMarkTheOrderAsCompleted}
+                        onMarkAsRejected={handleMarkTheOrderAsRejected}
                         id={row._id}
                     />
                 ),
+                width: "300px",
             },
         ],
         [handleDelete, handleEdit, handleView, handleRequest]

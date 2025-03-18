@@ -263,6 +263,8 @@ export const getAppliedCreators = createAsyncThunk(
     }
   }
 );
+
+
 export const getAssignedOrders = createAsyncThunk(
   'orders/getAssignedCreators',
   async (token: string, { rejectWithValue }) => {
@@ -284,6 +286,44 @@ export const getAssignedOrders = createAsyncThunk(
     }
   }
 );
+
+export const markTheOrderAsCompleted = createAsyncThunk(
+  'orders/markTheOrderAsCompleted',
+  async ({ orderId, token }: { orderId: string; token: string }, { rejectWithValue }) => {
+
+    try {
+      const response = await axiosInstance.patch(
+        `/admin/orders/mark-as-completed/${orderId}`)
+
+      return response.data.data
+    } catch (error) {
+      if ((error as AxiosError).isAxiosError) {
+        const axiosError = error as AxiosError<ErrorResponse>;
+        return rejectWithValue(axiosError.response?.data?.message || 'Failed to mark the order as completed');
+      }
+
+      return rejectWithValue('Failed to mark the order as completed');
+    }
+  }
+)
+
+export const markTheOrderAsRejected = createAsyncThunk(
+  'orders/markTheOrderAsRejected',
+  async ({ orderId, token }: { orderId: string; token: string }, { rejectWithValue }) => {
+
+    try {
+      const response = await axiosInstance.patch(`admin/orders/mark-as-rejected/${orderId}`)
+      return response.data.data
+    } catch (error) {
+      if ((error as AxiosError).isAxiosError) {
+        const axiosError = error as AxiosError<ErrorResponse>;
+        return rejectWithValue(axiosError.response?.data?.message || 'Failed to mark the order as rejected');
+      }
+
+      return rejectWithValue('Failed to mark the order as rejected');
+    }
+  }
+)
 
 const ordersSlice = createSlice({
   name: 'orders',
@@ -452,7 +492,45 @@ const ordersSlice = createSlice({
       .addCase(rejectCreator.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-      });
+      })
+      .addCase(markTheOrderAsCompleted.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(markTheOrderAsCompleted.fulfilled, (state, action: PayloadAction<OrderInterface>) => {
+        state.loading = false;
+        const index = state.data.findIndex(order => order._id === action.payload._id);
+        if (index !== -1) {
+          state.data[index] = action.payload;
+          if (state.currentOrder?._id === action.payload._id) {
+            state.currentOrder = action.payload;
+          }
+        }
+      })
+      .addCase(markTheOrderAsCompleted.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      .addCase(markTheOrderAsRejected.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(markTheOrderAsRejected.fulfilled, (state, action: PayloadAction<OrderInterface>) => {
+        state.loading = false;
+        const index = state.data.findIndex(order => order._id === action.payload._id);
+        if (index !== -1) {
+          state.data[index] = action.payload;
+          if (state.currentOrder?._id === action.payload._id) {
+            state.currentOrder = action.payload;
+          }
+        }
+      })
+      .addCase(markTheOrderAsRejected.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
   },
 });
 
