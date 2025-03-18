@@ -21,6 +21,7 @@ import { Customer } from "@/types/interfaces";
 import ModalNew from "./sub-admin/ModalNew";
 import ModalView from "./sub-admin/ModalView";
 import ModalEdit from "./sub-admin/ModalEdit";
+import { getAccessToken } from "@/utils/checkToken";
 
 const SearchBar = memo(
     ({ onSearch }: { onSearch: (value: string) => void }) => (
@@ -86,17 +87,10 @@ const Admins: React.FC = () => {
 
     const handleDelete = useCallback(
         (id: string) => {
-            const tokenFromStorage = localStorage.getItem("accessToken");
-            if (!tokenFromStorage) {
-                toast.error(
-                    "Authorization token is missing. Please log in again."
-                );
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
 
-            dispatch(
-                deleteAdminCustomer({ customerId: id, token: tokenFromStorage })
-            )
+            dispatch(deleteAdminCustomer({ customerId: id, token }))
                 .unwrap()
                 .then(() => {
                     toast.success("Admin deleted successfully!");
@@ -119,88 +113,66 @@ const Admins: React.FC = () => {
     };
 
     const handleCreate = async (customerData: any) => {
-        const tokenFromStorage = localStorage.getItem("accessToken");
-
-        try {
-            if (!tokenFromStorage) {
-                toast.error(
-                    "Authorization token is missing. Please log in again."
-                );
-                return;
-            }
-
-            if (!customerData || Object.keys(customerData).length === 0) {
-                toast.error("Admin data is missing or empty.");
-                return;
-            }
-
-            console.log("Attempting to create customer:", {
-                ...customerData,
-                token: tokenFromStorage
-                    ? `${tokenFromStorage.substring(0, 10)}...`
-                    : "missing",
-            });
-
-            const result = await dispatch(
-                createAdminCustomer({
-                    data: customerData,
-                    token: tokenFromStorage,
-                })
-            ).unwrap();
-
-            setIsModalOpen(false);
-            await dispatch(fetchAdmins(tokenFromStorage));
-            toast.success("Admin created successfully!");
-        } catch (error) {
-            toast.error("Failed to create admin. Please try again.");
+        const token = getAccessToken();
+        if (!token) return;
+        if (!customerData || Object.keys(customerData).length === 0) {
+            toast.error("Admin data is missing or empty.");
+            return;
         }
+
+        const result = await dispatch(
+            createAdminCustomer({
+                data: customerData,
+                token,
+            })
+        ).unwrap();
+
+        setIsModalOpen(false);
+        await dispatch(fetchAdmins(token));
+        toast.success("Admin created successfully!");
     };
 
     const handleUpdate = async (customerData: Customer) => {
-        console.log("🚀 ~ handleUpdate ~ customerData:", customerData);
-        const token = localStorage.getItem("accessToken");
-        if (token) {
-            const customerId = customerData._id;
-            const dataToUpdate = {
-                fullName: customerData.fullName ?? "",
-                email: customerData.email ?? "",
-                age: customerData.age ?? null,
-                phoneNumber: customerData.phoneNumber ?? "",
-                customerStatus: customerData.customerStatus ?? "",
-                invoiceType: customerData.invoiceType ?? "",
-                billingInformation: {
-                    invoiceStatus:
-                        customerData.billingInformation?.invoiceStatus ?? false,
-                    trId: customerData.billingInformation?.trId ?? "",
-                    address: customerData.billingInformation?.address ?? "",
-                    fullName: customerData.billingInformation?.fullName ?? "",
-                    companyName:
-                        customerData.billingInformation?.companyName ?? "",
-                    taxNumber: customerData.billingInformation?.taxNumber ?? "",
-                    taxOffice: customerData.billingInformation?.taxOffice ?? "",
-                },
-                rememberMe: customerData.rememberMe ?? false,
-                termsAndConditionsApproved:
-                    customerData.termsAndConditionsApproved ?? false,
-            };
+        const token = getAccessToken();
+        if (!token) return;
 
-            try {
-                console.log(customerId, dataToUpdate);
-                customerId &&
-                    (await dispatch(
-                        updateAdminCustomer({
-                            customerId,
-                            data: dataToUpdate,
-                            token,
-                        })
-                    ));
-                await dispatch(fetchAdmins(token));
-                toast.success("Admin updated successfully!");
-            } catch (error) {
-                toast.error("Failed to update admin. Please try again.");
-            }
-        } else {
-            toast.error("Authorization token is missing. Please log in again.");
+        const customerId = customerData._id;
+        const dataToUpdate = {
+            fullName: customerData.fullName ?? "",
+            email: customerData.email ?? "",
+            age: customerData.age ?? null,
+            phoneNumber: customerData.phoneNumber ?? "",
+            customerStatus: customerData.customerStatus ?? "",
+            invoiceType: customerData.invoiceType ?? "",
+            billingInformation: {
+                invoiceStatus:
+                    customerData.billingInformation?.invoiceStatus ?? false,
+                trId: customerData.billingInformation?.trId ?? "",
+                address: customerData.billingInformation?.address ?? "",
+                fullName: customerData.billingInformation?.fullName ?? "",
+                companyName: customerData.billingInformation?.companyName ?? "",
+                taxNumber: customerData.billingInformation?.taxNumber ?? "",
+                taxOffice: customerData.billingInformation?.taxOffice ?? "",
+            },
+            rememberMe: customerData.rememberMe ?? false,
+            termsAndConditionsApproved:
+                customerData.termsAndConditionsApproved ?? false,
+        };
+
+        try {
+            console.log(customerId, dataToUpdate);
+            customerId &&
+                (await dispatch(
+                    updateAdminCustomer({
+                        customerId,
+                        data: dataToUpdate,
+                        token,
+                    })
+                ));
+            await dispatch(fetchAdmins(token));
+            toast.success("Admin updated successfully!");
+        } catch (error) {
+            toast.error("Failed to update admin. Please try again.");
         }
     };
 
@@ -232,10 +204,10 @@ const Admins: React.FC = () => {
     }, [customers]);
 
     useEffect(() => {
-        const tokenFromStorage = localStorage.getItem("accessToken");
-        if (tokenFromStorage) {
-            dispatch(fetchAdmins(tokenFromStorage));
-        }
+        const token = getAccessToken();
+        if (!token) return;
+
+        dispatch(fetchAdmins(token));
     }, [dispatch]);
 
     const columns = React.useMemo(

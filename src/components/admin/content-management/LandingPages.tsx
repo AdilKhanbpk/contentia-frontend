@@ -10,6 +10,7 @@ import {
 } from "@/store/features/admin/lanPageSlice";
 import "react-quill/dist/quill.snow.css";
 import { toast } from "react-toastify";
+import { getAccessToken } from "@/utils/checkToken";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -77,11 +78,8 @@ export default function LandingPages() {
 
     const onSubmit = async (formData: FormData) => {
         setIsSubmitting(true);
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            toast.error("No token found. Please log in to submit the form.");
-            return;
-        }
+        const token = getAccessToken();
+        if (!token) return;
 
         if (!fixedId || !token) return;
 

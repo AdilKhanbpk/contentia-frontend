@@ -8,6 +8,7 @@ import { fetchAdditionalServices } from "@/store/features/admin/addPriceSlice";
 import { setOrderFormData } from "@/store/features/profile/orderSlice";
 import { fetchPricePlans } from "@/store/features/admin/pricingSlice";
 import Image from "next/image";
+import { getAccessToken } from "@/utils/checkToken";
 
 export default function TabFirst({
     setActiveTab,
@@ -17,7 +18,6 @@ export default function TabFirst({
     const dispatch = useDispatch();
 
     // State Management
-    const [token, setToken] = useState<string>("");
     const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
     const [selectedCard, setSelectedCard] = useState<number | string>("");
     console.log("🚀 ~ selectedCard:", selectedCard);
@@ -51,11 +51,10 @@ export default function TabFirst({
     // Fetch data on component mount
     useEffect(() => {
         dispatch(fetchPricePlans() as any);
-        const storedToken = localStorage.getItem("accessToken") || "";
-        setToken(storedToken);
-        if (storedToken) {
-            dispatch(fetchAdditionalServices(storedToken) as any);
-        }
+        const token = getAccessToken();
+        if (!token) return;
+
+        dispatch(fetchAdditionalServices(token) as any);
     }, [dispatch]);
 
     const handleQuantityChange = (change: number) => {
@@ -127,11 +126,6 @@ export default function TabFirst({
     // Handle form submission
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-
-        if (!token) {
-            toast.error("Please login first");
-            return;
-        }
 
         // Construct form data
         const formData = {

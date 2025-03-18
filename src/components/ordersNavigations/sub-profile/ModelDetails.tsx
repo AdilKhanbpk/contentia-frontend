@@ -4,6 +4,7 @@ import {
     type Order,
 } from "@/store/features/profile/orderSlice";
 import { AppDispatch } from "@/store/store";
+import { getAccessToken } from "@/utils/checkToken";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -14,7 +15,6 @@ interface ModelRevisionProps {
 
 export default function ModelDetails({ orderData }: ModelRevisionProps) {
     const loading = useSelector(selectOrderIsLoading);
-    const token = localStorage.getItem("accessToken");
     const dispatch = useDispatch<AppDispatch>();
     const { register, handleSubmit } = useForm({
         defaultValues: {
@@ -30,28 +30,24 @@ export default function ModelDetails({ orderData }: ModelRevisionProps) {
     const onSubmit = async (data: any) => {
         console.log("Form submitted:", data);
 
-        try {
-            if (token) {
-                const updatedData = {
-                    ...orderData,
-                    briefContent: {
-                        ...orderData.briefContent,
-                        ...data.briefContent,
-                    },
-                };
+        const token = getAccessToken();
+        if (!token) return;
+        const updatedData = {
+            ...orderData,
+            briefContent: {
+                ...orderData.briefContent,
+                ...data.briefContent,
+            },
+        };
 
-                const res = await dispatch(
-                    updateOrder({
-                        orderId: orderData._id,
-                        data: updatedData,
-                        token,
-                    })
-                ).unwrap();
-                toast.success(res.message);
-            }
-        } catch (error: any) {
-            toast.error(error.message || "Update failed");
-        }
+        const res = await dispatch(
+            updateOrder({
+                orderId: orderData._id,
+                data: updatedData,
+                token,
+            })
+        ).unwrap();
+        toast.success(res.message);
     };
 
     return (

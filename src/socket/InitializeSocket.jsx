@@ -11,41 +11,43 @@ import {
   selectNotifications,
   setNotifications,
 } from "@/store/features/admin/notificationSlice";
+import { getAccessToken } from "@/utils/checkToken";
 
 function InitializeSocket() {
   const dispatch = useDispatch();
-  const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
-  const notifications = useSelector(selectNotifications);
-  
+
+
   useEffect(() => {
-    if (token) {
-      dispatch(setSocketLoading());
-      try {
-        const socket = initializeSocket(token);
-        socket.on("connect", () => {
-          dispatch(setSocketConnected());
-        });
+    const token = getAccessToken();
+    if (!token) return;
 
-        socket.on("newNotification", (notifications) => {
-          console.log("notifications", notifications);
-          dispatch(setNotifications(notifications));
-        });
+    dispatch(setSocketLoading());
+    try {
+      const socket = initializeSocket(token);
+      socket.on("connect", () => {
+        dispatch(setSocketConnected());
+      });
 
-        socket.on("disconnect", () => {
-          dispatch(setSocketDisconnected());
-        });
-        socket.on("error", (error) => {
-          dispatch(setSocketError(`Failed to connect to the socket. ${error}`));
-        });
-      } catch (error) {
-        dispatch(setSocketError("Failed to connect to the socket."));
-      }
+      socket.on("newNotification", (notifications) => {
+        console.log("notifications", notifications);
+        dispatch(setNotifications(notifications));
+      });
+
+      socket.on("disconnect", () => {
+        dispatch(setSocketDisconnected());
+      });
+      socket.on("error", (error) => {
+        dispatch(setSocketError(`Failed to connect to the socket. ${error}`));
+      });
+    } catch (error) {
+      dispatch(setSocketError("Failed to connect to the socket."));
     }
+
 
     return () => {
       disconnectSocket();
     };
-  }, [dispatch, token]);
+  }, [dispatch]);
 
   return <></>;
 }

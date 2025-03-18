@@ -11,6 +11,7 @@ import CustomModelAdmin from "../../modal/CustomModelAdmin";
 import ModalTwo from "./sub-payment/ModelTwo";
 import { OrderInterface } from "@/types/interfaces";
 import Image from "next/image";
+import { getAccessToken } from "@/utils/checkToken";
 
 const DataTable = dynamic(() => import("react-data-table-component"), {
     ssr: false,
@@ -45,29 +46,20 @@ const OutPayments: React.FC = () => {
     }, []);
 
     const handleView = useCallback(async (id: string) => {
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            toast.error("No token found. Please log in again.");
-            return;
-        }
+        const token = getAccessToken();
+        if (!token) return;
         setIsViewModalOpen(true);
     }, []);
 
     const handleApprove = useCallback(async (id: string) => {
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            toast.error("No token found. Please log in again.");
-            return;
-        }
+        const token = getAccessToken();
+        if (!token) return;
         toast.success("Payment Sent successfully!");
     }, []);
 
     const handleReject = useCallback(async (id: string) => {
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            toast.error("No token found. Please log in again.");
-            return;
-        }
+        const token = getAccessToken();
+        if (!token) return;
         toast.dark("Payment rejected for the Order!");
     }, []);
 

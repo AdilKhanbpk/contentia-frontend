@@ -9,6 +9,7 @@ import {
 } from "@/store/features/admin/helpSlice";
 import "react-quill/dist/quill.snow.css";
 import { toast } from "react-toastify";
+import { getAccessToken } from "@/utils/checkToken";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -56,11 +57,8 @@ export const ModalCenters: React.FC<ModalCentersProps> = ({ onClose }) => {
 
     const onSubmit = async (formData: HelpSupportFormData) => {
         try {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No access token found. Please log in.");
-                return;
-            }
+             const token = getAccessToken();
+                       if (!token) return;
             const submitData = new FormData();
             submitData.append("title", formData.title.trim());
             submitData.append("category", formData.category.trim());

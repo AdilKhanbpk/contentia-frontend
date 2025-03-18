@@ -8,6 +8,7 @@ import {
 import { AppDispatch } from "@/store/store";
 import { toast } from "react-toastify";
 import { CreatorInterface } from "@/types/interfaces";
+import { getAccessToken } from "@/utils/checkToken";
 
 interface SecondTabProps {
     editCreatorForm: CreatorInterface | null;
@@ -64,11 +65,8 @@ export default function SecondTab({ editCreatorForm }: SecondTabProps) {
             return;
         }
 
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            toast.error("Error: No access token found. Please log in again.");
-            return;
-        }
+        const token = getAccessToken();
+        if (!token) return;
 
         try {
             const resultAction = await dispatch(

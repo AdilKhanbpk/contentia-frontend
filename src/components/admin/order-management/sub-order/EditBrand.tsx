@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { Brand, updateBrand } from "@/store/features/profile/brandSlice";
 import { toast } from "react-toastify";
+import { getAccessToken } from "@/utils/checkToken";
 
 interface BrandFormInputs {
     brandName: string;
@@ -42,11 +43,8 @@ const EditBrand: React.FC<EditBrandProps> = ({ brand }) => {
     }, [brand, setValue]);
 
     const onSubmit: SubmitHandler<BrandFormInputs> = async (data) => {
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            toast.error("No access token found! Please log in again.");
-            return;
-        }
+        const token = getAccessToken();
+        if (!token) return;
 
         setLoading(true);
         const formData = new FormData();

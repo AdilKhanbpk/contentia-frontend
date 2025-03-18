@@ -27,6 +27,7 @@ import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import { toast } from "react-toastify";
 import { BlogInterface } from "@/types/interfaces";
+import { getAccessToken } from "@/utils/checkToken";
 
 const SearchBar = memo(
     ({ onSearch }: { onSearch: (value: string) => void }) => (
@@ -91,17 +92,14 @@ const ManageBlogs: React.FC = () => {
 
     const handleDelete = useCallback(
         (id: string) => {
-            const tokenFromStorage = localStorage.getItem("accessToken");
-            if (!tokenFromStorage) {
-                toast.error("Authorization token is missing.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
 
-            dispatch(deleteBlog({ blogId: id, token: tokenFromStorage }))
+            dispatch(deleteBlog({ blogId: id, token }))
                 .unwrap()
                 .then(() => {
                     toast.success("Blog deleted successfully");
-                    dispatch(fetchBlogs(tokenFromStorage));
+                    dispatch(fetchBlogs(token));
                 })
                 .catch((error: any) => {
                     toast.error("Delete failed");
@@ -113,23 +111,15 @@ const ManageBlogs: React.FC = () => {
 
     const handleView = async (id: string) => {
         console.log("🚀 ~ blog ~ blogs:", blogs);
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            toast.error("No token found. Please log in again.");
-            return;
-        }
+        const token = getAccessToken();
+        if (!token) return;
         await dispatch(fetchBlogById({ blogId: id, token })).unwrap();
         setIsModalViewOpen(true);
     };
 
     const handleUpdate = async (blogData: BlogInterface) => {
-        const token = localStorage.getItem("accessToken");
-
-        if (!token) {
-            toast.error("Authorization token is missing!");
-            return;
-        }
-
+        const token = getAccessToken();
+        if (!token) return;
         if (!blogData._id) {
             toast.error("Blog ID is missing!");
             return;
@@ -169,12 +159,8 @@ const ManageBlogs: React.FC = () => {
     };
 
     const handleCreate = async (blogData: BlogInterface) => {
-        const token = localStorage.getItem("accessToken");
-
-        if (!token) {
-            toast.error("Authorization token is missing");
-            return;
-        }
+        const token = getAccessToken();
+        if (!token) return;
 
         if (!blogData || Object.keys(blogData).length === 0) {
             toast.error("Blog data is empty");
@@ -213,11 +199,8 @@ const ManageBlogs: React.FC = () => {
     };
 
     const handleEdit = async (id: string) => {
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            toast.error("No token found. Please log in again.");
-            return;
-        }
+        const token = getAccessToken();
+        if (!token) return;
         await dispatch(fetchBlogById({ blogId: id, token })).unwrap();
         setIsModalEditOpen(true);
     };
@@ -245,10 +228,9 @@ const ManageBlogs: React.FC = () => {
     }, [blogs]);
 
     useEffect(() => {
-        const tokenFromStorage = localStorage.getItem("accessToken");
-        if (tokenFromStorage) {
-            dispatch(fetchBlogs(tokenFromStorage));
-        }
+        const token = getAccessToken();
+        if (!token) return;
+        dispatch(fetchBlogs(token));
     }, [dispatch]);
 
     const columns = React.useMemo(

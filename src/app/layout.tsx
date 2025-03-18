@@ -24,7 +24,7 @@ export default function RootLayout({
 }) {
     const pathname = usePathname();
     const router = useRouter();
-    const { isAdmin, isUser, isLoading } = useAuth();
+    const { isLoading } = useAuth();
     // console.log("🚀 ~ isLoading:", isLoading);
     // console.log("🚀 ~ isUser:", isUser);
     // console.log("🚀 ~ isAdmin:", isAdmin);
@@ -44,18 +44,6 @@ export default function RootLayout({
         pathname === "/orders" || pathname.startsWith("/orders/");
 
     const isAdminPage = pathname === "/admin" || pathname.startsWith("/admin/");
-
-    // Redirect unauthorized users after first render
-    useEffect(() => {
-        if (!isLoading) {
-            if (!isPublicPath && !isUser && !isAdmin) {
-                router.replace("/contentiaio/authentication");
-            }
-            if (isAdminPage && !isAdmin) {
-                router.replace("/");
-            }
-        }
-    }, [isLoading, isUser, isAdmin, isPublicPath, isAdminPage, router]);
 
     // Show loading spinner during authentication check
     if (isLoading) {
@@ -78,8 +66,8 @@ export default function RootLayout({
 
                             {/* Navbar and Footer */}
                             {isAfterContentiaio && <Navbar />}
-                            {isUser && isOrdersPage && <CustomerNavbar />}
-                            {isAdmin && isAdminPage && <AdminNavbar />}
+                            {isOrdersPage && <CustomerNavbar />}
+                            {isAdminPage && <AdminNavbar />}
 
                             <main>{children}</main>
 

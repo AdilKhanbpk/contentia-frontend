@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { createBrand } from "@/store/features/profile/brandSlice";
 import { toast } from "react-toastify";
+import { getAccessToken } from "@/utils/checkToken";
 
 interface BrandFormInputs {
     brandName: string;
@@ -24,7 +25,8 @@ const ModelBrand: React.FC = () => {
     } = useForm<BrandFormInputs>();
 
     const onSubmit: SubmitHandler<BrandFormInputs> = (data) => {
-        const token = localStorage.getItem("accessToken");
+        const token = getAccessToken();
+        if (!token) return;
 
         const formData: any = new FormData();
         formData.append("brandName", data.brandName);
@@ -36,28 +38,24 @@ const ModelBrand: React.FC = () => {
             formData.append("brandImage", data.brandImage[0]);
         }
 
-        if (token) {
-            dispatch(
-                createBrand({
-                    data: formData,
-                    token,
-                })
-            )
-                .unwrap()
-                .then(() => {
-                    reset();
-                    toast.success("Brand created successfully!");
-                })
-                .catch((error) => {
-                    toast.error(
-                        `Failed to create brand: ${
-                            error.message || "Unknown error"
-                        }`
-                    );
-                });
-        } else {
-            toast.error("No access token found! Please log in again.");
-        }
+        dispatch(
+            createBrand({
+                data: formData,
+                token,
+            })
+        )
+            .unwrap()
+            .then(() => {
+                reset();
+                toast.success("Brand created successfully!");
+            })
+            .catch((error) => {
+                toast.error(
+                    `Failed to create brand: ${
+                        error.message || "Unknown error"
+                    }`
+                );
+            });
     };
 
     return (

@@ -7,6 +7,7 @@ import { createOrder } from "@/store/features/admin/ordersSlice";
 import { AppDispatch } from "@/store/store";
 import { toast } from "react-toastify";
 import { OrderInterface } from "@/types/interfaces";
+import { getAccessToken } from "@/utils/checkToken";
 
 export default function NewModal() {
     const dispatch = useDispatch<AppDispatch>();
@@ -46,11 +47,8 @@ export default function NewModal() {
 
     const onSubmitForm: SubmitHandler<OrderInterface> = async (data) => {
         setIsSubmitting(true);
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            toast.error("No token found. Please log in again.");
-            return;
-        }
+        const token = getAccessToken();
+        if (!token) return;
 
         const orderData = {
             orderOwner: data.orderOwner,

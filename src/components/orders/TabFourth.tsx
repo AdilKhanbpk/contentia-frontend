@@ -11,6 +11,7 @@ import {
     selectOrderIsLoading,
 } from "@/store/features/profile/orderSlice";
 import { useFileContext } from "@/context/FileContext";
+import { getAccessToken } from "@/utils/checkToken";
 
 const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
     setActiveTab,
@@ -18,15 +19,8 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
     const dispatch = useDispatch<AppDispatch>();
     const [minAge, setMinAge] = useState(18);
     const [maxAge, setMaxAge] = useState(65);
-    const [token, setToken] = useState<string | null>(null);
     const orderLoading = useSelector(selectOrderIsLoading);
     const { selectedFiles, setSelectedFiles } = useFileContext();
-    // console.log("🚀 ~ files:", selectedFiles);
-
-    useEffect(() => {
-        const storedToken = localStorage.getItem("accessToken");
-        setToken(storedToken);
-    }, []);
 
     const handleMaxAgeChange = (e: any) => {
         const value = Math.max(Number(e.target.value), minAge + 1);
@@ -41,11 +35,8 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
     const contentTypes = watch("preferences.contentType") || [];
 
     const onSubmit = async (data: any) => {
-        // console.log("🚀 ~ onSubmit ~ data:", data);
-        if (!token) {
-            toast.error("Please login first");
-            return;
-        }
+        const token = getAccessToken();
+        if (!token) return;
 
         try {
             const preferencesData = {

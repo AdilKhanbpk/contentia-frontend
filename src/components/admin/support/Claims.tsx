@@ -16,6 +16,7 @@ import {
     updateAdminClaim,
     fetchAdminClaimById,
 } from "@/store/features/admin/claimSlice";
+import { getAccessToken } from "@/utils/checkToken";
 
 export interface Claim {
     id?: string;
@@ -92,26 +93,22 @@ const Claims: React.FC = () => {
     const { data: claims } = useSelector((state: RootState) => state.claim);
 
     useEffect(() => {
-        const token = localStorage.getItem("accessToken");
-        if (token) {
-            dispatch(fetchAdminClaims(token))
-                .then(() => {
-                    toast.success("Claims fetched successfully!");
-                })
-                .catch((error) => {
-                    toast.error("Failed to fetch claims. Please try again.");
-                });
-        } else {
-            toast.error("No token available!");
-        }
+        const token = getAccessToken();
+        if (!token) return;
+
+        dispatch(fetchAdminClaims(token))
+            .then(() => {
+                toast.success("Claims fetched successfully!");
+            })
+            .catch((error) => {
+                toast.error("Failed to fetch claims. Please try again.");
+            });
     }, [dispatch]);
 
     const handleView = (id: string) => {
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            toast.error("No access token found!");
-            return;
-        }
+        const token = getAccessToken();
+        if (!token) return;
+
         dispatch(fetchAdminClaimById({ id, token }))
             .then((response) => {
                 if (response.payload) {
@@ -128,47 +125,45 @@ const Claims: React.FC = () => {
     };
 
     const handleApprove = (id: string) => {
-        const token = localStorage.getItem("accessToken");
-        if (token) {
-            dispatch(
-                updateAdminClaim({
-                    claimId: id,
-                    data: { status: "approved" },
-                    token,
-                })
-            )
-                .then((response: any) => {
-                    if (response.meta.requestStatus === "fulfilled") {
-                        dispatch(fetchAdminClaims(token));
-                        toast.success("Claim approved successfully!");
-                    }
-                })
-                .catch((error: any) => {
-                    toast.error("Failed to approve claim. Please try again.");
-                });
-        }
+        const token = getAccessToken();
+        if (!token) return;
+        dispatch(
+            updateAdminClaim({
+                claimId: id,
+                data: { status: "approved" },
+                token,
+            })
+        )
+            .then((response: any) => {
+                if (response.meta.requestStatus === "fulfilled") {
+                    dispatch(fetchAdminClaims(token));
+                    toast.success("Claim approved successfully!");
+                }
+            })
+            .catch((error: any) => {
+                toast.error("Failed to approve claim. Please try again.");
+            });
     };
 
     const handleReject = (id: string) => {
-        const token = localStorage.getItem("accessToken");
-        if (token) {
-            dispatch(
-                updateAdminClaim({
-                    claimId: id,
-                    data: { status: "rejected" },
-                    token,
-                })
-            )
-                .then((response: any) => {
-                    if (response.meta.requestStatus === "fulfilled") {
-                        dispatch(fetchAdminClaims(token));
-                        toast.success("Claim rejected successfully!");
-                    }
-                })
-                .catch(() => {
-                    toast.error("Failed to reject claim. Please try again.");
-                });
-        }
+        const token = getAccessToken();
+        if (!token) return;
+        dispatch(
+            updateAdminClaim({
+                claimId: id,
+                data: { status: "rejected" },
+                token,
+            })
+        )
+            .then((response: any) => {
+                if (response.meta.requestStatus === "fulfilled") {
+                    dispatch(fetchAdminClaims(token));
+                    toast.success("Claim rejected successfully!");
+                }
+            })
+            .catch(() => {
+                toast.error("Failed to reject claim. Please try again.");
+            });
     };
 
     const handleSearch = useCallback((value: string) => {

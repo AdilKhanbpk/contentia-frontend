@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { createBrand } from "@/store/features/profile/brandSlice";
 import { toast } from "react-toastify";
+import { getAccessToken } from "@/utils/checkToken";
 
 interface BrandFormInputs {
     brandName: string;
@@ -25,37 +26,35 @@ const ModelBrand: React.FC = () => {
     } = useForm<BrandFormInputs>();
 
     const onSubmit: SubmitHandler<BrandFormInputs> = (data) => {
-        const token = localStorage.getItem("accessToken");
-        if (token) {
-            setLoading(true);
-            const formData: any = new FormData();
-            formData.append("brandName", data.brandName);
-            formData.append("brandCategory", data.brandCategory);
-            formData.append("brandCountry", data.brandCountry);
-            if (data.brandWebsite)
-                formData.append("brandWebsite", data.brandWebsite);
-            if (data.brandImage && data.brandImage.length > 0) {
-                formData.append("brandImage", data.brandImage[0]);
-            }
+        const token = getAccessToken();
+        if (!token) return;
 
-            dispatch(createBrand({ data: formData, token }))
-                .unwrap()
-                .then(() => {
-                    reset();
-                    toast.success("Brand created successfully!");
-                    setLoading(false);
-                })
-                .catch((error) => {
-                    toast.error(
-                        `Failed to create brand: ${
-                            error.message || "Unknown error"
-                        }`
-                    );
-                    setLoading(false);
-                });
-        } else {
-            toast.error("No access token found! Please log in again.");
+        setLoading(true);
+        const formData: any = new FormData();
+        formData.append("brandName", data.brandName);
+        formData.append("brandCategory", data.brandCategory);
+        formData.append("brandCountry", data.brandCountry);
+        if (data.brandWebsite)
+            formData.append("brandWebsite", data.brandWebsite);
+        if (data.brandImage && data.brandImage.length > 0) {
+            formData.append("brandImage", data.brandImage[0]);
         }
+
+        dispatch(createBrand({ data: formData, token }))
+            .unwrap()
+            .then(() => {
+                reset();
+                toast.success("Brand created successfully!");
+                setLoading(false);
+            })
+            .catch((error) => {
+                toast.error(
+                    `Failed to create brand: ${
+                        error.message || "Unknown error"
+                    }`
+                );
+                setLoading(false);
+            });
     };
 
     return (

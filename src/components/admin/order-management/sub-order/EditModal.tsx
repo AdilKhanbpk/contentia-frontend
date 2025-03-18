@@ -11,6 +11,7 @@ import CustomModelAdmin from "@/components/modal/CustomModelAdmin";
 import { FaSpinner } from "react-icons/fa";
 import { updateOrder } from "@/store/features/admin/ordersSlice";
 import { toast } from "react-toastify";
+import { getAccessToken } from "@/utils/checkToken";
 
 interface EditModalProps {
     order: OrderInterface | null;
@@ -31,7 +32,6 @@ export default function EditModal({ order }: EditModalProps) {
     const [showTooltipOne, setShowTooltipOne] = useState(false);
     const [showTooltipTwo, setShowTooltipTwo] = useState(false);
     const [showTooltipThree, setShowTooltipThree] = useState(false);
-    const [token, setToken] = useState<string | null>(null);
     const [selectedBrand, setSelectedBrand] = useState("");
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const { selectedFiles, setSelectedFiles } = useFileContext();
@@ -105,11 +105,9 @@ export default function EditModal({ order }: EditModalProps) {
     }, [order, reset]);
 
     useEffect(() => {
-        const storedToken = localStorage.getItem("accessToken");
-        setToken(storedToken);
-        if (storedToken) {
-            dispatch(fetchMyBrands(storedToken));
-        }
+        const token = getAccessToken();
+        if (!token) return;
+        dispatch(fetchMyBrands(token));
     }, [dispatch]);
 
     const brands = brandRecords.map((record: any) => record.brandName);
@@ -145,11 +143,8 @@ export default function EditModal({ order }: EditModalProps) {
     };
 
     const submitForm = async (data: OrderInterface) => {
-        // console.log("Submitting data", data);
-        if (!token) {
-            toast.error("No token found. Please log in again.");
-            return;
-        }
+        const token = getAccessToken();
+        if (!token) return;
 
         data.assignedCreators = formatAssignedCreators(
             data.assignedCreators as unknown as string

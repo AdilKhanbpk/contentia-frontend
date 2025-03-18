@@ -18,6 +18,7 @@ import { exportCsvFile } from "@/utils/exportCsvFile";
 import EditCreatorForm from "./sub-creator/EditCreatorForm";
 import { toast } from "react-toastify";
 import { CreatorInterface } from "@/types/interfaces";
+import { getAccessToken } from "@/utils/checkToken";
 
 const SearchBar = memo(
     ({ onSearch }: { onSearch: (value: string) => void }) => (
@@ -87,16 +88,9 @@ const Creators: React.FC = () => {
 
     const handleDelete = useCallback(
         (id: string) => {
-            const tokenFromStorage = localStorage.getItem("accessToken");
-            if (!tokenFromStorage) {
-                toast.error(
-                    "Authorization token is missing. Please log in again."
-                );
-                return;
-            }
-            dispatch(
-                deleteAdminCreator({ creatorId: id, token: tokenFromStorage })
-            )
+            const token = getAccessToken();
+            if (!token) return;
+            dispatch(deleteAdminCreator({ creatorId: id, token }))
                 .unwrap()
                 .then(() => {
                     toast.success("Creator deleted successfully!");
@@ -109,7 +103,7 @@ const Creators: React.FC = () => {
                         }`
                     );
                 });
-            dispatch(fetchAdminCreators(tokenFromStorage));
+            dispatch(fetchAdminCreators(token));
         },
         [dispatch]
     );
@@ -125,203 +119,187 @@ const Creators: React.FC = () => {
 
     const handleCreate = async (creatorData: any) => {
         // console.log("🚀 ~ handleCreate ~ creatorData:", creatorData);
-        const tokenFromStorage = localStorage.getItem("accessToken");
-        try {
-            if (!tokenFromStorage) {
-                toast.error(
-                    "Authorization token is missing. Please log in again."
-                );
-                return;
-            }
+        const token = getAccessToken();
+        if (!token) return;
 
-            const dataToUpdate = {
-                fullName: creatorData.fullName ?? "",
-                password: creatorData.password ?? "",
-                tckn: creatorData.tckn,
-                email: creatorData.email ?? "",
-                dateOfBirth: creatorData.dateOfBirth ?? "",
-                gender: creatorData.gender ?? "other",
-                phoneNumber: creatorData.phoneNumber ?? "",
-                isVerified: creatorData.isVerified ?? "pending",
-                preferences: {
-                    contentInformation: {
-                        creatorType:
+        const dataToUpdate = {
+            fullName: creatorData.fullName ?? "",
+            password: creatorData.password ?? "",
+            tckn: creatorData.tckn,
+            email: creatorData.email ?? "",
+            dateOfBirth: creatorData.dateOfBirth ?? "",
+            gender: creatorData.gender ?? "other",
+            phoneNumber: creatorData.phoneNumber ?? "",
+            isVerified: creatorData.isVerified ?? "pending",
+            preferences: {
+                contentInformation: {
+                    creatorType:
+                        creatorData.preferences?.contentInformation
+                            ?.creatorType ?? "nano",
+                    addressDetails: {
+                        country:
                             creatorData.preferences?.contentInformation
-                                ?.creatorType ?? "nano",
-                        addressDetails: {
-                            country:
-                                creatorData.preferences?.contentInformation
-                                    ?.addressDetails?.country ?? "",
-                            state:
-                                creatorData.preferences?.contentInformation
-                                    ?.addressDetails?.state ?? "",
-                            district:
-                                creatorData.preferences?.contentInformation
-                                    ?.addressDetails?.district ?? "",
-                            neighborhood:
-                                creatorData.preferences?.contentInformation
-                                    ?.addressDetails?.neighborhood ?? "",
-                            fullAddress:
-                                creatorData.preferences?.contentInformation
-                                    ?.addressDetails?.fullAddress ?? "",
-                        },
+                                ?.addressDetails?.country ?? "",
+                        state:
+                            creatorData.preferences?.contentInformation
+                                ?.addressDetails?.state ?? "",
+                        district:
+                            creatorData.preferences?.contentInformation
+                                ?.addressDetails?.district ?? "",
+                        neighborhood:
+                            creatorData.preferences?.contentInformation
+                                ?.addressDetails?.neighborhood ?? "",
+                        fullAddress:
+                            creatorData.preferences?.contentInformation
+                                ?.addressDetails?.fullAddress ?? "",
                     },
                 },
-            };
+            },
+        };
 
-            const res = await dispatch(
-                createAdminCreator({
-                    data: dataToUpdate,
-                    token: tokenFromStorage,
-                })
-            ).unwrap();
+        const res = await dispatch(
+            createAdminCreator({
+                data: dataToUpdate,
+                token,
+            })
+        ).unwrap();
 
-            setIsModalOpen(false);
+        setIsModalOpen(false);
 
-            toast.success(res.message || "Creator added successfully!");
-            await dispatch(fetchAdminCreators(tokenFromStorage));
-        } catch (error) {
-            console.log("🚀 ~ handleCreate ~ error:", error);
-            toast.error(`Error creating creator: 'Unknown error'}`);
-        }
+        toast.success(res.message || "Creator added successfully!");
+        await dispatch(fetchAdminCreators(token));
     };
 
     const handleUpdate = async (creatorData: any) => {
-        const token = localStorage.getItem("accessToken");
-        // console.log(creatorData);
-        if (token) {
-            const creatorId = creatorData._id;
-            const dataToUpdate = {
-                fullName: creatorData.fullName ?? "",
-                password: creatorData.password ?? "",
-                tckn: creatorData.tckn,
-                email: creatorData.email ?? "",
-                dateOfBirth: creatorData.dateOfBirth ?? "",
-                gender: creatorData.gender ?? "other",
-                phoneNumber: creatorData.phoneNumber ?? "",
-                isVerified: creatorData.isVerified ?? "pending",
-                accountType: creatorData.accountType ?? "individual",
-                invoiceType: creatorData.invoiceType ?? "individual",
+        const token = getAccessToken();
+        if (!token) return;
 
-                paymentInformation: {
-                    ibanNumber:
-                        creatorData.paymentInformation?.ibanNumber ?? "",
-                    address: creatorData.paymentInformation?.address ?? "",
-                    fullName: creatorData.paymentInformation?.fullName ?? "",
-                    trId: creatorData.paymentInformation?.trId ?? "",
-                    companyName:
-                        creatorData.paymentInformation?.companyName ?? "",
-                    taxNumber: creatorData.paymentInformation?.taxNumber ?? "",
-                    taxOffice: creatorData.paymentInformation?.taxOffice ?? "",
-                },
+        const creatorId = creatorData._id;
+        const dataToUpdate = {
+            fullName: creatorData.fullName ?? "",
+            password: creatorData.password ?? "",
+            tckn: creatorData.tckn,
+            email: creatorData.email ?? "",
+            dateOfBirth: creatorData.dateOfBirth ?? "",
+            gender: creatorData.gender ?? "other",
+            phoneNumber: creatorData.phoneNumber ?? "",
+            isVerified: creatorData.isVerified ?? "pending",
+            accountType: creatorData.accountType ?? "individual",
+            invoiceType: creatorData.invoiceType ?? "individual",
 
-                billingInformation: {
-                    invoiceStatus:
-                        creatorData.billingInformation?.invoiceStatus ?? false,
-                    address: creatorData.billingInformation?.address ?? "",
-                    fullName: creatorData.billingInformation?.fullName ?? "",
-                    trId: creatorData.billingInformation?.trId ?? "",
-                    companyName:
-                        creatorData.billingInformation?.companyName ?? "",
-                    taxNumber: creatorData.billingInformation?.taxNumber ?? "",
-                    taxOffice: creatorData.billingInformation?.taxOffice ?? "",
-                },
+            paymentInformation: {
+                ibanNumber: creatorData.paymentInformation?.ibanNumber ?? "",
+                address: creatorData.paymentInformation?.address ?? "",
+                fullName: creatorData.paymentInformation?.fullName ?? "",
+                trId: creatorData.paymentInformation?.trId ?? "",
+                companyName: creatorData.paymentInformation?.companyName ?? "",
+                taxNumber: creatorData.paymentInformation?.taxNumber ?? "",
+                taxOffice: creatorData.paymentInformation?.taxOffice ?? "",
+            },
 
-                preferences: {
-                    contentInformation: {
-                        creatorType:
-                            creatorData.preferences?.contentInformation
-                                ?.creatorType ?? "nano",
+            billingInformation: {
+                invoiceStatus:
+                    creatorData.billingInformation?.invoiceStatus ?? false,
+                address: creatorData.billingInformation?.address ?? "",
+                fullName: creatorData.billingInformation?.fullName ?? "",
+                trId: creatorData.billingInformation?.trId ?? "",
+                companyName: creatorData.billingInformation?.companyName ?? "",
+                taxNumber: creatorData.billingInformation?.taxNumber ?? "",
+                taxOffice: creatorData.billingInformation?.taxOffice ?? "",
+            },
 
-                        contentType:
+            preferences: {
+                contentInformation: {
+                    creatorType:
+                        creatorData.preferences?.contentInformation
+                            ?.creatorType ?? "nano",
+
+                    contentType:
+                        creatorData.preferences?.contentInformation
+                            ?.contentType ?? "other",
+                    contentFormats:
+                        creatorData.preferences?.contentInformation
+                            ?.contentFormats ?? [],
+                    areaOfInterest:
+                        creatorData.preferences?.contentInformation
+                            ?.areaOfInterest ?? [],
+                    addressDetails: {
+                        country:
                             creatorData.preferences?.contentInformation
-                                ?.contentType ?? "other",
-                        contentFormats:
+                                ?.addressDetails?.country ?? "",
+                        state:
                             creatorData.preferences?.contentInformation
-                                ?.contentFormats ?? [],
-                        areaOfInterest:
+                                ?.addressDetails?.state ?? "",
+                        district:
                             creatorData.preferences?.contentInformation
-                                ?.areaOfInterest ?? [],
-                        addressDetails: {
-                            country:
-                                creatorData.preferences?.contentInformation
-                                    ?.addressDetails?.country ?? "",
-                            state:
-                                creatorData.preferences?.contentInformation
-                                    ?.addressDetails?.state ?? "",
-                            district:
-                                creatorData.preferences?.contentInformation
-                                    ?.addressDetails?.district ?? "",
-                            neighborhood:
-                                creatorData.preferences?.contentInformation
-                                    ?.addressDetails?.neighborhood ?? "",
-                            fullAddress:
-                                creatorData.preferences?.contentInformation
-                                    ?.addressDetails?.fullAddress ?? "",
-                        },
-                    },
-                    socialInformation: {
-                        contentType:
-                            creatorData.preferences?.socialInformation
-                                ?.contentType ?? "other",
-                        platforms: {
-                            Instagram: creatorData.preferences
-                                ?.socialInformation?.platforms?.Instagram ?? {
-                                followers: 0,
-                                username: "",
-                            },
-                            TikTok: creatorData.preferences?.socialInformation
-                                ?.platforms?.TikTok ?? {
-                                followers: 0,
-                                username: "",
-                            },
-                            Youtube: creatorData.preferences?.socialInformation
-                                ?.platforms?.Youtube ?? {
-                                followers: 0,
-                                username: "",
-                            },
-                            X: creatorData.preferences?.socialInformation
-                                ?.platforms?.X ?? {
-                                followers: 0,
-                                username: "",
-                            },
-                            Facebook: creatorData.preferences?.socialInformation
-                                ?.platforms?.Facebook ?? {
-                                followers: 0,
-                                username: "",
-                            },
-                            Linkedin: creatorData.preferences?.socialInformation
-                                ?.platforms?.Linkedin ?? {
-                                followers: 0,
-                                username: "",
-                            },
-                        },
-                        portfolioLink:
-                            creatorData.preferences?.socialInformation
-                                ?.portfolioLink ?? "",
+                                ?.addressDetails?.district ?? "",
+                        neighborhood:
+                            creatorData.preferences?.contentInformation
+                                ?.addressDetails?.neighborhood ?? "",
+                        fullAddress:
+                            creatorData.preferences?.contentInformation
+                                ?.addressDetails?.fullAddress ?? "",
                     },
                 },
+                socialInformation: {
+                    contentType:
+                        creatorData.preferences?.socialInformation
+                            ?.contentType ?? "other",
+                    platforms: {
+                        Instagram: creatorData.preferences?.socialInformation
+                            ?.platforms?.Instagram ?? {
+                            followers: 0,
+                            username: "",
+                        },
+                        TikTok: creatorData.preferences?.socialInformation
+                            ?.platforms?.TikTok ?? {
+                            followers: 0,
+                            username: "",
+                        },
+                        Youtube: creatorData.preferences?.socialInformation
+                            ?.platforms?.Youtube ?? {
+                            followers: 0,
+                            username: "",
+                        },
+                        X: creatorData.preferences?.socialInformation?.platforms
+                            ?.X ?? {
+                            followers: 0,
+                            username: "",
+                        },
+                        Facebook: creatorData.preferences?.socialInformation
+                            ?.platforms?.Facebook ?? {
+                            followers: 0,
+                            username: "",
+                        },
+                        Linkedin: creatorData.preferences?.socialInformation
+                            ?.platforms?.Linkedin ?? {
+                            followers: 0,
+                            username: "",
+                        },
+                    },
+                    portfolioLink:
+                        creatorData.preferences?.socialInformation
+                            ?.portfolioLink ?? "",
+                },
+            },
 
-                userAgreement: creatorData.userAgreement ?? false,
-                approvedCommercial: creatorData.approvedCommercial ?? false,
-            };
+            userAgreement: creatorData.userAgreement ?? false,
+            approvedCommercial: creatorData.approvedCommercial ?? false,
+        };
 
-            try {
-                const res = await dispatch(
-                    updateAdminCreator({
-                        creatorId,
-                        data: dataToUpdate,
-                        token,
-                    })
-                );
-                await dispatch(fetchAdminCreators(token));
-                toast.success("Creator updated successfully!");
-            } catch (error) {
-                console.log("🚀 ~ handleUpdate ~ error:", error);
-                toast.error("Failed to update creator. Please try again.");
-            }
-        } else {
-            toast.error("Authorization token is missing! Please log in again.");
+        try {
+            const res = await dispatch(
+                updateAdminCreator({
+                    creatorId,
+                    data: dataToUpdate,
+                    token,
+                })
+            );
+            await dispatch(fetchAdminCreators(token));
+            toast.success("Creator updated successfully!");
+        } catch (error) {
+            console.log("🚀 ~ handleUpdate ~ error:", error);
+            toast.error("Failed to update creator. Please try again.");
         }
     };
 
@@ -366,10 +344,10 @@ const Creators: React.FC = () => {
     // console.log("CURRENT CREATOR : ", currentCreator);
 
     useEffect(() => {
-        const tokenFromStorage = localStorage.getItem("accessToken");
-        if (tokenFromStorage) {
-            dispatch(fetchAdminCreators(tokenFromStorage));
-        }
+        const token = getAccessToken();
+        if (!token) return;
+
+        dispatch(fetchAdminCreators(token));
     }, [dispatch]);
 
     const columns = React.useMemo(

@@ -19,6 +19,7 @@ import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import { toast } from "react-toastify";
 import { Customer } from "@/types/interfaces";
+import { getAccessToken } from "@/utils/checkToken";
 
 const SearchBar = memo(
     ({ onSearch }: { onSearch: (value: string) => void }) => (
@@ -84,17 +85,10 @@ const Customers: React.FC = () => {
 
     const handleDelete = useCallback(
         (id: string) => {
-            const tokenFromStorage = localStorage.getItem("accessToken");
-            if (!tokenFromStorage) {
-                toast.error(
-                    "Authorization token is missing. Please log in again."
-                );
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
 
-            dispatch(
-                deleteAdminCustomer({ customerId: id, token: tokenFromStorage })
-            )
+            dispatch(deleteAdminCustomer({ customerId: id, token }))
                 .unwrap()
                 .then(() => {
                     toast.success("Customer deleted successfully!");
@@ -120,12 +114,8 @@ const Customers: React.FC = () => {
         const tokenFromStorage = localStorage.getItem("accessToken");
 
         try {
-            if (!tokenFromStorage) {
-                toast.error(
-                    "Authorization token is missing. Please log in again."
-                );
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
 
             if (!customerData || Object.keys(customerData).length === 0) {
                 toast.error("Customer data is missing or empty.");
@@ -142,12 +132,12 @@ const Customers: React.FC = () => {
             const result = await dispatch(
                 createAdminCustomer({
                     data: customerData,
-                    token: tokenFromStorage,
+                    token,
                 })
             ).unwrap();
 
             setIsModalOpen(false);
-            await dispatch(fetchAdminCustomers(tokenFromStorage));
+            await dispatch(fetchAdminCustomers(token));
             toast.success("Customer created successfully!");
         } catch (error) {
             toast.error("Failed to create customer. Please try again.");
@@ -155,50 +145,46 @@ const Customers: React.FC = () => {
     };
 
     const handleUpdate = async (customerData: Customer) => {
-        console.log("🚀 ~ handleUpdate ~ customerData:", customerData);
-        const token = localStorage.getItem("accessToken");
-        if (token) {
-            const customerId = customerData._id;
-            const dataToUpdate = {
-                fullName: customerData.fullName ?? "",
-                email: customerData.email ?? "",
-                age: customerData.age ?? null,
-                phoneNumber: customerData.phoneNumber ?? "",
-                customerStatus: customerData.customerStatus ?? "",
-                invoiceType: customerData.invoiceType ?? "",
-                billingInformation: {
-                    invoiceStatus:
-                        customerData.billingInformation?.invoiceStatus ?? false,
-                    trId: customerData.billingInformation?.trId ?? "",
-                    address: customerData.billingInformation?.address ?? "",
-                    fullName: customerData.billingInformation?.fullName ?? "",
-                    companyName:
-                        customerData.billingInformation?.companyName ?? "",
-                    taxNumber: customerData.billingInformation?.taxNumber ?? "",
-                    taxOffice: customerData.billingInformation?.taxOffice ?? "",
-                },
-                rememberMe: customerData.rememberMe ?? false,
-                termsAndConditionsApproved:
-                    customerData.termsAndConditionsApproved ?? false,
-            };
+        const token = getAccessToken();
+        if (!token) return;
 
-            try {
-                console.log(customerId, dataToUpdate);
-                customerId &&
-                    (await dispatch(
-                        updateAdminCustomer({
-                            customerId,
-                            data: dataToUpdate,
-                            token,
-                        })
-                    ));
-                await dispatch(fetchAdminCustomers(token));
-                toast.success("Customer updated successfully!");
-            } catch (error) {
-                toast.error("Failed to update customer. Please try again.");
-            }
-        } else {
-            toast.error("Authorization token is missing. Please log in again.");
+        const customerId = customerData._id;
+        const dataToUpdate = {
+            fullName: customerData.fullName ?? "",
+            email: customerData.email ?? "",
+            age: customerData.age ?? null,
+            phoneNumber: customerData.phoneNumber ?? "",
+            customerStatus: customerData.customerStatus ?? "",
+            invoiceType: customerData.invoiceType ?? "",
+            billingInformation: {
+                invoiceStatus:
+                    customerData.billingInformation?.invoiceStatus ?? false,
+                trId: customerData.billingInformation?.trId ?? "",
+                address: customerData.billingInformation?.address ?? "",
+                fullName: customerData.billingInformation?.fullName ?? "",
+                companyName: customerData.billingInformation?.companyName ?? "",
+                taxNumber: customerData.billingInformation?.taxNumber ?? "",
+                taxOffice: customerData.billingInformation?.taxOffice ?? "",
+            },
+            rememberMe: customerData.rememberMe ?? false,
+            termsAndConditionsApproved:
+                customerData.termsAndConditionsApproved ?? false,
+        };
+
+        try {
+            console.log(customerId, dataToUpdate);
+            customerId &&
+                (await dispatch(
+                    updateAdminCustomer({
+                        customerId,
+                        data: dataToUpdate,
+                        token,
+                    })
+                ));
+            await dispatch(fetchAdminCustomers(token));
+            toast.success("Customer updated successfully!");
+        } catch (error) {
+            toast.error("Failed to update customer. Please try again.");
         }
     };
 
@@ -230,10 +216,9 @@ const Customers: React.FC = () => {
     }, [customers]);
 
     useEffect(() => {
-        const tokenFromStorage = localStorage.getItem("accessToken");
-        if (tokenFromStorage) {
-            dispatch(fetchAdminCustomers(tokenFromStorage));
-        }
+        const token = getAccessToken();
+        if (!token) return;
+        dispatch(fetchAdminCustomers(token));
     }, [dispatch]);
 
     const columns = React.useMemo(

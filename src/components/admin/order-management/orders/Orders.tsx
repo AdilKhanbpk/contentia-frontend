@@ -34,6 +34,7 @@ import { toast } from "react-toastify";
 import { OrderInterface } from "@/types/interfaces";
 import { fetchMyBrands } from "@/store/features/profile/brandSlice";
 import ViewModal from "../sub-order/ViewModal";
+import { getAccessToken } from "@/utils/checkToken";
 
 interface SearchBarProps {
     onSearch: (value: string) => void;
@@ -134,11 +135,8 @@ const Orders: React.FC = () => {
 
     useEffect(() => {
         const fetchOrdersData = async () => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
             try {
                 const res = await dispatch(fetchOrders(token)).unwrap();
                 toast.success(res.message);
@@ -147,11 +145,8 @@ const Orders: React.FC = () => {
             }
         };
         const fetchBrands = async () => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
             try {
                 const res = await dispatch(fetchMyBrands(token)).unwrap();
                 toast.success(res.message);
@@ -165,11 +160,8 @@ const Orders: React.FC = () => {
 
     const handleDelete = useCallback(
         async (id: string) => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
 
             try {
                 await dispatch(deleteOrder({ orderId: id, token })).unwrap();
@@ -183,11 +175,8 @@ const Orders: React.FC = () => {
 
     const handleMarkTheOrderAsCompleted = useCallback(
         async (id: string) => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
 
             try {
                 await dispatch(
@@ -203,11 +192,8 @@ const Orders: React.FC = () => {
 
     const handleMarkTheOrderAsRejected = useCallback(
         async (id: string) => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
 
             try {
                 await dispatch(
@@ -223,11 +209,8 @@ const Orders: React.FC = () => {
 
     const handleView = useCallback(
         async (id: string) => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
 
             try {
                 await dispatch(fetchOrderById({ orderId: id, token })).unwrap();
@@ -242,11 +225,8 @@ const Orders: React.FC = () => {
 
     const handleEdit = useCallback(
         async (id: string) => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
 
             try {
                 await dispatch(fetchOrderById({ orderId: id, token })).unwrap();
@@ -261,11 +241,8 @@ const Orders: React.FC = () => {
 
     const handleRequest = useCallback(
         async (id: string) => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
 
             try {
                 await dispatch(fetchOrderById({ orderId: id, token })).unwrap();
@@ -282,11 +259,8 @@ const Orders: React.FC = () => {
 
     const handleApproveCreator = useCallback(
         async (orderId: string, creatorId: string) => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
 
             try {
                 await dispatch(
@@ -302,11 +276,8 @@ const Orders: React.FC = () => {
 
     const handleRejectCreator = useCallback(
         async (orderId: string, creatorId: string) => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
 
             try {
                 await dispatch(

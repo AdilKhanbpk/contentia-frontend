@@ -18,6 +18,7 @@ import {
     selectNotificationLoading,
     selectNotifications,
 } from "@/store/features/admin/notificationSlice";
+import { getAccessToken } from "@/utils/checkToken";
 
 const menuItems = [
     {
@@ -143,18 +144,13 @@ export default function AdminNavbar() {
     const [isEmailOpen, setIsEmailOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-    const [token, setToken] = useState<string | null>(null);
 
     useEffect(() => {
-        setToken(localStorage.getItem("accessToken")); // Avoid hydration issues
-    }, []);
-
-    useEffect(() => {
-        if (token) {
-            dispatch(fetchProfile(token));
-            dispatch(fetchNotifications(token));
-        }
-    }, [dispatch, token]);
+        const token = getAccessToken();
+        if (!token) return;
+        dispatch(fetchProfile(token));
+        dispatch(fetchNotifications(token));
+    }, [dispatch]);
 
     useEffect(() => {
         const handleClickOutside = (event: any) => {

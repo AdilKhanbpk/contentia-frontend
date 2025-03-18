@@ -8,6 +8,7 @@ import {
 import { AppDispatch } from "@/store/store";
 import { toast } from "react-toastify";
 import { CreatorInterface } from "@/types/interfaces";
+import { getAccessToken } from "@/utils/checkToken";
 
 interface FirstTabProps {
     editCreatorForm: CreatorInterface | null;
@@ -65,12 +66,8 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
             return;
         }
 
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            console.error("No access token found");
-            toast.error("No access token found!");
-            return;
-        }
+        const token = getAccessToken();
+        if (!token) return;
 
         const updateData = {
             fullName: formData.fullName,

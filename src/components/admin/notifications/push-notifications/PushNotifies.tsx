@@ -14,6 +14,7 @@ import {
     selectNotifications,
 } from "@/store/features/admin/notificationSlice";
 import { toast } from "react-toastify";
+import { getAccessToken } from "@/utils/checkToken";
 
 const DataTable = dynamic(() => import("react-data-table-component"), {
     ssr: false,
@@ -26,8 +27,6 @@ interface TableActionsProps {
 
 const PushNotifications: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const [token, setToken] = useState<string | null>(null);
-
     const notifications = useSelector(selectNotifications);
     const currentNotification = useSelector(selectCurrentNotification);
     const loading = useSelector(selectNotificationLoading);
@@ -37,11 +36,8 @@ const PushNotifications: React.FC = () => {
 
     const handleView = useCallback(
         async (id: string) => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
 
             try {
                 await dispatch(
@@ -121,14 +117,10 @@ const PushNotifications: React.FC = () => {
     );
 
     useEffect(() => {
-        setToken(localStorage.getItem("accessToken"));
-    }, []);
-
-    useEffect(() => {
-        if (token) {
-            dispatch(fetchNotifications(token));
-        }
-    }, [dispatch, token]);
+        const token = getAccessToken();
+        if (!token) return;
+        dispatch(fetchNotifications(token));
+    }, [dispatch]);
 
     return (
         <div className='bg-white rounded-lg'>

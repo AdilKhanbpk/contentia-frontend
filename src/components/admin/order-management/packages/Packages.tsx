@@ -21,6 +21,7 @@ import { RootState } from "@/store/store";
 import { toast } from "react-toastify";
 import { PackageInterface } from "@/types/interfaces";
 import { fetchMyBrands } from "@/store/features/profile/brandSlice";
+import { getAccessToken } from "@/utils/checkToken";
 
 interface SearchBarProps {
     onSearch: (value: string) => void;
@@ -87,11 +88,8 @@ const Packages: React.FC = () => {
 
     useEffect(() => {
         const fetchPackagesData = async () => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
             try {
                 const res = await dispatch(fetchPackages(token)).unwrap();
                 toast.success(res.message);
@@ -100,11 +98,8 @@ const Packages: React.FC = () => {
             }
         };
         const fetchBrands = async () => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
             try {
                 const res = await dispatch(fetchMyBrands(token)).unwrap();
                 toast.success(res.message);
@@ -118,11 +113,8 @@ const Packages: React.FC = () => {
 
     const handleDelete = useCallback(
         async (id: string) => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
 
             try {
                 await dispatch(
@@ -138,11 +130,8 @@ const Packages: React.FC = () => {
 
     const handleView = useCallback(
         async (id: string) => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
 
             try {
                 await dispatch(
@@ -159,11 +148,8 @@ const Packages: React.FC = () => {
 
     const handleEdit = useCallback(
         async (id: string) => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
 
             try {
                 await dispatch(

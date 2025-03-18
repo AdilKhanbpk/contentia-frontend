@@ -23,10 +23,10 @@ import {
     selectTotalOrders,
 } from "@/store/features/admin/dashboardSlice";
 import { AppDispatch } from "@/store/store";
+import { getAccessToken } from "@/utils/checkToken";
 
 const Analytics: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const token = localStorage.getItem("accessToken");
 
     const [slot, setSlot] = useState<"month" | "week">("month");
     const creators = useSelector(selectTotalCreators);
@@ -37,11 +37,11 @@ const Analytics: React.FC = () => {
     console.log("🚀 ~ orders:", orders);
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchTotalCreators(token));
-            dispatch(fetchTotalCustomers(token));
-            dispatch(fetchTotalOrders(token));
-        }
+        const token = getAccessToken();
+        if (!token) return;
+        dispatch(fetchTotalCreators(token));
+        dispatch(fetchTotalCustomers(token));
+        dispatch(fetchTotalOrders(token));
     }, []);
 
     return (

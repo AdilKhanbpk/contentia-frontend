@@ -15,6 +15,7 @@ import xIcon from "../../../../../../public/BecomeCreator/x_icon.png";
 import tiktokIcon from "../../../../../../public/BecomeCreator/tiktik_icon.png";
 import { toast } from "react-toastify";
 import { CreatorInterface } from "@/types/interfaces";
+import { getAccessToken } from "@/utils/checkToken";
 
 interface ThirdTabProps {
     editCreatorForm: CreatorInterface | null;
@@ -120,11 +121,8 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
             return;
         }
 
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            toast.error("No access token found. Please log in again.");
-            return;
-        }
+        const token = getAccessToken();
+        if (!token) return;
 
         try {
             const transformedData = {

@@ -8,6 +8,7 @@ import {
     updateAdditionalService,
 } from "@/store/features/admin/addPriceSlice";
 import { toast } from "react-toastify";
+import { getAccessToken } from "@/utils/checkToken";
 
 type FormData = {
     platform: string;
@@ -54,7 +55,6 @@ const AddService: React.FC = () => {
     const { data: additionalService, error } = useSelector(
         (state: RootState) => state.addPrice
     );
-    const [token, setToken] = useState<string>("");
     const [selectedPlatform, setSelectedPlatform] = useState<string | null>(
         null
     );
@@ -64,17 +64,16 @@ const AddService: React.FC = () => {
     const { register, handleSubmit, setValue, reset } = useForm<FormData>();
 
     useEffect(() => {
-        const storedToken = localStorage.getItem("accessToken") || "";
-        setToken(storedToken);
-        if (storedToken) {
-            dispatch(fetchAdditionalServices(storedToken) as any)
-                .then(() => {
-                    toast.success("Services fetched successfully!");
-                })
-                .catch((err: Error) => {
-                    toast.error(err.message || "Failed to fetch services");
-                });
-        }
+        const token = getAccessToken();
+        if (!token) return;
+
+        dispatch(fetchAdditionalServices(token) as any)
+            .then(() => {
+                toast.success("Services fetched successfully!");
+            })
+            .catch((err: Error) => {
+                toast.error(err.message || "Failed to fetch services");
+            });
     }, [dispatch]);
 
     useEffect(() => {
@@ -110,6 +109,8 @@ const AddService: React.FC = () => {
     };
 
     const handleSaveService: SubmitHandler<FormData> = (data) => {
+        const token = getAccessToken();
+        if (!token) return;
         if (additionalService) {
             const updatedService = {
                 platform: data.platform,

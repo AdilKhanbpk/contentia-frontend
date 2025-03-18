@@ -10,6 +10,7 @@ import {
 import { AppDispatch, RootState } from "@/store/store";
 import { PricePlan } from "@/store/features/admin/pricingSlice";
 import { toast } from "react-toastify";
+import { getAccessToken } from "@/utils/checkToken";
 
 const VideoIcon = () => <span className='text-3xl'>📹</span>;
 
@@ -38,12 +39,6 @@ const PricingPlans = () => {
         reset,
         formState: { errors, isSubmitting },
     } = useForm<Plan>();
-    const [token, setToken] = useState<string>("");
-
-    useEffect(() => {
-        const storedToken = localStorage.getItem("accessToken");
-        if (storedToken) setToken(storedToken);
-    }, []);
 
     useEffect(() => {
         dispatch(fetchPricePlans())
@@ -76,10 +71,8 @@ const PricingPlans = () => {
     };
 
     const handleSave = async (data: Plan) => {
-        if (!token) {
-            toast.error("Token not found!");
-            return;
-        }
+        const token = getAccessToken();
+        if (!token) return;
 
         const serverPlan = serverPlans?.find(
             (plan: PricePlan) => plan._id === editingPlan

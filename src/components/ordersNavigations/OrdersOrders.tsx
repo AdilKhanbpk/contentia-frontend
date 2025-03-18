@@ -7,30 +7,20 @@ import ModelRevision from "./sub-profile/ModelRevision";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { fetchOrders, Order } from "@/store/features/profile/orderSlice";
+import { getAccessToken } from "@/utils/checkToken";
 
 export default function OrdersOrders() {
     const dispatch = useDispatch<AppDispatch>();
     const orders = useSelector((state: RootState) => state.order.orders);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isRevModalOpen, setIsRevModalOpen] = useState(false);
-    const [token, setToken] = useState<string | null>(null);
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
     useEffect(() => {
-        console.log("Initializing OrdersOrders component");
-        const storedToken = localStorage.getItem("accessToken");
-        console.log("Retrieved token:", storedToken ? "exists" : "not found");
-        setToken(storedToken);
-
-        if (storedToken) {
-            console.log("Dispatching fetchOrders with token:", storedToken);
-            dispatch(fetchOrders(storedToken));
-        }
-    }, [fetchOrders, dispatch]);
-
-    useEffect(() => {
-        console.log("Orders updated:", orders);
-    }, [orders]);
+        const token = getAccessToken();
+        if (!token) return;
+        dispatch(fetchOrders(token));
+    }, [dispatch]);
 
     const openModal = (order: Order) => {
         setSelectedOrder(order);

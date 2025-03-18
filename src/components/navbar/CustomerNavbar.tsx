@@ -12,6 +12,7 @@ import {
 } from "@/store/features/profile/profileSlice";
 import { AppDispatch } from "@/store/store";
 import { Dropdown } from "./AdminNavbar";
+import { getAccessToken } from "@/utils/checkToken";
 
 export default function Navbar() {
     const dispatch = useDispatch<AppDispatch>();
@@ -22,17 +23,16 @@ export default function Navbar() {
     const user = useSelector(selectProfileUser);
     // console.log("🚀 ~ Navbar ~ user:", user);
 
-    const token = localStorage.getItem("accessToken");
-
     const toggleSidebar = () => {
         setSidebarOpen(!isSidebarOpen);
     };
     const handleLogout = () => console.log("User logged out");
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchProfile(token));
-        }
+        const token = getAccessToken();
+        if (!token) return;
+
+        dispatch(fetchProfile(token));
     }, [dispatch]);
     return (
         <>

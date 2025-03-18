@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { useRouter, usePathname } from "next/navigation";
+import { getAccessToken } from "@/utils/checkToken";
 
 export default function Navbar() {
     const dispatch: AppDispatch = useDispatch();
@@ -23,9 +24,10 @@ export default function Navbar() {
     const asPath = usePathname();
 
     useEffect(() => {
-        const token = localStorage.getItem("accessToken");
+        const token = getAccessToken();
+        if (!token) return;
         setIsLoggedIn(!!token);
-    }, [asPath]); // Triggers on both route and query param changes
+    }, [asPath]);
 
     const handleLogout = () => {
         dispatch(logoutUser())

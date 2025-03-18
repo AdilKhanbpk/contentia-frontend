@@ -7,9 +7,6 @@ import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import CustomModelAdmin from "../../../modal/CustomModelAdmin";
-import NewModal from "../sub-order/NewModal";
-import EditModal from "../sub-order/EditModal";
-import RequestModal from "../sub-order/RequestModal";
 import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import { RootState } from "@/store/store";
@@ -18,14 +15,12 @@ import {
     fetchBrands,
     fetchSingleBrand,
     deleteBrand,
-    updateBrand,
-    changeBrandPic,
     Brand,
     clearCurrentBrand,
 } from "@/store/features/profile/brandSlice";
-import ViewModal from "../sub-order/ViewModal";
 import ViewBrand from "../sub-order/ViewBrand";
 import EditBrand from "../sub-order/EditBrand";
+import { getAccessToken } from "@/utils/checkToken";
 
 interface SearchBarProps {
     onSearch: (value: string) => void;
@@ -90,11 +85,8 @@ const Brands: React.FC = () => {
 
     useEffect(() => {
         const fetchBrandsData = async () => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
             try {
                 const res = await dispatch(fetchBrands(token)).unwrap();
                 toast.success(res.message);
@@ -107,11 +99,8 @@ const Brands: React.FC = () => {
 
     const handleDelete = useCallback(
         async (id: string) => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
 
             try {
                 await dispatch(deleteBrand({ brandId: id, token })).unwrap();
@@ -125,11 +114,8 @@ const Brands: React.FC = () => {
 
     const handleView = useCallback(
         async (id: string) => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
 
             try {
                 await dispatch(
@@ -146,11 +132,8 @@ const Brands: React.FC = () => {
 
     const handleEdit = useCallback(
         async (id: string) => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
+            const token = getAccessToken();
+            if (!token) return;
 
             try {
                 await dispatch(

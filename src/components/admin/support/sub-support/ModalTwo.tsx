@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { Claim, updateAdminClaim } from "@/store/features/admin/claimSlice";
 import { toast } from "react-toastify";
+import { getAccessToken } from "@/utils/checkToken";
 
 interface ModalTwoProps {
     claim: Claim | null;
@@ -23,8 +24,9 @@ export default function ModalTwo({ claim }: ModalTwoProps) {
     });
 
     const onSubmit: SubmitHandler<Pick<Claim, "claimContent">> = (data) => {
-        const token = localStorage.getItem("accessToken");
-        if (claim?.id && token) {
+        const token = getAccessToken();
+        if (!token) return;
+        if (claim?.id) {
             setLoading(true); // Set loading to true before the dispatch
             dispatch(
                 updateAdminClaim({
@@ -47,7 +49,7 @@ export default function ModalTwo({ claim }: ModalTwoProps) {
                     setLoading(false); // Reset loading state after failure
                 });
         } else {
-            toast.error("Missing claim ID or access token!");
+            toast.error("Missing claim ID");
         }
     };
 

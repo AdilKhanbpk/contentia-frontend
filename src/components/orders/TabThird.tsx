@@ -9,6 +9,7 @@ import { setOrderFormData } from "@/store/features/profile/orderSlice";
 import CustomModelAdmin from "../modal/CustomModelAdmin";
 import ModelBrand from "./sub-orders/ModelBrand";
 import { useFileContext } from "@/context/FileContext";
+import { getAccessToken } from "@/utils/checkToken";
 
 const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
     setActiveTab,
@@ -17,17 +18,15 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
     const brandRecords = useSelector(
         (state: RootState) => state.brand.myBrands
     );
-    const [token, setToken] = useState<string | null>(null);
     const [selectedBrand, setSelectedBrand] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { selectedFiles, setSelectedFiles } = useFileContext();
 
     useEffect(() => {
-        const storedToken = localStorage.getItem("accessToken");
-        setToken(storedToken);
-        if (storedToken) {
-            dispatch(fetchMyBrands(storedToken));
-        }
+        const token = getAccessToken();
+        if (!token) return;
+
+        dispatch(fetchMyBrands(token));
     }, [dispatch]);
 
     const brands = brandRecords.map((record) => record.brandName);
@@ -47,11 +46,6 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
     };
 
     const onSubmit = async (data: any) => {
-        if (!token) {
-            toast.error("Please login first");
-            return;
-        }
-
         // Prepare brief content data
         const briefContentData = {
             brandName: selectedBrand,

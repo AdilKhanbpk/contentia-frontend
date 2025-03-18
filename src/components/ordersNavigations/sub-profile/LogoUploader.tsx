@@ -4,15 +4,21 @@ import { useDispatch } from "react-redux";
 import { changeBrandPic } from "@/store/features/profile/brandSlice";
 import { toast } from "react-toastify";
 import { AppDispatch } from "@/store/store";
+import { getAccessToken } from "@/utils/checkToken";
 
 interface LogoUploaderProps {
     brandId: string;
     currentImage?: string | null;
 }
 
-export default function LogoUploader({ brandId, currentImage }: LogoUploaderProps) {
+export default function LogoUploader({
+    brandId,
+    currentImage,
+}: LogoUploaderProps) {
     const dispatch = useDispatch<AppDispatch>();
-    const [previewImage, setPreviewImage] = useState<string | null>(currentImage || null);
+    const [previewImage, setPreviewImage] = useState<string | null>(
+        currentImage || null
+    );
     const [imageFile, setImageFile] = useState<File | null>(null);
 
     useEffect(() => {
@@ -21,7 +27,9 @@ export default function LogoUploader({ brandId, currentImage }: LogoUploaderProp
         }
     }, [currentImage]);
 
-    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = async (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
         const file = e.target.files?.[0];
         if (!file) {
             toast.error("No image selected. Please choose an image to upload.");
@@ -33,11 +41,8 @@ export default function LogoUploader({ brandId, currentImage }: LogoUploaderProp
             setPreviewImage(reader.result as string);
         };
         reader.readAsDataURL(file);
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            toast.error("No token found. Please log in to upload the image.");
-            return;
-        }
+        const token = getAccessToken();
+        if (!token) return;
         try {
             const formData = new FormData();
             formData.append("brandImage", file);
@@ -60,25 +65,25 @@ export default function LogoUploader({ brandId, currentImage }: LogoUploaderProp
     };
 
     return (
-        <div className="w-full">
+        <div className='w-full'>
             <div
-                className="relative rounded-md p-4 text-center"
-                style={{ width: "150px"}}
+                className='relative rounded-md p-4 text-center'
+                style={{ width: "150px" }}
             >
                 <input
-                    type="file"
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    accept="image/*"
+                    type='file'
+                    className='absolute inset-0 w-full h-full opacity-0 cursor-pointer'
+                    accept='image/*'
                     onChange={handleImageChange}
                 />
                 {previewImage ? (
                     <img
                         src={previewImage}
-                        alt="Preview"
-                        className="w-full h-full object-cover rounded-md"
+                        alt='Preview'
+                        className='w-full h-full object-cover rounded-md'
                     />
                 ) : (
-                    <div className="w-28 h-28 ButtonBlue text-white rounded-full flex items-center justify-center">
+                    <div className='w-28 h-28 ButtonBlue text-white rounded-full flex items-center justify-center'>
                         Logo
                     </div>
                 )}
