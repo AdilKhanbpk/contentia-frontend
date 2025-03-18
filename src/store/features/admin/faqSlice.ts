@@ -122,67 +122,55 @@ const faqSlice = createSlice({
     builder
       // Create FAQ
       .addCase(createFaq.pending, (state) => {
-        console.log("Create FAQ pending...");
         state.loading = true;
         state.error = null;
       })
       .addCase(createFaq.fulfilled, (state, action: PayloadAction<Faq>) => {
-        console.log("Create FAQ fulfilled with data:", action.payload);
         state.loading = false;
         state.faqs.push(action.payload);
       })
       .addCase(createFaq.rejected, (state, action) => {
-        console.error("Create FAQ rejected with error:", action.payload);
         state.loading = false;
         state.error = action.payload as string;
       })
       // Fetch FAQs
       .addCase(fetchFaqs.pending, (state) => {
-        console.log("Fetch FAQs pending...");
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchFaqs.fulfilled, (state, action: PayloadAction<Faq[]>) => {
-        console.log("Fetch FAQs fulfilled with data:", action.payload);
         state.loading = false;
         state.faqs = action.payload;
       })
       .addCase(fetchFaqs.rejected, (state, action) => {
-        console.error("Fetch FAQs rejected with error:", action.payload);
         state.loading = false;
         state.error = action.payload as string;
       })
       // Update FAQ
       .addCase(updateFaq.pending, (state) => {
-        console.log("Update FAQ pending...");
         state.loading = true;
         state.error = null;
       })
       .addCase(updateFaq.fulfilled, (state, action: PayloadAction<Faq>) => {
-        console.log("Update FAQ fulfilled with data:", action.payload);
         state.loading = false;
         state.faqs = state.faqs.map((faq) =>
           faq._id === action.payload._id ? action.payload : faq
         );
       })
       .addCase(updateFaq.rejected, (state, action) => {
-        console.error("Update FAQ rejected with error:", action.payload);
         state.loading = false;
         state.error = action.payload as string;
       })
       // Delete FAQ
       .addCase(deleteFaq.pending, (state) => {
-        console.log("Delete FAQ pending...");
         state.loading = true;
         state.error = null;
       })
       .addCase(deleteFaq.fulfilled, (state, action: PayloadAction<string>) => {
-        console.log("Delete FAQ fulfilled with ID:", action.payload);
         state.loading = false;
         state.faqs = state.faqs.filter((faq) => faq._id !== action.payload);
       })
       .addCase(deleteFaq.rejected, (state, action) => {
-        console.error("Delete FAQ rejected with error:", action.payload);
         state.loading = false;
         state.error = action.payload as string;
       });

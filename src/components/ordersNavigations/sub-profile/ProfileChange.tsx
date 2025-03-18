@@ -48,7 +48,6 @@ export default function ProfileChanger({ currentImage }: ProfileChangerProps) {
                     token,
                 })
             ).unwrap();
-            console.log("result", result);
             toast.success("Profile picture updated successfully!");
         } catch (error) {
             const errorMessage =

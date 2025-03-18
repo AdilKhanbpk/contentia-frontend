@@ -25,7 +25,6 @@ const initialState: OrdersState = {
 export const createOrder = createAsyncThunk(
   'orders/createOrder',
   async ({ data, token }: { data: Partial<OrderInterface>; token: string }, { rejectWithValue }) => {
-    console.log("🚀 ~ data:", data)
     try {
       if (!token) {
         return rejectWithValue('Authentication token is missing');
@@ -83,7 +82,6 @@ export const fetchOrders = createAsyncThunk(
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("🚀 ~ response.data.data:", response.data.data)
       return response.data.data;
 
     } catch (error) {
@@ -127,9 +125,6 @@ export const updateOrder = createAsyncThunk(
   'orders/updateOrder',
   async ({ orderId, data, token }: { orderId: string; data: FormData; token: string }, { rejectWithValue }) => {
 
-    // data.forEach((value, key) => {
-    //   console.log(`${key}:`, value);
-    // });
 
     try {
       const response = await axiosInstance.patchForm(`/admin/orders/${orderId}`, data, {

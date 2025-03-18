@@ -79,10 +79,6 @@ const HelpCenters: React.FC = () => {
                         <button
                             className='text-blue-500 hover:text-blue-700'
                             onClick={() => {
-                                console.log(
-                                    "Setting current help support:",
-                                    row
-                                );
                                 dispatch(setCurrentHelpSupport(row));
                                 setIsModalOpen(true);
                             }}
@@ -110,10 +106,6 @@ const HelpCenters: React.FC = () => {
                         type='text'
                         value={searchTerm}
                         onChange={(e) => {
-                            console.log(
-                                "Updating search term:",
-                                e.target.value
-                            );
                             setSearchTerm(e.target.value);
                         }}
                         placeholder='Search...'
@@ -122,9 +114,6 @@ const HelpCenters: React.FC = () => {
                     <div className='flex flex-col md:flex-row lg:space-x-2'>
                         <button
                             onClick={() => {
-                                console.log(
-                                    "Opening modal to add a new help support..."
-                                );
                                 dispatch(setCurrentHelpSupport(null));
                                 setIsModalOpen(true);
                             }}
@@ -152,14 +141,12 @@ const HelpCenters: React.FC = () => {
             <CustomModelAdmin
                 isOpen={isModalOpen}
                 closeModal={() => {
-                    console.log("Closing modal...");
                     setIsModalOpen(false);
                 }}
                 title=''
             >
                 <ModalCenters
                     onClose={() => {
-                        console.log("Closing modal inside ModalCenters...");
                         setIsModalOpen(false);
                     }}
                 />

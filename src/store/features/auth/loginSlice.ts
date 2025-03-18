@@ -36,7 +36,6 @@ export const loginUser = createAsyncThunk(
     try {
       const response = await axiosInstance.post('/users/login', loginData);
       const user = response.data.data.userWithoutPassword;
-      console.log("🚀 ~ user:", user)
 
       const token = response.data.data.accessToken;
       localStorage.setItem('user', JSON.stringify(user));

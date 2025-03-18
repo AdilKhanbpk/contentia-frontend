@@ -260,7 +260,6 @@ const notificationSlice = createSlice({
       .addCase(fetchNotificationById.fulfilled, (state, action) => {
         state.loading = false;
         state.notification = action.payload;
-        console.log("Notification fetched successfully");
       })
       .addCase(fetchNotificationById.rejected, (state, action) => {
         state.loading = false;

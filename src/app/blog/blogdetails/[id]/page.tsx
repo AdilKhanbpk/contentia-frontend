@@ -1,23 +1,20 @@
-"use client"
-import React from 'react';
-import BlogDetails from '@/components/blog/blogDetails/BlogDetails';
-import { useParams } from 'next/navigation'; // For Next.js 13
+"use client";
+import React from "react";
+import BlogDetails from "@/components/blog/blogDetails/BlogDetails";
+import { useParams } from "next/navigation"; // For Next.js 13
 
 const DetailPost: React.FC = () => {
-  const params = useParams(); // Extract the `id` from the URL
-  const { id } = params;
+    const params = useParams();
+    const { id } = params;
 
-  // Ensure `id` is always a string
-  const postId = Array.isArray(id) ? id[0] : id;
-  console.log(postId);
+    // Ensure `id` is always a string
+    const postId = Array.isArray(id) ? id[0] : id;
 
-  if (!postId) {
-    return <div>Loading...</div>; // Handle loading or error state
-  }
+    if (!postId) {
+        return <div>Loading...</div>;
+    }
 
-  return (
-    <BlogDetails params={{ id: postId }} />
-  );
+    return <BlogDetails params={{ id: postId }} />;
 };
 
 export default DetailPost;

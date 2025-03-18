@@ -26,7 +26,6 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
 
     useEffect(() => {
         if (editCreatorForm) {
-            // console.log("FIRST TAB :", editCreatorForm);
             reset({
                 fullName: editCreatorForm.fullName,
                 tckn: editCreatorForm.tckn,

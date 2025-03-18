@@ -76,7 +76,6 @@ export const fetchAdminClaimById = createAsyncThunk(
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            console.log("Response from fetchAdminClaimById:", response.data);
 
             const claim = {
                 id: response.data.data?._id ?? null,

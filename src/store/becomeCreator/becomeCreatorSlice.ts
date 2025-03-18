@@ -15,7 +15,6 @@ export const becomeCreatorThunk = createAsyncThunk(
     try {
       const state: any = getState();
       const creatorFormData = state.becomeCreator.creatorFormData;
-      console.log("🚀 ~ creatorFormData:", creatorFormData)
       const response = await axiosInstance.post('/creators/create', creatorFormData);
       return response.data;
     } catch (error: any) {
@@ -52,16 +51,13 @@ const creatorFormSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(becomeCreatorThunk.pending, (state) => {
-        console.log('Thunk Status: Pending');
         state.status = 'loading';
         state.error = null;
       })
       .addCase(becomeCreatorThunk.fulfilled, (state, action) => {
-        console.log('Thunk Status: Fulfilled', action.payload);
         state.status = 'succeeded';
       })
       .addCase(becomeCreatorThunk.rejected, (state, action) => {
-        console.log('Thunk Status: Rejected', action.payload);
         state.status = 'failed';
         state.error = action.payload as string;
       });

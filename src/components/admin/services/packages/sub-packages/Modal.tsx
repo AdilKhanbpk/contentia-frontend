@@ -31,7 +31,6 @@ export default function Home() {
 
     const onSubmitForm: SubmitHandler<PlanFormData> = (data) => {
         setIsSubmitting(true);
-        console.log("Form Data:", data);
     };
 
     const numberOfUGC = watch("numberOfUGC");

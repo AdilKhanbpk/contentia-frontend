@@ -20,7 +20,6 @@ export default function TabFirst({
     // State Management
     const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
     const [selectedCard, setSelectedCard] = useState<number | string>("");
-    console.log("🚀 ~ selectedCard:", selectedCard);
     const [additionalCharges, setAdditionalCharges] = useState<number[]>([]);
     const [activeEdit, setActiveEdit] = useState(false);
     const [showTooltipOne, setShowTooltipOne] = useState(false);

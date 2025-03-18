@@ -29,7 +29,6 @@ export const fetchAdminCreators = createAsyncThunk(
 
       if (response.data && response.data.data) {
         const creators = response.data.data.map((creator: CreatorInterface) => {
-          // console.log(creator)
           return {
             _id: creator._id ?? null,
             fullName: creator.fullName ?? '',
@@ -130,7 +129,6 @@ export const fetchAdminCreatorById = createAsyncThunk(
       const response = await axiosInstance.get(`/admin/creators/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      // console.log("fetching creator in fetchCreator : ", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue('Failed to fetch admin creator by ID');
@@ -144,7 +142,6 @@ export const createAdminCreator = createAsyncThunk(
     { data, token }: { data: any; token: string },
     { rejectWithValue }
   ) => {
-    // console.log("🚀 ~THUNK data:", data)
 
     try {
 
@@ -164,7 +161,6 @@ export const createAdminCreator = createAsyncThunk(
         }
       );
 
-      // console.log("🚀 ~ response:", response.data)
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -198,7 +194,6 @@ export const updateAdminCreator = createAsyncThunk(
       if ((error as AxiosError).isAxiosError) {
         const axiosError = error as AxiosError;
         if (axiosError.response) {
-          console.log("Server response status:", axiosError.response.status);
         } else if (axiosError.request) {
           console.error("Request was made but no response was received:", axiosError.request);
         }
@@ -296,7 +291,6 @@ const adminCreatorsSlice = createSlice({
       })
       .addCase(deleteAdminCreator.fulfilled, (state, action: PayloadAction<CreatorInterface>) => {
         state.loading = false;
-        // console.log(action.payload);
         const filteredCreators = state.data.filter((creator) => creator._id !== action.payload._id);
         state.data = filteredCreators
       })

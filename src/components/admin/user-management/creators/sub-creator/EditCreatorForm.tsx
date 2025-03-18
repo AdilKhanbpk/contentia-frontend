@@ -41,7 +41,6 @@ const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
     } = useForm<CreatorInterface>();
 
     useEffect(() => {
-        // console.log("Creator data : ", creatorData);
         if (creatorData) {
             reset(creatorData);
         }

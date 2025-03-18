@@ -25,9 +25,6 @@ export default function RootLayout({
     const pathname = usePathname();
     const router = useRouter();
     const { isLoading } = useAuth();
-    // console.log("🚀 ~ isLoading:", isLoading);
-    // console.log("🚀 ~ isUser:", isUser);
-    // console.log("🚀 ~ isAdmin:", isAdmin);
 
     const isPublicPath =
         pathname === "/" ||

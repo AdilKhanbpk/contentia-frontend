@@ -6,7 +6,6 @@ interface ViewModalProps {
 }
 
 const ViewModal = ({ order }: ViewModalProps) => {
-    console.log("🚀 ~ ViewModal ~ order:", order);
     if (!order) return null;
 
     return (

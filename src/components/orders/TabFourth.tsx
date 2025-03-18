@@ -58,8 +58,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                 },
             };
             dispatch(setOrderFormData(preferencesData));
-            // console.log("🚀 ~ onSubmit ~ formData:", preferencesData);
-            // console.log("🚀 ~ onSubmit ~ Full Order Data :", orderData);
+
             try {
                 const res = await dispatch(
                     createOrder({ token, selectedFiles })

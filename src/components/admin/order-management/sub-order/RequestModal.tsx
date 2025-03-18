@@ -26,7 +26,6 @@ const RequestModal: React.FC<RequestModalProps> = ({
 
     useEffect(() => {
         const fetchAppliedCreators = async () => {
-            console.log("Fetching applied creators for order:", order?._id);
             const token = getAccessToken();
             if (!token) return;
 
@@ -42,7 +41,6 @@ const RequestModal: React.FC<RequestModalProps> = ({
                         token,
                     })
                 ).unwrap();
-                console.log("Applied creators fetched successfully:", response);
             } catch (error) {
                 console.error("Error fetching applied creators:", error);
             }
@@ -53,12 +51,6 @@ const RequestModal: React.FC<RequestModalProps> = ({
 
     const handleApprove = useCallback(
         async (creatorId: string) => {
-            console.log(
-                "Approving creator:",
-                creatorId,
-                "for order:",
-                order?._id
-            );
             if (!order?._id) {
                 console.error("No order ID available");
                 return;
@@ -70,12 +62,6 @@ const RequestModal: React.FC<RequestModalProps> = ({
 
     const handleReject = useCallback(
         async (creatorId: string) => {
-            console.log(
-                "Rejecting creator:",
-                creatorId,
-                "for order:",
-                order?._id
-            );
             if (!order?._id) {
                 console.error("No order ID available");
                 return;
@@ -86,7 +72,6 @@ const RequestModal: React.FC<RequestModalProps> = ({
     );
 
     const handleSearch = useCallback((value: string) => {
-        console.log("Search term:", value);
         setSearchTerm(value);
     }, []);
 
@@ -177,11 +162,6 @@ const RequestModal: React.FC<RequestModalProps> = ({
               }
           )
         : [];
-
-    console.log(
-        "Rendering RequestModal with filtered creators:",
-        filteredCreators
-    );
 
     return (
         <div className='p-5 bg-white rounded-lg'>

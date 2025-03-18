@@ -21,7 +21,6 @@ export default function Navbar() {
     const { t } = useTranslation();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const user = useSelector(selectProfileUser);
-    // console.log("🚀 ~ Navbar ~ user:", user);
 
     const toggleSidebar = () => {
         setSidebarOpen(!isSidebarOpen);
@@ -264,5 +263,4 @@ export default function Navbar() {
             </aside>
         </>
     );
-    console.log("🚀 ~ Navbar ~ user:", user);
 }

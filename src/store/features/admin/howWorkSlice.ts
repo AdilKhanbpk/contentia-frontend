@@ -139,14 +139,8 @@ const howItWorksSlice = createSlice({
       const index = state.sections.findIndex(
         (section) => section._id === action.payload._id
       );
-      if (index !== -1) {
-        state.sections[index] = action.payload;
-      } else {
-        console.log('Section not found in state', {
-          searchedId: action.payload._id,
-          availableIds: state.sections.map(s => s._id)
-        });
-      }
+      state.sections[index] = action.payload;
+
     },
     removeSectionFromState: (state, action: PayloadAction<string>) => {
       const initialLength = state.sections.length;
@@ -202,14 +196,8 @@ const howItWorksSlice = createSlice({
         const index = state.sections.findIndex(
           (section) => section._id === action.payload._id
         );
-        if (index !== -1) {
-          state.sections[index] = action.payload;
-        } else {
-          console.log('Updated section not found in state', {
-            updatedId: action.payload._id,
-            availableIds: state.sections.map(s => s._id)
-          });
-        }
+        state.sections[index] = action.payload;
+
       })
       .addCase(updateHowItWorks.rejected, (state, action) => {
         state.loading = false;
@@ -225,12 +213,6 @@ const howItWorksSlice = createSlice({
         state.sections = state.sections.filter(
           (section) => section._id !== action.payload
         );
-        if (state.sections.length === initialLength) {
-          console.log('Deleted section not found in state', {
-            deletedId: action.payload,
-            availableIds: state.sections.map(s => s._id)
-          });
-        }
       })
       .addCase(deleteHowItWorks.rejected, (state, action) => {
         state.loading = false;

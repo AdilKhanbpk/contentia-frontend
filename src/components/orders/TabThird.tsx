@@ -65,7 +65,6 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
         };
 
         await dispatch(setOrderFormData(formData));
-        // console.log("🚀 ~ onSubmit ~ formData:", formData);
         toast.success("Order Brief Saved Successfully!");
         setActiveTab(3);
     };

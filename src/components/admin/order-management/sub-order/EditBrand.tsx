@@ -21,7 +21,6 @@ interface EditBrandProps {
 const EditBrand: React.FC<EditBrandProps> = ({ brand }) => {
     if (!brand) return null;
 
-    console.log("🚀 ~ brand:", brand);
     const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
     const [loading, setLoading] = useState(false);
 

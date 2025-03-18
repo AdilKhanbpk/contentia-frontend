@@ -72,10 +72,6 @@ export const updateLandingPage = createAsyncThunk(
   ) => {
     try {
 
-      data.forEach((value, key) => {
-        console.log(`${key}:`, value);
-      })
-
       const response = await axiosInstance.patchForm(
         `/admin/landingPage/${id}`,
         data,

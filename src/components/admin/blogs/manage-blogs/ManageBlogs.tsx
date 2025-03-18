@@ -110,7 +110,6 @@ const ManageBlogs: React.FC = () => {
     );
 
     const handleView = async (id: string) => {
-        console.log("🚀 ~ blog ~ blogs:", blogs);
         const token = getAccessToken();
         if (!token) return;
         await dispatch(fetchBlogById({ blogId: id, token })).unwrap();

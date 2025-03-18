@@ -160,7 +160,6 @@ const Admins: React.FC = () => {
         };
 
         try {
-            console.log(customerId, dataToUpdate);
             customerId &&
                 (await dispatch(
                     updateAdminCustomer({

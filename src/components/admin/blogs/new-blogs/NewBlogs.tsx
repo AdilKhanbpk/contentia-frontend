@@ -58,8 +58,6 @@ export default function NewBlogs() {
                 formData.append("bannerImage", data.bannerImage[0]);
             }
 
-            console.log("form data to be sent", formData);
-
             // Dispatch create blog action
             const result = await dispatch(
                 createBlog({ blog: formData, token })

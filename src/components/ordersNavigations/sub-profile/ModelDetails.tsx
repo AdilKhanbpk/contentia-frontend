@@ -28,8 +28,6 @@ export default function ModelDetails({ orderData }: ModelRevisionProps) {
     });
 
     const onSubmit = async (data: any) => {
-        console.log("Form submitted:", data);
-
         const token = getAccessToken();
         if (!token) return;
         const updatedData = {

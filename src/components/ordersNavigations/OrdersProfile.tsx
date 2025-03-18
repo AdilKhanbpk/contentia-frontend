@@ -43,7 +43,6 @@ const OrdersProfile: React.FC = () => {
     };
 
     useEffect(() => {
-        console.log(profile.data);
         if (profile.data) {
             setValue("email", profile.data.email || "");
             setValue("fullName", profile.data.fullName || "");

@@ -76,8 +76,6 @@ const Creators: React.FC = () => {
         (state: RootState) => state.adminCreators
     );
 
-    // console.log("All CREATORS : ", creators);
-
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
@@ -96,7 +94,6 @@ const Creators: React.FC = () => {
                     toast.success("Creator deleted successfully!");
                 })
                 .catch((error: any) => {
-                    console.log("🚀 ~ error:", error);
                     toast.error(
                         `Error deleting creator: ${
                             error?.message || "Unknown error"
@@ -109,7 +106,6 @@ const Creators: React.FC = () => {
     );
 
     const handleView = (id: string) => {
-        console.log("🚀 ~ handleView ~ creators:", creators);
         const creator = creators.find((creator) => creator._id === id);
         if (creator) {
             setCurrentCreator(creator);
@@ -118,7 +114,6 @@ const Creators: React.FC = () => {
     };
 
     const handleCreate = async (creatorData: any) => {
-        // console.log("🚀 ~ handleCreate ~ creatorData:", creatorData);
         const token = getAccessToken();
         if (!token) return;
 
@@ -298,13 +293,11 @@ const Creators: React.FC = () => {
             await dispatch(fetchAdminCreators(token));
             toast.success("Creator updated successfully!");
         } catch (error) {
-            console.log("🚀 ~ handleUpdate ~ error:", error);
             toast.error("Failed to update creator. Please try again.");
         }
     };
 
     const handleEdit = (id: string) => {
-        // console.log(id);
         const creator = creators.find((creator) => {
             return creator._id === id;
         });
@@ -340,8 +333,6 @@ const Creators: React.FC = () => {
 
         exportCsvFile({ data, headers, filename: "creators.csv" });
     }, [creators]);
-
-    // console.log("CURRENT CREATOR : ", currentCreator);
 
     useEffect(() => {
         const token = getAccessToken();

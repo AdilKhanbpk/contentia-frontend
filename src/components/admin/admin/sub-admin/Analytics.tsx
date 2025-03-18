@@ -30,11 +30,8 @@ const Analytics: React.FC = () => {
 
     const [slot, setSlot] = useState<"month" | "week">("month");
     const creators = useSelector(selectTotalCreators);
-    console.log("🚀 ~ creators:", creators);
     const customers = useSelector(selectTotalCustomers);
-    console.log("🚀 ~ customers:", customers);
     const orders = useSelector(selectTotalOrders);
-    console.log("🚀 ~ orders:", orders);
 
     useEffect(() => {
         const token = getAccessToken();

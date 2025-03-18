@@ -33,7 +33,6 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
 
     useEffect(() => {
         if (editCreatorForm) {
-            // console.log("editCreatorForm :", editCreatorForm);
             reset({
                 preferences: {
                     contentInformation: {
@@ -113,7 +112,6 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
     }, [editCreatorForm, reset]);
 
     const onSubmit = async (formData: any) => {
-        // console.log("🚀 ~ onSubmit ~ formData:", formData);
         if (!editCreatorForm?._id) {
             toast.error(
                 "No creator ID found. Please ensure a creator is selected."
@@ -240,7 +238,6 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
                 toast.error("Failed to update creator. Please try again.");
             }
         } catch (error: any) {
-            console.log(error);
             toast.error(
                 `Error updating creator: ${error.message || "Unknown error"}`
             );

@@ -90,23 +90,14 @@ export default function Coupon() {
     };
 
     const handleDelete = async (id: string) => {
-        if (window.confirm("Are you sure you want to delete this coupon?")) {
-            try {
-                await dispatch(deleteCoupon({ id, token }) as any);
-                toast.success("Coupon deleted successfully!");
-            } catch (err) {
-                const errorMessage =
-                    err instanceof Error
-                        ? err.message
-                        : "Failed to delete coupon";
-                setErrorMessage(errorMessage);
-                toast.error(errorMessage || "Failed to delete coupon");
-            }
-        } else {
-            console.log(
-                "User cancelled the deletion process for coupon ID:",
-                id
-            );
+        try {
+            await dispatch(deleteCoupon({ id, token }) as any);
+            toast.success("Coupon deleted successfully!");
+        } catch (err) {
+            const errorMessage =
+                err instanceof Error ? err.message : "Failed to delete coupon";
+            setErrorMessage(errorMessage);
+            toast.error(errorMessage || "Failed to delete coupon");
         }
     };
 

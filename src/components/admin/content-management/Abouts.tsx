@@ -95,7 +95,6 @@ export default function Abouts() {
 
         if (sections) {
             const sectionId = sections._id;
-            console.log("Dispatching Update", { sectionId, data });
 
             dispatch(
                 updateAbout({
@@ -141,10 +140,6 @@ export default function Abouts() {
                         placeholder='Hakkımda'
                         {...register("title", {
                             required: "Title is required",
-                            onChange: (e) =>
-                                console.log("Input Changed - Title", {
-                                    value: e.target.value,
-                                }),
                         })}
                         className='w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none'
                     />
@@ -167,12 +162,7 @@ export default function Abouts() {
                         render={({ field: { onChange, value } }) => (
                             <ReactQuill
                                 value={value}
-                                onChange={(val) => {
-                                    onChange(val);
-                                    console.log("Input Changed - Content", {
-                                        value: val,
-                                    });
-                                }}
+                                onChange={onChange}
                                 placeholder='Write something...'
                                 theme='snow'
                                 className='w-full border border-gray-400 rounded-lg focus:outline-none'
@@ -204,10 +194,6 @@ export default function Abouts() {
                         placeholder='İletişim'
                         {...register("contactTitle", {
                             required: "Contact Title is required",
-                            onChange: (e) =>
-                                console.log("Input Changed - Contact Title", {
-                                    value: e.target.value,
-                                }),
                         })}
                         className='w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none'
                     />
@@ -230,10 +216,6 @@ export default function Abouts() {
                                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                                 message: "Invalid email address",
                             },
-                            onChange: (e) =>
-                                console.log("Input Changed - Email", {
-                                    value: e.target.value,
-                                }),
                         })}
                         className='w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none'
                     />
@@ -252,10 +234,6 @@ export default function Abouts() {
                         placeholder='0850 302 71 32'
                         {...register("contactPhone", {
                             required: "Phone is required",
-                            onChange: (e) =>
-                                console.log("Input Changed - Phone", {
-                                    value: e.target.value,
-                                }),
                         })}
                         className='w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none'
                     />
@@ -276,10 +254,6 @@ export default function Abouts() {
                         placeholder='Maslak Mah. Maslak Meydan SK. Baby Giz Plaza...'
                         {...register("contactAddress", {
                             required: "Address is required",
-                            onChange: (e) =>
-                                console.log("Input Changed - Address", {
-                                    value: e.target.value,
-                                }),
                         })}
                         className='w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none'
                     />
@@ -300,10 +274,6 @@ export default function Abouts() {
                         placeholder='www.calendly.com/contentia.io'
                         {...register("buttonUrl", {
                             required: "Button URL is required",
-                            onChange: (e) =>
-                                console.log("Input Changed - Button URL", {
-                                    value: e.target.value,
-                                }),
                         })}
                         className='w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none'
                     />
@@ -320,9 +290,6 @@ export default function Abouts() {
                         type='submit'
                         disabled={loading}
                         className='ButtonBlue text-white px-8 py-1 rounded-lg font-semibold'
-                        onClick={() =>
-                            console.log("Save Button Clicked", { loading })
-                        }
                     >
                         {loading ? "Saving..." : "Save"}
                     </button>

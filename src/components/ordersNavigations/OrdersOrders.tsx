@@ -28,23 +28,19 @@ export default function OrdersOrders() {
     };
 
     const closeModal = () => {
-        console.log("Closing details modal");
         setIsModalOpen(false);
     };
 
     const openRevModal = (order: Order) => {
         setSelectedOrder(order);
-        console.log("Opening revision modal for order:", order._id);
         setIsRevModalOpen(true);
     };
 
     const closeRevModal = () => {
-        console.log("Closing revision modal");
         setIsRevModalOpen(false);
     };
 
     const getOrderStatusText = (status: string) => {
-        console.log("Mapping order status:", status);
         switch (status) {
             case "active":
                 return "Aktif";

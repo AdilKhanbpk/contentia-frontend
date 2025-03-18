@@ -81,7 +81,6 @@ export const updateAboutImage = createAsyncThunk(
 export const createAbout = createAsyncThunk(
     "about/createAbout",
     async ({ data, token }: CreateAboutPayload, { rejectWithValue }) => {
-        console.log('Creating About section', { data });
         try {
             axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             const response = await axiosInstance.post("/admin/about", data);
@@ -97,7 +96,6 @@ export const createAbout = createAsyncThunk(
 export const fetchAbout = createAsyncThunk(
     "about/fetchAbout",
     async (token: string, { rejectWithValue }) => {
-        console.log('Fetching all About sections');
         try {
             axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             const response = await axiosInstance.get("/admin/about");
@@ -155,15 +153,8 @@ const aboutSlice = createSlice({
             state.sections = action.payload;
         },
         updateSectionInState: (state, action: PayloadAction<AboutData>) => {
-            console.log('Updating section in state', action.payload);
-            if (state.sections._id === action.payload._id) {
-                state.sections = action.payload;
-            } else {
-                console.log('Section not found in state', {
-                    searchedId: action.payload._id,
-                    availableId: state.sections._id
-                });
-            }
+            state.sections = action.payload;
+
         },
         removeSectionFromState: (state) => {
             state.sections = {} as AboutData;
@@ -172,32 +163,26 @@ const aboutSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(createAbout.pending, (state) => {
-                console.log('Create About pending');
                 state.loading = true;
                 state.error = null;
             })
             .addCase(createAbout.fulfilled, (state, action: PayloadAction<AboutData>) => {
-                console.log('Create About fulfilled', action.payload);
                 state.loading = false;
                 state.sections = action.payload;
             })
             .addCase(createAbout.rejected, (state, action) => {
-                console.log('Create About rejected', null, action.payload);
                 state.loading = false;
                 state.error = action.payload as string;
             })
             .addCase(fetchAbout.pending, (state) => {
-                console.log('Fetch About pending');
                 state.loading = true;
                 state.error = null;
             })
             .addCase(fetchAbout.fulfilled, (state, action: PayloadAction<AboutData>) => {
-                console.log('Fetch About fulfilled', action.payload);
                 state.loading = false;
                 state.sections = action.payload;
             })
             .addCase(fetchAbout.rejected, (state, action) => {
-                console.log('Fetch About rejected', null, action.payload);
                 state.loading = false;
                 state.error = action.payload as string;
             });

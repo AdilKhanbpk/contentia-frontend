@@ -69,8 +69,6 @@ export default function NewModal() {
             },
         };
 
-        console.log("order data ", orderData);
-
         try {
             const result = await dispatch(
                 createOrder({

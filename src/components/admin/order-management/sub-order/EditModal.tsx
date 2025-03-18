@@ -48,7 +48,6 @@ export default function EditModal({ order }: EditModalProps) {
 
     useEffect(() => {
         if (order) {
-            console.log("🚀 ~ useEffect ~ order:", order);
             reset({
                 _id: order._id,
                 orderOwner: order.orderOwner._id as any,

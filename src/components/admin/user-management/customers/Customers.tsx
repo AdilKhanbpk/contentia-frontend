@@ -122,13 +122,6 @@ const Customers: React.FC = () => {
                 return;
             }
 
-            console.log("Attempting to create customer:", {
-                ...customerData,
-                token: tokenFromStorage
-                    ? `${tokenFromStorage.substring(0, 10)}...`
-                    : "missing",
-            });
-
             const result = await dispatch(
                 createAdminCustomer({
                     data: customerData,
@@ -172,7 +165,6 @@ const Customers: React.FC = () => {
         };
 
         try {
-            console.log(customerId, dataToUpdate);
             customerId &&
                 (await dispatch(
                     updateAdminCustomer({

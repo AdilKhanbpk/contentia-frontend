@@ -22,7 +22,6 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
 
     const onSubmit = async (data: ProfileFormInputs) => {
         try {
-            console.log(data);
             const res = await dispatch(setCreatorFormData(data));
             if (res) {
                 toast.success("Profile information saved successfully");
