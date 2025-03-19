@@ -318,3 +318,14 @@ export interface BlogInterface {
         phoneNumber: string;
     };
 }
+
+export interface EmailNotificationInterface {
+    _id?: string,
+    userType: 'all' | 'all-creators' | 'all-customers' | 'some-creators' | 'some-customers',
+    emailTitle: string,
+    emailContent: string,
+    users: string[],
+    createdAt?: string,
+    updatedAt?: string,
+
+}

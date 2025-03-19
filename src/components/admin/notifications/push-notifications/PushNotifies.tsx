@@ -123,8 +123,8 @@ const PushNotifications: React.FC = () => {
     }, [dispatch]);
 
     return (
-        <div className='bg-white rounded-lg'>
-            <div className='flex flex-col py-24 md:py-24 px-4 sm:px-6 md:px-12 lg:pl-72'>
+        <div className=' bg-white rounded-lg'>
+            <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
                 <div className='flex justify-between mb-4'>
                     <input
                         type='text'

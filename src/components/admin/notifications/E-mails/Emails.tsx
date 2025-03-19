@@ -1,161 +1,247 @@
 "use client";
-import { useState } from "react";
-import { FaCheck, FaTimes, FaEye, FaFileCsv } from "react-icons/fa";
+
+import React, {
+    useState,
+    useEffect,
+    useDeferredValue,
+    useMemo,
+    useCallback,
+    memo,
+} from "react";
+import {
+    FaCheck,
+    FaTimes,
+    FaEye,
+    FaFileCsv,
+    FaEdit,
+    FaTrashAlt,
+} from "react-icons/fa";
 import dynamic from "next/dynamic";
-import CustomModelAdmin from '../../../modal/CustomModelAdmin';
+import CustomModelAdmin from "../../../modal/CustomModelAdmin";
 import Modal from "./sub-emails/Modal";
-const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
-
-export interface Claim {
-  id: number;
-  number: number;
-  notificationID: string;
-  orderID: number;
-  claimDate: string;
-  claimStatus: string;
-}
-
-const initialClaims: Claim[] = [
-  { id: 1, number: 100, notificationID: "NF1001", orderID: 9284221, claimDate: "21/10/2024", claimStatus: "Verified" },
-  { id: 2, number: 99, notificationID: "NF1002", orderID: 4254210, claimDate: "14/09/2024", claimStatus: "Pending" },
-  { id: 3, number: 98, notificationID: "NF1003", orderID: 4524108, claimDate: "08/09/2024", claimStatus: "Rejected" },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import { getAccessToken } from "@/utils/checkToken";
+import {
+    deleteEmailNotification,
+    fetchEmailNotificationById,
+    fetchEmailNotifications,
+} from "@/store/features/admin/emailNotificationSlice";
+import { exportCsvFile } from "@/utils/exportCsvFile";
+const DataTable = dynamic(() => import("react-data-table-component"), {
+    ssr: false,
+});
 
 const Emails: React.FC = () => {
-  const [claims, setClaims] = useState(initialClaims);
-  const [searchTerm, setSearchTerm] = useState("");
+    const dispatch = useDispatch<AppDispatch>();
+    const { emailNotifications = [], currentEmailNotification } = useSelector(
+        (state: RootState) => state.emailNotification
+    );
 
-  const filteredClaims = claims.filter((claim) =>
-    claim.notificationID.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    const [searchTerm, setSearchTerm] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalEditOpen, setIsModalEditOpen] = useState(false);
+    const [isModalViewOpen, setIsModalViewOpen] = useState(false);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+    const handleView = async (id: string) => {
+        const token = getAccessToken();
+        if (!token) return;
+        await dispatch(
+            fetchEmailNotificationById({ emailNotificationId: id, token })
+        ).unwrap();
+        setIsModalViewOpen(true);
+    };
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+    const handleEdit = async (id: string) => {
+        const token = getAccessToken();
+        if (!token) return;
+        await dispatch(
+            fetchEmailNotificationById({ emailNotificationId: id, token })
+        ).unwrap();
+        setIsModalViewOpen(true);
+    };
 
-  const [isModalTwoOpen, setIsModalTwoOpen] = useState(false);
+    const handleDelete = async (id: string) => {
+        const token = getAccessToken();
+        if (!token) return;
+        await dispatch(
+            deleteEmailNotification({ emailNotificationId: id, token })
+        ).unwrap();
+        setIsModalViewOpen(true);
+    };
 
-  const openModalTwo = () => setIsModalTwoOpen(true);
+    const handleExport = useCallback(() => {
+        if (!emailNotifications) {
+            console.error("No email notifications available to export");
+            return;
+        }
 
-  const columns = [
-    {
-      name: "#No",
-      selector: (row: any) => row.number,
-      sortable: true,
-      width: "100px",
-    },
-    {
-      name: "Notification ID",
-      selector: (row: any) => row.notificationID,
-      sortable: true,
-      width: "150px",
-    },
-    {
-      name: "Order ID",
-      selector: (row: any) => row.orderID,
-      sortable: true,
-      width: "150px",
-    },
-    {
-      name: "Claim Date",
-      selector: (row: any) => row.claimDate,
-      sortable: true,
-      width: "150px",
-    },
-    {
-      name: "Claim Status",
-      cell: (row: any) => (
-        <span
-          className={`px-2 py-1 rounded-lg text-sm font-semibold ${
-            row.claimStatus === "Verified" ? "bg-green-100 text-green-600" :
-            row.claimStatus === "Pending" ? "bg-blue-100 text-blue-600" :
-            "bg-red-100 text-red-600"
-          }`}
-        >
-          {row.claimStatus}
-        </span>
-      ),
-      sortable: true,
-      width: "150px",
-    },
-    {
-      name: "Actions",
-      cell: (row: any) => (
-        <div className="flex space-x-3">
-          <button className="text-green-500 hover:text-green-700">
-            <FaCheck className="text-lg" />
-          </button>
-          <button className="text-red-500 hover:text-red-700">
-            <FaTimes className="text-lg" />
-          </button>
-          <button className="text-gray-500 hover:text-gray-700">
-            <FaEye className="text-lg" onClick={openModalTwo} />
-          </button>
-        </div>
-      ),
-      width: "150px",
-    },
-  ];
+        const headers = ["ID", "Email Title", "User Type", "Created At"];
+        const data = emailNotifications.map((email) => ({
+            ID: email._id,
+            "Email Title": email.emailTitle,
+            "User Type": email.userType,
+            "Created At": email.createdAt
+                ? new Date(email.createdAt).toLocaleString()
+                : "",
+        }));
 
-  const exportToCSV = () => {
-    const csvRows = [
-      ["#No", "Notification ID", "Order ID", "Claim Date", "Claim Status"],
-      ...initialClaims.map(claim => [claim.number, claim.notificationID, claim.orderID, claim.claimDate, claim.claimStatus]),
-    ];
-    const csvContent = "data:text/csv;charset=utf-8," + csvRows.map(e => e.join(",")).join("\n");
-    const link = document.createElement("a");
-    link.setAttribute("href", encodeURI(csvContent));
-    link.setAttribute("download", "claims.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+        exportCsvFile({ data, headers, filename: "email_notifications.csv" });
+    }, [emailNotifications]);
 
-  return (
-    <div className=" bg-white rounded-lg">
-      <div className="flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72">
-        <div className="flex justify-between mb-4">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search..."
-            className="p-2 border border-gray-300 rounded-lg"
-          />
-          <div className="flex flex-col md:flex-row lg:space-x-2">
-            <button onClick={openModal} className="px-1 md:px-4 py-0.5 md:py-2 ButtonBlue text-white rounded-md">
-              Push Notification
-            </button>
-            <button
-              className="px-1 md:px-4 py-0.5 md:py-2 bg-green-500 text-white rounded-md"
-              onClick={exportToCSV}
+    useEffect(() => {
+        const token = getAccessToken();
+        if (!token) return;
+        dispatch(fetchEmailNotifications(token));
+    }, [dispatch]);
+
+    const TableActions = memo(
+        ({
+            onDelete,
+            onEdit,
+            onView,
+            id,
+        }: {
+            onDelete: (id: string) => void;
+            onEdit: (id: string) => void;
+            onView: (id: string) => void;
+            id: string;
+        }) => (
+            <div className='flex space-x-3'>
+                <button
+                    className='text-gray-500 hover:text-gray-700'
+                    onClick={() => onView(id)}
+                >
+                    <FaEye className='text-lg' />
+                </button>
+                <button
+                    className='text-blue-500 hover:text-blue-700'
+                    onClick={() => onEdit(id)}
+                >
+                    <FaEdit className='text-lg' />
+                </button>
+                <button
+                    className='text-red-500 hover:text-red-700'
+                    onClick={() => onDelete(id)}
+                >
+                    <FaTrashAlt className='text-md' />
+                </button>
+            </div>
+        )
+    );
+
+    TableActions.displayName = "TableActions";
+    const columns = React.useMemo(
+        () => [
+            {
+                name: "#",
+                selector: (row: any) => row._id,
+                sortable: true,
+            },
+            {
+                name: "Email Title",
+                selector: (row: any) => row.emailTitle,
+                sortable: true,
+                grow: 2,
+            },
+            {
+                name: "User Type",
+                selector: (row: any) => row.userType,
+                sortable: true,
+            },
+            {
+                name: "Created At",
+                selector: (row: any) =>
+                    new Date(row.createdAt).toLocaleString(),
+                sortable: true,
+            },
+            {
+                name: "Actions",
+                cell: (row: any) => (
+                    <TableActions
+                        onView={() => handleView(row._id)}
+                        onEdit={() => handleEdit(row._id)}
+                        onDelete={() => handleDelete(row._id)}
+                        id={row._id}
+                    />
+                ),
+                width: "150px",
+            },
+        ],
+        [handleView]
+    );
+
+    const deferredSearchTerm = useDeferredValue(searchTerm);
+    const filteredEmails = useMemo(() => {
+        if (!emailNotifications) return [];
+        const lowerCaseSearchTerm = deferredSearchTerm.toLowerCase().trim();
+        return emailNotifications.filter(
+            (email: any) =>
+                email.emailTitle.toLowerCase().includes(lowerCaseSearchTerm) ||
+                email.userType.toLowerCase().includes(lowerCaseSearchTerm)
+        );
+    }, [emailNotifications, deferredSearchTerm]);
+
+    return (
+        <div className=' bg-white rounded-lg'>
+            <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
+                <div className='flex justify-between mb-4'>
+                    <input
+                        type='text'
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder='Search...'
+                        className='p-2 border border-gray-300 rounded-lg'
+                    />
+                    <div className='flex space-x-2'>
+                        <button
+                            onClick={() => setIsModalOpen(true)}
+                            className='px-4 py-2 bg-blue-500 text-white rounded-md'
+                        >
+                            Email Notification
+                        </button>
+                        <button
+                            className='px-4 py-2 bg-green-500 text-white rounded-md'
+                            onClick={handleExport}
+                        >
+                            Export CSV <FaFileCsv className='inline ml-2' />
+                        </button>
+                    </div>
+                </div>
+
+                <div className='shadow-md'>
+                    <DataTable
+                        columns={columns}
+                        data={filteredEmails}
+                        pagination
+                        customStyles={{
+                            rows: {
+                                style: { fontSize: "14px", fontWeight: "500" },
+                            },
+                            headRow: {
+                                style: {
+                                    fontSize: "16px",
+                                    fontWeight: "600",
+                                    backgroundColor: "#f8f8f8",
+                                },
+                            },
+                            headCells: {
+                                style: { fontWeight: "600", color: "#333" },
+                            },
+                        }}
+                    />
+                </div>
+            </div>
+
+            <CustomModelAdmin
+                isOpen={isModalOpen}
+                closeModal={() => setIsModalOpen(false)}
+                title=''
             >
-              Export CSV <FaFileCsv className="inline ml-2" />
-            </button>
-          </div>
+                <Modal />
+            </CustomModelAdmin>
         </div>
-
-        <div className="shadow-md">
-          <DataTable
-            columns={columns}
-            data={filteredClaims}
-            pagination
-            customStyles={{
-              rows: { style: { fontSize: "14px", fontWeight: "500" } },
-              headRow: { style: { fontSize: "16px", fontWeight: "600", backgroundColor: "#f8f8f8" } },
-              headCells: { style: { fontWeight: "600", color: "#333" } },
-            }}
-          />
-        </div>
-      </div>
-
-      <CustomModelAdmin isOpen={isModalOpen} closeModal={closeModal} title="">
-        <Modal />
-      </CustomModelAdmin>
-    
-    </div>
-  );
+    );
 };
 
 export default Emails;

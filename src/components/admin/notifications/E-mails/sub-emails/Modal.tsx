@@ -1,78 +1,113 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/store/store";
+import {
+    createEmailNotification,
+    fetchEmailNotifications,
+} from "@/store/features/admin/emailNotificationSlice";
+import { getAccessToken } from "@/utils/checkToken";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 export default function Modal() {
-    const [emailBody, setEmailBody] = useState("");
+    const dispatch = useDispatch<AppDispatch>();
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        watch,
+        formState: { isSubmitting },
+    } = useForm();
+    const emailBody = watch("emailContent", "");
+    const userType = watch("userType", "");
 
-    const handleEmailBodyChange = (value: string) => {
-        setEmailBody(value);
+    const onSubmit = async (data: any) => {
+        const token = getAccessToken();
+        if (!token) return;
+
+        const payload = {
+            emailTitle: data.emailTitle,
+            emailContent: data.emailContent,
+            userType: data.userType,
+            users: data.users
+                ? data.users.split(",").map((id: any) => id.trim())
+                : [],
+        };
+
+        console.log("Submitting Data:", payload);
+        await dispatch(createEmailNotification({ data: payload, token }));
+        await dispatch(fetchEmailNotifications(token));
     };
 
     return (
-        <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">
-            <h1 className="text-lg font-semibold">Email Notification</h1>
+        <form
+            onSubmit={handleSubmit(onSubmit)}
+            className='bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6'
+        >
+            <h1 className='text-lg font-semibold'>Email Notification</h1>
 
-            <div className="mt-4 sm:mt-6 md:mt-8 lg:mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6 lg:gap-6">
-                {/* Product/Service Description */}
+            <div className='mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4'>
                 <div>
-                    <label className="block text-sm font-semibold mt-2 sm:mt-3 md:mt-4 lg:mt-4">User Type</label>
-                    <select className="w-full py-2 border border-gray-400 rounded-md focus:outline-none">
-                        <option value="">Creators</option>
-                        <option value="admin">Customers</option>
-                        <option value="user">All-Creators</option>
-                        <option value="guest">All-Customers</option>
-                        <option value="other">Some-Creators</option>
-                        <option value="other">Some-Customers</option>
+                    <label className='block text-sm font-semibold'>
+                        User Type
+                    </label>
+                    <select
+                        {...register("userType", { required: true })}
+                        className='w-full py-2 border border-gray-400 rounded-md'
+                    >
+                        <option value='all'>All</option>
+                        <option value='all-creators'>All Creators</option>
+                        <option value='all-customers'>All Customers</option>
+                        <option value='some-creators'>Some Creators</option>
+                        <option value='some-customers'>Some Customers</option>
                     </select>
                 </div>
 
-                {/* Scenario */}
                 <div>
-                    <label className="block text-sm font-semibold mt-2 sm:mt-3 md:mt-4 lg:mt-4">Select Users</label>
+                    <label className='block text-sm font-semibold'>
+                        Select Users (comma-separated IDs)
+                    </label>
                     <input
-                        type="text"
-                        placeholder=""
-                        className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none overflow-auto"
+                        {...register("users")}
+                        type='text'
+                        className='w-full px-3 py-2 border border-gray-400 rounded-md'
+                        disabled={!userType.includes("some")}
                     />
                 </div>
             </div>
 
-            {/* Brief and Examples */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6 lg:gap-6">
-                {/* Brief */}
-                <div>
-                    <label className="block text-sm font-semibold mt-2 sm:mt-3 md:mt-4 lg:mt-4">Email Title</label>
-                    <input
-                        type="text"
-                        placeholder=""
-                        className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none overflow-auto"
-                    />
-                </div>
+            <div className='mt-4'>
+                <label className='block text-sm font-semibold'>
+                    Email Title
+                </label>
+                <input
+                    {...register("emailTitle", { required: true })}
+                    type='text'
+                    className='w-full px-3 py-2 border border-gray-400 rounded-md'
+                />
             </div>
 
-            <div className="bg-white">
-                <div className="bg-white py-4 sm:py-5 md:py-6 lg:py-6 rounded-md">
-                    <h2 className="text-base font-semibold mb-1">E-Mail Body</h2>
-
-                    <div className="mb-2 sm:mb-3 md:mb-3 lg:mb-4">
-                        <ReactQuill
-                            value={emailBody}
-                            onChange={handleEmailBodyChange}
-                            placeholder="Write something..."
-                            theme="snow"
-                            className="w-full border border-gray-400 rounded-lg focus:outline-none"
-                        />
-                    </div>
-                </div>
+            <div className='mt-4'>
+                <h2 className='text-base font-semibold mb-1'>E-Mail Body</h2>
+                <ReactQuill
+                    value={emailBody}
+                    onChange={(value) => setValue("emailContent", value)}
+                    placeholder='Write something...'
+                    theme='snow'
+                    className='w-full border border-gray-400 rounded-lg'
+                />
             </div>
 
-            <div className="flex justify-end">
-                <button className="ButtonBlue text-white px-8 py-1 rounded-lg font-semibold">
-                    Send
+            <div className='flex justify-end mt-4'>
+                <button
+                    type='submit'
+                    className='bg-blue-600 text-white px-8 py-2 rounded-lg font-semibold'
+                >
+                    {isSubmitting ? "Sending..." : "Send"}
                 </button>
             </div>
-        </div>
+        </form>
     );
 }

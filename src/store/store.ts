@@ -21,6 +21,7 @@ import pricingSlice from './features/admin/pricingSlice';
 import addPriceSlice from './features/admin/addPriceSlice';
 import claimSlice from './features/admin/claimSlice';
 import notificationSlice from './features/admin/notificationSlice';
+import emailNotificationSlice from './features/admin/emailNotificationSlice'
 import socketSlice from './socket/socketSlice';
 import packageSlice from './features/admin/packageSlice';
 import customPackageSlice from './features/admin/customPackageSlice';
@@ -54,6 +55,7 @@ const store = configureStore({
     socket: socketSlice,
     package: packageSlice,
     customPackages: customPackageSlice,
+    emailNotification: emailNotificationSlice,
   },
 });
 
