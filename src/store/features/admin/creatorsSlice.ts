@@ -107,6 +107,9 @@ export const fetchAdminCreators = createAsyncThunk(
                 portfolioLink: creator.preferences?.socialInformation?.portfolioLink,
               },
             },
+            settings: {
+              isNotificationOn: creator.settings?.isNotificationOn ?? false,
+            },
             userAgreement: creator.userAgreement ?? false,
             approvedCommercial: creator.approvedCommercial ?? false,
           };

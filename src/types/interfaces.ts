@@ -83,6 +83,9 @@ export interface CreatorInterface {
             portfolioLink?: string[];
         };
     };
+    settings: {
+        isNotificationOn: boolean;
+    }
     userAgreement: boolean;
     approvedCommercial: boolean;
 }

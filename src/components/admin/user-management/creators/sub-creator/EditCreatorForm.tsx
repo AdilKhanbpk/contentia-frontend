@@ -34,8 +34,6 @@ const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
     };
 
     const {
-        register,
-        handleSubmit,
         reset,
         formState: { errors },
     } = useForm<CreatorInterface>();
@@ -282,7 +280,12 @@ const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
                         onSubmit={onSubmit}
                     />
                 )}
-                {activeSection === "settings" && <MemoizedFourthTab />}
+                {activeSection === "settings" && (
+                    <MemoizedFourthTab
+                        editCreatorForm={creatorData}
+                        onSubmit={onSubmit}
+                    />
+                )}
             </div>
         </div>
     );
