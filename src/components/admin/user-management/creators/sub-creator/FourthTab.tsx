@@ -1,8 +1,7 @@
-import { useEffect } from "react";
-import { Switch } from "@/components/ui/switch";
-import { AppDispatch } from "@/store/store";
+import { useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
-import { useForm, Controller } from "react-hook-form";
+import { AppDispatch } from "@/store/store";
+import { useForm, Controller, ControllerRenderProps } from "react-hook-form";
 import { CreatorInterface } from "@/types/interfaces";
 import { toast } from "react-toastify";
 import { getAccessToken } from "@/utils/checkToken";
@@ -11,94 +10,125 @@ import {
     updateAdminCreator,
 } from "@/store/features/admin/creatorsSlice";
 
-interface ForthTabProps {
+import {
+    Form,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormControl,
+    FormDescription,
+} from "@/components/ui/form";
+import { Switch } from "@/components/ui/switch";
+
+interface FourthTabProps {
     editCreatorForm: CreatorInterface | null;
-    onSubmit?: (data: CreatorInterface) => void;
+    onSubmit?: any;
 }
 
-const FourthTab: React.FC<ForthTabProps> = ({ editCreatorForm }) => {
+const FourthTab: React.FC<FourthTabProps> = ({ editCreatorForm }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const {
-        control,
-        handleSubmit,
-        reset,
-        formState: { isSubmitting },
-    } = useForm();
+
+    const form = useForm({
+        defaultValues: {
+            isNotificationOn:
+                editCreatorForm?.settings?.isNotificationOn ?? false,
+        },
+    });
 
     useEffect(() => {
         if (editCreatorForm) {
-            reset({
-                settings: {
-                    isNotificationOn:
-                        editCreatorForm?.settings?.isNotificationOn,
-                },
+            form.reset({
+                isNotificationOn:
+                    editCreatorForm.settings?.isNotificationOn ?? false,
             });
         }
-    }, [editCreatorForm, reset]);
+    }, [editCreatorForm]);
 
-    const onSubmit = async (formData: any) => {
-        if (!editCreatorForm?._id) {
-            toast.error(
-                "No creator ID found. Please ensure a creator is selected."
-            );
-            return;
-        }
-
-        const token = getAccessToken();
-        if (!token) return;
-
-        try {
-            const response = await dispatch(
-                updateAdminCreator({
-                    creatorId: editCreatorForm._id,
-                    data: {
-                        settings: {
-                            isNotificationOn:
-                                formData.settings.isNotificationOn,
-                        },
-                    },
-                    token,
-                })
-            );
-            if (updateAdminCreator.fulfilled.match(response)) {
-                toast.success("Creator updated successfully.");
-                await dispatch(fetchAdminCreators(token));
-            } else {
-                toast.error("Failed to update creator. Please try again.");
+    const onSubmit = useCallback(
+        async (formData: { isNotificationOn: boolean }) => {
+            if (!editCreatorForm?._id) {
+                toast.error(
+                    "No creator ID found. Please ensure a creator is selected."
+                );
+                return;
             }
-        } catch (error: any) {
-            toast.error(
-                `Error updating creator: ${error.message || "Unknown error"}`
-            );
-        }
-    };
+
+            const token = getAccessToken();
+            if (!token) return;
+
+            try {
+                const response = await dispatch(
+                    updateAdminCreator({
+                        creatorId: editCreatorForm._id,
+                        data: {
+                            settings: {
+                                isNotificationOn: formData.isNotificationOn,
+                            },
+                        },
+                        token,
+                    })
+                );
+
+                if (updateAdminCreator.fulfilled.match(response)) {
+                    toast.success("Creator updated successfully.");
+                    await dispatch(fetchAdminCreators(token));
+                } else {
+                    toast.error("Failed to update creator. Please try again.");
+                }
+            } catch (error: any) {
+                toast.error(
+                    `Error updating creator: ${
+                        error.message || "Unknown error"
+                    }`
+                );
+            }
+        },
+        [dispatch, editCreatorForm]
+    );
 
     return (
         <div className='w-full sm:w-2/3 p-6'>
-            <h1 className='text-lg font-bold text-center'>Settings</h1>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <div className='flex justify-between items-center mt-6'>
-                    <span className='text-sm font-medium'>Notifications</span>
-                    <Controller
-                        name='settings.isNotificationOn'
-                        control={control}
-                        render={({ field }) => (
-                            <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                            />
-                        )}
-                    />
-                </div>
-                <div className=' flex justify-end mt-6'>
-                    <button
-                        type='submit'
-                        className='ButtonBlue text-white px-4 py-2 rounded-md'
-                    >
-                        {isSubmitting ? "Saving..." : "Save Changes"}
-                    </button>
-                </div>
-            </form>
+            <h1 className='text-lg font-bold'>Settings</h1>
+            <Form {...form}>
+                <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className='space-y-6'
+                >
+                    <div className='flex flex-col gap-2 my-2'>
+                        <FormField
+                            control={form.control}
+                            name='isNotificationOn'
+                            render={({ field }) => (
+                                <FormItem className='flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm'>
+                                    <div>
+                                        <FormLabel>Notifications</FormLabel>
+                                        <FormDescription>
+                                            Receive emails about new products,
+                                            features, and updates.
+                                        </FormDescription>
+                                    </div>
+                                    <FormControl>
+                                        <Switch
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                        />
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                    <div className='flex justify-end mt-6'>
+                        <button
+                            type='submit'
+                            className='ButtonBlue text-white px-4 py-2 rounded-md'
+                        >
+                            {form.formState.isSubmitting
+                                ? "Saving..."
+                                : "Save Changes"}
+                        </button>
+                    </div>
+                </form>
+            </Form>
         </div>
     );
 };
