@@ -11,7 +11,11 @@ import {
 import { getAccessToken } from "@/utils/checkToken";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-export default function Modal() {
+interface CreateModalProps {
+    onClose: () => void;
+}
+
+export default function Modal({ onClose }: CreateModalProps) {
     const dispatch = useDispatch<AppDispatch>();
     const {
         register,
@@ -39,6 +43,8 @@ export default function Modal() {
         console.log("Submitting Data:", payload);
         await dispatch(createEmailNotification({ data: payload, token }));
         await dispatch(fetchEmailNotifications(token));
+
+        onClose();
     };
 
     return (

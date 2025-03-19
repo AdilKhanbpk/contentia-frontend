@@ -238,7 +238,7 @@ const Emails: React.FC = () => {
                 closeModal={() => setIsModalOpen(false)}
                 title=''
             >
-                <Modal />
+                <Modal onClose={() => setIsModalOpen(false)} />
             </CustomModelAdmin>
         </div>
     );
