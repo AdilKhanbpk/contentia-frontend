@@ -8,7 +8,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import { fetchMyBrands } from "@/store/features/profile/brandSlice";
 import { getAssignedOrders } from "@/store/features/admin/ordersSlice";
 import CustomModelAdmin from "../../modal/CustomModelAdmin";
-import ModalTwo from "./sub-payment/ModelTwo";
+import ModalTwo from "./sub-payment/ViewModal";
 import { OrderInterface } from "@/types/interfaces";
 import Image from "next/image";
 import { getAccessToken } from "@/utils/checkToken";
@@ -279,13 +279,13 @@ const OutPayments: React.FC = () => {
             </div>
 
             {/* Modal */}
-            <CustomModelAdmin
+            {/* <CustomModelAdmin
                 isOpen={isViewModalOpen}
                 closeModal={handleCloseModals}
                 title=''
             >
                 <ModalTwo />
-            </CustomModelAdmin>
+            </CustomModelAdmin> */}
         </div>
     );
 };

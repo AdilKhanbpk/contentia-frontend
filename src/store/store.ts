@@ -26,6 +26,7 @@ import socketSlice from './socket/socketSlice';
 import packageSlice from './features/admin/packageSlice';
 import customPackageSlice from './features/admin/customPackageSlice';
 import dashboardReducer from './features/admin/dashboardSlice';
+import incomingPaymentSlice from './features/admin/incomingPaymentSlice';
 
 const store = configureStore({
   reducer: {
@@ -56,6 +57,7 @@ const store = configureStore({
     package: packageSlice,
     customPackages: customPackageSlice,
     emailNotification: emailNotificationSlice,
+    incomingPayment: incomingPaymentSlice,
   },
 });
 

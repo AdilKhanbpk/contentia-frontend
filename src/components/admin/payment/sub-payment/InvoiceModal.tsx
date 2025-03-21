@@ -1,6 +1,12 @@
 import { useForm } from "react-hook-form";
 
-export default function CreateInvoiceModal() {
+interface CreateInvoiceModalProps {
+    onClose: () => void;
+}
+
+export default function CreateInvoiceModal({
+    onClose,
+}: CreateInvoiceModalProps) {
     const {
         register,
         handleSubmit,
