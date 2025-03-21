@@ -15,6 +15,7 @@ import {
 } from "@/store/features/admin/notificationSlice";
 import { toast } from "react-toastify";
 import { getAccessToken } from "@/utils/checkToken";
+import ModalNew from "./sub-push/ModalNew";
 
 const DataTable = dynamic(() => import("react-data-table-component"), {
     ssr: false,
@@ -32,6 +33,7 @@ const PushNotifications: React.FC = () => {
     const loading = useSelector(selectNotificationLoading);
 
     const [searchTerm, setSearchTerm] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
     const handleView = useCallback(
@@ -133,8 +135,15 @@ const PushNotifications: React.FC = () => {
                         placeholder='Search...'
                         className='p-2 border border-gray-300 rounded-lg'
                     />
+                    <div className='flex space-x-2'>
+                        <button
+                            onClick={() => setIsModalOpen(true)}
+                            className='px-4 py-2 bg-blue-500 text-white rounded-md'
+                        >
+                            Push Notification
+                        </button>
+                    </div>
                 </div>
-
                 <div className='shadow-md'>
                     {loading ? (
                         <p className='text-center text-gray-500 py-4'>
@@ -154,13 +163,19 @@ const PushNotifications: React.FC = () => {
                     )}
                 </div>
             </div>
-
             <CustomModelAdmin
                 isOpen={isViewModalOpen}
                 closeModal={handleCloseModals}
-                title='View Order'
+                title='View Notification'
             >
                 <Modal notification={currentNotification} />
+            </CustomModelAdmin>
+            <CustomModelAdmin
+                isOpen={isModalOpen}
+                closeModal={() => setIsModalOpen(false)}
+                title=''
+            >
+                <ModalNew onClose={() => setIsModalOpen(false)} />
             </CustomModelAdmin>
         </div>
     );
