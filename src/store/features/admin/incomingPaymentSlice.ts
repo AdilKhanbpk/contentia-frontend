@@ -112,7 +112,7 @@ export const refundPayment = createAsyncThunk(
     async ({ paymentId, token }: RefundPaymentPayload, { rejectWithValue }) => {
         try {
             axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            await axiosInstance.patch(`/admin/incomingPayment/refund/${paymentId}`);
+            await axiosInstance.patch(`/admin/incomingPayment/refund-payment/${paymentId}`);
             return paymentId;
         } catch (error) {
             const axiosError = error as AxiosError;
