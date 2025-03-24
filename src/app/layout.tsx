@@ -1,6 +1,7 @@
 "use client";
+
 import React, { useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import "../i18n";
 import { I18nextProvider } from "react-i18next";
@@ -16,6 +17,7 @@ import InitializeSocket from "@/socket/InitializeSocket";
 import { ToastContainer } from "react-toastify";
 import LoadingSpinner from "@/components/loaders/LoadingSpinner";
 import { FileProvider } from "@/context/FileContext";
+import { initGA, logPageView } from "@/utils/googleAnalytics/Analytics"; // Import analytics
 
 export default function RootLayout({
     children,
@@ -23,7 +25,6 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
-    const router = useRouter();
     const { isLoading } = useAuth();
 
     const isPublicPath =
@@ -41,6 +42,12 @@ export default function RootLayout({
         pathname === "/orders" || pathname.startsWith("/orders/");
 
     const isAdminPage = pathname === "/admin" || pathname.startsWith("/admin/");
+
+    // Initialize and track page views
+    useEffect(() => {
+        initGA();
+        logPageView(pathname);
+    }, [pathname]);
 
     // Show loading spinner during authentication check
     if (isLoading) {
