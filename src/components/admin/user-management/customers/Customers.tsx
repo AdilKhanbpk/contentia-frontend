@@ -149,6 +149,7 @@ const Customers: React.FC = () => {
             phoneNumber: customerData.phoneNumber ?? "",
             customerStatus: customerData.customerStatus ?? "",
             invoiceType: customerData.invoiceType ?? "",
+            role: customerData.role ?? "user",
             billingInformation: {
                 invoiceStatus:
                     customerData.billingInformation?.invoiceStatus ?? false,

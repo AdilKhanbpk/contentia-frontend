@@ -112,6 +112,21 @@ const ModalEdit: React.FC<ModalEditProps> = ({
                                         </div>
                                     </div>
                                 </div>
+                                <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4 w-full md:w-1/2'>
+                                    <label>Role</label>
+                                    <select
+                                        {...register("role", {
+                                            required: true,
+                                        })}
+                                        defaultValue={
+                                            customerData?.role || "user"
+                                        }
+                                        className='font-medium border px-1 py-1 rounded-md focus:outline-none'
+                                    >
+                                        <option value='admin'>Admin</option>
+                                        <option value='user'>User</option>
+                                    </select>
+                                </div>
 
                                 {/* Invoice Information */}
                                 <div className='mb-6 p-6 lg:px-4 lg:py-4 flex flex-col lg:flex-row lg:space-x-16'>

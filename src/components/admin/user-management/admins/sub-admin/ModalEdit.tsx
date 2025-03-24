@@ -124,18 +124,24 @@ const ModalEdit: React.FC<ModalEditProps> = ({
                                                 className='font-medium border px-1 py-1 rounded-md focus:outline-none'
                                             />
                                         </div> */}
-                                        <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4 w-full md:w-1/2 '>
+                                        <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4 w-full md:w-1/2'>
                                             <label>Role</label>
-                                            <input
-                                                readOnly
-                                                type='text'
-                                                placeholder='Enter your Role'
+                                            <select
                                                 {...register("role", {
                                                     required: true,
                                                 })}
-                                                defaultValue={adminData?.role}
+                                                defaultValue={
+                                                    adminData?.role || "admin"
+                                                }
                                                 className='font-medium border px-1 py-1 rounded-md focus:outline-none'
-                                            />
+                                            >
+                                                <option value='admin'>
+                                                    Admin
+                                                </option>
+                                                <option value='user'>
+                                                    User
+                                                </option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>

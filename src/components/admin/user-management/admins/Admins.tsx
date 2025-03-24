@@ -144,6 +144,7 @@ const Admins: React.FC = () => {
             phoneNumber: customerData.phoneNumber ?? "",
             customerStatus: customerData.customerStatus ?? "",
             invoiceType: customerData.invoiceType ?? "",
+            role: customerData.role ?? "admin",
             billingInformation: {
                 invoiceStatus:
                     customerData.billingInformation?.invoiceStatus ?? false,
