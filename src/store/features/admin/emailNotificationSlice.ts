@@ -102,7 +102,7 @@ export const updateEmailNotification = createAsyncThunk(
       token,
     }: {
       emailNotificationId: string;
-      data: { title?: string; details?: string };
+      data: EmailNotificationInterface;
       token: string;
     },
     { rejectWithValue }
