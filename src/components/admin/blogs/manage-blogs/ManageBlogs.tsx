@@ -81,9 +81,11 @@ TableActions.displayName = "TableActions";
 
 const ManageBlogs: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { blogs = [], currentBlog } = useSelector(
-        (state: RootState) => state.blog
-    );
+    const {
+        blogs = [],
+        currentBlog,
+        loading,
+    } = useSelector((state: RootState) => state.blog);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -350,6 +352,7 @@ const ManageBlogs: React.FC = () => {
                     columns={columns}
                     data={filteredBlogs}
                     noDataComponent='No blogs found'
+                    loading={loading}
                 />
             </div>
 

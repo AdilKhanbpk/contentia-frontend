@@ -32,9 +32,11 @@ import CustomTable from "@/components/custom-table/CustomTable";
 
 const Emails: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { emailNotifications = [], currentEmailNotification } = useSelector(
-        (state: RootState) => state.emailNotification
-    );
+    const {
+        emailNotifications = [],
+        currentEmailNotification,
+        loading,
+    } = useSelector((state: RootState) => state.emailNotification);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -212,6 +214,7 @@ const Emails: React.FC = () => {
                         columns={columns}
                         data={filteredEmails}
                         noDataComponent='No email notifications found'
+                        loading={loading}
                     />
                 </div>
             </div>

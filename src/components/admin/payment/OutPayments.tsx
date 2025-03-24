@@ -26,7 +26,9 @@ const OutPayments: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
-    const { data: orders } = useSelector((state: RootState) => state.orders);
+    const { data: orders, loading } = useSelector(
+        (state: RootState) => state.orders
+    );
 
     const filteredOrders = orders.filter(
         (order: OrderInterface) =>
@@ -256,6 +258,7 @@ const OutPayments: React.FC = () => {
                         columns={columns}
                         data={filteredOrders}
                         noDataComponent='No Outgoing Payments Found'
+                        loading={loading}
                     />
                 </div>
             </div>

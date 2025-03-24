@@ -421,6 +421,7 @@ const Packages: React.FC = () => {
                             return false;
                         })}
                         noDataComponent='No Packages Found'
+                        loading={loading}
                     />
                 </div>
             </div>

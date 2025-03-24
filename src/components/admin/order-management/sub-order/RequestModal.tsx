@@ -13,12 +13,14 @@ interface RequestModalProps {
     order: OrderInterface | null;
     onApprove: (orderId: string, creatorId: string) => Promise<void>;
     onReject: (orderId: string, creatorId: string) => Promise<void>;
+    loading: boolean;
 }
 
 const RequestModal: React.FC<RequestModalProps> = ({
     order,
     onApprove,
     onReject,
+    loading,
 }) => {
     const dispatch = useDispatch<AppDispatch>();
     const [searchTerm, setSearchTerm] = useState("");
@@ -183,6 +185,7 @@ const RequestModal: React.FC<RequestModalProps> = ({
                         columns={columns}
                         data={filteredCreators}
                         noDataComponent='No Requests Found'
+                        loading={loading}
                     />
                 </div>
             </div>

@@ -72,7 +72,7 @@ TableActions.displayName = "TableActions";
 
 const Creators: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { data: creators = [] } = useSelector(
+    const { data: creators = [], loading } = useSelector(
         (state: RootState) => state.adminCreators
     );
 
@@ -469,6 +469,7 @@ const Creators: React.FC = () => {
                     columns={columns}
                     data={filteredCreators}
                     noDataComponent='No Creators Found'
+                    loading={loading}
                 />
 
                 {/* Conditional render of the edit form */}

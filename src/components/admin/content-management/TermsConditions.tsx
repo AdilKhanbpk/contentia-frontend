@@ -6,6 +6,7 @@ import CustomModelAdmin from "../../modal/CustomModelAdmin";
 import ModalTerms from "./sub-content/ModalTerms";
 import { FaFileCsv } from "react-icons/fa";
 import CustomTable from "@/components/custom-table/CustomTable";
+import { setTimeout } from "timers";
 
 export interface Page {
     id: number;
@@ -30,6 +31,10 @@ const initialPages: Page[] = [
 const TermsConditions: React.FC = () => {
     const [pages, setPages] = useState(initialPages);
     const [searchTerm, setSearchTerm] = useState("");
+    const [loading, setIsLoading] = useState(true);
+    setTimeout(() => {
+        setIsLoading(false);
+    }, 1000);
 
     const filteredPages = pages.filter((page) =>
         page.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -123,6 +128,7 @@ const TermsConditions: React.FC = () => {
                         columns={columns}
                         data={filteredPages}
                         noDataComponent='No Pages Found'
+                        loading={loading}
                     />
                 </div>
             </div>

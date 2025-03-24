@@ -90,7 +90,9 @@ const Claims: React.FC = () => {
     const [isModalTwoOpen, setIsModalTwoOpen] = useState(false);
     const [currentClaim, setCurrentClaim] = useState<Claim | null>(null);
 
-    const { data: claims } = useSelector((state: RootState) => state.claim);
+    const { data: claims, loading } = useSelector(
+        (state: RootState) => state.claim
+    );
 
     useEffect(() => {
         const token = getAccessToken();
@@ -331,6 +333,7 @@ const Claims: React.FC = () => {
                     columns={columns}
                     data={filteredClaims}
                     noDataComponent='No Claims Found'
+                    loading={loading}
                 />
             </div>
 

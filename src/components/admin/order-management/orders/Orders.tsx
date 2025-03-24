@@ -471,6 +471,7 @@ const Orders: React.FC = () => {
                     columns={columns}
                     data={filteredOrders}
                     noDataComponent='No Orders Found'
+                    loading={loading}
                 />
             </div>
 
@@ -507,6 +508,7 @@ const Orders: React.FC = () => {
                     order={currentOrder}
                     onApprove={handleApproveCreator}
                     onReject={handleRejectCreator}
+                    loading={loading}
                 />
             </CustomModelAdmin>
         </div>

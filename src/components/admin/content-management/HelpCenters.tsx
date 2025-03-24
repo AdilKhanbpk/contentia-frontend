@@ -19,7 +19,9 @@ import { getAccessToken } from "@/utils/checkToken";
 
 const HelpCenters: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { helpSupports } = useSelector((state: RootState) => state.help);
+    const { helpSupports, loading } = useSelector(
+        (state: RootState) => state.help
+    );
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -132,6 +134,7 @@ const HelpCenters: React.FC = () => {
                         columns={columns}
                         data={filteredHelpSupports}
                         noDataComponent='No Help and Support Found'
+                        loading={loading}
                     />
                 </div>
             </div>

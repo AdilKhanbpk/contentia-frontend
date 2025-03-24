@@ -9,7 +9,6 @@ import React, {
     memo,
 } from "react";
 import { FaFileCsv, FaEye, FaEdit, FaTrashAlt } from "react-icons/fa";
-import dynamic from "next/dynamic";
 import CustomModelAdmin from "../../modal/CustomModelAdmin";
 import NewModal from "./sub-payment/NewModal";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,7 +25,7 @@ import CustomTable from "@/components/custom-table/CustomTable";
 
 const InPayments: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { payments = [] } = useSelector(
+    const { payments = [], loading } = useSelector(
         (state: RootState) => state.incomingPayment
     );
 
@@ -183,6 +182,7 @@ const InPayments: React.FC = () => {
                         columns={columns}
                         data={filteredPayments}
                         noDataComponent='No Ingoing Payments Found'
+                        loading={loading}
                     />
                 </div>
             </div>

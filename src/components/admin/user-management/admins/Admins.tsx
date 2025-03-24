@@ -75,7 +75,7 @@ TableActions.displayName = "TableActions";
 
 const Admins: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { adminData: customers = [] } = useSelector(
+    const { adminData: customers = [], loading } = useSelector(
         (state: RootState) => state.adminCustomers
     );
 
@@ -326,6 +326,7 @@ const Admins: React.FC = () => {
                     columns={columns}
                     data={filteredCustomers}
                     noDataComponent='No Admins Found'
+                    loading={loading}
                 />
             </div>
 

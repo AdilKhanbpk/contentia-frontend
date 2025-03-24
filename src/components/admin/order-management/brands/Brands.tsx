@@ -255,6 +255,7 @@ const Brands: React.FC = () => {
                     columns={columns}
                     data={filteredBrands}
                     noDataComponent='No Brands Found'
+                    loading={loading}
                 />
             </div>
 
