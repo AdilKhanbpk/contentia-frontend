@@ -347,6 +347,7 @@ const FAQs: React.FC = () => {
                 <CustomTable
                     columns={columns}
                     data={filteredFAQs}
+                    noDataComponent='No Faqs Found'
                 />
             </div>
 

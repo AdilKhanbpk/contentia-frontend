@@ -131,6 +131,7 @@ const HelpCenters: React.FC = () => {
                     <CustomTable
                         columns={columns}
                         data={filteredHelpSupports}
+                        noDataComponent='No Help and Support Found'
                     />
                 </div>
             </div>

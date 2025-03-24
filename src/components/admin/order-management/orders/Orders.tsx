@@ -470,6 +470,7 @@ const Orders: React.FC = () => {
                 <CustomTable
                     columns={columns}
                     data={filteredOrders}
+                    noDataComponent='No Orders Found'
                 />
             </div>
 

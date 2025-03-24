@@ -182,6 +182,7 @@ const RequestModal: React.FC<RequestModalProps> = ({
                     <CustomTable
                         columns={columns}
                         data={filteredCreators}
+                        noDataComponent='No Requests Found'
                     />
                 </div>
             </div>

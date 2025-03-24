@@ -22,10 +22,7 @@ import {
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import CreateInvoiceModal from "./sub-payment/InvoiceModal";
 import ViewModal from "./sub-payment/ViewModal";
-
-const DataTable = dynamic(() => import("react-data-table-component"), {
-    ssr: false,
-});
+import CustomTable from "@/components/custom-table/CustomTable";
 
 const InPayments: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -182,25 +179,10 @@ const InPayments: React.FC = () => {
                     </div>
                 </div>
                 <div className='shadow-md'>
-                    <DataTable
+                    <CustomTable
                         columns={columns}
                         data={filteredPayments}
-                        pagination
-                        customStyles={{
-                            rows: {
-                                style: { fontSize: "14px", fontWeight: "500" },
-                            },
-                            headRow: {
-                                style: {
-                                    fontSize: "16px",
-                                    fontWeight: "600",
-                                    backgroundColor: "#f8f8f8",
-                                },
-                            },
-                            headCells: {
-                                style: { fontWeight: "600", color: "#333" },
-                            },
-                        }}
+                        noDataComponent='No Ingoing Payments Found'
                     />
                 </div>
             </div>

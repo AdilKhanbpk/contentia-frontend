@@ -254,6 +254,7 @@ const Brands: React.FC = () => {
                 <CustomTable
                     columns={columns}
                     data={filteredBrands}
+                    noDataComponent='No Brands Found'
                 />
             </div>
 

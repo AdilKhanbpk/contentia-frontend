@@ -330,6 +330,7 @@ const Claims: React.FC = () => {
                 <CustomTable
                     columns={columns}
                     data={filteredClaims}
+                    noDataComponent='No Claims Found'
                 />
             </div>
 

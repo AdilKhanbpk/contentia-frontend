@@ -420,6 +420,7 @@ const Packages: React.FC = () => {
                                 );
                             return false;
                         })}
+                        noDataComponent='No Packages Found'
                     />
                 </div>
             </div>

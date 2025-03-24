@@ -325,6 +325,7 @@ const Admins: React.FC = () => {
                 <CustomTable
                     columns={columns}
                     data={filteredCustomers}
+                    noDataComponent='No Admins Found'
                 />
             </div>
 

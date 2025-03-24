@@ -12,10 +12,7 @@ import ModalTwo from "./sub-payment/ViewModal";
 import { OrderInterface } from "@/types/interfaces";
 import Image from "next/image";
 import { getAccessToken } from "@/utils/checkToken";
-
-const DataTable = dynamic(() => import("react-data-table-component"), {
-    ssr: false,
-});
+import CustomTable from "@/components/custom-table/CustomTable";
 
 interface TableActionsProps {
     onApprove: (id: string) => void;
@@ -255,25 +252,10 @@ const OutPayments: React.FC = () => {
 
                 {/* Data Table */}
                 <div className='shadow-md'>
-                    <DataTable
+                    <CustomTable
                         columns={columns}
                         data={filteredOrders}
-                        pagination
-                        customStyles={{
-                            rows: {
-                                style: { fontSize: "14px", fontWeight: "500" },
-                            },
-                            headRow: {
-                                style: {
-                                    fontSize: "16px",
-                                    fontWeight: "600",
-                                    backgroundColor: "#f8f8f8",
-                                },
-                            },
-                            headCells: {
-                                style: { fontWeight: "600", color: "#333" },
-                            },
-                        }}
+                        noDataComponent='No Outgoing Payments Found'
                     />
                 </div>
             </div>

@@ -349,6 +349,7 @@ const ManageBlogs: React.FC = () => {
                 <CustomTable
                     columns={columns}
                     data={filteredBlogs}
+                    noDataComponent='No blogs found'
                 />
             </div>
 

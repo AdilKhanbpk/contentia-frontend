@@ -468,6 +468,7 @@ const Creators: React.FC = () => {
                 <CustomTable
                     columns={columns}
                     data={filteredCreators}
+                    noDataComponent='No Creators Found'
                 />
 
                 {/* Conditional render of the edit form */}

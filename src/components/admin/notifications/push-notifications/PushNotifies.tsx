@@ -16,10 +16,7 @@ import {
 import { toast } from "react-toastify";
 import { getAccessToken } from "@/utils/checkToken";
 import ModalNew from "./sub-push/ModalNew";
-
-const DataTable = dynamic(() => import("react-data-table-component"), {
-    ssr: false,
-});
+import CustomTable from "@/components/custom-table/CustomTable";
 
 interface TableActionsProps {
     onView: (id: string) => void;
@@ -150,15 +147,10 @@ const PushNotifications: React.FC = () => {
                             Loading notifications...
                         </p>
                     ) : (
-                        <DataTable
+                        <CustomTable
                             columns={columns}
                             data={filteredNotifications}
-                            pagination
-                            noDataComponent={
-                                <p className='text-center text-gray-500 py-4'>
-                                    No notifications found.
-                                </p>
-                            }
+                            noDataComponent={"No notifications found"}
                         />
                     )}
                 </div>
