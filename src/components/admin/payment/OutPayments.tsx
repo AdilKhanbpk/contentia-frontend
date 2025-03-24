@@ -1,7 +1,6 @@
 "use client";
 import { memo, useCallback, useEffect, useState } from "react";
 import { FaCheck, FaTimes, FaEye, FaFileCsv } from "react-icons/fa";
-import dynamic from "next/dynamic";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";

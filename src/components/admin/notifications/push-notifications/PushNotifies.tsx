@@ -1,7 +1,6 @@
 "use client";
 import React, { memo, useCallback, useEffect, useState } from "react";
 import { FaEye, FaFileCsv } from "react-icons/fa";
-import dynamic from "next/dynamic";
 import CustomModelAdmin from "../../../modal/CustomModelAdmin";
 import Modal from "./sub-push/Modal";
 import { useDispatch, useSelector } from "react-redux";

@@ -16,7 +16,6 @@ import {
     FaEdit,
     FaTrashAlt,
 } from "react-icons/fa";
-import dynamic from "next/dynamic";
 import CustomModelAdmin from "../../../modal/CustomModelAdmin";
 import Modal from "./sub-emails/Modal";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,6 +28,8 @@ import {
 } from "@/store/features/admin/emailNotificationSlice";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import CustomTable from "@/components/custom-table/CustomTable";
+import EditModal from "./sub-emails/EditModal";
+import ViewModal from "./sub-emails/ViewModal";
 
 const Emails: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -58,7 +59,7 @@ const Emails: React.FC = () => {
         await dispatch(
             fetchEmailNotificationById({ emailNotificationId: id, token })
         ).unwrap();
-        setIsModalViewOpen(true);
+        setIsModalEditOpen(true);
     };
 
     const handleDelete = async (id: string) => {
@@ -225,6 +226,26 @@ const Emails: React.FC = () => {
                 title=''
             >
                 <Modal onClose={() => setIsModalOpen(false)} />
+            </CustomModelAdmin>
+            <CustomModelAdmin
+                isOpen={isModalEditOpen}
+                closeModal={() => setIsModalEditOpen(false)}
+                title=''
+            >
+                <EditModal
+                    emailNotification={currentEmailNotification}
+                    onClose={() => setIsModalEditOpen(false)}
+                />
+            </CustomModelAdmin>
+            <CustomModelAdmin
+                isOpen={isModalViewOpen}
+                closeModal={() => setIsModalViewOpen(false)}
+                title=''
+            >
+                <ViewModal
+                    emailNotification={currentEmailNotification}
+                    onClose={() => setIsModalViewOpen(false)}
+                />
             </CustomModelAdmin>
         </div>
     );

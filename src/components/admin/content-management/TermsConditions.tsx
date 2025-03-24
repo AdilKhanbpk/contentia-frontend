@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import dynamic from "next/dynamic";
 import CustomModelAdmin from "../../modal/CustomModelAdmin";
 import ModalTerms from "./sub-content/ModalTerms";
 import { FaFileCsv } from "react-icons/fa";
