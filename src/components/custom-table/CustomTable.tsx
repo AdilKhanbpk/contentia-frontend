@@ -9,33 +9,42 @@ interface CustomTableProps {
     columns: any[];
     data: any[];
     noDataComponent: string;
+    loading?: boolean;
 }
 
 const CustomTable: FC<CustomTableProps> = ({
     columns,
     data,
     noDataComponent,
+    loading,
 }) => {
     return (
         <div>
-            <DataTable
-                columns={columns}
-                data={data}
-                pagination
-                customStyles={customTableStyles}
-                highlightOnHover
-                theme='solarized'
-                striped
-                noDataComponent={
-                    <table className='w-full text-center text-gray-500 py-4 border'>
-                        <tbody>
-                            <tr>
-                                <td className='p-4'>{noDataComponent}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                }
-            />
+            {loading ? (
+                <table className='w-full text-center text-gray-500 py-4 border'>
+                    <tbody>
+                        <tr>
+                            <td className='p-4'>Loading Data ...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            ) : (
+                <DataTable
+                    columns={columns}
+                    data={data}
+                    pagination
+                    customStyles={customTableStyles}
+                    noDataComponent={
+                        <table className='w-full text-center text-gray-500 py-4 border'>
+                            <tbody>
+                                <tr>
+                                    <td className='p-4'>{noDataComponent}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    }
+                />
+            )}
         </div>
     );
 };

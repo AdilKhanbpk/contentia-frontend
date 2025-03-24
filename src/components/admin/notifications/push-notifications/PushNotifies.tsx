@@ -142,17 +142,12 @@ const PushNotifications: React.FC = () => {
                     </div>
                 </div>
                 <div className='shadow-md'>
-                    {loading ? (
-                        <p className='text-center text-gray-500 py-4'>
-                            Loading notifications...
-                        </p>
-                    ) : (
-                        <CustomTable
-                            columns={columns}
-                            data={filteredNotifications}
-                            noDataComponent={"No notifications found"}
-                        />
-                    )}
+                    <CustomTable
+                        columns={columns}
+                        data={filteredNotifications}
+                        noDataComponent={"No notifications found"}
+                        loading={loading}
+                    />
                 </div>
             </div>
             <CustomModelAdmin
