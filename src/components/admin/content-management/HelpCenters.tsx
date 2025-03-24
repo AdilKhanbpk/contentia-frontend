@@ -64,13 +64,11 @@ const HelpCenters: React.FC = () => {
                 name: "Title",
                 selector: (row: HelpSupport) => row.title,
                 sortable: true,
-                width: "250px",
             },
             {
                 name: "Category",
                 selector: (row: HelpSupport) => row.category,
                 sortable: true,
-                width: "200px",
             },
             {
                 name: "Actions",
@@ -93,7 +91,6 @@ const HelpCenters: React.FC = () => {
                         </button>
                     </div>
                 ),
-                width: "150px",
             },
         ];
     }, [dispatch]);

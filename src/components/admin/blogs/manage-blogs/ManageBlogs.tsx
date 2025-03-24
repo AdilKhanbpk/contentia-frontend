@@ -219,7 +219,7 @@ const ManageBlogs: React.FC = () => {
             ID: blog._id,
             Title: blog.title,
             Category: blog.category,
-            Author: blog.author.fullName || "",
+            Author: blog.author.fullName || "Not Specified",
             Status: blog.status,
         }));
 
@@ -238,7 +238,6 @@ const ManageBlogs: React.FC = () => {
                 name: "#",
                 selector: (row: BlogInterface) => row._id,
                 sortable: true,
-                width: "80px",
             },
             {
                 name: "Blog Info",
@@ -271,7 +270,8 @@ const ManageBlogs: React.FC = () => {
             },
             {
                 name: "Author",
-                selector: (row: BlogInterface) => row.author.fullName || "",
+                selector: (row: BlogInterface) =>
+                    row.author.fullName || "Not Specified",
                 sortable: true,
             },
             {
