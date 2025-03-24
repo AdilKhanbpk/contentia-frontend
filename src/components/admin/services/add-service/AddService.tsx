@@ -11,8 +11,6 @@ import { toast } from "react-toastify";
 import { getAccessToken } from "@/utils/checkToken";
 
 type FormData = {
-    platform: string;
-    aspectRatio: string;
     editPrice: number;
     sharePrice: number;
     coverPicPrice: number;
@@ -22,46 +20,18 @@ type FormData = {
     sixtySecondDurationPrice: number;
 };
 
-const platforms = [
-    {
-        label: "Instagram",
-        value: "instagram",
-    },
-    {
-        label: "TikTok",
-        value: "tiktok",
-    },
-    {
-        label: "Facebook",
-        value: "facebook",
-    },
-    {
-        label: "Youtube",
-        value: "youtube",
-    },
-    {
-        label: "X",
-        value: "x",
-    },
-    {
-        label: "Linkedin",
-        value: "linkedin",
-    },
-];
-const aspectRatios = ["9:16", "16:9"];
-
 const AddService: React.FC = () => {
     const dispatch = useDispatch();
     const { data: additionalService, error } = useSelector(
         (state: RootState) => state.addPrice
     );
-    const [selectedPlatform, setSelectedPlatform] = useState<string | null>(
-        null
-    );
-    const [selectedAspectRatio, setSelectedAspectRatio] = useState<
-        string | null
-    >(null);
-    const { register, handleSubmit, setValue, reset } = useForm<FormData>();
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { isSubmitting },
+    } = useForm<FormData>();
 
     useEffect(() => {
         const token = getAccessToken();
@@ -78,13 +48,7 @@ const AddService: React.FC = () => {
 
     useEffect(() => {
         if (additionalService) {
-            const backendPlatform = additionalService.platform || "";
-            const backendAspectRatio = additionalService.aspectRatio || "";
-            setSelectedPlatform(backendPlatform);
-            setSelectedAspectRatio(backendAspectRatio);
             reset({
-                platform: backendPlatform,
-                aspectRatio: backendAspectRatio,
                 editPrice: additionalService.editPrice || 1000,
                 sharePrice: additionalService.sharePrice || 1000,
                 coverPicPrice: additionalService.coverPicPrice || 1000,
@@ -98,23 +62,11 @@ const AddService: React.FC = () => {
         }
     }, [additionalService, reset]);
 
-    const handlePlatformSelect = (platform: string) => {
-        setSelectedPlatform(platform);
-        setValue("platform", platform);
-    };
-
-    const handleAspectRatioSelect = (ratio: string) => {
-        setSelectedAspectRatio(ratio);
-        setValue("aspectRatio", ratio);
-    };
-
     const handleSaveService: SubmitHandler<FormData> = (data) => {
         const token = getAccessToken();
         if (!token) return;
         if (additionalService) {
             const updatedService = {
-                platform: data.platform,
-                aspectRatio: data.aspectRatio,
                 editPrice: data.editPrice,
                 sharePrice: data.sharePrice,
                 coverPicPrice: data.coverPicPrice,
@@ -152,64 +104,9 @@ const AddService: React.FC = () => {
                     Select the price for additional services (for 1 UGC)
                 </p>
 
-                {/* Platform Selection */}
-                <div className='mb-4'>
-                    <p className='mb-4 text-lg'>Add new additional service</p>
-                    <div className='flex flex-row items-center mb-2'>
-                        <h3 className='font-semibold mr-4 text-lg'>
-                            Platform:
-                        </h3>
-                        <div className='flex space-x-4'>
-                            {platforms.map((platform) => (
-                                <button
-                                    key={platform.value}
-                                    type='button'
-                                    onClick={() =>
-                                        handlePlatformSelect(platform.value)
-                                    }
-                                    className={`px-3 py-1 border text-sm rounded-md ${
-                                        selectedPlatform === platform.value
-                                            ? "ButtonBlue text-white"
-                                            : "bg-gray-200"
-                                    }`}
-                                >
-                                    {platform.label}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Aspect Ratio Selection */}
-                <div className='mb-4'>
-                    <div className='flex flex-row items-center mb-2'>
-                        <h3 className='font-semibold mr-4 text-lg'>
-                            Aspect Ratio:
-                        </h3>
-                        <div className='flex space-x-4'>
-                            {aspectRatios.map((ratio) => (
-                                <button
-                                    key={ratio}
-                                    type='button'
-                                    onClick={() =>
-                                        handleAspectRatioSelect(ratio)
-                                    }
-                                    className={`px-3 py-1 border text-sm rounded-md ${
-                                        selectedAspectRatio === ratio
-                                            ? "ButtonBlue text-white"
-                                            : "bg-gray-200"
-                                    }`}
-                                >
-                                    {ratio}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
                 {/* Manually Added Fields */}
                 <div className='mt-4'>
-                    <h3 className='font-semibold mb-2 text-lg'>
+                    <h3 className='font-semibold mb-4 text-lg'>
                         Edit Additional Service Price
                     </h3>
 
@@ -310,7 +207,7 @@ const AddService: React.FC = () => {
                         type='submit'
                         className='w-32 ButtonBlue text-white px-3 py-2 rounded-md mt-4'
                     >
-                        Save
+                        {isSubmitting ? "Saving..." : "Save"}
                     </button>
                 </div>
             </div>
