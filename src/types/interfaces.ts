@@ -329,3 +329,13 @@ export interface EmailNotificationInterface {
     updatedAt?: string,
 
 }
+
+export interface TermsInterface {
+    _id: string;
+    pageTitle: string;
+    pageContent: string;
+    pageCategory: "creator" | "customer";
+    pageSlug: string;
+    createdAt?: string;
+    updatedAt?: string;
+}
