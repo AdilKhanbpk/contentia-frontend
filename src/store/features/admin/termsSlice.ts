@@ -62,14 +62,14 @@ export const fetchTerms = createAsyncThunk(
 );
 
 // Fetch single term by ID
-export const fetchTermById = createAsyncThunk(
+export const fetchTermBySlug = createAsyncThunk(
     'term/fetchTermById',
     async (
-        { blogId, token }: { blogId: string; token: string },
+        { slug, token }: { slug: string; token: string },
         { rejectWithValue }
     ) => {
         try {
-            const response = await axiosInstance.get(`/admin/terms/${blogId}`, {
+            const response = await axiosInstance.get(`/admin/terms/${slug}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             return response.data.data;
@@ -86,12 +86,12 @@ export const fetchTermById = createAsyncThunk(
 export const updateTerm = createAsyncThunk(
     'term/updateTerm',
     async (
-        { blogId, blogData, token }: { blogId: string; blogData: FormData; token: string },
+        { termId, blogData, token }: { termId: string; blogData: FormData; token: string },
         { rejectWithValue }
     ) => {
         try {
             const response = await axiosInstance.patch(
-                `/admin/terms/${blogId}`,
+                `/admin/terms/${termId}`,
                 blogData,
                 {
                     headers: {
@@ -116,11 +116,11 @@ export const updateTerm = createAsyncThunk(
 export const deleteTerm = createAsyncThunk(
     'term/deleteTerm',
     async (
-        { blogId, token }: { blogId: string; token: string },
+        { termId, token }: { termId: string; token: string },
         { rejectWithValue }
     ) => {
         try {
-            const response = await axiosInstance.delete(`/admin/terms/${blogId}`, {
+            const response = await axiosInstance.delete(`/admin/terms/${termId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             return response.data.data;
@@ -188,15 +188,15 @@ const termSlice = createSlice({
                 state.error = action.payload as string;
             })
             // Fetch term by ID
-            .addCase(fetchTermById.pending, (state) => {
+            .addCase(fetchTermBySlug.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchTermById.fulfilled, (state, action: PayloadAction<TermsInterface>) => {
+            .addCase(fetchTermBySlug.fulfilled, (state, action: PayloadAction<TermsInterface>) => {
                 state.loading = false;
                 state.currentTerm = action.payload;
             })
-            .addCase(fetchTermById.rejected, (state, action) => {
+            .addCase(fetchTermBySlug.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             })
