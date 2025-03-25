@@ -1,11 +1,9 @@
 import axios from "axios";
 
-const url = "https://contentia-backend-s4pw.onrender.com/api/v1"
-// const url = "http://localhost:8000/api/v1"
-
+const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export const axiosInstance = axios.create({
-    baseURL: url,
+    baseURL,
     headers: {
         "Content-Type": "application/json",
     },

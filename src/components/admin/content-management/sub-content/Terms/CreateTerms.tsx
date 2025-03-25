@@ -4,19 +4,16 @@ import { useForm, Controller } from "react-hook-form";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/store/store"; // Adjust import path as needed
-import { createBlog } from "@/store/features/admin/blogSlice"; // Adjust import path as needed
-import { toast } from "react-toastify"; // Assuming you're using react-toastify for notifications
-import { BlogInterface } from "@/types/interfaces";
+import { AppDispatch } from "@/store/store";
+import { toast } from "react-toastify";
+import { TermsInterface } from "@/types/interfaces";
 import { getAccessToken } from "@/utils/checkToken";
+import { createTerm } from "@/store/features/admin/termsSlice";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 export function CreateTerms({ onClose }: { onClose: () => void }) {
     const dispatch = useDispatch<AppDispatch>();
-    const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(
-        null
-    );
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const {
@@ -25,54 +22,26 @@ export function CreateTerms({ onClose }: { onClose: () => void }) {
         control,
         formState: { errors },
         reset,
-    } = useForm<BlogInterface>();
+    } = useForm<TermsInterface>();
 
-    const onSubmit = async (data: BlogInterface) => {
+    const onSubmit = async (data: TermsInterface) => {
         try {
             setIsSubmitting(true);
             const token = getAccessToken();
             if (!token) return;
 
-            // Create FormData for file upload
-            const formData = new FormData();
+            // Dispatch create term action
+            const result = await dispatch(createTerm({ term: data, token }));
 
-            // Explicitly append each field
-            formData.append("title", data.title);
-            formData.append("category", data.category);
-            if (Array.isArray(data.metaKeywords)) {
-                formData.append(
-                    "metaKeywords",
-                    JSON.stringify(data.metaKeywords)
-                );
-            } else {
-                formData.append(
-                    "metaKeywords",
-                    JSON.stringify([data.metaKeywords])
-                );
-            }
-            formData.append("content", data.content);
-            formData.append("metaDescription", data.metaDescription);
-
-            // Handle banner image specifically
-            if (data.bannerImage && data.bannerImage.length > 0) {
-                formData.append("bannerImage", data.bannerImage[0]);
-            }
-
-            // Dispatch create blog action
-            const result = await dispatch(
-                createBlog({ blog: formData, token })
-            );
-
-            if (createBlog.fulfilled.match(result)) {
-                toast.success("Blog created successfully!");
+            if (createTerm.fulfilled.match(result)) {
+                toast.success("Term created successfully!");
                 reset();
-                setBannerImagePreview(null);
             } else {
-                console.error("createBlog rejected:", result);
-                toast.error("Failed to create blog");
+                console.error("createTerm rejected:", result);
+                toast.error("Failed to create term");
             }
         } catch (error) {
-            console.error("Blog creation error:", error);
+            console.error("Term creation error:", error);
             toast.error("An unexpected error occurred");
         } finally {
             setIsSubmitting(false);
@@ -82,15 +51,15 @@ export function CreateTerms({ onClose }: { onClose: () => void }) {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
-                <h1 className='text-lg font-semibold'>Add a new blog</h1>
+                <h1 className='text-lg font-semibold'>Add a new term</h1>
 
                 {/* Title */}
                 <div className='mt-4'>
                     <label className='block text-sm font-semibold'>Title</label>
                     <input
                         type='text'
-                        placeholder='Enter blog title'
-                        {...register("title", {
+                        placeholder='Enter term title'
+                        {...register("pageTitle", {
                             required: "Title is required",
                             minLength: {
                                 value: 3,
@@ -99,9 +68,9 @@ export function CreateTerms({ onClose }: { onClose: () => void }) {
                         })}
                         className='w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none'
                     />
-                    {errors.title && (
+                    {errors.pageTitle && (
                         <p className='text-red-500 text-sm'>
-                            {errors.title.message}
+                            {errors.pageTitle.message}
                         </p>
                     )}
                 </div>
@@ -112,40 +81,18 @@ export function CreateTerms({ onClose }: { onClose: () => void }) {
                         Category
                     </label>
                     <select
-                        {...register("category", {
+                        {...register("pageCategory", {
                             required: "Category is required",
                         })}
                         className='w-full py-2 border border-gray-400 rounded-md focus:outline-none'
                     >
                         <option value=''>Select a category</option>
-                        <option value='tech'>Tech</option>
-                        <option value='health'>Health</option>
-                        <option value='finance'>Finance</option>
-                        {/* Add other categories as needed */}
+                        <option value='creator'>Creator</option>
+                        <option value='customer'>Customer</option>
                     </select>
-                    {errors.category && (
+                    {errors.pageCategory && (
                         <p className='text-red-500 text-sm'>
-                            {errors.category.message}
-                        </p>
-                    )}
-                </div>
-
-                {/* Keywords */}
-                <div className='mt-4'>
-                    <label className='block text-sm font-semibold'>
-                        Keywords
-                    </label>
-                    <input
-                        type='text'
-                        placeholder='Click the enter button after writing your keyword'
-                        {...register("metaKeywords", {
-                            required: "Keywords are required",
-                        })}
-                        className='w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none'
-                    />
-                    {errors.metaKeywords && (
-                        <p className='text-red-500 text-sm'>
-                            {errors.metaKeywords.message}
+                            {errors.pageCategory.message}
                         </p>
                     )}
                 </div>
@@ -156,7 +103,7 @@ export function CreateTerms({ onClose }: { onClose: () => void }) {
                         Content
                     </label>
                     <Controller
-                        name='content'
+                        name='pageContent'
                         control={control}
                         rules={{ required: "Content is required" }}
                         render={({ field: { onChange, value } }) => (
@@ -169,82 +116,9 @@ export function CreateTerms({ onClose }: { onClose: () => void }) {
                             />
                         )}
                     />
-                    {errors.content && (
+                    {errors.pageContent && (
                         <p className='text-red-500 text-sm'>
-                            {errors.content.message}
-                        </p>
-                    )}
-                </div>
-
-                {/* Blog Banner */}
-                <div className='mt-4'>
-                    <label className='block text-sm font-semibold'>
-                        Blog Banner
-                    </label>
-                    <div
-                        className='relative border border-gray-400 rounded-md p-4 text-center bg-gray-200'
-                        style={{
-                            width: "100%",
-                            maxWidth: "500px",
-                            height: "125px",
-                        }}
-                    >
-                        <input
-                            type='file'
-                            {...register("bannerImage", {
-                                required: "Banner image is required",
-                                validate: (value) => {
-                                    if (!value || value.length === 0) {
-                                        return "Please select an image";
-                                    }
-                                    return true;
-                                },
-                            })}
-                            className='absolute inset-0 w-full h-full opacity-0 cursor-pointer'
-                            accept='image/*'
-                        />
-                        <div className='flex flex-col justify-center items-center h-full pointer-events-none'>
-                            {bannerImagePreview ? (
-                                <img
-                                    src={bannerImagePreview}
-                                    alt='Banner Preview'
-                                    className='max-h-full max-w-full object-cover'
-                                />
-                            ) : (
-                                <span className='text-gray-500 font-medium text-lg'>
-                                    2000 x 500
-                                </span>
-                            )}
-                        </div>
-                    </div>
-                    {errors.bannerImage && (
-                        <p className='text-red-500 text-sm'>
-                            {errors.bannerImage.message}
-                        </p>
-                    )}
-                </div>
-
-                {/* Meta Description */}
-                <div className='mt-4'>
-                    <label className='block text-sm font-semibold'>
-                        Meta Description
-                    </label>
-                    <input
-                        type='text'
-                        placeholder='Enter meta description'
-                        {...register("metaDescription", {
-                            required: "Meta description is required",
-                            minLength: {
-                                value: 10,
-                                message:
-                                    "Meta description must be at least 10 characters",
-                            },
-                        })}
-                        className='w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none'
-                    />
-                    {errors.metaDescription && (
-                        <p className='text-red-500 text-sm'>
-                            {errors.metaDescription.message}
+                            {errors.pageContent.message}
                         </p>
                     )}
                 </div>
