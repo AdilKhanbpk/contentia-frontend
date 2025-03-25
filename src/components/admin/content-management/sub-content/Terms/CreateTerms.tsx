@@ -50,7 +50,7 @@ export function CreateTerms({ onClose }: { onClose: () => void }) {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
+            <div className='flex flex-col py-10 lg:my-0 px-4 sm:px-6 md:px-12'>
                 <h1 className='text-lg font-semibold'>Add a new term</h1>
 
                 {/* Title */}
