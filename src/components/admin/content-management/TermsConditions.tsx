@@ -12,28 +12,28 @@ import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store/store";
-import {
-    fetchBlogs,
-    deleteBlog,
-    createBlog,
-    updateBlog,
-    fetchBlogById,
-} from "@/store/features/admin/blogSlice";
+
 import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import { toast } from "react-toastify";
-import { BlogInterface } from "@/types/interfaces";
+import { TermsInterface } from "@/types/interfaces";
 import { getAccessToken } from "@/utils/checkToken";
 import CustomModelAdmin from "../../modal/CustomModelAdmin";
 import { CreateTerms } from "./sub-content/Terms/CreateTerms";
 import { EditTerms } from "./sub-content/Terms/EditTerms";
 import { ViewTerms } from "./sub-content/Terms/ViewTerms";
+import {
+    deleteTerm,
+    fetchTermById,
+    fetchTerms,
+    updateTerm,
+} from "@/store/features/admin/termsSlice";
 
 const SearchBar = memo(
     ({ onSearch }: { onSearch: (value: string) => void }) => (
         <input
             type='text'
-            placeholder='Search blogs...'
+            placeholder='Search terms...'
             onChange={(e) => onSearch(e.target.value)}
             className='p-2 border border-gray-300 rounded-lg'
         />
@@ -82,10 +82,10 @@ TableActions.displayName = "TableActions";
 const TermsConditions: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const {
-        blogs = [],
-        currentBlog,
+        terms = [],
+        currentTerm,
         loading,
-    } = useSelector((state: RootState) => state.blog);
+    } = useSelector((state: RootState) => state.terms);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -97,11 +97,11 @@ const TermsConditions: React.FC = () => {
             const token = getAccessToken();
             if (!token) return;
 
-            dispatch(deleteBlog({ blogId: id, token }))
+            dispatch(deleteTerm({ termId: id, token }))
                 .unwrap()
                 .then(() => {
-                    toast.success("Blog deleted successfully");
-                    dispatch(fetchBlogs(token));
+                    toast.success("Term deleted successfully");
+                    dispatch(fetchTerms(token));
                 })
                 .catch((error: any) => {
                     toast.error("Delete failed");
@@ -114,95 +114,39 @@ const TermsConditions: React.FC = () => {
     const handleView = async (id: string) => {
         const token = getAccessToken();
         if (!token) return;
-        await dispatch(fetchBlogById({ blogId: id, token })).unwrap();
+        await dispatch(fetchTermById({ termId: id, token })).unwrap();
         setIsModalViewOpen(true);
     };
 
-    const handleUpdate = async (blogData: BlogInterface) => {
+    const handleUpdate = async (termData: TermsInterface) => {
         const token = getAccessToken();
         if (!token) return;
-        if (!blogData._id) {
-            toast.error("Blog ID is missing!");
+        if (!termData._id) {
+            toast.error("Term ID is missing!");
             return;
         }
-
-        const formData = new FormData();
-
-        Object.entries(blogData).forEach(([key, value]) => {
-            if (
-                key === "bannerImage" &&
-                value instanceof FileList &&
-                value.length > 0
-            ) {
-                formData.append(key, value[0]); // Append only if new file is selected
-            } else if (key === "metaKeywords" && typeof value === "string") {
-                formData.append(key, value); // Send as a simple comma-separated string
-            } else if (value !== null && value !== undefined) {
-                formData.append(key, value.toString());
-            }
-        });
 
         try {
             await dispatch(
-                updateBlog({ blogId: blogData._id, blogData: formData, token })
+                updateTerm({ termId: termData._id, termData, token })
             ).unwrap();
-            toast.success("Blog updated successfully");
-            await dispatch(fetchBlogs(token));
+            toast.success("Term updated successfully");
+            await dispatch(fetchTerms(token));
             setIsModalEditOpen(false);
         } catch (error: any) {
             toast.error(
-                `Blog update failed: ${
+                `Term update failed: ${
                     error?.message || "Something went wrong"
                 }`
             );
-            console.error("Blog update failed:", error);
-        }
-    };
-
-    const handleCreate = async (blogData: BlogInterface) => {
-        const token = getAccessToken();
-        if (!token) return;
-
-        if (!blogData || Object.keys(blogData).length === 0) {
-            toast.error("Blog data is empty");
-            return;
-        }
-
-        const formData = new FormData();
-
-        Object.entries(blogData).forEach(([key, value]) => {
-            if (
-                key === "bannerImage" &&
-                value instanceof FileList &&
-                value.length > 0
-            ) {
-                formData.append(key, value[0]); // Append only if a file is selected
-            } else if (key === "metaKeywords" && typeof value === "string") {
-                formData.append(key, value); // Send as a simple comma-separated string
-            } else if (value !== null && value !== undefined) {
-                formData.append(key, value.toString());
-            }
-        });
-
-        try {
-            await dispatch(createBlog({ blog: formData, token })).unwrap();
-            toast.success("Blog created successfully");
-            setIsModalOpen(false);
-            await dispatch(fetchBlogs(token));
-        } catch (error: any) {
-            toast.error(
-                `Blog creation failed: ${
-                    error?.message || "Something went wrong"
-                }`
-            );
-            console.error("Blog creation error:", error);
+            console.error("Term update failed:", error);
         }
     };
 
     const handleEdit = async (id: string) => {
         const token = getAccessToken();
         if (!token) return;
-        await dispatch(fetchBlogById({ blogId: id, token })).unwrap();
+        await dispatch(fetchTermById({ termId: id, token })).unwrap();
         setIsModalEditOpen(true);
     };
 
@@ -211,92 +155,55 @@ const TermsConditions: React.FC = () => {
     }, []);
 
     const handleExport = useCallback(() => {
-        if (!blogs) {
-            console.error("No blogs available to export");
+        if (!terms) {
+            console.error("No terms available to export");
             return;
         }
 
-        const headers = ["ID", "Title", "Category", "Author", "Status"];
-        const data = blogs.map((blog) => ({
-            ID: blog._id,
-            Title: blog.title,
-            Category: blog.category,
-            Author: blog.author.fullName || "Not Specified",
-            Status: blog.status,
+        const headers = ["ID", "Title", "Category"];
+        const data = terms.map((term) => ({
+            ID: term._id,
+            Title: term.pageTitle,
+            Category: term.pageCategory,
         }));
 
-        exportCsvFile({ data, headers, filename: "blogs.csv" });
-    }, [blogs]);
+        exportCsvFile({ data, headers, filename: "terms.csv" });
+    }, [terms]);
 
     useEffect(() => {
         const token = getAccessToken();
         if (!token) return;
-        dispatch(fetchBlogs(token));
+        dispatch(fetchTerms(token));
     }, [dispatch]);
 
     const columns = React.useMemo(
         () => [
             {
-                name: "#",
-                selector: (row: BlogInterface) => row._id,
+                name: "#Term Id",
+                selector: (row: TermsInterface) => row._id,
                 sortable: true,
             },
             {
-                name: "Blog Info",
-                cell: (row: BlogInterface) => (
-                    <div className='flex items-center space-x-2'>
-                        <Image
-                            width={40}
-                            height={40}
-                            src={
-                                typeof row.bannerImage === "string"
-                                    ? row.bannerImage
-                                    : "/icons/default-blog.png"
-                            }
-                            alt='blog banner'
-                            className='w-10 h-10 rounded-full object-cover'
-                        />
-                        <div>
-                            <p className='font-semibold'>{row.title}</p>
-                            <p className='text-sm whitespace-nowrap text-gray-500'>
-                                {row.category.length > 12
-                                    ? `${row.category.substring(0, 20)}...`
-                                    : row.category}
-                            </p>
-                        </div>
-                    </div>
-                ),
-                sortable: false,
-                grow: 2,
-                width: "280px",
-            },
-            {
-                name: "Author",
-                selector: (row: BlogInterface) =>
-                    row.author.fullName || "Not Specified",
+                name: "Page Title",
+                selector: (row: TermsInterface) =>
+                    row.pageTitle || "Not Specified",
                 sortable: true,
             },
             {
-                name: "Status",
-                cell: (row: BlogInterface) => (
-                    <span
-                        className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                            row.status === "Published"
-                                ? "text-green-700 bg-green-100"
-                                : row.status === "Draft"
-                                ? "text-yellow-700 bg-yellow-100"
-                                : "text-red-700 bg-red-100"
-                        }`}
-                    >
-                        {row.status}
-                    </span>
-                ),
+                name: "Category",
+                selector: (row: TermsInterface) =>
+                    row.pageCategory || "Not Specified",
                 sortable: true,
-                width: "150px",
+            },
+            {
+                name: "Slug",
+                selector: (row: TermsInterface) =>
+                    row.pageSlug || "Not Specified",
+                sortable: true,
             },
             {
                 name: "Actions",
-                cell: (row: BlogInterface) => (
+                cell: (row: TermsInterface) => (
                     <TableActions
                         onDelete={() => handleDelete(row._id)}
                         onEdit={() => handleEdit(row._id)}
@@ -311,19 +218,16 @@ const TermsConditions: React.FC = () => {
     );
 
     const deferredSearchTerm = useDeferredValue(searchTerm);
-    const filteredBlogs = useMemo(() => {
-        if (!blogs) return [];
+    const filteredTerms = useMemo(() => {
+        if (!terms) return [];
         const lowerCaseSearchTerm = deferredSearchTerm.toLowerCase().trim();
-        return blogs.filter(
-            (blog) =>
-                blog.title.toLowerCase().includes(lowerCaseSearchTerm) ||
-                blog.author.fullName
-                    ?.toLowerCase()
-                    .includes(lowerCaseSearchTerm) ||
-                blog.category.toLowerCase().includes(lowerCaseSearchTerm) ||
-                blog.status.toLowerCase().includes(lowerCaseSearchTerm)
+        return terms.filter(
+            (term) =>
+                term.pageTitle.toLowerCase().includes(lowerCaseSearchTerm) ||
+                term.pageCategory.toLowerCase().includes(lowerCaseSearchTerm) ||
+                term.pageSlug.toLowerCase().includes(lowerCaseSearchTerm)
         );
-    }, [blogs, deferredSearchTerm]);
+    }, [terms, deferredSearchTerm]);
 
     return (
         <div className='bg-white rounded-lg'>
@@ -338,7 +242,7 @@ const TermsConditions: React.FC = () => {
                             onClick={() => setIsModalOpen(true)}
                             className='px-4 py-2 ButtonBlue text-white rounded-md'
                         >
-                            Add Page
+                            Add Terms
                         </button>
                         <button
                             onClick={handleExport}
@@ -350,8 +254,8 @@ const TermsConditions: React.FC = () => {
                 </div>
                 <CustomTable
                     columns={columns}
-                    data={filteredBlogs}
-                    noDataComponent='No blogs found'
+                    data={filteredTerms}
+                    noDataComponent='No terms found'
                     loading={loading}
                 />
             </div>
@@ -364,7 +268,7 @@ const TermsConditions: React.FC = () => {
                 <CreateTerms onClose={() => setIsModalOpen(false)} />
             </CustomModelAdmin>
 
-            {currentBlog && (
+            {currentTerm && (
                 <CustomModelAdmin
                     isOpen={isModalEditOpen}
                     closeModal={() => setIsModalEditOpen(false)}
@@ -372,13 +276,13 @@ const TermsConditions: React.FC = () => {
                 >
                     <EditTerms
                         onClose={() => setIsModalEditOpen(false)}
-                        blogData={currentBlog}
+                        termData={currentTerm}
                         onSubmit={handleUpdate}
                     />
                 </CustomModelAdmin>
             )}
 
-            {currentBlog && (
+            {currentTerm && (
                 <CustomModelAdmin
                     isOpen={isModalViewOpen}
                     closeModal={() => setIsModalViewOpen(false)}
@@ -386,7 +290,7 @@ const TermsConditions: React.FC = () => {
                 >
                     <ViewTerms
                         onClose={() => setIsModalViewOpen(false)}
-                        blogData={currentBlog}
+                        termData={currentTerm}
                     />
                 </CustomModelAdmin>
             )}

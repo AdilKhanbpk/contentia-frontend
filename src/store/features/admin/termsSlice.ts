@@ -62,14 +62,14 @@ export const fetchTerms = createAsyncThunk(
 );
 
 // Fetch single term by ID
-export const fetchTermBySlug = createAsyncThunk(
+export const fetchTermById = createAsyncThunk(
     'term/fetchTermById',
     async (
-        { slug, token }: { slug: string; token: string },
+        { termId, token }: { termId: string; token: string },
         { rejectWithValue }
     ) => {
         try {
-            const response = await axiosInstance.get(`/admin/terms/${slug}`, {
+            const response = await axiosInstance.get(`/admin/terms/${termId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             return response.data.data;
@@ -86,13 +86,13 @@ export const fetchTermBySlug = createAsyncThunk(
 export const updateTerm = createAsyncThunk(
     'term/updateTerm',
     async (
-        { termId, blogData, token }: { termId: string; blogData: FormData; token: string },
+        { termId, termData, token }: { termId: string; termData: Partial<TermsInterface>; token: string },
         { rejectWithValue }
     ) => {
         try {
             const response = await axiosInstance.patch(
                 `/admin/terms/${termId}`,
-                blogData,
+                termData,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -188,15 +188,15 @@ const termSlice = createSlice({
                 state.error = action.payload as string;
             })
             // Fetch term by ID
-            .addCase(fetchTermBySlug.pending, (state) => {
+            .addCase(fetchTermById.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchTermBySlug.fulfilled, (state, action: PayloadAction<TermsInterface>) => {
+            .addCase(fetchTermById.fulfilled, (state, action: PayloadAction<TermsInterface>) => {
                 state.loading = false;
                 state.currentTerm = action.payload;
             })
-            .addCase(fetchTermBySlug.rejected, (state, action) => {
+            .addCase(fetchTermById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             })

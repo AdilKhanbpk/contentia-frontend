@@ -27,6 +27,7 @@ import packageSlice from './features/admin/packageSlice';
 import customPackageSlice from './features/admin/customPackageSlice';
 import dashboardReducer from './features/admin/dashboardSlice';
 import incomingPaymentSlice from './features/admin/incomingPaymentSlice';
+import termSlice from './features/admin/termsSlice';
 
 const store = configureStore({
   reducer: {
@@ -58,6 +59,7 @@ const store = configureStore({
     customPackages: customPackageSlice,
     emailNotification: emailNotificationSlice,
     incomingPayment: incomingPaymentSlice,
+    terms: termSlice,
   },
 });
 
