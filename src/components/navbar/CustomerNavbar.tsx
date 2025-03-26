@@ -90,12 +90,14 @@ export default function Navbar() {
                                 {/* Navigation Links */}
                                 <ul className='hidden lg:flex space-x-4 font-medium'>
                                     <li>
-                                        <a
-                                            href='#'
-                                            className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
+                                        <Link
+                                            href={"/"}
+                                            legacyBehavior
                                         >
-                                            {t("home")}
-                                        </a>
+                                            <a className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'>
+                                                Ana Sayfa{" "}
+                                            </a>
+                                        </Link>
                                     </li>
                                     <li>
                                         <Link
@@ -103,7 +105,7 @@ export default function Navbar() {
                                             href='/orders/profile'
                                         >
                                             <a className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'>
-                                                {t("profile")}
+                                                Profil{" "}
                                             </a>
                                         </Link>
                                     </li>
@@ -113,7 +115,7 @@ export default function Navbar() {
                                             href='/orders/orders'
                                         >
                                             <a className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'>
-                                                {t("orders")}
+                                                Siparişler{" "}
                                             </a>
                                         </Link>
                                     </li>
@@ -123,7 +125,7 @@ export default function Navbar() {
                                             href='/orders/packages'
                                         >
                                             <a className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'>
-                                                {t("packages")}
+                                                Paketler
                                             </a>
                                         </Link>
                                     </li>
@@ -133,7 +135,7 @@ export default function Navbar() {
                                             href='/orders/my-brands'
                                         >
                                             <a className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'>
-                                                {t("my_brands")}
+                                                Markalarım{" "}
                                             </a>
                                         </Link>
                                     </li>
