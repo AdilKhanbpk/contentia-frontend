@@ -17,13 +17,15 @@ const Footer = () => {
                 <div className='mb-6 md:mb-0'>
                     <div className='flex items-center mb-4'>
                         <div className=''>
-                            <Image
-                                src='/contentiaLogo.png'
-                                height={44}
-                                width={151}
-                                alt='logo'
-                                className='h-[33px] w-[173px]'
-                            />
+                            <a href='/'>
+                                <Image
+                                    src='/contentiaLogo.png'
+                                    height={44}
+                                    width={151}
+                                    alt='logo'
+                                    className='h-[33px] w-[173px]'
+                                />
+                            </a>
                         </div>
                     </div>
 

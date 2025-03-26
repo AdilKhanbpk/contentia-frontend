@@ -78,10 +78,7 @@ export default function Navbar() {
                                         legacyBehavior
                                         href='/'
                                     >
-                                        <a
-                                            href=''
-                                            className='flex ms-2 md:me-0'
-                                        >
+                                        <a className='flex ms-2 md:me-0'>
                                             <div className=''>
                                                 <Image
                                                     src='/contentiaLogo.png'

@@ -38,7 +38,7 @@ export default function Navbar() {
             <nav className='fixed top-0 z-50 w-full bg-white border-b border-gray-200  dark:bg-gray-800 dark:border-gray-700 px-2 sm:px-4 md:px-6 lg:px-10'>
                 <div className='px-3 py-3 lg:px-5 lg:pl-3'>
                     <a
-                        href=''
+                        href='/'
                         className='flex lg:ms-4 md:me-0 mb-3'
                     >
                         <Image
