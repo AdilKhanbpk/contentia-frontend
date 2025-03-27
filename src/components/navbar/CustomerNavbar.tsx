@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import BrandNames from "./sub-navbar/BrandNames";
 import { useDispatch, useSelector } from "react-redux";
-import { selectUser } from "@/store/features/auth/loginSlice";
+import { logoutUser, selectUser } from "@/store/features/auth/loginSlice";
 import {
     fetchProfile,
     selectProfileUser,
@@ -13,10 +13,13 @@ import {
 import { AppDispatch } from "@/store/store";
 import { Dropdown } from "./AdminNavbar";
 import { getAccessToken } from "@/utils/checkToken";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
     const dispatch = useDispatch<AppDispatch>();
     const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const router = useRouter();
 
     const { t } = useTranslation();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -25,7 +28,16 @@ export default function Navbar() {
     const toggleSidebar = () => {
         setSidebarOpen(!isSidebarOpen);
     };
-    const handleLogout = () => console.log("User logged out");
+    const handleLogout = () => {
+        dispatch(logoutUser())
+            .then(() => {
+                toast.success("Logout successful");
+                router.push("/contentiaio/authentication");
+            })
+            .catch(() => {
+                toast.error("Logout failed");
+            });
+    };
 
     useEffect(() => {
         const token = getAccessToken();

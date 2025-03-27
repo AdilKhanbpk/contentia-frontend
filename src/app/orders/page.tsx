@@ -1,21 +1,12 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { jwtDecode } from "jwt-decode";
+import React, { useState } from "react";
 import TabFirst from "@/components/orders/TabFirst";
 import TabSecond from "@/components/orders/TabSecond";
 import TabThird from "@/components/orders/TabThird";
 import TabFourth from "@/components/orders/TabFourth";
 
-interface CustomJwtPayload {
-    role: string;
-    [key: string]: any;
-}
-
 const OrderDetails = () => {
     const [activeTab, setActiveTab] = useState(0);
-    const [isAuthorized, setIsAuthorized] = useState(false);
-    const router = useRouter();
 
     const tabs = [
         { id: 0, label: "Sipariş Detayları" },
@@ -23,29 +14,6 @@ const OrderDetails = () => {
         { id: 2, label: "UGC Brief" },
         { id: 3, label: "Tercihler" },
     ];
-
-    useEffect(() => {
-        const token = localStorage.getItem("accessToken");
-
-        if (token) {
-            try {
-                const decodedToken = jwtDecode<CustomJwtPayload>(token);
-                if (
-                    decodedToken.role === "user" ||
-                    decodedToken.role === "admin"
-                ) {
-                    setIsAuthorized(true);
-                } else {
-                    router.push("/unauthorized");
-                }
-            } catch (error) {
-                console.error("Error decoding token:", error);
-                router.push("/contentiaio/authentication");
-            }
-        } else {
-            router.push("/contentiaio/authentication");
-        }
-    }, [router]);
 
     return (
         <div className='sectionBackground pb-4'>

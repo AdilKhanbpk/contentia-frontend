@@ -19,6 +19,9 @@ import {
     selectNotifications,
 } from "@/store/features/admin/notificationSlice";
 import { getAccessToken } from "@/utils/checkToken";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { logoutUser } from "@/store/features/auth/loginSlice";
 
 const menuItems = [
     {
@@ -138,6 +141,7 @@ export default function AdminNavbar() {
     const user = useSelector(selectProfileUser);
     const notifications = useSelector(selectNotifications);
     const loading = useSelector(selectNotificationLoading);
+    const router = useRouter();
 
     const [isSidebarOpen, setSidebarOpen] = useState(true);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -166,7 +170,16 @@ export default function AdminNavbar() {
         return () => document.removeEventListener("click", handleClickOutside);
     }, []);
 
-    const handleLogout = () => console.log("User logged out");
+    const handleLogout = () => {
+        dispatch(logoutUser())
+            .then(() => {
+                toast.success("Logout successful");
+                router.push("/contentiaio/authentication");
+            })
+            .catch(() => {
+                toast.error("Logout failed");
+            });
+    };
 
     return (
         <>

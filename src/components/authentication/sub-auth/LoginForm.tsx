@@ -1,12 +1,12 @@
 "use client";
 import { useForm, SubmitHandler } from "react-hook-form";
-import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "@/store/features/auth/loginSlice";
+import { loginUser, logoutUser } from "@/store/features/auth/loginSlice";
 import { RootState } from "@/store/store";
 import { AppDispatch } from "@/store/store";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface IFormInput {
     email: string;
@@ -16,33 +16,32 @@ interface IFormInput {
 
 const LoginForm = () => {
     const router = useRouter();
+
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm<IFormInput>();
     const dispatch = useDispatch<AppDispatch>();
-    const loginState = useSelector((state: RootState) => state.login);
+    const { loading } = useSelector((state: RootState) => state.login);
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         try {
-            const response = await dispatch(loginUser(data));
-            if (response.meta.requestStatus === "fulfilled") {
-                toast.success("Login successful");
-                const user = localStorage.getItem("user");
-                if (user) {
-                    const userObj = JSON.parse(user);
-                    if (userObj.role === "admin") {
-                        router.push("/admin");
-                    } else if (userObj.role === "user") {
-                        router.push("/orders");
-                    }
-                }
+            const response = await dispatch(loginUser(data)).unwrap();
+            const admin = response.user.role === "admin";
+            const customer = response.user.role === "user";
+
+            toast.success("Login successful");
+
+            if (admin) {
+                router.push("/admin");
+            } else if (customer) {
+                router.push("/orders");
             } else {
-                toast.error("Login failed: Invalid credentials");
+                router.push("/contentiaio/authentication");
             }
-        } catch (error) {
-            toast.error("Login failed: An error occurred");
+        } catch (error: any) {
+            toast.error(error?.message || "Login failed: An error occurred");
         }
     };
 
@@ -140,15 +139,15 @@ const LoginForm = () => {
             <button
                 type='submit'
                 className='w-full ButtonBlue text-white py-2 rounded-lg font-semibold'
-                disabled={loginState.loading}
+                disabled={loading}
             >
-                {loginState.loading ? "Yükleniyor..." : "Giriş Yap"}
+                {loading ? "Yükleniyor..." : "Giriş Yap"}
             </button>
 
             {/* Show error message */}
-            {loginState.error && (
+            {errors && (
                 <div className='text-red-500 text-center mt-4'>
-                    {loginState.error}
+                    {errors.email?.message || errors.password?.message}
                 </div>
             )}
         </form>

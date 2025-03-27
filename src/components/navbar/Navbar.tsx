@@ -2,13 +2,13 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/store/store";
-import { logoutUser } from "@/store/features/auth/logoutSlice";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { useRouter, usePathname } from "next/navigation";
 import { getAccessToken } from "@/utils/checkToken";
+import { logoutUser } from "@/store/features/auth/loginSlice";
 
 export default function Navbar() {
     const dispatch: AppDispatch = useDispatch();
@@ -33,7 +33,7 @@ export default function Navbar() {
         dispatch(logoutUser())
             .then(() => {
                 toast.success("Logout successful");
-                router.push("/");
+                router.push("/contentiaio/authentication");
             })
             .catch(() => {
                 toast.error("Logout failed");
