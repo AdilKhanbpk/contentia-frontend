@@ -61,7 +61,7 @@ function AuthWrapper({ children }: { children: React.ReactNode }) {
                 router.replace("/contentiaio/authentication");
             }
             if (isCustomerRoute && user?.role !== "user") {
-                toast.error("Customer access only");
+                toast.error("Login is required");
                 router.replace("/contentiaio/authentication");
             }
         }
