@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import "../i18n";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../i18n";
 import "./globals.css";
@@ -17,7 +16,7 @@ import InitializeSocket from "@/socket/InitializeSocket";
 import { ToastContainer } from "react-toastify";
 import LoadingSpinner from "@/components/loaders/LoadingSpinner";
 import { FileProvider } from "@/context/FileContext";
-import { initGA, logPageView } from "@/utils/googleAnalytics/Analytics"; // Import analytics
+import { initGA, logPageView } from "@/utils/googleAnalytics/Analytics";
 
 export default function RootLayout({
     children,
@@ -25,31 +24,31 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
-    const { isLoading } = useAuth();
+    const router = useRouter();
+    const { user, isLoading } = useAuth();
 
-    const isPublicPath =
-        pathname === "/" ||
-        pathname.startsWith("/contentiaio/authentication") ||
-        pathname.startsWith("/blog") ||
-        pathname.startsWith("/contentiaio");
+    const isCustomerRoute = pathname.startsWith("/orders");
+    const isAdminRoute = pathname.startsWith("/admin");
 
-    const isAfterContentiaio =
-        pathname === "/" ||
-        pathname.startsWith("/contentiaio/") ||
-        pathname.startsWith("/blog");
-
-    const isOrdersPage =
-        pathname === "/orders" || pathname.startsWith("/orders/");
-
-    const isAdminPage = pathname === "/admin" || pathname.startsWith("/admin/");
-
-    // Initialize and track page views
     useEffect(() => {
-        initGA();
-        logPageView(pathname);
-    }, [pathname]);
+        if (!isLoading) {
+            if (isAdminRoute && user?.role !== "admin") {
+                router.replace("/contentiaio/authentication");
+            }
+            if (isCustomerRoute && user?.role !== "user") {
+                router.replace("/contentiaio/authentication");
+            }
 
-    // Show loading spinner during authentication check
+            if (pathname === "/") {
+                if (user?.role === "admin") {
+                    router.replace("/admin");
+                } else if (user?.role === "user") {
+                    router.replace("/orders");
+                }
+            }
+        }
+    }, [user, isLoading, pathname, router]);
+
     if (isLoading) {
         return (
             <html lang='en'>
@@ -68,14 +67,15 @@ export default function RootLayout({
                         <I18nextProvider i18n={i18n}>
                             <InitializeSocket />
 
-                            {/* Navbar and Footer */}
-                            {isAfterContentiaio && <Navbar />}
-                            {isOrdersPage && <CustomerNavbar />}
-                            {isAdminPage && <AdminNavbar />}
+                            {/* Navbar for different routes */}
+                            {!isCustomerRoute && !isAdminRoute && <Navbar />}
+                            {isCustomerRoute && <CustomerNavbar />}
+                            {isAdminRoute && <AdminNavbar />}
 
                             <main>{children}</main>
 
-                            {isAfterContentiaio && <Footer />}
+                            {/* Footer for public pages */}
+                            {!isCustomerRoute && !isAdminRoute && <Footer />}
                             <ToastContainer />
                         </I18nextProvider>
                     </Provider>

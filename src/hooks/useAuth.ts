@@ -1,26 +1,21 @@
-// src/hooks/useAuth.ts
-import { useState, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode';
-import { useRouter } from 'next/navigation';
-import { getAccessToken } from '@/utils/checkToken';
+import { Customer } from "@/types/interfaces";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export const useAuth = () => {
+export function useAuth() {
+  const [user, setUser] = useState<Customer>();
   const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
+  const router = useRouter()
 
   useEffect(() => {
-    const checkAuth = () => {
-      const token = getAccessToken();
-      if (!token) {
-        setIsLoading(false);
-        router.push('/contentiaio/authentication');
-        return;
-      };
+    async function fetchUser() {
+      const checkUser = localStorage.getItem("user");
+      setUser(checkUser ? JSON.parse(checkUser) : null);
       setIsLoading(false);
-    };
-
-    checkAuth();
+      console.log(user?.role)
+    }
+    fetchUser();
   }, [router]);
 
-  return { isLoading };
-};
+  return { user, isLoading };
+}
