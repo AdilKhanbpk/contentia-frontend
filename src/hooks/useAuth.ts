@@ -12,7 +12,6 @@ export function useAuth() {
       const checkUser = localStorage.getItem("user");
       setUser(checkUser ? JSON.parse(checkUser) : null);
       setIsLoading(false);
-      console.log(user?.role)
     }
     fetchUser();
   }, [router]);

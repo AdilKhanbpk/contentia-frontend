@@ -35,16 +35,9 @@ export default function RootLayout({
             if (isAdminRoute && user?.role !== "admin") {
                 router.replace("/contentiaio/authentication");
             }
+
             if (isCustomerRoute && user?.role !== "user") {
                 router.replace("/contentiaio/authentication");
-            }
-
-            if (pathname === "/") {
-                if (user?.role === "admin") {
-                    router.replace("/admin");
-                } else if (user?.role === "user") {
-                    router.replace("/orders");
-                }
             }
         }
     }, [user, isLoading, pathname, router]);
