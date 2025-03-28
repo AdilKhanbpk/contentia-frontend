@@ -69,9 +69,28 @@ export const fetchTermById = createAsyncThunk(
         { rejectWithValue }
     ) => {
         try {
-            const response = await axiosInstance.get(`/admin/terms/${termId}`, {
+            const response = await axiosInstance.get(`/admin/terms/id/${termId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
+            return response.data.data;
+        } catch (error) {
+            const axiosError = error as AxiosError;
+            return rejectWithValue(
+                axiosError.response?.data || 'Failed to fetch term'
+            );
+        }
+    }
+);
+
+// Fetch single term by ID
+export const fetchTermBySlug = createAsyncThunk(
+    'term/fetchTermBySlug',
+    async (
+        { pageSlug }: { pageSlug: string },
+        { rejectWithValue }
+    ) => {
+        try {
+            const response = await axiosInstance.get(`/admin/terms/slug/${pageSlug}`)
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
@@ -197,6 +216,20 @@ const termSlice = createSlice({
                 state.currentTerm = action.payload;
             })
             .addCase(fetchTermById.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            // Fetch term by slug
+
+            .addCase(fetchTermBySlug.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchTermBySlug.fulfilled, (state, action: PayloadAction<TermsInterface>) => {
+                state.loading = false;
+                state.currentTerm = action.payload;
+            })
+            .addCase(fetchTermBySlug.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             })

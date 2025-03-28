@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { axiosInstance } from "@/store/axiosInstance";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import { fetchTermBySlug } from "@/store/features/admin/termsSlice";
 
 interface PageProps {
     params: {
@@ -11,28 +13,17 @@ interface PageProps {
 }
 
 export default function Page({ params }: PageProps) {
-    const [pageData, setPageData] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const dispatch = useDispatch<AppDispatch>();
+    const { currentTerm, loading, error } = useSelector(
+        (state: RootState) => state.terms
+    );
     const router = useRouter();
 
     useEffect(() => {
-        const fetchPageData = async () => {
-            try {
-                const res = await axiosInstance.get(
-                    `/admin/terms/${params.pageSlug}`
-                );
-                setPageData(res.data);
-            } catch (err) {
-                console.error("❌ Error fetching page:", err);
-                setError("Page not found");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchPageData();
-    }, [params.pageSlug, router]);
+        dispatch(fetchTermBySlug({ pageSlug: params.pageSlug })).catch(
+            () => {}
+        );
+    }, [params.pageSlug]);
 
     if (loading)
         return (
@@ -55,15 +46,15 @@ export default function Page({ params }: PageProps) {
         );
 
     return (
-        <div className='min-h-screen bg-gray-100 flex justify-center p-6'>
+        <div className='min-h-screen bg-gray-100 flex justify-center p-6 mt-16'>
             <div className='bg-white max-w-5xl w-full p-8 rounded-2xl shadow-lg'>
                 <h1 className='text-4xl font-bold text-gray-800 border-b pb-4'>
-                    {pageData?.data?.pageTitle}
+                    {currentTerm?.pageTitle}
                 </h1>
                 <div
                     className='mt-6 text-gray-700 leading-relaxed'
                     dangerouslySetInnerHTML={{
-                        __html: pageData?.data?.pageContent,
+                        __html: currentTerm?.pageContent || "",
                     }}
                 />
             </div>
