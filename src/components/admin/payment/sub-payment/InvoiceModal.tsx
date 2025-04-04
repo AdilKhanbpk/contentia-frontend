@@ -21,7 +21,7 @@ export default function CreateInvoiceModal({
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm();
 
     const onSubmit = async (data: any) => {
@@ -68,7 +68,7 @@ export default function CreateInvoiceModal({
                             type='submit'
                             className='px-4 py-2 bg-blue-500 text-white rounded'
                         >
-                            Create Invoice
+                            {isSubmitting ? "Uploading..." : "Upload Invoice"}{" "}
                         </button>
                     </div>
                 </form>

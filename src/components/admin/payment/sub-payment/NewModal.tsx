@@ -16,7 +16,7 @@ export default function CreatePayment({ onClose }: CreateInvoiceModalProps) {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm();
 
     const onSubmit = async (data: any) => {
@@ -116,7 +116,7 @@ export default function CreatePayment({ onClose }: CreateInvoiceModalProps) {
                             type='submit'
                             className='px-4 py-2 bg-blue-500 text-white rounded'
                         >
-                            Create Invoice
+                            {isSubmitting ? "Creating..." : "Create Invoice"}
                         </button>
                     </div>
                 </form>
