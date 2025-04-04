@@ -50,7 +50,14 @@ const InPayments: React.FC = () => {
     const handleRefund = async (id: string) => {
         const token = getAccessToken();
         if (!token) return;
-        await dispatch(refundPayment({ paymentId: id, token })).unwrap();
+        try {
+            await dispatch(refundPayment({ paymentId: id, token })).unwrap();
+            toast.success("Refund Status Active");
+        } catch (error: any) {
+            console.log("🚀 ~ handleRefund ~ error:", error);
+            toast.error(error.message);
+        }
+        await dispatch(fetchPayments(token));
     };
     const handleView = (id: string) => {
         const payment = payments.find((payment) => payment._id === id);
@@ -90,7 +97,7 @@ const InPayments: React.FC = () => {
         const dataToUpdate = {};
 
         try {
-            const res = await dispatch(
+            await dispatch(
                 updatePayment({
                     paymentId,
                     data: dataToUpdate,
