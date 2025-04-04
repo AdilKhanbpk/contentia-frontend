@@ -33,8 +33,6 @@ const InPayments: React.FC = () => {
         (state: RootState) => state.incomingPayment
     );
 
-    const [selectedOrderId, setSelectedOrderId] = useState<string>("");
-
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -149,7 +147,6 @@ const InPayments: React.FC = () => {
                 <button
                     className='text-blue-500 hover:text-blue-700'
                     onClick={() => {
-                        setSelectedOrderId(orderId);
                         setIsInvoiceModalOpen(true);
                     }}
                 >
