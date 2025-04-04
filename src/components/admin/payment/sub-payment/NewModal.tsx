@@ -1,85 +1,59 @@
+import { createPayment } from "@/store/features/admin/incomingPaymentSlice";
+import { AppDispatch, RootState } from "@/store/store";
+import { getAccessToken } from "@/utils/checkToken";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 
 interface CreateInvoiceModalProps {
     onClose: () => void;
 }
 
 export default function CreatePayment({ onClose }: CreateInvoiceModalProps) {
+    const dispatch = useDispatch<AppDispatch>();
+    const { loading, error } = useSelector(
+        (state: RootState) => state.incomingPayment
+    );
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm();
 
-    const onSubmit = (data: any) => {
-        console.log("Invoice Created:", data);
+    const onSubmit = async (data: any) => {
+        const token = getAccessToken();
+        if (!token) return;
+
+        const formData = new FormData();
+        formData.append("orderId", data.orderId);
+        formData.append("paymentStatus", data.paymentStatus);
+        formData.append("cancelRefund", data.cancelRefund);
+        formData.append("invoiceImage", data.invoiceImage[0]);
+
+        try {
+            await dispatch(createPayment({ formData, token }));
+            onClose();
+        } catch (error) {
+            console.log("🚀 ~ onSubmit ~ error:", error);
+        }
     };
 
     return (
-        <div className='flex justify-center items-center min-h-screen bg-gray-100'>
+        <div className='flex justify-center bg-gray-100'>
             <div className='bg-white p-6 rounded-lg w-96 shadow-md'>
                 <h2 className='text-xl font-semibold mb-4'>Create Invoice</h2>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className='mb-2'>
                         <label className='block text-sm font-medium'>
-                            Invoice ID
-                        </label>
-                        <input
-                            type='number'
-                            {...register("id", { required: true })}
-                            className='w-full p-2 border rounded'
-                        />
-                        {errors.id && (
-                            <p className='text-red-500 text-xs'>
-                                Invoice ID is required
-                            </p>
-                        )}
-                    </div>
-
-                    <div className='mb-2'>
-                        <label className='block text-sm font-medium'>
-                            Payment ID
-                        </label>
-                        <input
-                            type='number'
-                            {...register("paymentID", { required: true })}
-                            className='w-full p-2 border rounded'
-                        />
-                        {errors.paymentID && (
-                            <p className='text-red-500 text-xs'>
-                                Payment ID is required
-                            </p>
-                        )}
-                    </div>
-
-                    <div className='mb-2'>
-                        <label className='block text-sm font-medium'>
-                            Payment Date
-                        </label>
-                        <input
-                            type='date'
-                            {...register("paymentDate", { required: true })}
-                            className='w-full p-2 border rounded'
-                        />
-                        {errors.paymentDate && (
-                            <p className='text-red-500 text-xs'>
-                                Payment Date is required
-                            </p>
-                        )}
-                    </div>
-
-                    <div className='mb-2'>
-                        <label className='block text-sm font-medium'>
-                            Amount Paid
+                            Order ID
                         </label>
                         <input
                             type='text'
-                            {...register("amountPaid", { required: true })}
+                            {...register("orderId", { required: true })}
                             className='w-full p-2 border rounded'
                         />
-                        {errors.amountPaid && (
+                        {errors.orderId && (
                             <p className='text-red-500 text-xs'>
-                                Amount Paid is required
+                                Order ID is required
                             </p>
                         )}
                     </div>
@@ -92,13 +66,29 @@ export default function CreatePayment({ onClose }: CreateInvoiceModalProps) {
                             {...register("paymentStatus", { required: true })}
                             className='w-full p-2 border rounded'
                         >
-                            <option value='Success'>Success</option>
-                            <option value='Pending'>Pending</option>
-                            <option value='Failed'>Failed</option>
+                            <option value='paid'>Success</option>
+                            <option value='unpaid'>Pending</option>
                         </select>
                         {errors.paymentStatus && (
                             <p className='text-red-500 text-xs'>
                                 Payment Status is required
+                            </p>
+                        )}
+                    </div>
+
+                    <div className='mb-2'>
+                        <label className='block text-sm font-medium'>
+                            Invoice Image
+                        </label>
+                        <input
+                            {...register("invoiceImage", { required: true })}
+                            type='file'
+                            accept='image/*'
+                            className='w-full p-2 border rounded'
+                        />
+                        {errors.invoiceImage && (
+                            <p className='text-red-500 text-xs'>
+                                Invoice Image is required
                             </p>
                         )}
                     </div>
@@ -111,8 +101,8 @@ export default function CreatePayment({ onClose }: CreateInvoiceModalProps) {
                             {...register("cancelRefund", { required: true })}
                             className='w-full p-2 border rounded'
                         >
-                            <option value='Not Refunded'>Not Refunded</option>
-                            <option value='Refunded'>Refunded</option>
+                            <option value='not-refunded'>Not Refunded</option>
+                            <option value='refunded'>Refunded</option>
                         </select>
                         {errors.cancelRefund && (
                             <p className='text-red-500 text-xs'>

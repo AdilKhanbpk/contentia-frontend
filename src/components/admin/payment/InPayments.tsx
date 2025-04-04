@@ -29,6 +29,8 @@ const InPayments: React.FC = () => {
         (state: RootState) => state.incomingPayment
     );
 
+    const [selectedOrderId, setSelectedOrderId] = useState<string>("");
+
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -71,29 +73,33 @@ const InPayments: React.FC = () => {
 
         exportCsvFile({ data, headers, filename: "incoming_payments.csv" });
     }, [payments]);
-
-    const TableActions = memo(({ id }: { id: string }) => (
-        <div className='flex space-x-3'>
-            <button
-                className='text-blue-500 hover:text-blue-700'
-                onClick={() => setIsInvoiceModalOpen(true)}
-            >
-                Invoice
-            </button>
-            <button
-                className='text-red-500 hover:text-red-700'
-                onClick={() => handleRefund(id)}
-            >
-                Refund
-            </button>
-            <button
-                className='text-gray-500 hover:text-gray-700'
-                onClick={() => setIsViewModalOpen(true)}
-            >
-                <FaEye className='text-lg' />
-            </button>
-        </div>
-    ));
+    const TableActions = memo(
+        ({ id, orderId }: { id: string; orderId: string }) => (
+            <div className='flex space-x-3'>
+                <button
+                    className='text-blue-500 hover:text-blue-700'
+                    onClick={() => {
+                        setSelectedOrderId(orderId);
+                        setIsInvoiceModalOpen(true);
+                    }}
+                >
+                    Invoice
+                </button>
+                <button
+                    className='text-red-500 hover:text-red-700'
+                    onClick={() => handleRefund(id)}
+                >
+                    Refund
+                </button>
+                <button
+                    className='text-gray-500 hover:text-gray-700'
+                    onClick={() => setIsViewModalOpen(true)}
+                >
+                    <FaEye className='text-lg' />
+                </button>
+            </div>
+        )
+    );
 
     TableActions.displayName = "TableActions";
     const columns = useMemo(
@@ -131,7 +137,12 @@ const InPayments: React.FC = () => {
             },
             {
                 name: "Actions",
-                cell: (row: any) => <TableActions id={row._id} />,
+                cell: (row: any) => (
+                    <TableActions
+                        id={row._id}
+                        orderId={row.orderId}
+                    />
+                ),
                 width: "200px",
             },
         ],
@@ -202,6 +213,7 @@ const InPayments: React.FC = () => {
             >
                 <CreateInvoiceModal
                     onClose={() => setIsInvoiceModalOpen(false)}
+                    orderId={selectedOrderId}
                 />
             </CustomModelAdmin>
 

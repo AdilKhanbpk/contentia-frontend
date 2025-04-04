@@ -19,11 +19,16 @@ export interface PaymentState {
     error: string | null;
 }
 
-interface CreatePaymentPayload {
+interface uploadInvoiceImagePayload {
     orderId: string;
-    file?: File;
+    formData: FormData;
     token: string;
 }
+interface CreatePaymentPayload {
+    formData: FormData;
+    token: string;
+}
+
 
 interface UpdatePaymentPayload {
     paymentId: string;
@@ -47,16 +52,26 @@ const initialState: PaymentState = {
     error: null,
 };
 
+export const uploadInvoiceImage = createAsyncThunk(
+    "payment/uploadInvoiceImage",
+    async ({ orderId, formData, token }: uploadInvoiceImagePayload, { rejectWithValue }) => {
+        try {
+            formData.append("orderId", orderId);
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            const response = await axiosInstance.postForm("/admin/incomingPayment", formData);
+            return response.data.data;
+        } catch (error) {
+            const axiosError = error as AxiosError;
+            return rejectWithValue(axiosError.response?.data || "Failed to create payment");
+        }
+    }
+);
 export const createPayment = createAsyncThunk(
     "payment/createPayment",
-    async ({ orderId, file, token }: CreatePaymentPayload, { rejectWithValue }) => {
+    async ({ formData, token }: CreatePaymentPayload, { rejectWithValue }) => {
         try {
-            const formData = new FormData();
-            formData.append("orderId", orderId);
-            if (file) formData.append("file", file);
-
             axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            const response = await axiosInstance.post("/admin/incomingPayment", formData);
+            const response = await axiosInstance.postForm("/admin/incomingPayment", formData);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
@@ -139,6 +154,24 @@ const paymentSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload as string;
             })
+            .addCase(uploadInvoiceImage.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(uploadInvoiceImage.fulfilled, (state, action: PayloadAction<PaymentInterface>) => {
+                state.loading = false;
+                const existingIndex = state.payments.findIndex(p => p._id === action.payload._id);
+                if (existingIndex !== -1) {
+                    state.payments[existingIndex] = action.payload;
+                } else {
+                    state.payments.push(action.payload);
+                }
+            })
+            .addCase(uploadInvoiceImage.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+
             .addCase(fetchPayments.pending, (state) => {
                 state.loading = true;
                 state.error = null;
