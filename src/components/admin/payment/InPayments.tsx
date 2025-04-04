@@ -26,6 +26,7 @@ import CreateInvoiceModal from "./sub-payment/InvoiceModal";
 import ViewModal from "./sub-payment/ViewModal";
 import CustomTable from "@/components/custom-table/CustomTable";
 import { toast } from "react-toastify";
+import EditInvoiceModal from "./sub-payment/EditInvoiceModal";
 
 const InPayments: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -35,6 +36,7 @@ const InPayments: React.FC = () => {
 
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isEditInvoiceModalOpen, setIsEditInvoiceModalOpen] = useState(false);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [currentPayment, setCurrentPayment] = useState<PaymentInterface>(
         {} as PaymentInterface
@@ -88,27 +90,15 @@ const InPayments: React.FC = () => {
         [dispatch]
     );
 
-    const handleEdit = async (currentInvoice: any) => {
+    const handleEdit = async (id: any) => {
         const token = getAccessToken();
         if (!token) return;
 
-        const paymentId = currentInvoice._id;
-
-        const dataToUpdate = {};
-
-        try {
-            await dispatch(
-                updatePayment({
-                    paymentId,
-                    data: dataToUpdate,
-                    token,
-                })
-            );
-            await dispatch(fetchPayments(token));
-            toast.success("Payment updated successfully!");
-        } catch (error) {
-            toast.error("Failed to update Payment. Please try again.");
+        const payment = payments.find((payment) => payment._id === id);
+        if (payment) {
+            setCurrentPayment(payment);
         }
+        setIsEditInvoiceModalOpen(true);
     };
     const handleExport = useCallback(() => {
         if (!payments) {
@@ -141,13 +131,11 @@ const InPayments: React.FC = () => {
             onDelete,
             onEdit,
             onView,
-            orderId,
             id,
         }: {
             onDelete: (id: string) => void;
             onEdit: (id: string) => void;
             onView: (id: string) => void;
-            orderId: string;
             id: string;
         }) => (
             <div className='flex space-x-3'>
@@ -231,7 +219,6 @@ const InPayments: React.FC = () => {
                         onView={handleView}
                         onDelete={handleDelete}
                         onEdit={handleEdit}
-                        orderId={row.orderId}
                     />
                 ),
                 width: "240px",
@@ -304,6 +291,16 @@ const InPayments: React.FC = () => {
             >
                 <CreateInvoiceModal
                     onClose={() => setIsInvoiceModalOpen(false)}
+                    currentInvoice={currentPayment}
+                />
+            </CustomModelAdmin>
+            <CustomModelAdmin
+                isOpen={isEditInvoiceModalOpen}
+                closeModal={() => setIsEditInvoiceModalOpen(false)}
+                title=''
+            >
+                <EditInvoiceModal
+                    onClose={() => setIsEditInvoiceModalOpen(false)}
                     currentInvoice={currentPayment}
                 />
             </CustomModelAdmin>

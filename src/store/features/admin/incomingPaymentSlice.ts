@@ -32,7 +32,7 @@ interface CreatePaymentPayload {
 
 interface UpdatePaymentPayload {
     paymentId: string;
-    data: Partial<PaymentInterface>;
+    data: FormData;
     token: string;
 }
 
@@ -99,7 +99,7 @@ export const updatePayment = createAsyncThunk(
     async ({ paymentId, data, token }: UpdatePaymentPayload, { rejectWithValue }) => {
         try {
             axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            const response = await axiosInstance.patch(`/admin/incomingPayment/${paymentId}`, data);
+            const response = await axiosInstance.patchForm(`/admin/incomingPayment/${paymentId}`, data);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
