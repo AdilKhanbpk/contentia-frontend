@@ -17,11 +17,15 @@ import { getAccessToken } from "@/utils/checkToken";
 import {
     refundPayment,
     fetchPayments,
+    PaymentInterface,
+    deletePayment,
+    updatePayment,
 } from "@/store/features/admin/incomingPaymentSlice";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import CreateInvoiceModal from "./sub-payment/InvoiceModal";
 import ViewModal from "./sub-payment/ViewModal";
 import CustomTable from "@/components/custom-table/CustomTable";
+import { toast } from "react-toastify";
 
 const InPayments: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -34,6 +38,9 @@ const InPayments: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+    const [currentPaymnet, setCurrentPayment] = useState<PaymentInterface>(
+        {} as PaymentInterface
+    );
     const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
 
     useEffect(() => {
@@ -47,7 +54,57 @@ const InPayments: React.FC = () => {
         if (!token) return;
         await dispatch(refundPayment({ paymentId: id, token })).unwrap();
     };
+    const handleView = (id: string) => {
+        const payment = payments.find((payment) => payment._id === id);
+        if (payment) {
+            setCurrentPayment(payment);
+        }
+        setIsViewModalOpen(true);
+    };
 
+    const handleDelete = useCallback(
+        (id: string) => {
+            const token = getAccessToken();
+            if (!token) return;
+            dispatch(deletePayment({ paymentId: id, token }))
+                .unwrap()
+                .then(() => {
+                    toast.success("Payment deleted successfully!");
+                })
+                .catch((error: any) => {
+                    toast.error(
+                        `Error deleting Payment: ${
+                            error?.message || "Unknown error"
+                        }`
+                    );
+                });
+            dispatch(fetchPayments(token));
+        },
+        [dispatch]
+    );
+
+    const handleEdit = async (currentInvoice: any) => {
+        const token = getAccessToken();
+        if (!token) return;
+
+        const paymentId = currentInvoice._id;
+
+        const dataToUpdate = {};
+
+        try {
+            const res = await dispatch(
+                updatePayment({
+                    paymentId,
+                    data: dataToUpdate,
+                    token,
+                })
+            );
+            await dispatch(fetchPayments(token));
+            toast.success("Payment updated successfully!");
+        } catch (error) {
+            toast.error("Failed to update Payment. Please try again.");
+        }
+    };
     const handleExport = useCallback(() => {
         if (!payments) {
             console.error("No payments available to export");
@@ -73,8 +130,21 @@ const InPayments: React.FC = () => {
 
         exportCsvFile({ data, headers, filename: "incoming_payments.csv" });
     }, [payments]);
+
     const TableActions = memo(
-        ({ id, orderId }: { id: string; orderId: string }) => (
+        ({
+            onDelete,
+            onEdit,
+            onView,
+            orderId,
+            id,
+        }: {
+            onDelete: (id: string) => void;
+            onEdit: (id: string) => void;
+            onView: (id: string) => void;
+            orderId: string;
+            id: string;
+        }) => (
             <div className='flex space-x-3'>
                 <button
                     className='text-blue-500 hover:text-blue-700'
@@ -91,12 +161,26 @@ const InPayments: React.FC = () => {
                 >
                     Refund
                 </button>
-                <button
-                    className='text-gray-500 hover:text-gray-700'
-                    onClick={() => setIsViewModalOpen(true)}
-                >
-                    <FaEye className='text-lg' />
-                </button>
+                <div className='flex space-x-3'>
+                    <button
+                        className='text-gray-500 hover:text-gray-700'
+                        onClick={() => onView(id)}
+                    >
+                        <FaEye className='text-lg' />
+                    </button>
+                    <button
+                        className='text-blue-500 hover:text-blue-700'
+                        onClick={() => onEdit(id)}
+                    >
+                        <FaEdit className='text-lg' />
+                    </button>
+                    <button
+                        className='text-red-500 hover:text-red-700'
+                        onClick={() => onDelete(id)}
+                    >
+                        <FaTrashAlt className='text-md' />
+                    </button>
+                </div>
             </div>
         )
     );
@@ -140,6 +224,9 @@ const InPayments: React.FC = () => {
                 cell: (row: any) => (
                     <TableActions
                         id={row._id}
+                        onView={handleView}
+                        onDelete={handleDelete}
+                        onEdit={handleEdit}
                         orderId={row.orderId}
                     />
                 ),
@@ -222,7 +309,10 @@ const InPayments: React.FC = () => {
                 closeModal={() => setIsViewModalOpen(false)}
                 title=''
             >
-                <ViewModal onClose={() => setIsViewModalOpen(false)} />
+                <ViewModal
+                    onClose={() => setIsViewModalOpen(false)}
+                    currentInvoice={currentPaymnet}
+                />
             </CustomModelAdmin>
         </div>
     );

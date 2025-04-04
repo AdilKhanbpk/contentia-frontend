@@ -1,9 +1,12 @@
+import { PaymentInterface } from "@/store/features/admin/incomingPaymentSlice";
 import React from "react";
 interface ViewModalProps {
     onClose: () => void;
+    currentInvoice: PaymentInterface | null;
 }
 
-export default function ViewModal({ onClose }: ViewModalProps) {
+export default function ViewModal({ onClose, currentInvoice }: ViewModalProps) {
+    console.log("🚀 ~ ViewModal ~ currentInvoice:", currentInvoice);
     return (
         <div className='bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6'>
             <div className='grid grid-cols-1 lg:gap-8'>
