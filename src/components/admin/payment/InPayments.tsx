@@ -230,7 +230,7 @@ const InPayments: React.FC = () => {
                         orderId={row.orderId}
                     />
                 ),
-                width: "200px",
+                width: "240px",
             },
         ],
         []
@@ -300,7 +300,7 @@ const InPayments: React.FC = () => {
             >
                 <CreateInvoiceModal
                     onClose={() => setIsInvoiceModalOpen(false)}
-                    orderId={selectedOrderId}
+                    currentInvoice={currentPayment}
                 />
             </CustomModelAdmin>
 

@@ -1,4 +1,7 @@
-import { uploadInvoiceImage } from "@/store/features/admin/incomingPaymentSlice";
+import {
+    PaymentInterface,
+    uploadInvoiceImage,
+} from "@/store/features/admin/incomingPaymentSlice";
 import { AppDispatch, RootState } from "@/store/store";
 import { getAccessToken } from "@/utils/checkToken";
 import { useForm } from "react-hook-form";
@@ -6,12 +9,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 interface CreateInvoiceModalProps {
-    orderId: string;
+    currentInvoice: PaymentInterface | null;
     onClose: () => void;
 }
 
 export default function CreateInvoiceModal({
-    orderId,
+    currentInvoice,
     onClose,
 }: CreateInvoiceModalProps) {
     const dispatch = useDispatch<AppDispatch>();
@@ -26,13 +29,19 @@ export default function CreateInvoiceModal({
 
     const onSubmit = async (data: any) => {
         const token = getAccessToken();
-        if (!token || !orderId) return;
+        if (!token || !currentInvoice?.orderId) return;
 
         const formData = new FormData();
         formData.append("invoiceImage", data.invoiceImage[0]);
 
         try {
-            await dispatch(uploadInvoiceImage({ orderId, formData, token }));
+            await dispatch(
+                uploadInvoiceImage({
+                    orderId: currentInvoice?.orderId,
+                    formData,
+                    token,
+                })
+            );
             toast.success("Invoice created successfully!");
             onClose();
         } catch (error) {
