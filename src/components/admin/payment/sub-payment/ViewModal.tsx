@@ -1,148 +1,63 @@
 import { PaymentInterface } from "@/store/features/admin/incomingPaymentSlice";
 import React from "react";
+
 interface ViewModalProps {
     onClose: () => void;
     currentInvoice: PaymentInterface | null;
 }
 
-export default function ViewModal({ onClose, currentInvoice }: ViewModalProps) {
-    console.log("🚀 ~ ViewModal ~ currentInvoice:", currentInvoice);
+const ViewModal: React.FC<ViewModalProps> = ({ onClose, currentInvoice }) => {
+    if (!currentInvoice) return null;
+
     return (
-        <div className='bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6'>
-            <div className='grid grid-cols-1 lg:gap-8'>
-                {/* Creator Information */}
-                <div className='flex flex-col sm:flex-row sm:space-x-7'>
-                    <h3 className='text-sm sm:whitespace-nowrap font-semibold mb-4'>
-                        Creator Information:
-                    </h3>
-                    <div className='space-y-2'>
-                        <div className='flex justify-between space-x-[140px]'>
-                            <span className='text-sm sm:sm:whitespace-nowrap text-gray-600'>
-                                Creator Name:
-                            </span>
-                            <span className='text-sm sm:whitespace-nowrap font-semibold'>
-                                Mehmed
-                            </span>
-                        </div>
-                        <div className='flex justify-between space-x-[140px]'>
-                            <span className='text-sm sm:sm:whitespace-nowrap text-gray-600'>
-                                Creator Surname:
-                            </span>
-                            <span className='text-sm sm:whitespace-nowrap font-semibold'>
-                                Celebi
-                            </span>
-                        </div>
-                        <div className='flex justify-between space-x-[140px]'>
-                            <span className='text-sm sm:whitespace-nowrap text-gray-600'>
-                                Creator ID:
-                            </span>
-                            <span className='text-sm sm:whitespace-nowrap font-semibold'>
-                                12411591
-                            </span>
-                        </div>
-                    </div>
-                </div>
+        <div className='flex flex-col justify-start items-start px-4 mt-1 mb-4'>
+            <h1 className='text-md font-semibold mb-4'>Invoice Details</h1>
 
-                <div className='flex flex-col xl:flex-row xl:space-x-12'>
-                    {/* Payment Information */}
-                    <div className='flex flex-col sm:flex-row  w-full lg:w-1/2 sm:space-x-4'>
-                        <h3 className='text-sm sm:whitespace-nowrap font-semibold mb-4'>
-                            Payment Information:
-                        </h3>
-                        <div className='space-y-2'>
-                            <div className='flex justify-between space-x-4'>
-                                <span className='text-sm sm:whitespace-nowrap text-gray-600'>
-                                    Bank Account Type:
-                                </span>
-                                <span className='text-sm sm:whitespace-nowrap font-semibold'>
-                                    Individual
-                                </span>
-                            </div>
-                            <div className='flex justify-between space-x-4'>
-                                <span className='text-sm sm:whitespace-nowrap text-gray-600'>
-                                    Name and Surname:
-                                </span>
-                                <span className='text-sm sm:whitespace-nowrap font-semibold'>
-                                    Mehmed Celebi
-                                </span>
-                            </div>
-                            <div className='flex justify-between space-x-4'>
-                                <span className='text-sm sm:whitespace-nowrap text-gray-600'>
-                                    Identity Number:
-                                </span>
-                                <span className='text-sm sm:whitespace-nowrap font-semibold'>
-                                    5059118275
-                                </span>
-                            </div>
-                            <div className='flex justify-between space-x-4'>
-                                <span className='text-sm sm:whitespace-nowrap text-gray-600'>
-                                    IBAN Number:
-                                </span>
-                                <span className='text-sm sm:whitespace-nowrap font-semibold'>
-                                    TR 1300 5000 6000 3921 12
-                                </span>
-                            </div>
-                            <div className='flex justify-between space-x-4'>
-                                <span className='text-sm sm:whitespace-nowrap text-gray-600'>
-                                    Address:
-                                </span>
-                                <span className='text-sm sm:whitespace-nowrap font-semibold'>
-                                    Istanbul
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Invoice Information */}
-                    <div className='mt-4 xl:mt-0 flex flex-col sm:flex-row  w-full lg:w-1/2 sm:space-x-4'>
-                        <h3 className='text-sm sm:whitespace-nowrap font-semibold mb-4'>
-                            Invoice Information:
-                        </h3>
-                        <div className='space-y-2'>
-                            <div className='flex justify-between space-x-4'>
-                                <span className='text-sm sm:whitespace-nowrap text-gray-600'>
-                                    Invoice Status:
-                                </span>
-                                <span className='text-sm sm:whitespace-nowrap font-semibold'>
-                                    Yes
-                                </span>
-                            </div>
-                            <div className='flex justify-between space-x-4'>
-                                <span className='text-sm sm:whitespace-nowrap text-gray-600'>
-                                    Invoice Type:
-                                </span>
-                                <span className='text-sm sm:whitespace-nowrap font-semibold'>
-                                    Individual
-                                </span>
-                            </div>
-                            <div className='flex justify-between space-x-4'>
-                                <span className='text-sm sm:whitespace-nowrap text-gray-600'>
-                                    Name and Surname:
-                                </span>
-                                <span className='text-sm sm:whitespace-nowrap font-semibold'>
-                                    Mehmed Celebi
-                                </span>
-                            </div>
-                            <div className='flex justify-between space-x-4'>
-                                <span className='text-sm sm:whitespace-nowrap text-gray-600'>
-                                    Identity No:
-                                </span>
-                                <span className='text-sm sm:whitespace-nowrap font-semibold'>
-                                    5059118275
-                                </span>
-                            </div>
-                            <div className='flex justify-between space-x-4'>
-                                <span className='text-sm sm:whitespace-nowrap text-gray-600'>
-                                    Invoice Address:
-                                </span>
-                                <span className='text-sm sm:whitespace-nowrap font-semibold'>
-                                    Istanbul
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            {/* Invoice ID */}
+            <div className='w-full flex flex-col'>
+                <p className='mb-1 font-semibold'>Invoice ID:</p>
+                <p className='p-2 border rounded w-72 md:w-96'>
+                    {currentInvoice._id}
+                </p>
             </div>
+
+            {/* Order ID */}
+            <div className='w-full flex flex-col mt-2'>
+                <p className='mb-1 font-semibold'>Order ID:</p>
+                <p className='p-2 border rounded w-72 md:w-96'>
+                    {currentInvoice.orderId}
+                </p>
+            </div>
+
+            {/* Payment Amount */}
+            <div className='w-full flex flex-col mt-2'>
+                <p className='mb-1 font-semibold'>Payment Amount:</p>
+                <p className='p-2 border rounded w-72 md:w-96'>
+                    {currentInvoice.paymentAmount}
+                </p>
+            </div>
+
+            {/* Payment Status */}
+            <div className='w-full flex flex-col mt-2'>
+                <p className='mb-1 font-semibold'>Payment Status:</p>
+                <p className='p-2 border rounded w-72 md:w-96'>
+                    {currentInvoice.paymentStatus}
+                </p>
+            </div>
+
+            {/* Display Invoice Image */}
+            {currentInvoice.invoiceImage && (
+                <div className='max-w-[400px] flex flex-col mt-4'>
+                    <p className='mb-1 font-semibold'>Invoice Image:</p>
+                    <img
+                        src={currentInvoice.invoiceImage}
+                        alt='Invoice Image'
+                        className='w-full h-auto rounded-md border'
+                    />
+                </div>
+            )}
         </div>
     );
-}
+};
+
+export default ViewModal;

@@ -38,7 +38,7 @@ const InPayments: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-    const [currentPaymnet, setCurrentPayment] = useState<PaymentInterface>(
+    const [currentPayment, setCurrentPayment] = useState<PaymentInterface>(
         {} as PaymentInterface
     );
     const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
@@ -311,7 +311,7 @@ const InPayments: React.FC = () => {
             >
                 <ViewModal
                     onClose={() => setIsViewModalOpen(false)}
-                    currentInvoice={currentPaymnet}
+                    currentInvoice={currentPayment}
                 />
             </CustomModelAdmin>
         </div>
