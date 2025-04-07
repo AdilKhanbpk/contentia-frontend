@@ -246,45 +246,47 @@ export default function Contentiaio() {
 
                         <div className='flex flex-col w-full lg:w-1/2 sm:mt-28 md:mt-28 lg:mt-9 lg:ml-8 mx-auto'>
                             <h1 className='headingTextTwo mb-3'>
-                                {"İçeriklerimizi Keşfet"}
+                                Gerçek içeriklerin gücünü keşfedin!
                             </h1>
                             <div className=''>
                                 <p className='paraText mb-5'>
-                                    {"Gerçek içeriklerin gücünü keşfedin!"}
+                                    Influencer ve dijital içerik
+                                    üreticilerimizle birlikte markanızı tanıtın,
+                                    yenilikleri ve kampanyaları duyurun{" "}
                                 </p>
                             </div>
                             <div className='flex flex-col sm:flex-row md:flex-row lg:flex-row lg:justify-between lg:mt-[94px]'>
-                                <div className='flex flex-row sm:flex-row md:flex-row lg:flex-row lg:-ml-14 mx-auto'>
+                                <div className='flex flex-row sm:flex-row md:flex-row lg:flex-row  mx-auto px-10'>
                                     <Image
                                         src='/starIcon.svg'
-                                        height={44}
-                                        width={151}
+                                        height={100}
+                                        width={100}
                                         alt='star icon'
-                                        className='h-[60px] w-[170px]'
+                                        className='h-[60px] px-4'
                                     />
                                     <div>
-                                        <h1 className='headingTextTwo mb-1'>
-                                            4.5/5.0
+                                        <h1 className='headingTextTwo text-center mb-1'>
+                                            4.5/5
                                         </h1>
-                                        <p className='paraTextTwo mb-5'>
+                                        <p className='paraTextTwo mb-5 text-nowrap'>
                                             Memnuniyet Oranı
                                         </p>
                                     </div>
                                 </div>
 
-                                <div className='flex flex-row sm:flex-row md:flex-row lg:flex-row mx-auto'>
+                                <div className='flex flex-row sm:flex-row md:flex-row lg:flex-row mx-auto px-10'>
                                     <Image
                                         src='/usersIcon.svg'
-                                        height={44}
-                                        width={151}
+                                        height={100}
+                                        width={100}
                                         alt='users icon'
-                                        className='h-[60px] w-[170px]'
+                                        className='h-[55px] pr-4'
                                     />
                                     <div>
-                                        <h1 className='headingTextTwo mb-1'>
+                                        <h1 className='headingTextTwo text-center mb-1'>
                                             18-65
                                         </h1>
-                                        <p className='paraTextTwo mb-5'>
+                                        <p className='paraTextTwo mb-5 text-nowrap'>
                                             yaş aralığı içerik üreticiler
                                         </p>
                                     </div>

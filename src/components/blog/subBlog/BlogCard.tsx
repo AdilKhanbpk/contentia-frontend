@@ -65,7 +65,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ selectedCategory }) => {
 
     return (
         <div className='my-3 mt-28'>
-            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3 lg:grid-cols-2 gap-8'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8'>
                 {currentBlogs.map((blog: BlogInterface) => (
                     <div
                         key={blog._id}
@@ -75,9 +75,9 @@ const BlogCard: React.FC<BlogCardProps> = ({ selectedCategory }) => {
                             src={blog.bannerImage || influencerMarketingImage1}
                             alt={blog.title}
                             priority
-                            width={400}
-                            height={300}
-                            className='w-full h-auto rounded-md'
+                            width={300}
+                            height={200}
+                            className='w-[400px] h-[200px] object-cover rounded-md mx-auto'
                         />
                         <div className='px-2 mt-2 text-center'>
                             <p className='text-gray-600'>
@@ -89,7 +89,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ selectedCategory }) => {
                             </p>
                             <Link href={`/blog/blogdetails/${blog._id}`}>
                                 <button className='border w-full p-2 rounded-full BlueText BlueBorder mt-4 transition'>
-                                    Devamini Oko
+                                    Devamını Oku
                                 </button>
                             </Link>
                         </div>

@@ -183,7 +183,7 @@ export default function TabSecond({
                                 <input
                                     type='text'
                                     placeholder=''
-                                    className='border px-3 py-2 rounded-md focus:outline-none '
+                                    className='border px-3 py-2 mb-4 rounded-md focus:outline-none '
                                 />
                                 <div>
                                     <button className='ButtonBlue text-white px-4 py-2 rounded-md font-semibold'>
@@ -235,7 +235,7 @@ export default function TabSecond({
 
                             {/* Date Range */}
                             <div className='flex flex-row'>
-                                <p className='font-semibold text-sm BlueText'>
+                                <p className='font-semibold text-sm BlueText mr-3'>
                                     {formatDate(deliveryStartDate)} -{" "}
                                     {formatDate(deliveryEndDate)}
                                 </p>

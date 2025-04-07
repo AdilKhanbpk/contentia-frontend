@@ -451,7 +451,7 @@ export default function TabFirst({
                                                 İçerik Üretici
                                             </p>
                                             <div className='mb-2'>
-                                                <p className='ButtonBlue w-24 text-white font-medium rounded-md px-1 py-0.5 text-xs'>
+                                                <p className='ButtonBlue inline text-white font-medium rounded-md px-1 py-0.5 text-xs'>
                                                     {option.strikeThroughPrice &&
                                                         option.strikeThroughPrice -
                                                             option.finalPrice}{" "}
@@ -540,7 +540,7 @@ export default function TabFirst({
                                 <h2 className='text-lg font-semibold mb-4'>
                                     Ek Hizmetlerimiz
                                 </h2>
-                                <div>
+                                {/* <div>
                                     <Image
                                         src='/dropDownIcon.png'
                                         alt='brand logo'
@@ -548,7 +548,7 @@ export default function TabFirst({
                                         width={20}
                                         className=' ml-2  rounded-full'
                                     />
-                                </div>
+                                </div> */}
                             </div>
                             <div>
                                 <p className='mb-6'>
@@ -609,29 +609,31 @@ export default function TabFirst({
                         </div>
                     </div>
 
-                    <div className='bg-white my-2 py-2 px-4 sm:my-3 sm:py-3 sm:px-5 md:my-4 md:py-4 md:px-6 lg:my-4 lg:py-4 lg:px-6 flex justify-end items-center border-gray-300'>
-                        {/* Left Section */}
-                        <div className='mr-4'>
-                            <p className='text-lg font-semibold text-indigo-700'>
-                                1 Video x {oneVideoPrice} TL
-                            </p>
-                            <p className='text-sm text-indigo-500'>
-                                Toplam:{" "}
-                                {getPrice(
-                                    selectedQuantity,
-                                    selectedCard,
-                                    totalAdditionalCharges
-                                )}{" "}
-                                TL
-                            </p>
+                    <div className='fixed bottom-0 left-0 w-full mx-auto lg:px-24'>
+                        <div className=' bg-white p-4 flex justify-end items-center border-gray-300'>
+                            {/* Left Section */}
+                            <div className='mr-4'>
+                                <p className='text-lg font-semibold text-indigo-700'>
+                                    1 Video x {oneVideoPrice} TL
+                                </p>
+                                <p className='text-sm text-indigo-500'>
+                                    Toplam:{" "}
+                                    {getPrice(
+                                        selectedQuantity,
+                                        selectedCard,
+                                        totalAdditionalCharges
+                                    )}{" "}
+                                    TL
+                                </p>
+                            </div>
+                            <button
+                                type='submit'
+                                // onClick={() => setActiveTab(1)}
+                                className='ButtonBlue text-white font-semibold py-2 px-4 rounded-lg'
+                            >
+                                İleri
+                            </button>
                         </div>
-                        <button
-                            type='submit'
-                            // onClick={() => setActiveTab(1)}
-                            className='ButtonBlue text-white font-semibold py-2 px-4 rounded-lg'
-                        >
-                            İleri
-                        </button>
                     </div>
                 </div>
             </form>
