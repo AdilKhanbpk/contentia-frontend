@@ -9,9 +9,42 @@ import linkdinIcon from "../../../public/BecomeCreator/linkedin_icon.png";
 import xIcon from "../../../public/BecomeCreator/x_icon.png";
 import tiktokIcon from "../../../public/BecomeCreator/tiktik_icon.png";
 
+const socialLinks = [
+    {
+        href: "https://www.instagram.com/contentia.io/",
+        icon: instIcon,
+        alt: "Instagram",
+    },
+    {
+        href: "https://www.tiktok.com/contentia.io",
+        icon: tiktokIcon,
+        alt: "TikTok",
+    },
+    {
+        href: "https://www.youtube.com/@contentiaio",
+        icon: youtubeIcon,
+        alt: "YouTube",
+    },
+    {
+        href: "https://twitter.com/contentia_io",
+        icon: xIcon,
+        alt: "Twitter",
+    },
+    {
+        href: "https://www.linkedin.com/company/contentiaio",
+        icon: linkdinIcon,
+        alt: "LinkedIn",
+    },
+    {
+        href: "https://www.facebook.com/contentia.io",
+        icon: facebookIcon,
+        alt: "Facebook",
+    },
+];
+
 const Footer = () => {
     return (
-        <footer className='bg-white text-gray-700 py-8 border-t'>
+        <footer className='bg-white text-gray-700 py-8 lg:px-12 border-t'>
             <div className=' container mx-auto px-4 sm:px-6 md:px-8 lg:px-[38px] flex flex-col md:flex-row justify-between items-start md:items-start'>
                 {/* Left Section: Logo and Description */}
                 <div className='mb-6 md:mb-0'>
@@ -20,8 +53,8 @@ const Footer = () => {
                             <a href='/'>
                                 <Image
                                     src='/contentiaLogo.png'
-                                    height={44}
-                                    width={151}
+                                    height={100}
+                                    width={100}
                                     alt='logo'
                                     className='h-[33px] w-[173px]'
                                 />
@@ -35,7 +68,6 @@ const Footer = () => {
                         içeriklerle tanıştırarak influencer pazarlamasını en üst
                         düzeye çıkaran platform
                     </p>
-
                     {/* Contact */}
                     <div className='flex items-center mt-4'>
                         <Image
@@ -50,24 +82,6 @@ const Footer = () => {
                         >
                             info@contentia.io
                         </a>
-                    </div>
-
-                    {/* App Store Links */}
-                    <p className='mt-4 text-sm text-start md:text-end lg:text-center w-3/5'>
-                        İçerik Üretici Ol
-                    </p>
-
-                    <div className='flex space-x-4'>
-                        <Image
-                            src={appStoreImage}
-                            alt='Download on the App Store'
-                            className='w-[150px] mt-3'
-                        />
-                        <Image
-                            src={googlePlayImage}
-                            alt='Get it on Google Play'
-                            className='w-[150px] mt-3'
-                        />
                     </div>
                 </div>
 
@@ -208,83 +222,82 @@ const Footer = () => {
             </div>
 
             {/* Bottom Section: Social Media */}
-            <div className='container mx-auto px-4 sm:px-6 md:px-8 lg:px-[38px] mt-8 flex flex-col md:flex-row justify-between items-center'>
-                <p className='text-sm text-gray-600 mb-4 md:mb-0'>
-                    2024 Contentia. Tüm Hakları Saklıdır
-                </p>
-                <div className='flex flex-col items-center  lg:-mt-16'>
-                    <div>
+            <div className='container mx-auto px-4 sm:px-6 md:px-8 lg:px-[38px] mt-8 flex flex-col md:flex-row justify-between items-center md:items-start gap-8'>
+                {/* Left Section */}
+                <div className='w-full md:w-1/2 flex flex-col '>
+                    <div className='w-1/2 flex justify-center'>
+                        {/* Become a Creator */}
+                        <p className='font-semibold'>İçerik Üretici Ol</p>
+                    </div>
+                    {/* App Store Links */}
+                    <div className='flex space-x-4 mt-3'>
+                        <Link
+                            href='https://apps.apple.com/app/idXXXXXXXXX'
+                            passHref
+                            legacyBehavior
+                        >
+                            <a
+                                target='_blank'
+                                rel='noopener noreferrer'
+                            >
+                                <Image
+                                    src={appStoreImage}
+                                    alt='Download on the App Store'
+                                    className='w-[150px]'
+                                />
+                            </a>
+                        </Link>
+                        <Link
+                            href='https://play.google.com/store/apps/details?id=XXXXXXXXX'
+                            passHref
+                            legacyBehavior
+                        >
+                            <a
+                                target='_blank'
+                                rel='noopener noreferrer'
+                            >
+                                <Image
+                                    src={googlePlayImage}
+                                    alt='Get it on Google Play'
+                                    className='w-[150px]'
+                                />
+                            </a>
+                        </Link>
+                    </div>
+
+                    {/* Copyright */}
+                    <p className='text-sm text-gray-600 mt-4'>
+                        2024 Contentia. Tüm Hakları Saklıdır
+                    </p>
+                </div>
+
+                {/* Right Section */}
+                <div className='w-full md:w-1/2 flex flex-col items-center md:items-end'>
+                    <div className='w-1/2 flex justify-center'>
                         <p className='mb-2 font-semibold'>Bizi Takip Edin</p>
                     </div>
-                    <div>
-                        <div className='flex space-x-4'>
+                    <div className='flex flex-wrap gap-4 justify-center md:justify-end'>
+                        {socialLinks.map((item, index) => (
                             <Link
                                 legacyBehavior
-                                href='#'
+                                href={item.href}
+                                key={index}
                             >
-                                <Image
-                                    src={instIcon}
-                                    alt='Instagram'
-                                    width={32}
-                                    height={32}
-                                />
+                                <a
+                                    target='_blank'
+                                    rel='noopener noreferrer'
+                                    className='transition transform hover:scale-110 hover:opacity-80 duration-300'
+                                >
+                                    <Image
+                                        src={item.icon}
+                                        alt={item.alt}
+                                        width={50}
+                                        height={50}
+                                        className='rounded-md shadow-sm'
+                                    />
+                                </a>
                             </Link>
-                            <Link
-                                legacyBehavior
-                                href='#'
-                            >
-                                <Image
-                                    src={tiktokIcon}
-                                    alt='TikTok'
-                                    width={32}
-                                    height={32}
-                                />
-                            </Link>
-                            <Link
-                                legacyBehavior
-                                href='#'
-                            >
-                                <Image
-                                    src={youtubeIcon}
-                                    alt='YouTube'
-                                    width={32}
-                                    height={32}
-                                />
-                            </Link>
-                            <Link
-                                legacyBehavior
-                                href='#'
-                            >
-                                <Image
-                                    src={xIcon}
-                                    alt='Twitter'
-                                    width={32}
-                                    height={32}
-                                />
-                            </Link>
-                            <Link
-                                legacyBehavior
-                                href='#'
-                            >
-                                <Image
-                                    src={linkdinIcon}
-                                    alt='LinkedIn'
-                                    width={32}
-                                    height={32}
-                                />
-                            </Link>
-                            <Link
-                                legacyBehavior
-                                href='#'
-                            >
-                                <Image
-                                    src={facebookIcon}
-                                    alt='WhatsApp'
-                                    width={32}
-                                    height={32}
-                                />
-                            </Link>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </div>

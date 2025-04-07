@@ -378,14 +378,14 @@ export default function Contentiaio() {
                                 <p>Loading Packages...</p>
                             ) : (
                                 packages &&
-                                packages.map((pkg, index) => (
+                                packages.map((pkg: any, index: any) => (
                                     <CustomCard
                                         key={index}
                                         title={pkg.title}
                                         description={pkg.description}
                                         videoCount={pkg.videoCount}
                                         durationOptions={["15s", "30s", "60s"]}
-                                        editingOptions={["yes", "no"]}
+                                        editingOptions={["Evet", "Hayir"]}
                                         aspectRatioOptions={["9:16", "16:9"]}
                                         price={pkg.finalPrice}
                                         onOrderClick={handleOrderClick}
