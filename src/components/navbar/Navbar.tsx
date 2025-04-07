@@ -16,6 +16,11 @@ export default function Navbar() {
     const { t } = useTranslation();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleDropdown = () => {
+        setIsOpen(!isOpen);
+    };
 
     const toggleSidebar = () => {
         setSidebarOpen(!isSidebarOpen);
@@ -94,14 +99,59 @@ export default function Navbar() {
                             </ul>
 
                             {/* Sidebar links aligned with the logo on large screens */}
-                            <ul className='hidden lg:flex space-x-4 ms-10 font-medium'>
-                                <li>
-                                    <a
-                                        href='#'
-                                        className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
+
+                            <ul className='hidden lg:flex items-center space-x-4 ms-10 font-medium'>
+                                <li className='relative'>
+                                    <button
+                                        onClick={toggleDropdown}
+                                        className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg flex items-center'
                                     >
                                         Hizmetlerimiz
-                                    </a>
+                                        <svg
+                                            className='ml-1 w-4 h-4'
+                                            fill='none'
+                                            stroke='currentColor'
+                                            strokeWidth='2'
+                                            viewBox='0 0 24 24'
+                                        >
+                                            <path
+                                                strokeLinecap='round'
+                                                strokeLinejoin='round'
+                                                d='M19 9l-7 7-7-7'
+                                            />
+                                        </svg>
+                                    </button>
+                                    {/* Show the menu only when isOpen is true */}
+                                    <ul
+                                        className={`absolute left-0 mt-2 w-40 rounded-lg shadow-lg bg-white dark:bg-gray-800 z-50 ${
+                                            isOpen ? "block" : "hidden"
+                                        }`}
+                                    >
+                                        <li>
+                                            <a
+                                                href='#'
+                                                className='block px-4 py-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
+                                            >
+                                                Markalar
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href='#'
+                                                className='block px-4 py-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
+                                            >
+                                                Ajanslar
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href='#'
+                                                className='block px-4 py-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
+                                            >
+                                                Girişimler
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
                                 <li>
                                     <a
