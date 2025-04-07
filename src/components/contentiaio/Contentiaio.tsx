@@ -178,7 +178,7 @@ export default function Contentiaio() {
                     ) : (
                         <>
                             <div className='flex flex-col'>
-                                <h1 className='headingText mb-3'>
+                                <h1 className='headingText mb-5'>
                                     <span className='headingTextBlue'>
                                         {landingPage?.carouselHeroTitle}
                                     </span>
@@ -203,7 +203,7 @@ export default function Contentiaio() {
                                 {landingPage && (
                                     <div>
                                         <button className='Button text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>
-                                            Button Text{" "}
+                                            UGC Siparisini Olustur{" "}
                                         </button>
                                     </div>
                                 )}
