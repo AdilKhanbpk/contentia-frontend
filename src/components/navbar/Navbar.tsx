@@ -100,7 +100,7 @@ export default function Navbar() {
                                         href='#'
                                         className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
                                     >
-                                        {t("services")}
+                                        Hizmetlerimiz
                                     </a>
                                 </li>
                                 <li>
@@ -108,7 +108,7 @@ export default function Navbar() {
                                         href='#'
                                         className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
                                     >
-                                        {t("pricing")}
+                                        Hakkımızda
                                     </a>
                                 </li>
                                 <li>
@@ -116,15 +116,7 @@ export default function Navbar() {
                                         href='#'
                                         className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
                                     >
-                                        {t("successStories")}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        href='#'
-                                        className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
-                                    >
-                                        {t("faq")}
+                                        Nasıl Çalışır?
                                     </a>
                                 </li>
                             </ul>
@@ -138,7 +130,7 @@ export default function Navbar() {
                                     href='/contentiaio/become-creator'
                                 >
                                     <a className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'>
-                                        {t("becomeContentCreator")}
+                                        İçerik Üretici Ol
                                     </a>
                                 </Link>
                             </li>

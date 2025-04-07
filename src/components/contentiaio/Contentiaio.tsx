@@ -166,7 +166,7 @@ export default function Contentiaio() {
 
     return (
         <>
-            <div className='px-4 sm:px-6 md:px-8 lg:px-[38px] '>
+            <div className='px-4 sm:px-6 md:px-8 lg:px-24 '>
                 {/* Hero Section */}
                 <div className='flex flex-col lg:flex-row w-full pt-12 sm:pt-16 md:pt-24 lg:pt-[180px] lg:justify-between'>
                     {landingPageLoading ? (
