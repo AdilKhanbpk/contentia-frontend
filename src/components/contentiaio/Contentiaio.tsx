@@ -367,6 +367,7 @@ export default function Contentiaio() {
 
                 {/* Packages Section */}
                 <div className='w-full ml-2 mt-8 sm:mt-12 md:mt-16 lg:mt-20'>
+                    <SectionHeader title='Fiyatlandırma' />
                     <div>
                         <p className='paraText text-center mb-8'>
                             İhtiyaçlarınıza uygun paketleri inceleyin ve
@@ -405,20 +406,18 @@ export default function Contentiaio() {
 
                     <div className='grid grid-cols-1 sm:grid-cols-2 gap-8'>
                         {STEPS.map((step) => (
-                            <div
-                                key={step.number}
-                                className=''
-                            >
-                                <div className='flex flex-col'>
-                                    <div className='flex flex-row items-center'>
-                                        <h1 className='headingTextBlue mr-2'>
-                                            {step.number}
-                                        </h1>
-                                        <div className='headingTextTwo'>
+                            <div key={step.number}>
+                                <div className='flex flex-row items-start gap-4'>
+                                    {/* Left: Number */}
+                                    <div className='headingTextBlue min-w-[40px]'>
+                                        {step.number}
+                                    </div>
+
+                                    {/* Right: Title & Description */}
+                                    <div>
+                                        <div className='headingTextTwo mb-2'>
                                             {step.title}
                                         </div>
-                                    </div>
-                                    <div>
                                         <p className='paraTextTwo'>
                                             {step.description}
                                         </p>
@@ -454,9 +453,9 @@ export default function Contentiaio() {
                                 Hemen iletişime geçin, ihtiyacınıza özel
                                 tekliflerden faydalanın
                             </p>
-                            <div className='flex justify-center md:justify-start'>
+                            <div className='flex justify-center'>
                                 <div>
-                                    <button className='Button text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>
+                                    <button className='Button text-white font-bold py-2 px-5 rounded focus:outline-none focus:shadow-outline'>
                                         İletişime Geç{" "}
                                     </button>
                                 </div>

@@ -40,11 +40,11 @@ const CustomCard: React.FC<CardProps> = ({
                         Including the following features
                     </p>
                     <div className='flex flex-row items-baseline mb-2'>
-                        <h1 className='headingTextBlue text-lg sm:text-xl mr-2'>
+                        <h1 className='headingTextBlue text-lg sm:text-xl lg:text-5xl ml-6 mr-4'>
                             {videoCount}
                         </h1>
                         <p className='cardTextBlack text-sm sm:text-base'>
-                            videos{" "}
+                            Video{" "}
                         </p>
                     </div>
 
