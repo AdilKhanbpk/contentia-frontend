@@ -33,9 +33,7 @@ export default function RootLayout({
                             persistor={persistor}
                         >
                             <I18nextProvider i18n={i18n}>
-                                {/* <AuthWrapper> */}
-                                {children}
-                                {/* </AuthWrapper> */}
+                                <AuthWrapper>{children}</AuthWrapper>
                                 <ToastContainer />
                             </I18nextProvider>
                         </PersistGate>
