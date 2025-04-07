@@ -117,18 +117,21 @@ export default function HowItWorks() {
                 <div className='grid grid-cols-1 sm:grid-cols-2 gap-8'>
                     {sections[0]?.steps?.map((step: any, index: number) => (
                         <div key={index}>
-                            <div className='flex flex-col'>
-                                <div className='flex flex-row items-center'>
-                                    <h1 className='headingTextBlue mr-2'>
-                                        {index + 1}
-                                    </h1>
-                                    <div className='headingTextTwo'>
+                            <div className='flex flex-row items-start gap-4'>
+                                {/* Left: Number */}
+                                <div className='headingTextBlue min-w-[40px]'>
+                                    {index + 1}
+                                </div>
+
+                                {/* Right: Title & Description */}
+                                <div>
+                                    <div className='headingTextTwo mb-2'>
                                         {step.title}
                                     </div>
+                                    <p className='paraTextTwo'>
+                                        {step.description}
+                                    </p>
                                 </div>
-                                <p className='paraTextTwo'>
-                                    {step.description}
-                                </p>
                             </div>
                         </div>
                     ))}
