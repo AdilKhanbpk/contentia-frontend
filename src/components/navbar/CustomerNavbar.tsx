@@ -15,6 +15,13 @@ import { Dropdown } from "./AdminNavbar";
 import { getAccessToken } from "@/utils/checkToken";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import {
+    BriefcaseIcon,
+    PaperClipIcon,
+    ShoppingCartIcon,
+    UserIcon,
+} from "@heroicons/react/24/solid";
+import { IoLogOut } from "react-icons/io5";
 
 export default function Navbar() {
     const dispatch = useDispatch<AppDispatch>();
@@ -186,17 +193,41 @@ export default function Navbar() {
                                         }
                                     >
                                         <ul className='p-2 text-sm'>
-                                            <li className='p-2 hover:bg-gray-100 cursor-pointer'>
-                                                Profile Settings
+                                            <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                <Image
+                                                    className='w-8 h-8 rounded-full border-2 border-gray-600'
+                                                    src={
+                                                        user?.profilePic ||
+                                                        "/defaultProfile.png"
+                                                    }
+                                                    alt='Profile'
+                                                    width={100}
+                                                    height={100}
+                                                />
+                                                {user?.fullName || "John Doe"}
                                             </li>
-                                            <li className='p-2 hover:bg-gray-100 cursor-pointer'>
-                                                Preferences
+                                            <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                <UserIcon className='w-4 h-4' />
+                                                Profil
+                                            </li>
+                                            <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                <ShoppingCartIcon className='w-4 h-4' />
+                                                Siparisler
+                                            </li>
+                                            <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                <PaperClipIcon className='w-4 h-4' />
+                                                Paketler
+                                            </li>
+                                            <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                <BriefcaseIcon className='w-4 h-4' />
+                                                Markalarim
                                             </li>
                                             <li
-                                                className='p-2 hover:bg-red-100 cursor-pointer text-red-600'
+                                                className='p-2 BlueText hover:bg-red-100 cursor-pointer text-red-600 flex items-center gap-2'
                                                 onClick={handleLogout}
                                             >
-                                                Logout
+                                                <IoLogOut className='w-4 h-4' />
+                                                Cikis Yap
                                             </li>
                                         </ul>
                                     </Dropdown>

@@ -613,10 +613,10 @@ export default function TabFirst({
                         <div className=' bg-white p-4 flex justify-end items-center border-gray-300'>
                             {/* Left Section */}
                             <div className='mr-4'>
-                                <p className='text-lg font-semibold text-indigo-700'>
+                                <p className='text-lg font-semibold BlueText'>
                                     1 Video x {oneVideoPrice} TL
                                 </p>
-                                <p className='text-sm text-indigo-500'>
+                                <p className='text-sm BlueText'>
                                     Toplam:{" "}
                                     {getPrice(
                                         selectedQuantity,

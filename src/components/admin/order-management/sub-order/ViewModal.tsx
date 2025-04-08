@@ -12,7 +12,7 @@ const ViewModal = ({ order }: ViewModalProps) => {
         <>
             <div className='flex justify-center items-center'>
                 <div className='bg-white rounded-lg p-6 w-full max-w-4xl '>
-                    <h2 className='text-lg font-bold mb-4 text-indigo-600'>
+                    <h2 className='text-lg font-bold mb-4 BlueText'>
                         Order Details
                     </h2>
 
@@ -21,72 +21,72 @@ const ViewModal = ({ order }: ViewModalProps) => {
                         {/* Left Column - Basic & Additional Services */}
                         <div>
                             {/* Order Basic Details */}
-                            <h3 className='text-lg font-bold mb-3 text-indigo-600'>
+                            <h3 className='text-lg font-bold mb-3 BlueText'>
                                 Basic Details
                             </h3>
                             <div className='grid grid-cols-2 gap-4'>
                                 <div className='text-gray-700 font-semibold'>
                                     Order ID:
                                 </div>
-                                <div className='text-right font-bold text-indigo-600'>
+                                <div className='text-right font-bold BlueText'>
                                     {order._id}
                                 </div>
 
                                 <div className='text-gray-700 font-semibold'>
                                     Order Owner:
                                 </div>
-                                <div className='text-right font-bold text-indigo-600'>
+                                <div className='text-right font-bold BlueText'>
                                     {order.orderOwner.fullName}
                                 </div>
 
                                 <div className='text-gray-700 font-semibold'>
                                     Assigned Creators:
                                 </div>
-                                <div className='text-right font-bold text-indigo-600'>
+                                <div className='text-right font-bold BlueText'>
                                     {order.assignedCreators.length}
                                 </div>
 
                                 <div className='text-gray-700 font-semibold'>
                                     Order Status:
                                 </div>
-                                <div className='text-right font-bold text-indigo-600'>
+                                <div className='text-right font-bold BlueText'>
                                     {order.orderStatus}
                                 </div>
 
                                 <div className='text-gray-700 font-semibold'>
                                     Payment Status:
                                 </div>
-                                <div className='text-right font-bold text-indigo-600'>
+                                <div className='text-right font-bold BlueText'>
                                     {order.paymentStatus}
                                 </div>
 
                                 <div className='text-gray-700 font-semibold'>
                                     Total Price:
                                 </div>
-                                <div className='text-right font-bold text-indigo-600'>
+                                <div className='text-right font-bold BlueText'>
                                     {order.totalPrice} TL
                                 </div>
                             </div>
 
                             {/* Additional Services */}
-                            <h3 className='text-lg font-bold mt-6 mb-3 text-indigo-600'>
+                            <h3 className='text-lg font-bold mt-6 mb-3 BlueText'>
                                 Additional Services
                             </h3>
                             <div className='grid grid-cols-2 gap-4'>
                                 <div className='text-gray-700'>Platform:</div>
-                                <div className='text-right font-bold text-indigo-600'>
+                                <div className='text-right font-bold BlueText'>
                                     {order.additionalServices?.platform ||
                                         "Not specified"}
                                 </div>
 
                                 <div className='text-gray-700'>Duration:</div>
-                                <div className='text-right font-bold text-indigo-600'>
+                                <div className='text-right font-bold BlueText'>
                                     {order.additionalServices?.duration ||
                                         "Not specified"}
                                 </div>
 
                                 <div className='text-gray-700'>Editing:</div>
-                                <div className='text-right font-bold text-indigo-600'>
+                                <div className='text-right font-bold BlueText'>
                                     {order.additionalServices?.edit
                                         ? "Yes"
                                         : "No"}
@@ -95,13 +95,13 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                 <div className='text-gray-700'>
                                     Aspect Ratio:
                                 </div>
-                                <div className='text-right font-bold text-indigo-600'>
+                                <div className='text-right font-bold BlueText'>
                                     {order.additionalServices?.aspectRatio ||
                                         "Not specified"}
                                 </div>
 
                                 <div className='text-gray-700'>Shareable:</div>
-                                <div className='text-right font-bold text-indigo-600'>
+                                <div className='text-right font-bold BlueText'>
                                     {order.additionalServices?.share
                                         ? "Yes"
                                         : "No"}
@@ -110,7 +110,7 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                 <div className='text-gray-700'>
                                     Cover Picture:
                                 </div>
-                                <div className='text-right font-bold text-indigo-600'>
+                                <div className='text-right font-bold BlueText'>
                                     {order.additionalServices?.coverPicture
                                         ? "Yes"
                                         : "No"}
@@ -119,7 +119,7 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                 <div className='text-gray-700'>
                                     Creator Type:
                                 </div>
-                                <div className='text-right font-bold text-indigo-600'>
+                                <div className='text-right font-bold BlueText'>
                                     {order.additionalServices?.creatorType
                                         ? "Yes"
                                         : "No"}
@@ -128,7 +128,7 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                 <div className='text-gray-700'>
                                     Product Shipping:
                                 </div>
-                                <div className='text-right font-bold text-indigo-600'>
+                                <div className='text-right font-bold BlueText'>
                                     {order.additionalServices?.productShipping
                                         ? "Yes"
                                         : "No"}
@@ -139,19 +139,19 @@ const ViewModal = ({ order }: ViewModalProps) => {
                         {/* Right Column - Brief Content & Preferences */}
                         <div>
                             {/* Brief Content Details */}
-                            <h3 className='text-lg font-bold mb-3 text-indigo-600'>
+                            <h3 className='text-lg font-bold mb-3 BlueText'>
                                 Brief Content
                             </h3>
                             <div className='grid grid-cols-2 gap-4'>
                                 <div className='text-gray-700'>Brand Name:</div>
-                                <div className='text-right font-bold text-indigo-600'>
+                                <div className='text-right font-bold BlueText'>
                                     {order.briefContent?.brandName ||
                                         "Not specified"}
                                 </div>
                                 <div>
                                     <div className='text-gray-700'>Brief:</div>
                                     <div className='w-[350px]'>
-                                        <p className='w-full font-bold text-indigo-600'>
+                                        <p className='w-full font-bold BlueText'>
                                             {order.briefContent?.brief ||
                                                 "Not specified"}
                                         </p>
@@ -161,7 +161,7 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                 <div className='text-gray-700'>
                                     Product/Service Name:
                                 </div>
-                                <div className='text-right font-bold text-indigo-600'>
+                                <div className='text-right font-bold BlueText'>
                                     {order.briefContent?.productServiceName ||
                                         "Not specified"}
                                 </div>
@@ -170,7 +170,7 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                         Product/Service Description:
                                     </div>
                                     <div className='w-[350px]'>
-                                        <p className='w-full font-bold text-indigo-600'>
+                                        <p className='w-full font-bold BlueText'>
                                             {order.briefContent
                                                 ?.productServiceDesc ||
                                                 "Not specified"}
@@ -184,7 +184,7 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                         Scenario:
                                     </div>
                                     <div className='w-[350px]'>
-                                        <p className='w-full font-bold text-indigo-600'>
+                                        <p className='w-full font-bold BlueText'>
                                             {order.briefContent?.scenario ||
                                                 "Not specified"}
                                         </p>
@@ -194,7 +194,7 @@ const ViewModal = ({ order }: ViewModalProps) => {
 
                                 <div className='text-gray-700'>Case Study:</div>
                                 <div className='w-[350px]'>
-                                    <p className='w-full font-bold text-indigo-600'>
+                                    <p className='w-full font-bold BlueText'>
                                         {order.briefContent?.caseStudy ||
                                             "Not specified"}
                                     </p>
@@ -202,26 +202,26 @@ const ViewModal = ({ order }: ViewModalProps) => {
                             </div>
 
                             {/* Preferences */}
-                            <h3 className='text-lg font-bold mt-6 mb-3 text-indigo-600'>
+                            <h3 className='text-lg font-bold mt-6 mb-3 BlueText'>
                                 Preferences
                             </h3>
                             <div className='grid grid-cols-2 gap-4'>
                                 <div className='text-gray-700'>
                                     Content Type:
                                 </div>
-                                <div className='text-right font-bold text-indigo-600'>
+                                <div className='text-right font-bold BlueText'>
                                     {order.preferences?.contentType ||
                                         "Not specified"}
                                 </div>
 
                                 <div className='text-gray-700'>Gender:</div>
-                                <div className='text-right font-bold text-indigo-600'>
+                                <div className='text-right font-bold BlueText'>
                                     {order.preferences?.creatorGender ||
                                         "Not specified"}
                                 </div>
 
                                 <div className='text-gray-700'>Age Range:</div>
-                                <div className='text-right font-bold text-indigo-600'>
+                                <div className='text-right font-bold BlueText'>
                                     {order.preferences?.minCreatorAge} -{" "}
                                     {order.preferences?.maxCreatorAge} years
                                 </div>
@@ -233,7 +233,7 @@ const ViewModal = ({ order }: ViewModalProps) => {
 
             {/* Table */}
             <div className='bg-white my-8 px-4 sm:px-6 md:px-12'>
-                <h2 className='text-lg font-bold mb-4 text-indigo-600'>
+                <h2 className='text-lg font-bold mb-4 BlueText'>
                     Order Files Information
                 </h2>
                 {order?.assignedCreators?.length > 0 ? (

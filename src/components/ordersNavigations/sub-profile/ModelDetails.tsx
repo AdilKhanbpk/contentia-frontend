@@ -259,7 +259,7 @@ export default function ModelDetails({ orderData }: ModelRevisionProps) {
                 {/* video sections */}
                 <div className='flex -mt-0 lg:-mt-44'>
                     <div className='bg-white rounded-md w-full lg:w-1/3'>
-                        <h2 className='text-indigo-600 text-lg font-semibold mb-2 sm:mb-3 md:mb-4 lg:mb-4'>
+                        <h2 className='BlueText text-lg font-semibold mb-2 sm:mb-3 md:mb-4 lg:mb-4'>
                             Sipariş Özeti:
                         </h2>
                         <div className='flex justify-between text-sm mb-2 sm:mb-3 md:mb-3 lg:mb-3'>
@@ -271,7 +271,7 @@ export default function ModelDetails({ orderData }: ModelRevisionProps) {
                                     3.000 TL / Video
                                 </p>
                             </div>
-                            <p className='text-indigo-600 font-semibold'>
+                            <p className='BlueText font-semibold'>
                                 {orderData.noOfUgc * 3.0} TL
                             </p>
                         </div>
@@ -280,7 +280,7 @@ export default function ModelDetails({ orderData }: ModelRevisionProps) {
                                 <p className='font-semibold'>1 Edit</p>
                                 <p className='text-gray-500'>500 TL / Video</p>
                             </div>
-                            <p className='text-indigo-600 font-semibold'>
+                            <p className='BlueText font-semibold'>
                                 500 TL
                             </p>
                         </div>
@@ -289,13 +289,13 @@ export default function ModelDetails({ orderData }: ModelRevisionProps) {
                                 <p className='font-semibold'>1 Kapak Görsel</p>
                                 <p className='text-gray-500'>250 TL / Video</p>
                             </div>
-                            <p className='text-indigo-600 font-semibold'>
+                            <p className='BlueText font-semibold'>
                                 250 TL
                             </p>
                         </div> */}
                         <div className='flex justify-between text-lg font-bold mt-2 sm:mt-3 md:mt-4 lg:mt-4'>
                             <p>Toplam</p>
-                            <p className='text-indigo-600'>
+                            <p className='BlueText'>
                                 {orderData.totalPrice} TL
                             </p>
                         </div>
