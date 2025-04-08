@@ -461,7 +461,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                             Lütfen tanıtılmasını istediğiniz
                                             mekanın adres bilgilerini belirtin
                                         </label>
-                                        <div className='grid  lg:grid-cols-2 gap-x-8 gap-y-8'>
+                                        <div className='grid lg:grid-cols-2 gap-x-8 gap-y-8'>
                                             <div>
                                                 <label className='block text-sm font-semibold mb-2'>
                                                     Ülke

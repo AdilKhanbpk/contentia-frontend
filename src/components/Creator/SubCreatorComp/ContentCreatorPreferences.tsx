@@ -20,173 +20,24 @@ const ContentCreatorPreferences: React.FC<{
                     İçerik Üreticisi Tercihleri
                 </h1>
 
-                <section className='mt-12 flex flex-col md:flex-row justify-between'>
-                    <div className=''>
-                        {/* İçerik Türü */}
-                        <div className='mb-4 w-full '>
-                            <div className='flex flex-row'>
-                                <h2 className='text-lg font-semibold mb-4'>
-                                    İçerik Türü:
-                                </h2>
-                                {/* Tooltip or Information section */}
-                                <div className='relative mb-4 flex justify-center'>
-                                    <button
-                                        className='text-black text-sm px-3 py-1 rounded-full'
-                                        onMouseEnter={() =>
-                                            setShowTooltipTwo(true)
-                                        }
-                                        onMouseLeave={() =>
-                                            setShowTooltipTwo(false)
-                                        }
-                                    >
-                                        <Image
-                                            src='/tooltipIcon.png'
-                                            alt='brand logo'
-                                            height={16}
-                                            width={16}
-                                            className='rounded-full'
-                                        />
-                                    </button>
-                                    {showTooltipTwo && (
-                                        <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
-                                            İçerik üreticilerine ürün gönderimi
-                                            sağlayacaksanız ya da üreticilerin
-                                            bir fiziki lokasyona ulaşması
-                                            gerekiyorsa, bu alanda içerik
-                                            türünüzü belirterek lokasyona göre
-                                            eşleştirme gerçekleştirme yapılması
-                                            ge
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            <label className='block text-sm font-medium text-gray-700 mb-2'>
-                                UGC’lerinizde tanıtım gerektiren, içerik
-                                türünüzü seçin
-                            </label>
-
-                            {/* content_type */}
-                            <div className='flex justify-between space-x-4'>
-                                <label className='inline-flex items-center cursor-pointer mb-2 lg:mb-6'>
-                                    <input
-                                        type='checkbox'
-                                        value='product'
-                                        {...register(
-                                            "preferences.contentInformation.contentType"
-                                        )}
-                                        defaultChecked
-                                        className='hidden peer'
-                                    />
-                                    <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>
-                                        <div className='w-full h-full bg-white rounded-full'></div>
-                                    </div>
-                                    <span className='ml-1 text-sm'>Ürün</span>
-                                </label>
-
-                                <label className='inline-flex items-center cursor-pointer mb-2 lg:mb-6'>
-                                    <input
-                                        type='checkbox'
-                                        value='service'
-                                        {...register(
-                                            "preferences.contentInformation.contentType"
-                                        )}
-                                        className='hidden peer'
-                                    />
-                                    <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>
-                                        <div className='w-full h-full bg-white rounded-full'></div>
-                                    </div>
-                                    <span className='ml-1 text-sm'>Hizmet</span>
-                                </label>
-
-                                <label className='inline-flex items-center cursor-pointer mb-2 lg:mb-6'>
-                                    <input
-                                        type='checkbox'
-                                        value='location'
-                                        {...register(
-                                            "preferences.contentInformation.contentType"
-                                        )}
-                                        className='hidden peer'
-                                    />
-                                    <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>
-                                        <div className='w-full h-full bg-white rounded-full'></div>
-                                    </div>
-                                    <span className='ml-1 text-sm'>Mekan</span>
-                                </label>
-                            </div>
-                            {errors.preferences?.contentInformation
-                                ?.contentType && (
-                                <span className='text-red-500 text-xs'>
-                                    {
-                                        errors.preferences.contentInformation
-                                            .contentType.message
-                                    }
-                                </span>
-                            )}
-                        </div>
-
-                        {/* content formatter */}
-                        <div className='mt-9'>
-                            <h1 className='text-lg font-bold'>
-                                İçerik Formatları:
-                            </h1>
-                            <p className='mb-2'>
-                                Profiliniz ile eşleşen içerik alanlarını
-                                belirleyin
-                            </p>
-                            <div className='w-full mt-2 grid-cols-1'>
-                                {[
-                                    "Instagram Reels",
-                                    "Instagram Story",
-                                    "TikTok video",
-                                    "Instagram Post",
-                                    "Youtube Video",
-                                    "Linkedin Post",
-                                    "X-Flood",
-                                ].map((format, index) => (
-                                    <label
-                                        key={index}
-                                        className='whitespace-nowrap flex items-center cursor-pointer mb-2 lg:mb-6'
-                                    >
-                                        <input
-                                            type='checkbox'
-                                            {...register(
-                                                "preferences.contentInformation.contentFormats"
-                                            )}
-                                            value={format}
-                                            className='hidden peer'
-                                        />
-                                        <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>
-                                            <div className='w-full h-full bg-white rounded-full'></div>
-                                        </div>
-                                        <span className='ml-1 text-sm'>
-                                            {format}
-                                        </span>
-                                    </label>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='w-full lg:w-1/3 mt-8'>
-                        {/* If Mekan (preferences.contentInformation.addressDetails) selected */}
-                        {(contentTypes.includes("location") ||
-                            contentTypes.includes("product")) && (
-                            <div className='lg:-mt-28'>
+                <section className='mt-12 flex flex-col justify-between'>
+                    <div className='flex flex-col md:flex-row justify-between'>
+                        <div className='w-full lg:w-2/3'>
+                            {/* İçerik Türü */}
+                            <div className='mb-4 w-full '>
                                 <div className='flex flex-row'>
                                     <h2 className='text-lg font-semibold mb-4'>
-                                        Adres:
+                                        İçerik Türü:
                                     </h2>
-
                                     {/* Tooltip or Information section */}
                                     <div className='relative mb-4 flex justify-center'>
                                         <button
                                             className='text-black text-sm px-3 py-1 rounded-full'
                                             onMouseEnter={() =>
-                                                setShowTooltipThree(true)
+                                                setShowTooltipTwo(true)
                                             }
                                             onMouseLeave={() =>
-                                                setShowTooltipThree(false)
+                                                setShowTooltipTwo(false)
                                             }
                                         >
                                             <Image
@@ -197,88 +48,243 @@ const ContentCreatorPreferences: React.FC<{
                                                 className='rounded-full'
                                             />
                                         </button>
-                                        {showTooltipThree && (
+                                        {showTooltipTwo && (
                                             <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
-                                                Adres bilgileri, tüm içerik
-                                                üreticileri tarafından İl, İlçe
-                                                ve Mahalle olarak
-                                                gösterilecektir. Onaylanan
-                                                içerik üreticiler, işletme adı
-                                                ve açık adresi
-                                                görüntüleyebilecektir.
+                                                İçerik üreticilerine ürün
+                                                gönderimi sağlayacaksanız ya da
+                                                üreticilerin bir fiziki
+                                                lokasyona ulaşması gerekiyorsa,
+                                                bu alanda içerik türünüzü
+                                                belirterek lokasyona göre
+                                                eşleştirme gerçekleştirme
+                                                yapılması ge
                                             </div>
                                         )}
                                     </div>
                                 </div>
+
                                 <label className='block text-sm font-medium text-gray-700 mb-2'>
-                                    Lütfen tanıtılmasını istediğiniz mekanın
-                                    adres bilgilerini belirtin
+                                    UGC’lerinizde tanıtım gerektiren, içerik
+                                    türünüzü seçin
                                 </label>
-                                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-x-8 gap-y-8'>
-                                    <div>
-                                        <label className='block text-sm font-semibold mb-2'>
-                                            Ülke
-                                        </label>
-                                        <input
-                                            className='w-full px-3 py-2 border rounded-md focus:outline-none'
-                                            {...register(
-                                                "preferences.contentInformation.addressDetails.country"
-                                            )}
-                                        />
-                                    </div>
 
-                                    <div>
-                                        <label className='block text-sm font-semibold mb-2'>
-                                            İl
-                                        </label>
+                                {/* content_type */}
+                                <div className='w:1/3 flex justify-between space-x-4'>
+                                    <label className='inline-flex items-center cursor-pointer mb-2 lg:mb-6'>
                                         <input
-                                            className='w-full px-3 py-2 border rounded-md focus:outline-none'
+                                            type='checkbox'
+                                            value='product'
                                             {...register(
-                                                "preferences.contentInformation.addressDetails.state"
+                                                "preferences.contentInformation.contentType"
                                             )}
+                                            defaultChecked
+                                            className='hidden peer'
                                         />
-                                    </div>
+                                        <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>
+                                            <div className='w-full h-full bg-white rounded-full'></div>
+                                        </div>
+                                        <span className='ml-1 text-sm'>
+                                            Ürün
+                                        </span>
+                                    </label>
 
-                                    <div>
-                                        <label className='block text-sm font-semibold mb-2'>
-                                            İlçe
-                                        </label>
+                                    <label className='inline-flex items-center cursor-pointer mb-2 lg:mb-6'>
                                         <input
-                                            className='w-full px-3 py-2 border rounded-md focus:outline-none'
+                                            type='checkbox'
+                                            value='service'
                                             {...register(
-                                                "preferences.contentInformation.addressDetails.district"
+                                                "preferences.contentInformation.contentType"
                                             )}
+                                            className='hidden peer'
                                         />
-                                    </div>
+                                        <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>
+                                            <div className='w-full h-full bg-white rounded-full'></div>
+                                        </div>
+                                        <span className='ml-1 text-sm'>
+                                            Hizmet
+                                        </span>
+                                    </label>
 
-                                    <div>
-                                        <label className='block text-sm font-semibold mb-2'>
-                                            Mahalle
-                                        </label>
+                                    <label className='inline-flex items-center cursor-pointer mb-2 lg:mb-6'>
                                         <input
-                                            className='w-full px-3 py-2 border rounded-md focus:outline-none'
+                                            type='checkbox'
+                                            value='location'
                                             {...register(
-                                                "preferences.contentInformation.addressDetails.neighborhood"
+                                                "preferences.contentInformation.contentType"
                                             )}
+                                            className='hidden peer'
                                         />
-                                    </div>
+                                        <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>
+                                            <div className='w-full h-full bg-white rounded-full'></div>
+                                        </div>
+                                        <span className='ml-1 text-sm'>
+                                            Mekan
+                                        </span>
+                                    </label>
+                                </div>
+                                {errors.preferences?.contentInformation
+                                    ?.contentType && (
+                                    <span className='text-red-500 text-xs'>
+                                        {
+                                            errors.preferences
+                                                .contentInformation.contentType
+                                                .message
+                                        }
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                        <div className='w-full lg:w-1/3 mt-8'>
+                            {(contentTypes.includes("location") ||
+                                contentTypes.includes("product")) && (
+                                <div className='lg:-mt-28'>
+                                    <div className='flex flex-row'>
+                                        <h2 className='text-lg font-semibold mb-4'>
+                                            Adres:
+                                        </h2>
 
-                                    <div className='col-span-2'>
-                                        <label className='block text-sm font-semibold mb-2'>
-                                            İşletme Adı & Adres
-                                        </label>
-                                        <textarea
-                                            placeholder='Lütfen işletme adını ve açık adres bilgilerini girin.'
-                                            className='w-full text-sm px-3 py-2 border rounded-md focus:outline-none'
-                                            rows={3}
-                                            {...register(
-                                                "preferences.contentInformation.addressDetails.fullAddress"
+                                        {/* Tooltip or Information section */}
+                                        <div className='relative mb-4 flex justify-center'>
+                                            <button
+                                                className='text-black text-sm px-3 py-1 rounded-full'
+                                                onMouseEnter={() =>
+                                                    setShowTooltipThree(true)
+                                                }
+                                                onMouseLeave={() =>
+                                                    setShowTooltipThree(false)
+                                                }
+                                            >
+                                                <Image
+                                                    src='/tooltipIcon.png'
+                                                    alt='brand logo'
+                                                    height={16}
+                                                    width={16}
+                                                    className='rounded-full'
+                                                />
+                                            </button>
+                                            {showTooltipThree && (
+                                                <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
+                                                    Adres bilgileri, tüm içerik
+                                                    üreticileri tarafından İl,
+                                                    İlçe ve Mahalle olarak
+                                                    gösterilecektir. Onaylanan
+                                                    içerik üreticiler, işletme
+                                                    adı ve açık adresi
+                                                    görüntüleyebilecektir.
+                                                </div>
                                             )}
-                                        />
+                                        </div>
+                                    </div>
+                                    <label className='block text-sm font-medium text-gray-700 mb-2'>
+                                        Lütfen tanıtılmasını istediğiniz mekanın
+                                        adres bilgilerini belirtin
+                                    </label>
+                                    <div className='grid lg:grid-cols-2 gap-x-8 gap-y-8'>
+                                        <div>
+                                            <label className='block text-sm font-semibold mb-2'>
+                                                Ülke
+                                            </label>
+                                            <input
+                                                className='w-full px-3 py-2 border rounded-md focus:outline-none'
+                                                {...register(
+                                                    "preferences.contentInformation.addressDetails.country"
+                                                )}
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className='block text-sm font-semibold mb-2'>
+                                                İl
+                                            </label>
+                                            <input
+                                                className='w-full px-3 py-2 border rounded-md focus:outline-none'
+                                                {...register(
+                                                    "preferences.contentInformation.addressDetails.state"
+                                                )}
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className='block text-sm font-semibold mb-2'>
+                                                İlçe
+                                            </label>
+                                            <input
+                                                className='w-full px-3 py-2 border rounded-md focus:outline-none'
+                                                {...register(
+                                                    "preferences.contentInformation.addressDetails.district"
+                                                )}
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className='block text-sm font-semibold mb-2'>
+                                                Mahalle
+                                            </label>
+                                            <input
+                                                className='w-full px-3 py-2 border rounded-md focus:outline-none'
+                                                {...register(
+                                                    "preferences.contentInformation.addressDetails.neighborhood"
+                                                )}
+                                            />
+                                        </div>
+
+                                        <div className='col-span-2'>
+                                            <label className='block text-sm font-semibold mb-2'>
+                                                İşletme Adı & Adres
+                                            </label>
+                                            <textarea
+                                                placeholder='Lütfen işletme adını ve açık adres bilgilerini girin.'
+                                                className='w-full text-sm px-3 py-2 border rounded-md focus:outline-none'
+                                                rows={3}
+                                                {...register(
+                                                    "preferences.contentInformation.addressDetails.fullAddress"
+                                                )}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
+                        </div>
+                    </div>
+                    {/* content formatter */}
+                    <div className='mt-9'>
+                        <h1 className='text-lg font-bold'>
+                            İçerik Formatları:
+                        </h1>
+                        <p className='mb-2'>
+                            Profiliniz ile eşleşen içerik alanlarını belirleyin
+                        </p>
+                        <div className='w-full mt-2 grid-cols-1'>
+                            {[
+                                "Instagram Reels",
+                                "Instagram Story",
+                                "TikTok video",
+                                "Instagram Post",
+                                "Youtube Video",
+                                "Linkedin Post",
+                                "X-Flood",
+                            ].map((format, index) => (
+                                <label
+                                    key={index}
+                                    className='whitespace-nowrap flex items-center cursor-pointer mb-2 lg:mb-6'
+                                >
+                                    <input
+                                        type='checkbox'
+                                        {...register(
+                                            "preferences.contentInformation.contentFormats"
+                                        )}
+                                        value={format}
+                                        className='hidden peer'
+                                    />
+                                    <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>
+                                        <div className='w-full h-full bg-white rounded-full'></div>
+                                    </div>
+                                    <span className='ml-1 text-sm'>
+                                        {format}
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
                     </div>
                 </section>
 

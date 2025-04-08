@@ -6,6 +6,7 @@ import youtubeIcon from "../../../../public/BecomeCreator/youtube_iconpng.png";
 import linkdinIcon from "../../../../public/BecomeCreator/linkedin_icon.png";
 import xIcon from "../../../../public/BecomeCreator/x_icon.png";
 import tiktokIcon from "../../../../public/BecomeCreator/tiktik_icon.png";
+import Link from "next/link";
 
 const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
     register,
@@ -55,7 +56,7 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                     </div>
                     <p className='mb-3'>
                         Ek ücret karşılığında, hazırladığın içerikleri kendi
-                        sosyal medya hesaplarında paylaşma ister misin?
+                        sosyal medya hesaplarında paylaşmak ister misin?
                     </p>
                     <div className='flex justify-start space-x-4'>
                         {/* Product Radio Button */}
@@ -200,7 +201,6 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                             }
                         </span>
                     )}
-
                     {/* First Checkbox */}
                     <div className='flex items-start my-4'>
                         <input
@@ -216,7 +216,26 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                             htmlFor='sozlesme'
                             className='text-sm text-gray-500'
                         >
-                            Kullanıcı Sözleşmesi'ni okudum, onaylıyorum.
+                            <span className='underline'>
+                                <Link href='/dummy-url'>
+                                    Kullanıcı Sözleşmesi
+                                </Link>
+                            </span>
+                            'ni{" "}
+                            <span className='underline'>
+                                <Link href='/dummy-url'>Aydınlatma Metni</Link>
+                            </span>
+                            'ni{" "}
+                            <span className='underline'>
+                                <Link href='/dummy-url'>Açık Rıza Metni</Link>
+                            </span>
+                            'ni ve{" "}
+                            <span className='underline'>
+                                <Link href='/dummy-url'>
+                                    Ödeme Platform Kullanım Sözleşmesi
+                                </Link>
+                            </span>
+                            'ni okudum, onaylıyorum.
                         </label>
                     </div>
                     {errors?.userAgreement && (
@@ -228,7 +247,6 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                         </span>
                     )}
 
-                    {/* Second Checkbox */}
                     <div className='flex items-start mb-4'>
                         <input
                             id='iletisim'
@@ -246,8 +264,12 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                             htmlFor='iletisim'
                             className='text-sm text-gray-500'
                         >
-                            Ticari Elektronik İleti ve İletişim İzni'ni
-                            onaylıyorum.
+                            <span className='underline'>
+                                <Link href='/dummy-url'>
+                                    Ticari Elektronik İleti ve İletişim İzni
+                                </Link>
+                            </span>
+                            'ni onaylıyorum.
                         </label>
                     </div>
                     {errors.preferences?.socialInformation
