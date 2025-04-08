@@ -15,7 +15,7 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
 
     return (
         <div className='px-4 sm:px-6 md:px-8 lg:px-28'>
-            <div className='bg-white p-4 sm:p-5 md:p-6 lg:p-6'>
+            <div className='bg-white py-12 px-4 sm:p-5 md:p-6 lg:p-6'>
                 <div>
                     <span className='text-xl font-bold'>
                         Sosyal Medya Bilgileri{" "}
@@ -53,7 +53,7 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                             )}
                         </div>
                     </div>
-                    <p>
+                    <p className='mb-3'>
                         Ek ücret karşılığında, hazırladığın içerikleri kendi
                         sosyal medya hesaplarında paylaşma ister misin?
                     </p>
@@ -88,7 +88,7 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                             <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>
                                 <div className='w-full h-full bg-white rounded-full'></div>
                             </div>
-                            <span className='ml-1 text-sm'>HAYIR</span>
+                            <span className='ml-1 text-sm'>Hayir</span>
                         </label>
                     </div>
                     {errors.preferences?.socialInformation?.contentType && (
@@ -102,7 +102,7 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                 </div>
 
                 {/* Social media section */}
-                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 px-3'>
+                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                     {[
                         { icon: instIcon, label: "Instagram" },
                         { icon: tiktokIcon, label: "TikTok" },
@@ -113,7 +113,7 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                     ].map((platform) => (
                         <div
                             key={platform.label}
-                            className='flex flex-col mb-4'
+                            className='flex flex-col mb-4 sm:w-1/2 md:w-1/3 lg:w-1/4'
                         >
                             <div className='flex items-center mt-4'>
                                 <Image
@@ -167,99 +167,98 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                             )}
                         </div>
                     ))}
+                </div>
 
-                    <div className='mt-2 col-span-3'>
-                        <h2 className='text-lg mb-2 font-semibold'>
-                            Örnek Çalışma
-                        </h2>
-                        <p className='mb-4'>
-                            Daha önce gerçekleştirdiğiniz çalışmalardan örnek
-                            paylaşımlarınızı bizimle paylaşabilirsiniz.
-                        </p>
+                <div className='mt-2 col-span-3'>
+                    <h2 className='text-lg mb-2 font-semibold'>
+                        Örnek Çalışma
+                    </h2>
+                    <p className='mb-4'>
+                        Daha önce gerçekleştirdiğiniz çalışmalardan örnek
+                        paylaşımlarınızı bizimle paylaşabilirsiniz.
+                    </p>
+                    <input
+                        type='text'
+                        {...register(
+                            "preferences.socialInformation.portfolioLink",
+                            {
+                                pattern: {
+                                    value: /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
+                                    message:
+                                        "Örnek: https://www.instagram.com/contentia/reel/C5OCG4XBtFX",
+                                },
+                            }
+                        )}
+                        className='border focus:outline-none p-4 rounded w-full'
+                        placeholder='https://www.instagram.com,https://www.tiktok.com,https://www.x.com'
+                    />
+                    {errors.preferences?.socialInformation?.portfolioLink && (
+                        <span className='text-red-500 text-sm'>
+                            {
+                                errors.preferences.socialInformation
+                                    .portfolioLink.message
+                            }
+                        </span>
+                    )}
+
+                    {/* First Checkbox */}
+                    <div className='flex items-start my-4'>
                         <input
-                            type='text'
+                            id='sozlesme'
+                            type='checkbox'
+                            {...register("userAgreement", {
+                                required:
+                                    "Kullanıcı Sözleşmesi'ni onaylamak zorunludur.",
+                            })}
+                            className='mt-1 mr-2'
+                        />
+                        <label
+                            htmlFor='sozlesme'
+                            className='text-sm text-gray-500'
+                        >
+                            Kullanıcı Sözleşmesi'ni okudum, onaylıyorum.
+                        </label>
+                    </div>
+                    {errors?.userAgreement && (
+                        <span className='text-red-500 text-sm'>
+                            {
+                                errors?.preferences?.socialInformation
+                                    ?.userAgreement?.message
+                            }
+                        </span>
+                    )}
+
+                    {/* Second Checkbox */}
+                    <div className='flex items-start mb-4'>
+                        <input
+                            id='iletisim'
+                            type='checkbox'
                             {...register(
-                                "preferences.socialInformation.portfolioLink",
+                                "preferences.socialInformation.approvedCommercial",
                                 {
-                                    pattern: {
-                                        value: /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
-                                        message:
-                                            "Örnek: https://www.instagram.com/contentia/reel/C5OCG4XBtFX",
-                                    },
+                                    required:
+                                        "Ticari Elektronik İleti ve İletişim İzni'ni onaylamak zorunludur.",
                                 }
                             )}
-                            className='border focus:outline-none p-4 rounded w-full'
-                            placeholder='https://www.instagram.com,https://www.tiktok.com,https://www.x.com'
+                            className='mt-1 mr-2'
                         />
-                        {errors.preferences?.socialInformation
-                            ?.portfolioLink && (
-                            <span className='text-red-500 text-sm'>
-                                {
-                                    errors.preferences.socialInformation
-                                        .portfolioLink.message
-                                }
-                            </span>
-                        )}
-
-                        {/* First Checkbox */}
-                        <div className='flex items-start my-4'>
-                            <input
-                                id='sozlesme'
-                                type='checkbox'
-                                {...register("userAgreement", {
-                                    required:
-                                        "Kullanıcı Sözleşmesi'ni onaylamak zorunludur.",
-                                })}
-                                className='mt-1 mr-2'
-                            />
-                            <label
-                                htmlFor='sozlesme'
-                                className='text-sm text-gray-500'
-                            >
-                                Kullanıcı Sözleşmesi'ni okudum, onaylıyorum.
-                            </label>
-                        </div>
-                        {errors?.userAgreement && (
-                            <span className='text-red-500 text-sm'>
-                                {
-                                    errors?.preferences?.socialInformation
-                                        ?.userAgreement?.message
-                                }
-                            </span>
-                        )}
-
-                        {/* Second Checkbox */}
-                        <div className='flex items-start mb-4'>
-                            <input
-                                id='iletisim'
-                                type='checkbox'
-                                {...register(
-                                    "preferences.socialInformation.approvedCommercial",
-                                    {
-                                        required:
-                                            "Ticari Elektronik İleti ve İletişim İzni'ni onaylamak zorunludur.",
-                                    }
-                                )}
-                                className='mt-1 mr-2'
-                            />
-                            <label
-                                htmlFor='iletisim'
-                                className='text-sm text-gray-500'
-                            >
-                                Ticari Elektronik İleti ve İletişim İzni'ni
-                                onaylıyorum.
-                            </label>
-                        </div>
-                        {errors.preferences?.socialInformation
-                            ?.approved_commercial && (
-                            <span className='text-red-500 text-sm'>
-                                {
-                                    errors.preferences.socialInformation
-                                        .approved_commercial.message
-                                }
-                            </span>
-                        )}
+                        <label
+                            htmlFor='iletisim'
+                            className='text-sm text-gray-500'
+                        >
+                            Ticari Elektronik İleti ve İletişim İzni'ni
+                            onaylıyorum.
+                        </label>
                     </div>
+                    {errors.preferences?.socialInformation
+                        ?.approved_commercial && (
+                        <span className='text-red-500 text-sm'>
+                            {
+                                errors.preferences.socialInformation
+                                    .approved_commercial.message
+                            }
+                        </span>
+                    )}
                 </div>
             </div>
         </div>
