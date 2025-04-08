@@ -21,7 +21,7 @@ const ContentCreatorPreferences: React.FC<{
                 </h1>
 
                 <section className='mt-12 flex flex-col justify-between'>
-                    <div className='flex flex-col md:flex-row justify-between'>
+                    <div className='flex flex-col md:flex-row justify-between gap-8'>
                         <div className='w-full lg:w-2/3'>
                             {/* İçerik Türü */}
                             <div className='mb-4 w-full '>
