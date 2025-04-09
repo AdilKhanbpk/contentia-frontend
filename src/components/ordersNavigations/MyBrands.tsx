@@ -76,14 +76,6 @@ export default function MyBrands() {
                             </div>
                         </button>
 
-                        <CustomModelAdmin
-                            isOpen={isModalOpen}
-                            closeModal={closeModal}
-                            title=''
-                        >
-                            <ModelBrand />
-                        </CustomModelAdmin>
-
                         <form onSubmit={handleSubmit(onSubmit)}>
                             {brands.map((brand) => (
                                 <EditableBrand
@@ -95,20 +87,17 @@ export default function MyBrands() {
                                     setEditingBrandId={setEditingBrandId}
                                 />
                             ))}
-                            {editingBrandId && (
-                                <div className='flex justify-end mt-4'>
-                                    <button
-                                        type='submit'
-                                        className=' px-8 py-0.5 ButtonBlue text-white rounded-lg'
-                                    >
-                                        Güncelle
-                                    </button>
-                                </div>
-                            )}
                         </form>
                     </div>
                 </div>
             </div>
+            <CustomModelAdmin
+                isOpen={isModalOpen}
+                closeModal={closeModal}
+                title=''
+            >
+                <ModelBrand />
+            </CustomModelAdmin>
         </>
     );
 }
