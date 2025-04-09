@@ -15,37 +15,37 @@ const settings = {
 
 const CARDS = [
     {
-        image: "image1.webp",
+        image: "/image1.webp",
         title: "Doğrudan Performans Etkisi",
         description:
             "Dijital pazarlama süreçlerini gerçek ​kullanıcılar tarafından içeriklerle ​kampanyanızı destekleyin",
     },
     {
-        image: "image2.webp",
+        image: "/image2.webp",
         title: "Birkaç Dakikada Sipariş Oluşturun",
         description:
             "Dijital pazarlama süreçlerini gerçek ​kullanıcılar tarafından içeriklerle ​kampanyanızı destekleyin",
     },
     {
-        image: "image3.webp",
+        image: "/image3.webp",
         title: "Özel Temsilcinize Danışın",
         description:
             "Aklınıza takılan noktalarda senaryo, brief ve ​konseptler hakkında temsilcinizden destek ​alın",
     },
     {
-        image: "image4.webp",
+        image: "/image4.webp",
         title: "Zamanında ve Uygun Fiyatlarla",
         description:
             "İçeriklerinizi planlayın, zamanında ve uygun ​fiyatlara UGC’lere sahip olun",
     },
     {
-        image: "image5.webp",
+        image: "/image5.webp",
         title: "Güvenilir İçerik Üreticilerle Çalışın",
         description:
             "Platformumuz tarafından seçilmiş, içerik ​üreticilerle çalışın",
     },
     {
-        image: "image6.webp",
+        image: "/image6.webp",
         title: "Kişiselleştirilmiş İçeriklere Sahip",
         description:
             "Marka kimliğinize, ürün detaylarınıza, sosyal ​medyanıza ve hedeflerinize uygun ​kişiselleştirilmiş içeriklere erişin",

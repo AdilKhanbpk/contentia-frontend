@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import SmallCard from "../customCard/SmallCard";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
@@ -12,39 +10,8 @@ import { fetchHowItWorks } from "@/store/features/admin/howWorkSlice";
 import { toast } from "react-toastify";
 import { getAccessToken } from "@/utils/checkToken";
 import DOMPurify from "dompurify";
-
-const cards = [
-    {
-        image: "/image1.webp",
-        title: "RESULTS_DRIVEN",
-        description: "RESULTS_DRIVEN_DESC",
-    },
-    {
-        image: "/image2.webp",
-        title: "FAST_AND_EASY",
-        description: "FAST_AND_EASY_DESC",
-    },
-    {
-        image: "/image3.webp",
-        title: "DEDICATED_MANAGER",
-        description: "DEDICATED_MANAGER_DESC",
-    },
-    {
-        image: "/image4.webp",
-        title: "NO_SURPRISES",
-        description: "NO_SURPRISES_DESC",
-    },
-    {
-        image: "/image5.webp",
-        title: "VETTED_CREATORS",
-        description: "VETTED_CREATORS_DESC",
-    },
-    {
-        image: "/image6.webp",
-        title: "CUSTOM_VIDEOS",
-        description: "CUSTOM_VIDEOS_DESC",
-    },
-];
+import SmallCards from "../contentiaio/sections/SmallCards";
+import WhyContentia from "../contentiaio/sections/WhyContentia";
 
 export default function HowItWorks() {
     const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -202,63 +169,12 @@ export default function HowItWorks() {
             </div>
 
             {/* BENEFITS */}
-            <div className='mt-20'>
-                <div className='flex flex-col justify-center items-center'>
-                    <h1 className='headingText mb-3'>Sağlanan Faydalar</h1>
-                    <div className='imageRotate'>
-                        <Image
-                            src='/borderImage.svg'
-                            height={300}
-                            width={270}
-                            alt='border image'
-                            className='h-100 w-100'
-                        />
-                    </div>
-                </div>
-                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8'>
-                    {cards.map((card, index) => (
-                        <SmallCard
-                            key={index}
-                            image={card.image}
-                            title={t(card.title)}
-                            description={t(card.description)}
-                        />
-                    ))}
-                </div>
-                <div className='flex justify-center items-center mt-8'>
-                    <Link href='/pricing'>
-                        <button className='Button text-white font-bold py-2 px-8 rounded focus:outline-none focus:shadow-outline'>
-                            Fiyatlar
-                        </button>
-                    </Link>
-                </div>
-            </div>
+            <SmallCards />
 
             {/* WHY CONTENTIA */}
             <div className='mt-24'>
-                <div className='flex flex-col justify-center items-center'>
-                    <h1 className='headingText mb-3 text-center'>
-                        Neden Contentia?
-                    </h1>
-                    <div className='imageRotate'>
-                        <Image
-                            src='/borderImage.svg'
-                            height={300}
-                            width={270}
-                            alt='border image'
-                            className='object-contain'
-                        />
-                    </div>
-                </div>
-
-                <div className='w-full mt-6'>
-                    <Image
-                        className='object-cover rounded-3xl w-full h-auto'
-                        src='/whyContentia.png'
-                        alt='why Contentia'
-                        width={1500}
-                        height={1500}
-                    />
+                <div className='my-6'>
+                    <WhyContentia />
                 </div>
             </div>
         </div>

@@ -128,46 +128,46 @@ export default function Navbar() {
                                         }`}
                                     >
                                         <li>
-                                            <a
+                                            <Link
                                                 href='#'
                                                 className='block px-4 py-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
                                             >
                                                 Markalar
-                                            </a>
+                                            </Link>
                                         </li>
                                         <li>
-                                            <a
+                                            <Link
                                                 href='#'
                                                 className='block px-4 py-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
                                             >
                                                 Ajanslar
-                                            </a>
+                                            </Link>
                                         </li>
                                         <li>
-                                            <a
+                                            <Link
                                                 href='#'
                                                 className='block px-4 py-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
                                             >
                                                 Girişimler
-                                            </a>
+                                            </Link>
                                         </li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a
+                                    <Link
                                         href='#'
                                         className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
                                     >
                                         Hakkımızda
-                                    </a>
+                                    </Link>
                                 </li>
                                 <li>
-                                    <a
-                                        href='#'
+                                    <Link
+                                        href='/contentiaio/how-it-works'
                                         className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
                                     >
                                         Nasıl Çalışır?
-                                    </a>
+                                    </Link>
                                 </li>
                             </ul>
                         </div>
