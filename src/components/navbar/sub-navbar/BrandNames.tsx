@@ -23,7 +23,7 @@ const BrandNames = () => {
         <select
             value={selectedBrand}
             onChange={(e) => setSelectedBrand(e.target.value)}
-            className='w-64 p-2 border border-gray-300 rounded-md shadow-sm focus:border-none bg-white text-gray-900'
+            className='xs:w-44 sm:w-64 p-2 border border-gray-300 rounded-md shadow-sm focus:border-none bg-white text-gray-900'
         >
             <option
                 value=''

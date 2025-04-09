@@ -94,14 +94,14 @@ export default function Navbar() {
                             </button>
 
                             {/* Brand and Menu Links */}
-                            <div className='flex items-center space-x-8 ms-4'>
+                            <div className='flex items-center space-x-8 ms-1'>
                                 <div className='flex items-center space-x-2'>
                                     <Image
                                         src='/brand-logo.png'
                                         alt='brand logo'
                                         height={32}
                                         width={32}
-                                        className='rounded-full'
+                                        className='rounded-full hidden sm:block'
                                     />
                                     <BrandNames></BrandNames>
                                 </div>
@@ -181,7 +181,7 @@ export default function Navbar() {
                                         setIsOpen={setIsProfileOpen}
                                         icon={
                                             <Image
-                                                className='w-12 h-12 rounded-full border-2 border-gray-600'
+                                                className='w-10 h-10 rounded-full border-2 border-gray-600'
                                                 src={
                                                     user?.profilePic ||
                                                     "/defaultProfile.png"
