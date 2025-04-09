@@ -84,7 +84,7 @@ const OrdersProfile: React.FC = () => {
     };
 
     return (
-        <div className='my-14 sm:my-20 md:my-20 lg:my-24 px-4 sm:px-6 md:px-8 lg:px-28 p-4 sm:p-6 md:p-8 lg:p-8 bg-gray-50'>
+        <div className='my-14 xs:my-32 md:my-24 lg:my-24 px-4 sm:px-6 md:px-8 lg:px-28 p-4 sm:p-6 md:p-8 lg:p-8 bg-gray-50'>
             {/* Profile and Invoice Information */}
             <form onSubmit={handleSubmit(onSubmitProfileInvoice)}>
                 <div className='bg-white rounded-lg shadow-lg px-4 py-3 sm:px-6 sm:py-4 lg:px-12 lg:py-6'>
@@ -103,7 +103,7 @@ const OrdersProfile: React.FC = () => {
                             setIsEditing={setIsEditing}
                             isEditing={isEditing}
                         />
-                        <div className='w-full lg:w-1/4 flex justify-end items-end'>
+                        <div className='w-full mt-4 lg:w-1/4 flex justify-end items-end'>
                             <button
                                 type='submit'
                                 className='font-semibold px-8 py-0.5 ButtonBlue text-white rounded-lg'
