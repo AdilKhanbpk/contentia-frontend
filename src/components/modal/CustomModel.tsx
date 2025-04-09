@@ -55,7 +55,7 @@ const Modal: React.FC<ModalProps> = ({
                             leaveFrom='opacity-100 scale-100'
                             leaveTo='opacity-0 scale-95'
                         >
-                            <div className='flex justify-center items-center my-20 sm:my-20 md:my-16 lg:my-24 px-4 sm:px-6 md:px-8 lg:px-28 p-12 sm:p-12 md:p-12 lg:p-12'>
+                            <div className='flex justify-center items-center my-20 xs:my-20 md:my-16 lg:my-24 px-4 xs:px-6 md:px-8 lg:px-28 p-12 xs:p-12 md:p-12 lg:p-12'>
                                 <DialogPanel className=' transform overflow-hidden rounded bg-white  text-left align-middle shadow-xl transition-all'>
                                     <DialogTitle
                                         as='h3'

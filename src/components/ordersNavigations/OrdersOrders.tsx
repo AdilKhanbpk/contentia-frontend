@@ -9,12 +9,15 @@ import { AppDispatch, RootState } from "@/store/store";
 import { fetchOrders, Order } from "@/store/features/profile/orderSlice";
 import { getAccessToken } from "@/utils/checkToken";
 import ModelClaim from "./sub-profile/ModelClaim";
+import EditOrder from "./sub-profile/EditOrder";
+import ViewOrderDetails from "./sub-profile/ModelDetails";
 
 export default function OrdersOrders() {
     const dispatch = useDispatch<AppDispatch>();
     const orders = useSelector((state: RootState) => state.order.orders);
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isRevModalOpen, setIsRevModalOpen] = useState(false);
     const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -26,23 +29,33 @@ export default function OrdersOrders() {
         dispatch(fetchOrders(token));
     }, [dispatch]);
 
-    const openModal = (order: Order) => {
+    const openEditModal = (order: Order) => {
         setSelectedOrder(order);
-        setIsModalOpen(true);
+        setIsEditModalOpen(true);
     };
 
-    const openClaim = (order: Order) => {
+    const openViewModal = (order: Order) => {
+        setIsViewModalOpen(true);
+        setSelectedOrder(order);
+    };
+
+    const openClaimModal = (order: Order) => {
         setSelectedOrder(order);
         setIsClaimModalOpen(true);
     };
 
-    const closeModal = () => setIsModalOpen(false);
     const openRevModal = (order: Order) => {
         setSelectedOrder(order);
         setIsRevModalOpen(true);
     };
-    const closeRevModal = () => setIsRevModalOpen(false);
-    const closeClaimModal = () => setIsClaimModalOpen(false);
+
+    const closeModal = () => {
+        setSelectedOrder(null);
+        setIsViewModalOpen(false);
+        setIsEditModalOpen(false);
+        setIsRevModalOpen(false);
+        setIsClaimModalOpen(false);
+    };
 
     const getOrderStatusText = (status: string) => {
         switch (status) {
@@ -66,16 +79,16 @@ export default function OrdersOrders() {
 
     return (
         <>
-            <div className='px-4 sm:px-6 md:px-8 lg:px-28 py-14 sm:py-14 md:py-16 lg:py-24 bg-gray-50'>
+            <div className='my-14 xs:my-32 md:my-24 lg:my-24 px-4 sm:px-6 md:px-8 lg:px-28 p-4 sm:p-6 md:p-8 lg:p-8 bg-gray-50'>
                 <div className='flex flex-col'>
                     <div className='p-4 my-4 sm:p-5 sm:my-6 md:p-6 md:my-8 lg:p-6 lg:my-8'>
-                        <div className='flex flex-row justify-between items-center'>
+                        <div className='flex xs:flex-col lg:flex-row lg:justify-between lg:items-center'>
                             <h1 className='text-base font-semibold mb-4 sm:mb-5 md:mb-6 lg:mb-6'>
                                 Sipariş Detayları
                             </h1>
                             <div className='flex space-x-2'>
                                 <button
-                                    className={`px-4 py-1 border-2 ${
+                                    className={`px-3 py-0.5 lg:px-4 lg:py-1 border-2 text-sm lg:text-base ${
                                         selectedFilter === "all"
                                             ? "BlueBorder bg-white"
                                             : "border-transparent bg-[#F4F4F4]"
@@ -85,7 +98,7 @@ export default function OrdersOrders() {
                                     Tümü
                                 </button>
                                 <button
-                                    className={`px-4 py-1 border-2 ${
+                                    className={`px-3 py-0.5 lg:px-4 lg:py-1 border-2 text-sm lg:text-base ${
                                         selectedFilter === "active"
                                             ? "BlueBorder bg-white"
                                             : "border-transparent bg-[#F4F4F4]"
@@ -95,7 +108,7 @@ export default function OrdersOrders() {
                                     Aktif
                                 </button>
                                 <button
-                                    className={`px-4 py-1 border-2 ${
+                                    className={`px-3 py-0.5 lg:px-4 lg:py-1 border-2 text-sm lg:text-base ${
                                         selectedFilter === "pending"
                                             ? "BlueBorder bg-white"
                                             : "border-transparent bg-[#F4F4F4]"
@@ -177,13 +190,13 @@ export default function OrdersOrders() {
                                             </div>
                                         </div>
 
-                                        <div className='mt-4 lg:mt-0 flex flex-col justify-between space-x-0 lg:space-x-4'>
+                                        <div className='mt-4 lg:mt-0 flex xs:flex-col-reverse lg:flex-col justify-between space-x-0 lg:space-x-4'>
                                             <button
                                                 onClick={() =>
-                                                    openRevModal(order)
+                                                    openClaimModal(order)
                                                 }
                                             >
-                                                <div className='flex flex-row justify-start lg:justify-end space-x-4'>
+                                                <div className='flex mt-2 flex-row justify-start lg:justify-end xs:space-x-2  lg:space-x-4'>
                                                     <div>
                                                         <Image
                                                             width={28}
@@ -203,7 +216,7 @@ export default function OrdersOrders() {
                                             <div className='flex space-x-2 lg:space-x-4'>
                                                 <button
                                                     onClick={() =>
-                                                        openModal(order)
+                                                        openViewModal(order)
                                                     }
                                                     className='px-4 py-1 sm:px-6 sm:py-2 md:px-8 md:py-1 lg:px-8 lg:py-1 text-sm font-semibold ButtonBlue text-white rounded-lg'
                                                 >
@@ -211,7 +224,7 @@ export default function OrdersOrders() {
                                                 </button>
                                                 <button
                                                     onClick={() =>
-                                                        openClaim(order)
+                                                        openRevModal(order)
                                                     }
                                                     className='px-3 text-sm font-semibold border BlueBorder text-white rounded-lg'
                                                 >
@@ -224,7 +237,7 @@ export default function OrdersOrders() {
                                                 </button>
                                                 <button
                                                     onClick={() =>
-                                                        openModal(order)
+                                                        openEditModal(order)
                                                     }
                                                     className='px-3 text-sm font-semibold border BlueBorder text-white rounded-lg'
                                                 >
@@ -254,18 +267,25 @@ export default function OrdersOrders() {
 
                 {/* Modals */}
                 <CustomModal
-                    isOpen={isModalOpen}
+                    isOpen={isEditModalOpen}
+                    closeModal={closeModal}
+                    title=''
+                >
+                    {selectedOrder && <EditOrder orderData={selectedOrder} />}
+                </CustomModal>
+                <CustomModal
+                    isOpen={isViewModalOpen}
                     closeModal={closeModal}
                     title=''
                 >
                     {selectedOrder && (
-                        <ModelDetails orderData={selectedOrder} />
+                        <ViewOrderDetails orderData={selectedOrder} />
                     )}
                 </CustomModal>
 
                 <CustomModal
                     isOpen={isClaimModalOpen}
-                    closeModal={closeClaimModal}
+                    closeModal={closeModal}
                     title=''
                 >
                     {selectedOrder && <ModelClaim orderData={selectedOrder} />}
@@ -273,7 +293,7 @@ export default function OrdersOrders() {
 
                 <CustomModal
                     isOpen={isRevModalOpen}
-                    closeModal={closeRevModal}
+                    closeModal={closeModal}
                     title=''
                 >
                     {selectedOrder && (
