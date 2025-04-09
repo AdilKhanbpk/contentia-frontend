@@ -9,14 +9,14 @@ export default function OrdersPackages() {
     const closeModal = () => setIsModalOpen(false);
 
     const packages: any = [
-        // {
-        //     id: 1,
-        //     name: "Launch",
-        //     status: "Aktif",
-        //     orderDate: "13/09/2024",
-        //     remainingContent: 3,
-        //     totalContent: 12,
-        // },
+        {
+            id: 1,
+            name: "Launch",
+            status: "Aktif",
+            orderDate: "13/09/2024",
+            remainingContent: 3,
+            totalContent: 12,
+        },
         // {
         //     id: 2,
         //     name: "Growth",
