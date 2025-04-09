@@ -10,6 +10,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import { fetchLandingPage } from "@/store/features/admin/lanPageSlice";
 import { fetchPricePlans } from "@/store/features/admin/pricingSlice";
 import DOMPurify from "dompurify";
+import Slider from "react-slick";
 
 const CARDS = [
     {
@@ -101,6 +102,166 @@ const STEPS = [
     },
 ];
 
+const HowContentiaTable = () => {
+    return (
+        <div className='overflow-x-auto mt-8 sm:mt-12 md:mt-16 lg:mt-20'>
+            <table className='min-w-full table-auto'>
+                <thead>
+                    <tr className=''>
+                        <th className='px-4 py-3'></th>
+                        <th className='xs:w-[150px] sm:w-[300px] px-4 py-3 flex justify-center border-x-2 border-t-2 rounded-tl-md rounded-tr-md border-[#4d4ec9]'>
+                            {" "}
+                            <Image
+                                src='/contentiaLogo.png'
+                                height={44}
+                                width={151}
+                                alt='logo'
+                                className='h-[33px] w-[173px]'
+                            />
+                        </th>
+                        <th className='px-4 py-3 text-gray-500 text-center'>
+                            Influencer
+                        </th>
+                        <th className='px-4 py-3 text-gray-500 text-center'>
+                            Raklam Ajansi
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr className='bg-white'>
+                        <td className='px-4 py-3 font-bold text-gray-500'>
+                            Uygun Fiyat
+                        </td>
+                        <td className='xs:w[150px] sm:w-[300px] px-4 py-3 text-center border-l-2 border-r-2 border-[#4d4ec9]'>
+                            <span className='text-white BlueBg rounded-full px-3 py-1 text-xl'>
+                                ✓
+                            </span>
+                        </td>
+                        <td className='px-4 py-3 text-center'>
+                            <span className='text-xl text-gray-500'>x</span>
+                        </td>
+                        <td className='px-4 py-3 text-center'>
+                            <span className='text-xl text-gray-500'>x</span>
+                        </td>
+                    </tr>
+                    <tr className='bg-gray-50'>
+                        <td className='px-4 py-3 font-bold text-gray-500'>
+                            Hızlı Çözüm
+                        </td>
+                        <td className='xs:w[150px] sm:w-[300px] px-4 py-3 bg-white text-center border-l-2 border-r-2 border-[#4d4ec9]'>
+                            <span className='text-white BlueBg rounded-full px-3 py-1 text-xl'>
+                                ✓
+                            </span>
+                        </td>
+                        <td className='px-4 py-3 text-center'>
+                            <span className='text-xl text-gray-500'>x</span>
+                        </td>
+                        <td className='px-4 py-3 text-center'>
+                            <span className='text-xl text-gray-500'>x</span>
+                        </td>
+                    </tr>
+                    <tr className='bg-white'>
+                        <td className='px-4 py-3 font-bold text-gray-500'>
+                            Erişim Kolaylığı
+                        </td>
+                        <td className='xs:w[150px] sm:w-[300px] px-4 py-3 text-center border-l-2 border-r-2 border-[#4d4ec9]'>
+                            <span className='text-white BlueBg rounded-full px-3 py-1 text-xl'>
+                                ✓
+                            </span>
+                        </td>
+                        <td className='px-4 py-3 text-center'>
+                            <span className='text-xl text-gray-500'>x</span>
+                        </td>
+                        <td className='px-4 py-3 text-center'>
+                            <span className='text-xl text-gray-500'>x</span>
+                        </td>
+                    </tr>
+                    <tr className='bg-gray-50  text-gray-500'>
+                        <td className='px-4 py-3 font-bold'>Kişiselleştirme</td>
+                        <td className='xs:w[150px] sm:w-[300px] px-4 py-3 bg-white text-center border-l-2 border-r-2 border-[#4d4ec9]'>
+                            <span className='text-white BlueBg rounded-full px-3 py-1 text-xl'>
+                                ✓
+                            </span>
+                        </td>
+                        <td className='px-4 py-3 text-center'>
+                            <span className='text-xl text-gray-500'>x</span>
+                        </td>
+                        <td className='px-4 py-3 text-center'>
+                            <span className='text-white BlueBg rounded-full px-3 py-1 text-xl'>
+                                ✓
+                            </span>{" "}
+                        </td>
+                    </tr>
+                    <tr className='bg-white text-gray-500'>
+                        <td className='px-4 py-3 font-bold'>
+                            Ölçeklenebilirlik
+                        </td>
+                        <td className='xs:w[150px] sm:w-[300px] px-4 py-3 text-center border-l-2 border-r-2 border-[#4d4ec9]'>
+                            <span className='text-white BlueBg rounded-full px-3 py-1 text-xl'>
+                                ✓
+                            </span>
+                        </td>
+                        <td className='px-4 py-3 text-center'>
+                            <span className='text-xl text-gray-500'>x</span>
+                        </td>
+                        <td className='px-4 py-3 text-center'>
+                            <span className='text-white BlueBg rounded-full px-3 py-1 text-xl'>
+                                ✓
+                            </span>{" "}
+                        </td>
+                    </tr>
+                    <tr className='bg-gray-50 text-gray-500'>
+                        <td className='px-4 py-3 font-bold'>Orjinallik</td>
+                        <td className='xs:w[150px] sm:w-[300px] px-4 py-3 bg-white text-center border-l-2 border-r-2 border-[#4d4ec9]'>
+                            <span className='text-white BlueBg rounded-full px-3 py-1 text-xl'>
+                                ✓
+                            </span>
+                        </td>
+                        <td className='px-4 py-3 text-center'>
+                            <span className='text-white BlueBg rounded-full px-3 py-1 text-xl'>
+                                ✓
+                            </span>{" "}
+                        </td>
+                        <td className='px-4 py-3 text-center'>
+                            <span className='text-xl text-gray-500'>x</span>
+                        </td>
+                    </tr>
+                    <tr className='bg-white'>
+                        <td className='px-4 py-3 font-bold text-gray-500'>
+                            Paylaşıma Hazırlık
+                        </td>
+                        <td className='xs:w[150px] sm:w-[300px] px-4 py-3 text-center border-l-2 border-r-2 border-[#4d4ec9]'>
+                            <span className='text-white BlueBg rounded-full px-3 py-1 text-xl'>
+                                ✓
+                            </span>
+                        </td>
+                        <td className='px-4 py-3 text-center'>
+                            <span className='text-xl text-gray-500'>x</span>
+                        </td>
+                        <td className='px-4 py-3 text-center'>
+                            <span className='text-white BlueBg rounded-full px-3 py-1 text-xl'>
+                                ✓
+                            </span>{" "}
+                        </td>
+                    </tr>
+
+                    <tr className='bg-white'>
+                        <td className='px-4 py-3'></td>
+                        <td className='xs:w[150px] sm:w-[300px] px-4 py-3 text-center border-x-2 border-b-2 rounded-bl-lg rounded-br-lg border-[#4d4ec9]'>
+                            <button className='Button xs:text-xs sm:text-base text-white font-bold py-3 px-4 !rounded-full focus:outline-none focus:shadow-outline'>
+                                UGC Siparişini Oluştur{" "}
+                            </button>
+                        </td>
+
+                        <td className='px-4 py-3'></td>
+                        <td className='px-4 py-3'></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    );
+};
+
 export default function Contentiaio() {
     const dispatch = useDispatch<AppDispatch>();
     const {
@@ -148,10 +309,19 @@ export default function Contentiaio() {
         </div>
     );
 
+    const settings = {
+        dots: false,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: true,
+    };
+
     // Section header with rotating border image component
     const SectionHeader = ({ title }: { title: string }) => (
         <div className='flex flex-col justify-center items-center'>
-            <h1 className='headingText mb-3'>{title}</h1>
+            <h1 className='headingText text-center mb-3'>{title}</h1>
             <div className='imageRotate'>
                 <Image
                     src='/borderImage.svg'
@@ -168,7 +338,7 @@ export default function Contentiaio() {
         <>
             <div className='px-4 sm:px-6 md:px-8 lg:px-24 '>
                 {/* Hero Section */}
-                <div className='flex flex-col lg:flex-row w-full pt-12 sm:pt-16 md:pt-24 lg:pt-[180px] lg:justify-between'>
+                <div className='flex flex-col lg:flex-row w-full pt-24  md:pt-24 lg:pt-[180px] lg:justify-between'>
                     {landingPageLoading ? (
                         <LoadingSkeleton />
                     ) : landingPageError ? (
@@ -256,13 +426,13 @@ export default function Contentiaio() {
                                 </p>
                             </div>
                             <div className='flex flex-col sm:flex-row md:flex-row lg:flex-row lg:justify-between lg:mt-[94px]'>
-                                <div className='flex flex-row sm:flex-row md:flex-row lg:flex-row  mx-auto px-10'>
+                                <div className='flex items-center justify-center mx-auto px-10'>
                                     <Image
                                         src='/starIcon.svg'
                                         height={100}
                                         width={100}
                                         alt='star icon'
-                                        className='h-[60px] px-4'
+                                        className='xs:h-[40px] lg:h-[60px] px-4'
                                     />
                                     <div>
                                         <h1 className='headingTextTwo text-center mb-1'>
@@ -274,20 +444,20 @@ export default function Contentiaio() {
                                     </div>
                                 </div>
 
-                                <div className='flex flex-row sm:flex-row md:flex-row lg:flex-row mx-auto px-10'>
+                                <div className='flex items-center justify-center mx-auto px-10'>
                                     <Image
                                         src='/usersIcon.svg'
                                         height={100}
                                         width={100}
                                         alt='users icon'
-                                        className='h-[55px] pr-4'
+                                        className='xs:h-[35px] lg:h-[55px] pr-2'
                                     />
                                     <div>
                                         <h1 className='headingTextTwo text-center mb-1'>
                                             18-65
                                         </h1>
                                         <p className='paraTextTwo mb-5 text-nowrap'>
-                                            yaş aralığı içerik üreticiler
+                                            Yaş aralığı içerik üreticiler
                                         </p>
                                     </div>
                                 </div>
@@ -303,7 +473,27 @@ export default function Contentiaio() {
                             Yaratıcı videoları talep üzerine almak için daha iyi
                             bir yol
                         </p>
-                        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+                        <div className='block lg:hidden'>
+                            <Slider {...settings}>
+                                {CARDS.map((card, index) => (
+                                    <div
+                                        key={index}
+                                        className='px-2 py-4'
+                                    >
+                                        {" "}
+                                        {/* Adds padding around each card */}
+                                        <SmallCard
+                                            image={card.image}
+                                            title={card.title}
+                                            description={card.description}
+                                        />
+                                    </div>
+                                ))}
+                            </Slider>
+                        </div>
+
+                        {/* Grid on lg screens */}
+                        <div className='hidden lg:grid lg:grid-cols-3 gap-6'>
                             {CARDS.map((card, index) => (
                                 <SmallCard
                                     key={index}
@@ -313,6 +503,7 @@ export default function Contentiaio() {
                                 />
                             ))}
                         </div>
+
                         <div className='flex justify-center items-center mt-8'>
                             <div>
                                 <button className='Button text-white font-bold py-2 px-8 rounded focus:outline-none focus:shadow-outline'>
@@ -358,13 +549,7 @@ export default function Contentiaio() {
                 </div>
 
                 <div className='w-full'>
-                    <Image
-                        className='object-cover rounded-3xl w-full h-auto'
-                        src='/whyContentia.png'
-                        alt='videoCarousal'
-                        width={1500}
-                        height={1500}
-                    />
+                    <HowContentiaTable />
                 </div>
 
                 {/* Packages Section */}
