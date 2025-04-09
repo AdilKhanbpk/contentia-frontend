@@ -77,9 +77,9 @@ export default function OrdersOrders() {
                                 <button
                                     className={`px-4 py-1 border-2 ${
                                         selectedFilter === "all"
-                                            ? "border-[#7649FF] bg-white"
+                                            ? "BlueBorder bg-white"
                                             : "border-transparent bg-[#F4F4F4]"
-                                    } text-[#7649FF] rounded-full font-medium`}
+                                    } BlueColor rounded-full font-medium`}
                                     onClick={() => setSelectedFilter("all")}
                                 >
                                     Tümü
@@ -87,9 +87,9 @@ export default function OrdersOrders() {
                                 <button
                                     className={`px-4 py-1 border-2 ${
                                         selectedFilter === "active"
-                                            ? "border-[#7649FF] bg-white"
+                                            ? "BlueBorder bg-white"
                                             : "border-transparent bg-[#F4F4F4]"
-                                    } text-[#7649FF] rounded-full font-medium`}
+                                    } BlueColor rounded-full font-medium`}
                                     onClick={() => setSelectedFilter("active")}
                                 >
                                     Aktif
@@ -97,9 +97,9 @@ export default function OrdersOrders() {
                                 <button
                                     className={`px-4 py-1 border-2 ${
                                         selectedFilter === "pending"
-                                            ? "border-[#7649FF] bg-white"
+                                            ? "BlueBorder bg-white"
                                             : "border-transparent bg-[#F4F4F4]"
-                                    } text-[#7649FF] rounded-full font-medium`}
+                                    } BlueColor rounded-full font-medium`}
                                     onClick={() => setSelectedFilter("pending")}
                                 >
                                     Onay Bekliyor
