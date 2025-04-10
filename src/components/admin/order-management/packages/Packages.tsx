@@ -5,10 +5,8 @@ import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/store/store";
-// import CustomModelAdmin from "../../../modal/CustomModelAdmin";
-// import NewModal from "../sub-package/NewModal";
-// import EditModal from "../sub-package/EditModal";
-// import ViewModal from "../sub-package/ViewModal";
+import CustomModelAdmin from "../../../modal/CustomModelAdmin";
+
 import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import {
@@ -22,6 +20,9 @@ import { toast } from "react-toastify";
 import { PackageInterface } from "@/types/interfaces";
 import { fetchMyBrands } from "@/store/features/profile/brandSlice";
 import { getAccessToken } from "@/utils/checkToken";
+import NewPackageModal from "./sub-packages/NewPackageModal";
+import EditPackageModal from "./sub-packages/EditPackageModal";
+import ViewPackageModal from "./sub-packages/ViewPackageModal";
 
 interface SearchBarProps {
     onSearch: (value: string) => void;
@@ -426,12 +427,12 @@ const Packages: React.FC = () => {
                 </div>
             </div>
 
-            {/* <CustomModelAdmin
+            <CustomModelAdmin
                 isOpen={isModalOpen}
                 closeModal={handleCloseModals}
                 title='Add Package'
             >
-                <NewModal />
+                <NewPackageModal />
             </CustomModelAdmin>
 
             <CustomModelAdmin
@@ -439,7 +440,7 @@ const Packages: React.FC = () => {
                 closeModal={handleCloseModals}
                 title='View Package'
             >
-                <ViewModal package={currentPackage} />
+                <ViewPackageModal currentPackage={currentPackage} />
             </CustomModelAdmin>
 
             <CustomModelAdmin
@@ -447,8 +448,8 @@ const Packages: React.FC = () => {
                 closeModal={handleCloseModals}
                 title='Update Package'
             >
-                <EditModal package={currentPackage} />
-            </CustomModelAdmin> */}
+                <EditPackageModal currentPackage={currentPackage} />
+            </CustomModelAdmin>
         </div>
     );
 };

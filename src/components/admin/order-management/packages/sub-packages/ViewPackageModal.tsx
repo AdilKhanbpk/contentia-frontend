@@ -1,4 +1,5 @@
-export default function EditPackage() {
+export default function ViewPackage({ currentPackage }: any) {
+    console.log("currentPackage", currentPackage);
     return (
         <>
             <div className='bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6'>

@@ -20,7 +20,7 @@ import {
     fetchBlogById,
 } from "@/store/features/admin/blogSlice";
 import CustomModelAdmin from "../../../modal/CustomModelAdmin";
-import Modal from "./sub-blogs/Modal";
+import Modal from "./sub-blogs/ModalNew";
 import { ModalEdit } from "./sub-blogs/ModalEdit";
 import { ModalView } from "./sub-blogs/ModalView";
 import CustomTable from "@/components/custom-table/CustomTable";

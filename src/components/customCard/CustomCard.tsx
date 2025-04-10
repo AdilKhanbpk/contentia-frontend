@@ -152,9 +152,7 @@ const CustomCard: React.FC<CardProps> = ({
                     )}
                     {price && (
                         <div className='headingTextBlueSmall flex justify-center items-center whitespace-nowrap px-4 py-2'>
-                            <h1 className='text-lg sm:text-xl'>
-                                {price} TL + KDV
-                            </h1>
+                            <h1 className='text-lg sm:text-xl'>{price} TL</h1>
                         </div>
                     )}
                     {onOrderClick && (

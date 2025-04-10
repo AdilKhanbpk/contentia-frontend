@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
-import FirstTab from "./FirstTab";
-import SecondTab from "./SecondTab";
-import ThirdTab from "./ThirdTab";
-import FourthTab from "./FourthTab";
+import FirstTab from "./AdminBecomeCreatorProfile";
+import SecondTab from "./AdminBecomeCreatorPayment";
+import ThirdTab from "./AdminBecomeCreatorPreferences";
+import FourthTab from "./AdminBecomeCreatorSettings";
 import instIcon from "../../../../../../public/BecomeCreator/Instagram_icon.png";
 import facebookIcon from "../../../../../../public/BecomeCreator/facebook_icon..png";
 import youtubeIcon from "../../../../../../public/BecomeCreator/youtube_iconpng.png";

@@ -34,7 +34,7 @@ export default function Modal({ onSubmit, onClose }: ModalProps) {
 
     return (
         <div className='bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6'>
-            <h1 className='text-lg font-semibold'>Add a new blog</h1>
+            <h1 className='text-lg font-semibold'>Add a New blog</h1>
             <form onSubmit={handleSubmit(onSubmitForm)}>
                 <div className='mt-4'>
                     <label className='block text-sm font-semibold'>Title</label>

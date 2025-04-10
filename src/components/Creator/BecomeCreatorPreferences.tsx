@@ -1,5 +1,5 @@
-import ContentCreatorPreferences from "./SubCreatorComp/ContentCreatorPreferences";
-import SocialMediaInformation from "./SubCreatorComp/SocialMediaInformation";
+import ContentCreatorPreferences from "./SubCreatorComp/BecomeCreatorContentCreatorPreferences";
+import SocialMediaInformation from "./SubCreatorComp/BecomeCreatorSocialMediaInformation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/store/store";

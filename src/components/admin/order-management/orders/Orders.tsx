@@ -14,9 +14,9 @@ import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import CustomModelAdmin from "../../../modal/CustomModelAdmin";
-import NewModal from "../sub-order/NewModal";
-import EditModal from "../sub-order/EditModal";
-import RequestModal from "../sub-order/RequestModal";
+import NewModal from "./sub-order/NewOrderModal";
+import EditModal from "./sub-order/EditOrderModal";
+import RequestModal from "./sub-order/RequestOrderModal";
 import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import {
@@ -33,7 +33,7 @@ import { RootState } from "@/store/store";
 import { toast } from "react-toastify";
 import { OrderInterface } from "@/types/interfaces";
 import { fetchMyBrands } from "@/store/features/profile/brandSlice";
-import ViewModal from "../sub-order/ViewModal";
+import ViewModal from "./sub-order/ViewOrderModal";
 import { getAccessToken } from "@/utils/checkToken";
 
 interface SearchBarProps {

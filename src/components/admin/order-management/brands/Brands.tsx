@@ -18,8 +18,8 @@ import {
     Brand,
     clearCurrentBrand,
 } from "@/store/features/profile/brandSlice";
-import ViewBrand from "../sub-order/ViewBrand";
-import EditBrand from "../sub-order/EditBrand";
+import ViewBrand from "./sub-brand/ViewBrandModal";
+import EditBrand from "./sub-brand/EditBrandModal";
 import { getAccessToken } from "@/utils/checkToken";
 
 interface SearchBarProps {

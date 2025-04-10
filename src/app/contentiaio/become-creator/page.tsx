@@ -1,15 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import Beginning from "@/components/Creator/Beginning";
-import ProfileInformation from "@/components/Creator/ProfileInformation";
-import PaymentInformation from "@/components/Creator/PaymentInformation";
-import Preferences from "@/components/Creator/Preferences";
-
-type Step = {
-    label: string;
-    component: JSX.Element | null;
-};
+import Beginning from "@/components/Creator/BecomeCreatorBeginning";
+import ProfileInformation from "@/components/Creator/BecomeCreatorProfileInformation";
+import PaymentInformation from "@/components/Creator/BecomeCreatorPaymentInformation";
+import Preferences from "@/components/Creator/BecomeCreatorPreferences";
 
 const BecomeCreator: React.FC = () => {
     const [activeTab, setActiveTab] = useState(0);

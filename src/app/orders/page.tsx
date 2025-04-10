@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import TabFirst from "@/components/orders/TabFirst";
-import TabSecond from "@/components/orders/TabSecond";
-import TabThird from "@/components/orders/TabThird";
-import TabFourth from "@/components/orders/TabFourth";
+import TabFirst from "@/components/orders/OrderTabFirst";
+import TabSecond from "@/components/orders/OrderTabSecond";
+import TabThird from "@/components/orders/OrderTabThird";
+import TabFourth from "@/components/orders/OrderTabFourth";
 
 const OrderDetails = () => {
     const [activeTab, setActiveTab] = useState(0);

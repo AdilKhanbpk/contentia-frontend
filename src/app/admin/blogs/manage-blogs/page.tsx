@@ -1,11 +1,10 @@
-import React from 'react';
-import ManageBlogs from '@/components/admin/blogs/manage-blogs/ManageBlogs';
-
+import React from "react";
+import ManageBlogs from "@/components/admin/blogs/manage-blogs/Blogs";
 
 export default function ManageBlog() {
-  return (
-    <>
-      <ManageBlogs></ManageBlogs>
-    </>
-  );
+    return (
+        <>
+            <ManageBlogs></ManageBlogs>
+        </>
+    );
 }
