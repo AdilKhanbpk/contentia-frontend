@@ -114,12 +114,12 @@ export default function TabFirst({
                 (option: any) => option._id === cardId
             );
             if (selectedPackage) {
-                return (selectedPackage.finalPrice + additionalCharges).toFixed(
-                    2
-                );
+                return (
+                    selectedPackage.finalPrice + additionalCharges
+                ).toString();
             }
         }
-        return (quantity * oneVideoPrice + additionalCharges).toFixed(2);
+        return (quantity * oneVideoPrice + additionalCharges).toString();
     };
 
     // Handle form submission
@@ -451,18 +451,33 @@ export default function TabFirst({
                                                 İçerik Üretici
                                             </p>
                                             <div className='mb-2'>
-                                                <p className='ButtonBlue inline text-white font-medium rounded-md px-1 py-0.5 text-xs'>
-                                                    {option.strikeThroughPrice &&
-                                                        option.strikeThroughPrice -
-                                                            option.finalPrice}{" "}
-                                                    TL İndirim
-                                                </p>
+                                                {option.strikeThroughPrice && (
+                                                    <p className='ButtonBlue inline text-white font-medium rounded-md px-1 py-0.5 text-xs'>
+                                                        {(
+                                                            option.strikeThroughPrice -
+                                                            option.finalPrice
+                                                        ).toLocaleString(
+                                                            "tr-TR"
+                                                        )}{" "}
+                                                        TL İndirim
+                                                    </p>
+                                                )}
                                             </div>
-                                            <span className='text-sm font-semibold line-through'>
-                                                {option.strikeThroughPrice} TL
-                                            </span>
+
+                                            {option.strikeThroughPrice && (
+                                                <span className='text-sm font-semibold line-through'>
+                                                    {option.strikeThroughPrice.toLocaleString(
+                                                        "tr-TR"
+                                                    )}{" "}
+                                                    TL
+                                                </span>
+                                            )}
+
                                             <p className='mt-2 text-sm BlueText font-semibold'>
-                                                {option.finalPrice} TL
+                                                {option.finalPrice.toLocaleString(
+                                                    "tr-TR"
+                                                )}{" "}
+                                                TL
                                                 <span className='text-xs text-black font-thin'>
                                                     {" "}
                                                     / {option.videoCount} Video

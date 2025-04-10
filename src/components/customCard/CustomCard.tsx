@@ -152,9 +152,12 @@ const CustomCard: React.FC<CardProps> = ({
                     )}
                     {price && (
                         <div className='headingTextBlueSmall flex justify-center items-center whitespace-nowrap px-4 py-2'>
-                            <h1 className='text-lg sm:text-xl'>{price} TL</h1>
+                            <h1 className='text-lg sm:text-xl'>
+                                {Number(price).toLocaleString("tr-TR")} TL
+                            </h1>
                         </div>
                     )}
+
                     {onOrderClick && (
                         <div className='flex justify-center px-4 pt-2 pb-6'>
                             <button
