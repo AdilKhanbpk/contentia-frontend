@@ -104,7 +104,6 @@ const AddService: React.FC = () => {
                     Select the price for additional services (for 1 UGC)
                 </p>
 
-                {/* Manually Added Fields */}
                 <div className='mt-4'>
                     <h3 className='font-semibold mb-4 text-lg'>
                         Edit Additional Service Price
@@ -118,6 +117,7 @@ const AddService: React.FC = () => {
                             <input
                                 {...register("editPrice")}
                                 type='number'
+                                step='any'
                                 className='focus:outline-none border rounded-md w-20 md:w-48 px-3 text-lg'
                             />
                         </div>
@@ -131,6 +131,7 @@ const AddService: React.FC = () => {
                             <input
                                 {...register("sharePrice")}
                                 type='number'
+                                step='any'
                                 className='focus:outline-none border rounded-md w-20 md:w-48 px-3 text-lg'
                             />
                         </div>
@@ -144,6 +145,7 @@ const AddService: React.FC = () => {
                             <input
                                 {...register("coverPicPrice")}
                                 type='number'
+                                step='any'
                                 className='focus:outline-none border rounded-md w-20 md:w-48 px-3 text-lg'
                             />
                         </div>
@@ -157,6 +159,7 @@ const AddService: React.FC = () => {
                             <input
                                 {...register("creatorTypePrice")}
                                 type='number'
+                                step='any'
                                 className='focus:outline-none border rounded-md w-20 md:w-48 px-3 text-lg'
                             />
                         </div>
@@ -170,6 +173,7 @@ const AddService: React.FC = () => {
                             <input
                                 {...register("shippingPrice")}
                                 type='number'
+                                step='any'
                                 className='focus:outline-none border rounded-md w-20 md:w-48 px-3 text-lg'
                             />
                         </div>
@@ -183,6 +187,7 @@ const AddService: React.FC = () => {
                             <input
                                 {...register("thirtySecondDurationPrice")}
                                 type='number'
+                                step='any'
                                 className='focus:outline-none border rounded-md w-20 md:w-48 px-3 text-lg'
                             />
                         </div>
@@ -196,6 +201,7 @@ const AddService: React.FC = () => {
                             <input
                                 {...register("sixtySecondDurationPrice")}
                                 type='number'
+                                step='any'
                                 className='focus:outline-none border rounded-md w-20 md:w-48 px-3 text-lg'
                             />
                         </div>

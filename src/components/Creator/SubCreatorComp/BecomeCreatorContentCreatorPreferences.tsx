@@ -164,20 +164,17 @@ const ContentCreatorPreferences: React.FC<{
                                             </button>
                                             {showTooltipThree && (
                                                 <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
-                                                    Adres bilgileri, tüm içerik
-                                                    üreticileri tarafından İl,
-                                                    İlçe ve Mahalle olarak
-                                                    gösterilecektir. Onaylanan
-                                                    içerik üreticiler, işletme
-                                                    adı ve açık adresi
-                                                    görüntüleyebilecektir.
+                                                    Adresiniz yalnızca ürün
+                                                    tanıtımı için sipariş veren
+                                                    ve içerik üreticisi olarak
+                                                    sizi onayla
                                                 </div>
                                             )}
                                         </div>
                                     </div>
                                     <label className='block text-sm font-medium text-gray-700 mb-2'>
-                                        Lütfen tanıtılmasını istediğiniz mekanın
-                                        adres bilgilerini belirtin
+                                        Lütfen markaların ürün gönderimi
+                                        yapabilmesi için adresinizi belirtin.
                                     </label>
                                     <div className='grid lg:grid-cols-2 gap-x-8 gap-y-8'>
                                         <div>

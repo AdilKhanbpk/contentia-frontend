@@ -1,4 +1,5 @@
 "use client";
+
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import "../i18n";
@@ -25,6 +26,28 @@ export default function RootLayout({
 }) {
     return (
         <html lang='en'>
+            <head>
+                <title>Contentia</title>
+                <meta
+                    name='description'
+                    content='Contentia'
+                />
+                <meta
+                    name='viewport'
+                    content='width=device-width, initial-scale=1'
+                />
+                <link
+                    rel='icon'
+                    type='image/png'
+                    href='/contentiaLogo.png'
+                    sizes='32x32'
+                />
+                <link
+                    rel='apple-touch-icon'
+                    sizes='180x180'
+                    href='/apple-touch-icon.png'
+                />
+            </head>
             <body>
                 <FileProvider>
                     <Provider store={store}>
