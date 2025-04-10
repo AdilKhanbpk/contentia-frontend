@@ -51,7 +51,9 @@ const BecomeCreator: React.FC = () => {
                     ></PaymentInformation>
                 )}
 
-                {activeTab === 3 && <Preferences></Preferences>}
+                {activeTab === 3 && (
+                    <Preferences setActiveTab={setActiveTab}></Preferences>
+                )}
             </div>
         </>
     );

@@ -1,8 +1,9 @@
 import { setCreatorFormData } from "@/store/becomeCreator/becomeCreatorSlice";
+import { RootState } from "@/store/store";
 import { PaymentInformationFormValues } from "@/types/interfaces";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
@@ -19,10 +20,14 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
         register,
         handleSubmit,
         watch,
+        reset,
         formState: { errors, isSubmitting },
     } = useForm<PaymentInformationFormValues>();
 
     const dispatch = useDispatch();
+    const creatorFormData = useSelector(
+        (state: RootState) => state.becomeCreator.creatorFormData
+    );
     const invoiceStatus = watch("billingInformation.invoiceStatus");
     console.log("🚀 ~ invoiceStatus:", invoiceStatus);
 
@@ -39,6 +44,11 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
             toast.error("An error occurred while saving payment information");
         }
     };
+    useEffect(() => {
+        if (creatorFormData) {
+            reset(creatorFormData);
+        }
+    }, [creatorFormData, reset]);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>

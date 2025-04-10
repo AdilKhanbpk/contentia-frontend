@@ -5,13 +5,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import {
     becomeCreatorThunk,
-    selectBecomeCreatorIsLoading,
     setCreatorFormData,
 } from "@/store/becomeCreator/becomeCreatorSlice";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { useEffect } from "react";
 
-const Preferences: React.FC = () => {
+interface PreferencesProps {
+    setActiveTab: (id: number) => void;
+}
+
+const Preferences: React.FC<PreferencesProps> = ({ setActiveTab }) => {
     const {
         register,
         watch,
@@ -21,7 +25,17 @@ const Preferences: React.FC = () => {
 
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
-    const loading = useSelector(selectBecomeCreatorIsLoading);
+    const creatorFormData = useSelector(
+        (state: any) => state.becomeCreator.creatorFormData
+    );
+    const { fullName, email, password } = creatorFormData;
+
+    useEffect(() => {
+        if (!fullName || !email || !password) {
+            console.log("creatorFormData is null or undefined");
+            setActiveTab(1);
+        }
+    }, [creatorFormData, router]);
 
     const onSubmit: SubmitHandler<any> = async (data) => {
         try {

@@ -1,8 +1,8 @@
 import { setCreatorFormData } from "@/store/becomeCreator/becomeCreatorSlice";
 import { ProfileFormInputs } from "@/types/interfaces";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 interface ProfileInformationProps {
@@ -15,10 +15,14 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors, isSubmitting },
     } = useForm<ProfileFormInputs>();
 
     const dispatch = useDispatch();
+    const creatorFormData = useSelector(
+        (state: any) => state.becomeCreator.creatorFormData
+    );
     const [showVerification, setShowVerification] = React.useState(false);
     const [countdown, setCountdown] = React.useState(120);
     const countdownRef = React.useRef<NodeJS.Timeout | null>(null);
@@ -119,6 +123,12 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
             inputRefs.current[index + 1]?.focus();
         }
     };
+
+    useEffect(() => {
+        if (creatorFormData) {
+            reset(creatorFormData);
+        }
+    }, [creatorFormData, reset]);
 
     return (
         <div className='px-4 sm:px-6 md:px-8 lg:px-28'>
