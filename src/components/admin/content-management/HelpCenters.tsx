@@ -11,7 +11,7 @@ import {
     HelpSupport,
 } from "@/store/features/admin/helpSlice";
 import CustomModelAdmin from "../../modal/CustomModelAdmin";
-import { ModalCenters } from "./sub-content/ModalCenters";
+import { ModalCenters } from "./sub-content/NewHelpSupportModal";
 import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import { toast } from "react-toastify";

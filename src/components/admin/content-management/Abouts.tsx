@@ -10,7 +10,7 @@ import {
     fetchAbout,
     updateAbout,
 } from "@/store/features/admin/aboutSlice";
-import ImageUploader from "./sub-content/ImageUploader";
+import ImageUploader from "./sub-content/AboutImageUploader";
 import { toast } from "react-toastify";
 import { getAccessToken } from "@/utils/checkToken";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
