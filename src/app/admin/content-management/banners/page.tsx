@@ -1,11 +1,10 @@
-import React from 'react';
-import Banners from '@/components/admin/content-management/Banners';
-
+import Banners from "@/components/admin/content-management/Banners/Banners";
+import React from "react";
 
 export default function Banner() {
-  return (
-    <>
-      <Banners></Banners>
-    </>
-  );
+    return (
+        <>
+            <Banners></Banners>
+        </>
+    );
 }

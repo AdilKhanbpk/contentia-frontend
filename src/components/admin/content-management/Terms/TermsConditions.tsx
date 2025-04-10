@@ -18,16 +18,17 @@ import { exportCsvFile } from "@/utils/exportCsvFile";
 import { toast } from "react-toastify";
 import { TermsInterface } from "@/types/interfaces";
 import { getAccessToken } from "@/utils/checkToken";
-import CustomModelAdmin from "../../modal/CustomModelAdmin";
-import { CreateTerms } from "./sub-content/Terms/CreateTerms";
-import { EditTerms } from "./sub-content/Terms/EditTerms";
-import { ViewTerms } from "./sub-content/Terms/ViewTerms";
+import CustomModelAdmin from "../../../modal/CustomModelAdmin";
+
 import {
     deleteTerm,
     fetchTermById,
     fetchTerms,
     updateTerm,
 } from "@/store/features/admin/termsSlice";
+import { CreateTerms } from "./CreateTerms";
+import { EditTerms } from "./EditTerms";
+import { ViewTerms } from "./ViewTerms";
 
 const SearchBar = memo(
     ({ onSearch }: { onSearch: (value: string) => void }) => (

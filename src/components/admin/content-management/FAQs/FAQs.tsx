@@ -10,7 +10,7 @@ import {
     deleteFaq,
 } from "@/store/features/admin/faqSlice";
 import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
-import CustomModelAdmin from "../../modal/CustomModelAdmin";
+import CustomModelAdmin from "../../../modal/CustomModelAdmin";
 import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import dynamic from "next/dynamic";

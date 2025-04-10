@@ -1,10 +1,10 @@
-import React from 'react';
-import TermsConditions from '@/components/admin/content-management/TermsConditions';
+import TermsConditions from "@/components/admin/content-management/Terms/TermsConditions";
+import React from "react";
 
 export default function TermCondition() {
-  return (
-    <>
-      <TermsConditions></TermsConditions>
-    </>
-  );
+    return (
+        <>
+            <TermsConditions></TermsConditions>
+        </>
+    );
 }

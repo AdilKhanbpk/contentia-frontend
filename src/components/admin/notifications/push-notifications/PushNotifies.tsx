@@ -2,7 +2,7 @@
 import React, { memo, useCallback, useEffect, useState } from "react";
 import { FaEye, FaFileCsv } from "react-icons/fa";
 import CustomModelAdmin from "../../../modal/CustomModelAdmin";
-import Modal from "./sub-push/Modal";
+import Modal from "./sub-push/ViewModal";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import {

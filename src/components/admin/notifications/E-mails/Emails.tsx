@@ -17,7 +17,7 @@ import {
     FaTrashAlt,
 } from "react-icons/fa";
 import CustomModelAdmin from "../../../modal/CustomModelAdmin";
-import Modal from "./sub-emails/Modal";
+import Modal from "./sub-emails/NewModal";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { getAccessToken } from "@/utils/checkToken";

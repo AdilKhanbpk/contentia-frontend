@@ -10,7 +10,7 @@ import React, {
 } from "react";
 import { FaFileCsv, FaEye, FaEdit, FaTrashAlt } from "react-icons/fa";
 import CustomModelAdmin from "../../modal/CustomModelAdmin";
-import NewModal from "./sub-payment/NewModal";
+import NewModal from "./sub-in-payment/NewInPaymentModal";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { getAccessToken } from "@/utils/checkToken";
@@ -22,11 +22,11 @@ import {
     updatePayment,
 } from "@/store/features/admin/incomingPaymentSlice";
 import { exportCsvFile } from "@/utils/exportCsvFile";
-import CreateInvoiceModal from "./sub-payment/InvoiceModal";
-import ViewModal from "./sub-payment/ViewModal";
+import CreateInvoiceModal from "./sub-in-payment/UploadInPaymentInvoiceModal";
+import ViewModal from "./sub-in-payment/ViewInPaymentModal";
 import CustomTable from "@/components/custom-table/CustomTable";
 import { toast } from "react-toastify";
-import EditInvoiceModal from "./sub-payment/EditInvoiceModal";
+import EditInvoiceModal from "./sub-in-payment/EditInPaymentInvoiceModal";
 
 const InPayments: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
