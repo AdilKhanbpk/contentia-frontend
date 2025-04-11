@@ -20,7 +20,7 @@ import {
 } from "@/store/features/admin/notificationSlice";
 import { getAccessToken } from "@/utils/checkToken";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { logoutUser } from "@/store/features/auth/loginSlice";
 
 const menuItems = [
@@ -136,12 +136,15 @@ export const Dropdown = ({ isOpen, setIsOpen, icon, children }: any) => {
     );
 };
 
+const normalizePath = (path: string) => path?.replace(/\/+$/, "") || "/";
+
 export default function AdminNavbar() {
     const dispatch = useDispatch<AppDispatch>();
     const user = useSelector(selectProfileUser);
     const notifications = useSelector(selectNotifications);
     const loading = useSelector(selectNotificationLoading);
     const router = useRouter();
+    const pathname = usePathname();
 
     const [isSidebarOpen, setSidebarOpen] = useState(true);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -359,23 +362,34 @@ export default function AdminNavbar() {
                                 <span className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white group flex-1 ms-3 whitespace-nowrap font-semibold'>
                                     {section.title}
                                 </span>
-                                {section.links.map((link, linkIndex) => (
-                                    <li
-                                        key={linkIndex}
-                                        className='mt-2'
-                                    >
-                                        <Link
-                                            legacyBehavior
-                                            href={link.href}
+                                {section.links.map((link, linkIndex) => {
+                                    const isActive =
+                                        normalizePath(pathname) ===
+                                            normalizePath(link.href) ||
+                                        normalizePath(pathname).startsWith(
+                                            normalizePath(link.href)
+                                        );
+
+                                    return (
+                                        <li
+                                            key={linkIndex}
+                                            className='mt-2'
                                         >
-                                            <a className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'>
+                                            <Link
+                                                href={link.href}
+                                                className={`flex items-center p-2 rounded-lg group ${
+                                                    isActive
+                                                        ? "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white font-semibold"
+                                                        : "text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                                                }`}
+                                            >
                                                 <span className='flex-1 ms-3 whitespace-nowrap'>
                                                     {link.name}
                                                 </span>
-                                            </a>
-                                        </Link>
-                                    </li>
-                                ))}
+                                            </Link>
+                                        </li>
+                                    );
+                                })}
                             </div>
                         ))}
                     </ul>
