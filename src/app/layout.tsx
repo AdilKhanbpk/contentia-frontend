@@ -18,12 +18,19 @@ import LoadingSpinner from "@/components/loaders/LoadingSpinner";
 import { FileProvider } from "@/context/FileContext";
 import { RootState } from "@/store/store"; // Import RootState for proper typing
 import { SaveAccessToken } from "@/utils/checkToken";
+import { initGA } from "@/utils/googleAnalytics/Analytics";
+import RouteChangeTracker from "@/utils/googleAnalytics/RouteChangeTracker";
 
 export default function RootLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
+    useEffect(() => {
+        initGA();
+        console.log("Google Analytics initialized");
+    }, []);
+
     return (
         <html lang='en'>
             <head>
@@ -56,6 +63,7 @@ export default function RootLayout({
                             persistor={persistor}
                         >
                             <I18nextProvider i18n={i18n}>
+                                <RouteChangeTracker />
                                 <AuthWrapper>{children}</AuthWrapper>
                                 <ToastContainer />
                             </I18nextProvider>

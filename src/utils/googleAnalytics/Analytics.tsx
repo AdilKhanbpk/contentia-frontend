@@ -14,6 +14,8 @@ export const logPageView = (path: string): void => {
 
 export const logTimeOnPage = (path: string, duration: number): void => {
     if (typeof window !== "undefined") {
+        console.log("🚀 ~ logTimeOnPage ~ path:", path);
+        console.log("🚀 ~ logTimeOnPage ~ duration:", duration);
         ReactGA.event({
             category: "Engagement",
             action: "Time Spent",

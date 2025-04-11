@@ -2,11 +2,14 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { axiosInstance } from "@/store/axiosInstance";
 import { AxiosError } from "axios";
 import { RootState } from "@/store/store";
+import { OrderInterface } from "@/types/interfaces";
 
 interface DashboardState {
     totalCreators: CreatorAnalytics | null;
     totalCustomers: CustomerAnalytics | null;
     totalOrders: OrderAnalytics | null;
+    recentOrders: OrderInterface | null;
+    totalSales: SalesByMonth | null;
     loading: boolean;
     error: string | null;
 }
@@ -33,16 +36,28 @@ export interface OrderAnalytics {
     previousMonthCount: number;
     percentageChange: string;
     completedOrders: number;
+    totalPriceOfCompletedOrders: number;
     pendingOrders: number;
     activeOrders: number;
     revisionOrders: number;
     canceledOrders: number;
 }
 
+export interface SalesByMonth {
+    totalSalesByMonth: number[];
+    currentMonthCount: number;
+    previousMonthCount: number;
+    percentageChange: string;
+    totalSales: number;
+
+}
+
 const initialState: DashboardState = {
     totalCreators: null,
     totalCustomers: null,
     totalOrders: null,
+    recentOrders: null,
+    totalSales: null,
     loading: false,
     error: null,
 };
@@ -98,6 +113,42 @@ export const fetchTotalOrders = createAsyncThunk(
     }
 );
 
+// Fetch Recent Orders
+export const fetchRecentOrders = createAsyncThunk(
+    "dashboard/fetchRecentOrders",
+    async (token: string, { rejectWithValue }) => {
+        try {
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            const response = await axiosInstance.get("/admin/dashboard/recent-orders");
+            return response.data.data;
+        } catch (error) {
+            const axiosError = error as AxiosError;
+            return rejectWithValue(
+                axiosError.response?.data || "Failed to fetch recent orders"
+            );
+        }
+    }
+);
+
+// Fetch Recent Orders
+export const fetchTotalSalesByMonth = createAsyncThunk(
+    "dashboard/fetchTotalSalesByMonth",
+    async (token: string, { rejectWithValue }) => {
+        try {
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            const response = await axiosInstance.get("/admin/dashboard/total-sales-by-month");
+            return response.data.data;
+        } catch (error) {
+            const axiosError = error as AxiosError;
+            return rejectWithValue(
+                axiosError.response?.data || "Failed to Fetch Total Sales By Month"
+            );
+        }
+    }
+);
+
+
+
 const dashboardSlice = createSlice({
     name: "dashboard",
     initialState,
@@ -144,6 +195,33 @@ const dashboardSlice = createSlice({
             .addCase(fetchTotalOrders.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+            })
+
+            // Fetch Recent Orders
+            .addCase(fetchRecentOrders.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchRecentOrders.fulfilled, (state, action: PayloadAction<OrderInterface>) => {
+                state.loading = false;
+                state.recentOrders = action.payload;
+            })
+            .addCase(fetchRecentOrders.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            // Fetch Recent Orders
+            .addCase(fetchTotalSalesByMonth.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchTotalSalesByMonth.fulfilled, (state, action: PayloadAction<SalesByMonth>) => {
+                state.loading = false;
+                state.totalSales = action.payload;
+            })
+            .addCase(fetchTotalSalesByMonth.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
             });
     },
 });
@@ -151,6 +229,8 @@ const dashboardSlice = createSlice({
 export const selectTotalCreators = (state: RootState) => state.dashboard.totalCreators;
 export const selectTotalCustomers = (state: RootState) => state.dashboard.totalCustomers;
 export const selectTotalOrders = (state: RootState) => state.dashboard.totalOrders;
+export const selectRecentOrders = (state: RootState) => state.dashboard.recentOrders;
+export const selectTotalSales = (state: RootState) => state.dashboard.totalSales;
 export const selectDashboardLoading = (state: RootState) => state.dashboard.loading;
 export const selectDashboardError = (state: RootState) => state.dashboard.error;
 

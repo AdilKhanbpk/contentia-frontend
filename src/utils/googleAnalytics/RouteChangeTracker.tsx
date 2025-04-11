@@ -1,26 +1,21 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+"use client";
+
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { logPageView, logTimeOnPage } from "./Analytics";
 
 const RouteChangeTracker: React.FC = () => {
-    const router = useRouter();
-    const [startTime, setStartTime] = useState<number>(Date.now());
+    const pathname = usePathname();
+    const startTimeRef = useRef<number>(Date.now());
 
     useEffect(() => {
-        const handleRouteChange = (url: string) => {
-            const duration = Date.now() - startTime;
-            logTimeOnPage(router.pathname, duration);
+        const duration = Date.now() - startTimeRef.current;
+        logTimeOnPage(pathname, duration);
 
-            logPageView(url);
-            setStartTime(Date.now());
-        };
+        logPageView(pathname);
 
-        router.events.on("routeChangeComplete", handleRouteChange);
-
-        return () => {
-            router.events.off("routeChangeComplete", handleRouteChange);
-        };
-    }, [router, startTime]);
+        startTimeRef.current = Date.now();
+    }, [pathname]);
 
     return null;
 };

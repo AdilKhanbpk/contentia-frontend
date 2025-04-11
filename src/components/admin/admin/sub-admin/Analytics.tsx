@@ -15,12 +15,16 @@ import ReportChart from "./ReportChart";
 import CircleChart from "./CircleChart";
 import { useDispatch, useSelector } from "react-redux";
 import {
+    fetchRecentOrders,
     fetchTotalCreators,
     fetchTotalCustomers,
     fetchTotalOrders,
+    fetchTotalSalesByMonth,
+    selectRecentOrders,
     selectTotalCreators,
     selectTotalCustomers,
     selectTotalOrders,
+    selectTotalSales,
 } from "@/store/features/admin/dashboardSlice";
 import { AppDispatch } from "@/store/store";
 import { getAccessToken } from "@/utils/checkToken";
@@ -32,14 +36,25 @@ const Analytics: React.FC = () => {
     const creators = useSelector(selectTotalCreators);
     const customers = useSelector(selectTotalCustomers);
     const orders = useSelector(selectTotalOrders);
+    const sales = useSelector(selectTotalSales);
+    const recentOrders = useSelector(selectRecentOrders);
 
     useEffect(() => {
         const token = getAccessToken();
         if (!token) return;
+        dispatch(fetchRecentOrders(token));
+        dispatch(fetchTotalSalesByMonth(token));
         dispatch(fetchTotalCreators(token));
         dispatch(fetchTotalCustomers(token));
         dispatch(fetchTotalOrders(token));
     }, []);
+
+    const totalCustomerAndCreators =
+        (creators?.totalCreatorsCount || 0) +
+        (customers?.totalCustomersCount || 0);
+    const totalCompletedOrders = orders?.completedOrders ?? 0;
+    const totalPriceOfCompletedOrders =
+        orders?.totalPriceOfCompletedOrders ?? 0;
 
     return (
         <>
@@ -65,14 +80,14 @@ const Analytics: React.FC = () => {
                             ordersByMonth={orders?.totalOrdersByMonth ?? []}
                         />
                     </AnalyticsDataCard>
-                    {/* <AnalyticsDataCard
+                    <AnalyticsDataCard
                         title='Total Sales'
-                        count='$35,078'
-                        percentage={27.4}
-                        isLoss
+                        count={1}
                     >
-                        <SalesCardChart />
-                    </AnalyticsDataCard> */}
+                        <SalesCardChart
+                            salesByMonth={sales?.totalSalesByMonth ?? []}
+                        />
+                    </AnalyticsDataCard>
                     <AnalyticsDataCard
                         title='Total Creators'
                         count={customers?.totalCustomersCount ?? 0}
@@ -90,57 +105,44 @@ const Analytics: React.FC = () => {
                     {orders && <CircleChart orders={orders}></CircleChart>}
                 </div>
 
-                <div className='my-4 flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4'>
+                {/* <div className='my-4 flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4'>
                     <div className='w-full lg:w-3/5 bg-white shadow-md rounded-lg'>
                         <IncomeOverview />
                     </div>
                     <div className='w-full lg:w-2/5 bg-white shadow-md rounded-lg'>
                         <PageViews />
                     </div>
-                </div>
+                </div> */}
                 <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
                     <div className='col-span-1'>
                         <AnalyticEcommerce
                             title='Total Page Views'
                             count='4,42,236'
-                            percentage={59.3}
-                            extra='35,000'
                         />
                     </div>
                     <div className='col-span-1'>
                         <AnalyticEcommerce
                             title='Total Users'
-                            count='78,250'
-                            percentage={70.5}
-                            color='text-green-500'
-                            extra='8,900'
+                            count={totalCustomerAndCreators.toString()}
                         />
                     </div>
                     <div className='col-span-1'>
                         <AnalyticEcommerce
                             title='Total Orders'
-                            count='18,800'
-                            percentage={27.4}
-                            isLoss
-                            color='text-yellow-500'
-                            extra='1,943'
+                            count={totalCompletedOrders.toString()}
                         />
                     </div>
                     <div className='col-span-1'>
                         <AnalyticEcommerce
                             title='Total Sales'
-                            count='$35,078'
-                            percentage={27.4}
-                            isLoss
-                            color='text-red-500'
-                            extra='$20,395'
+                            count={`$${totalPriceOfCompletedOrders}`}
                         />
                     </div>
                 </div>
                 <div className='my-4'>
                     <div className='flex flex-col lg:flex-row gap-4'>
                         {/* Unique Visitor Card */}
-                        <div className='flex-1'>
+                        {/* <div className='flex-1'>
                             <div className='flex justify-between items-center mb-2'>
                                 <h5 className='text-lg font-semibold'>
                                     Unique Visitor
@@ -171,10 +173,10 @@ const Analytics: React.FC = () => {
                             <div className='bg-white shadow-lg rounded-lg p-4 mt-2'>
                                 <IncomeAreaChart slot={slot} />
                             </div>
-                        </div>
+                        </div> */}
 
                         {/* Income Overview Card */}
-                        <div className='flex-1 lg:w-1/3'>
+                        {/* <div className='flex-1 lg:w-1/3'>
                             <div className='flex justify-between items-center mb-2'>
                                 <h5 className='text-lg font-semibold'>
                                     Income Overview
@@ -189,7 +191,7 @@ const Analytics: React.FC = () => {
                                 </div>
                                 <MonthlyBarChart />
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 
@@ -202,7 +204,13 @@ const Analytics: React.FC = () => {
                             </h5>
                         </div>
                         <div className='bg-white mt-4 rounded-lg shadow'>
-                            <OrdersList />
+                            <OrdersList
+                                recentOrders={
+                                    Array.isArray(recentOrders)
+                                        ? recentOrders
+                                        : []
+                                }
+                            />
                         </div>
                     </div>
 
