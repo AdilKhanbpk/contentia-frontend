@@ -14,7 +14,7 @@ import { AppDispatch } from "@/store/store";
 import { Dropdown } from "./AdminNavbar";
 import { getAccessToken } from "@/utils/checkToken";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
     BriefcaseIcon,
     PaperClipIcon,
@@ -22,11 +22,21 @@ import {
     UserIcon,
 } from "@heroicons/react/24/solid";
 import { IoLogOut } from "react-icons/io5";
+import clsx from "clsx";
+
+const navItems = [
+    { href: "/orders", label: "Ana Sayfa" },
+    { href: "/orders/profile", label: "Profil" },
+    { href: "/orders/orders", label: "Siparişler" },
+    { href: "/orders/packages", label: "Paketler" },
+    { href: "/orders/my-brands", label: "Markalarım" },
+];
 
 export default function Navbar() {
     const dispatch = useDispatch<AppDispatch>();
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const router = useRouter();
+    const pathname = usePathname();
 
     const { t } = useTranslation();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -108,56 +118,25 @@ export default function Navbar() {
 
                                 {/* Navigation Links */}
                                 <ul className='hidden lg:flex space-x-4 font-medium'>
-                                    <li>
-                                        <Link
-                                            href={"/"}
-                                            legacyBehavior
-                                        >
-                                            <a className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'>
-                                                Ana Sayfa{" "}
-                                            </a>
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link
-                                            legacyBehavior
-                                            href='/orders/profile'
-                                        >
-                                            <a className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'>
-                                                Profil{" "}
-                                            </a>
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link
-                                            legacyBehavior
-                                            href='/orders/orders'
-                                        >
-                                            <a className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'>
-                                                Siparişler{" "}
-                                            </a>
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link
-                                            legacyBehavior
-                                            href='/orders/packages'
-                                        >
-                                            <a className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'>
-                                                Paketler
-                                            </a>
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link
-                                            legacyBehavior
-                                            href='/orders/my-brands'
-                                        >
-                                            <a className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'>
-                                                Markalarım{" "}
-                                            </a>
-                                        </Link>
-                                    </li>
+                                    {navItems.map(({ href, label }) => (
+                                        <li key={href}>
+                                            <Link
+                                                href={href}
+                                                legacyBehavior
+                                            >
+                                                <a
+                                                    className={clsx(
+                                                        "p-2 rounded-lg transition-all",
+                                                        pathname === href
+                                                            ? "bg-gray-200 dark:bg-gray-800 text-gray-600 font-semibold"
+                                                            : "text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                                                    )}
+                                                >
+                                                    {label}
+                                                </a>
+                                            </Link>
+                                        </li>
+                                    ))}
                                 </ul>
                             </div>
                         </div>

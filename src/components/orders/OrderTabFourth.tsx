@@ -43,30 +43,27 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
         if (!token) return;
 
         try {
-            // const preferencesData = {
-            //     preferences: {
-            //         creatorGender: data.preferences.creatorGender,
-            //         minCreatorAge: minAge,
-            //         maxCreatorAge: maxAge,
-            //         areaOfInterest: data.preferences.areaOfInterest || [],
-            //         contentType: data.preferences.contentType || [],
-            //         addressDetails: data.preferences?.addressDetails ?? {
-            //             country: "",
-            //             state: "",
-            //             district: "",
-            //             neighborhood: "",
-            //             fullAddress: "",
-            //         },
-            //     },
-            // };
+            const preferencesData = {
+                preferences: {
+                    creatorGender: data.preferences.creatorGender,
+                    minCreatorAge: minAge,
+                    maxCreatorAge: maxAge,
+                    areaOfInterest: data.preferences.areaOfInterest || [],
+                    contentType: data.preferences.contentType || [],
+                    addressDetails: data.preferences?.addressDetails ?? {
+                        country: "",
+                        state: "",
+                        district: "",
+                        neighborhood: "",
+                        fullAddress: "",
+                    },
+                },
+            };
 
-            // dispatch(setOrderFormData(preferencesData));
+            dispatch(setOrderFormData(preferencesData));
 
-            // const res = await dispatch(
-            //     createOrder({ token, selectedFiles })
-            // ).unwrap();
-            // setSelectedFiles([]);
-            // toast.success(res.message);
+            await dispatch(createOrder({ token, selectedFiles })).unwrap();
+            setSelectedFiles([]);
             setIsOrderSuccessFullyPlaced(true);
         } catch (error: any) {
             setIsOrderFailed(true);
