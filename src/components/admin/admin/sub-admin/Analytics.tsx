@@ -82,7 +82,7 @@ const Analytics: React.FC = () => {
                     </AnalyticsDataCard>
                     <AnalyticsDataCard
                         title='Total Sales'
-                        count={1}
+                        count={sales?.totalSales ?? 0}
                     >
                         <SalesCardChart
                             salesByMonth={sales?.totalSalesByMonth ?? []}
