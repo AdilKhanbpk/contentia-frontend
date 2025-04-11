@@ -59,7 +59,9 @@ const Analytics: React.FC = () => {
     return (
         <>
             <div>
+                {/* FOUR CARDS */}
                 <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
+                    {/* TOTAL CUSTOMERS */}
                     <AnalyticsDataCard
                         title='Total Customers'
                         count={creators?.totalCreatorsCount ?? 0}
@@ -71,6 +73,8 @@ const Analytics: React.FC = () => {
                             }
                         />
                     </AnalyticsDataCard>
+
+                    {/* TOTAL ORDERS */}
                     <AnalyticsDataCard
                         title='Total Order'
                         count={orders?.totalOrdersCount ?? 0}
@@ -80,6 +84,8 @@ const Analytics: React.FC = () => {
                             ordersByMonth={orders?.totalOrdersByMonth ?? []}
                         />
                     </AnalyticsDataCard>
+
+                    {/* TOTAL SALES */}
                     <AnalyticsDataCard
                         title='Total Sales'
                         count={sales?.totalSales ?? 0}
@@ -88,6 +94,8 @@ const Analytics: React.FC = () => {
                             salesByMonth={sales?.totalSalesByMonth ?? []}
                         />
                     </AnalyticsDataCard>
+
+                    {/* TOTAL CREATORS */}
                     <AnalyticsDataCard
                         title='Total Creators'
                         count={customers?.totalCustomersCount ?? 0}
@@ -101,18 +109,21 @@ const Analytics: React.FC = () => {
                     </AnalyticsDataCard>
                 </div>
 
+                {/* ORDER STATUS AND BY CATEGORY */}
                 <div className='my-4'>
                     {orders && <CircleChart orders={orders}></CircleChart>}
                 </div>
 
-                {/* <div className='my-4 flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4'>
+                <div className='my-4 flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4'>
                     <div className='w-full lg:w-3/5 bg-white shadow-md rounded-lg'>
                         <IncomeOverview />
                     </div>
                     <div className='w-full lg:w-2/5 bg-white shadow-md rounded-lg'>
                         <PageViews />
                     </div>
-                </div> */}
+                </div>
+
+                {/* FOUR CARDS  */}
                 <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
                     <div className='col-span-1'>
                         <AnalyticEcommerce
@@ -139,10 +150,11 @@ const Analytics: React.FC = () => {
                         />
                     </div>
                 </div>
+
                 <div className='my-4'>
                     <div className='flex flex-col lg:flex-row gap-4'>
                         {/* Unique Visitor Card */}
-                        {/* <div className='flex-1'>
+                        <div className='flex-1'>
                             <div className='flex justify-between items-center mb-2'>
                                 <h5 className='text-lg font-semibold'>
                                     Unique Visitor
@@ -173,10 +185,10 @@ const Analytics: React.FC = () => {
                             <div className='bg-white shadow-lg rounded-lg p-4 mt-2'>
                                 <IncomeAreaChart slot={slot} />
                             </div>
-                        </div> */}
+                        </div>
 
                         {/* Income Overview Card */}
-                        {/* <div className='flex-1 lg:w-1/3'>
+                        <div className='flex-1 lg:w-1/3'>
                             <div className='flex justify-between items-center mb-2'>
                                 <h5 className='text-lg font-semibold'>
                                     Income Overview
@@ -191,10 +203,11 @@ const Analytics: React.FC = () => {
                                 </div>
                                 <MonthlyBarChart />
                             </div>
-                        </div> */}
+                        </div>
                     </div>
                 </div>
 
+                {/* Recent Orders and Reports Section */}
                 <div className='flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4 my-4'>
                     {/* Recent Orders Section */}
                     <div className='w-full lg:w-3/5'>
