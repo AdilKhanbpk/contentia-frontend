@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
@@ -9,6 +9,7 @@ import { logoutUser, selectUser } from "@/store/features/auth/loginSlice";
 import {
     fetchProfile,
     selectProfileUser,
+    // clearProfile, // optionally import this if created
 } from "@/store/features/profile/profileSlice";
 import { AppDispatch } from "@/store/store";
 import { Dropdown } from "./AdminNavbar";
@@ -24,32 +25,23 @@ import { IoLogOut } from "react-icons/io5";
 import clsx from "clsx";
 import { useTokenContext } from "@/context/TokenCheckingContext";
 
-const navItems = [
-    { href: "/orders", label: "Ana Sayfa" },
-    { href: "/orders/profile", label: "Profil" },
-    { href: "/orders/orders", label: "Siparişler" },
-    { href: "/orders/packages", label: "Paketler" },
-    { href: "/orders/my-brands", label: "Markalarım" },
-];
-
 export default function Navbar() {
     const dispatch = useDispatch<AppDispatch>();
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const router = useRouter();
     const pathname = usePathname();
-
     const { t } = useTranslation();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const user = useSelector(selectProfileUser);
     const { token } = useTokenContext();
     if (!token) return null;
 
-    const toggleSidebar = () => {
-        setSidebarOpen(!isSidebarOpen);
-    };
+    const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
+
     const handleLogout = () => {
         dispatch(logoutUser(token))
             .then(() => {
+                // dispatch(clearProfile()); // optional if implemented
                 toast.success("Logout successful");
                 router.push("/contentiaio/authentication");
             })
@@ -62,10 +54,22 @@ export default function Navbar() {
         if (token) {
             dispatch(fetchProfile(token));
         }
-    }, [dispatch]);
+    }, [dispatch, token]);
+
+    const navItems = useMemo(
+        () => [
+            { href: "/orders", label: "Ana Sayfa" },
+            { href: "/orders/profile", label: "Profil" },
+            { href: "/orders/orders", label: "Siparişler" },
+            { href: "/orders/packages", label: "Paketler" },
+            { href: "/orders/my-brands", label: "Markalarım" },
+        ],
+        []
+    );
+
     return (
         <>
-            <nav className='fixed top-0 z-50 w-full bg-white border-b border-gray-200  dark:bg-gray-800 dark:border-gray-700 px-2 sm:px-4 md:px-6 lg:px-10'>
+            <nav className='fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700 px-2 sm:px-4 md:px-6 lg:px-10'>
                 <div className='px-3 py-3 lg:px-5 lg:pl-3'>
                     <a
                         href='/'
@@ -85,13 +89,14 @@ export default function Navbar() {
                                 type='button'
                                 onClick={toggleSidebar}
                                 className='inline-flex items-center p-2 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600'
+                                aria-controls='sidebar'
+                                aria-expanded={isSidebarOpen}
                             >
                                 <span className='sr-only'>
                                     {t("open_sidebar")}
                                 </span>
                                 <svg
                                     className='w-6 h-6'
-                                    aria-hidden='true'
                                     fill='currentColor'
                                     viewBox='0 0 20 20'
                                     xmlns='http://www.w3.org/2000/svg'
@@ -104,7 +109,6 @@ export default function Navbar() {
                                 </svg>
                             </button>
 
-                            {/* Brand and Menu Links */}
                             <div className='flex items-center space-x-8 ms-1'>
                                 <div className='flex items-center space-x-2'>
                                     <Image
@@ -114,10 +118,8 @@ export default function Navbar() {
                                         width={32}
                                         className='rounded-full hidden sm:block'
                                     />
-                                    <BrandNames></BrandNames>
+                                    <BrandNames />
                                 </div>
-
-                                {/* Navigation Links */}
                                 <ul className='hidden lg:flex space-x-4 font-medium'>
                                     {navItems.map(({ href, label }) => (
                                         <li key={href}>
@@ -129,7 +131,7 @@ export default function Navbar() {
                                                     className={clsx(
                                                         "p-2 rounded-lg transition-all",
                                                         pathname === href
-                                                            ? "bg-gray-200 dark:bg-gray-800 text-gray-600 font-semibold"
+                                                            ? "BlueBg dark:bg-gray-800 text-white font-semibold"
                                                             : "text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                                                     )}
                                                 >
@@ -142,20 +144,16 @@ export default function Navbar() {
                             </div>
                         </div>
 
-                        {/* Right Section with User Avatar */}
                         <div className='flex items-center space-x-4'>
                             <div className='relative'>
                                 <button
                                     type='button'
                                     className='flex items-center text-sm rounded-full focus:outline-none'
                                     id='user-menu-button'
-                                    aria-expanded='false'
-                                    aria-haspopup='true'
                                 >
                                     <span className='sr-only'>
                                         Open user menu
                                     </span>
-                                    {/* Profile Dropdown */}
                                     <Dropdown
                                         isOpen={isProfileOpen}
                                         setIsOpen={setIsProfileOpen}
@@ -218,71 +216,36 @@ export default function Navbar() {
                 </div>
             </nav>
 
-            {/* Sidebar */}
+            {/* Sidebar for small screens */}
             <aside
+                id='sidebar'
                 className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${
                     isSidebarOpen ? "translate-x-0" : "-translate-x-full"
                 } bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700 lg:hidden`}
                 aria-label='Sidebar'
             >
-                <div className='h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800'>
+                <div className='h-full px-3 pb-4 overflow-y-auto'>
                     <ul className='space-y-2 font-medium'>
-                        <li>
-                            <a
-                                href='#'
-                                className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'
-                            >
-                                <span className='ms-3'>{t("home")}</span>
-                            </a>
-                        </li>
-                        <li>
-                            <Link
-                                legacyBehavior
-                                href='/orders/profile'
-                            >
-                                <a className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'>
-                                    <span className='flex-1 ms-3 whitespace-nowrap'>
-                                        {t("profile")}
-                                    </span>
-                                </a>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                legacyBehavior
-                                href='/orders/orders'
-                            >
-                                <a className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'>
-                                    <span className='flex-1 ms-3 whitespace-nowrap'>
-                                        {t("orders")}
-                                    </span>
-                                </a>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                legacyBehavior
-                                href='/orders/packages'
-                            >
-                                <a className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'>
-                                    <span className='flex-1 ms-3 whitespace-nowrap'>
-                                        {t("packages")}
-                                    </span>
-                                </a>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                legacyBehavior
-                                href='/orders/my-brands'
-                            >
-                                <a className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'>
-                                    <span className='flex-1 ms-3 whitespace-nowrap'>
-                                        {t("my_brands")}
-                                    </span>
-                                </a>
-                            </Link>
-                        </li>
+                        {navItems.map(({ href, label }) => (
+                            <li key={href}>
+                                <Link
+                                    href={href}
+                                    legacyBehavior
+                                >
+                                    <a
+                                        onClick={() => setSidebarOpen(false)}
+                                        className={clsx(
+                                            "flex items-center p-2 rounded-lg",
+                                            pathname === href
+                                                ? "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white"
+                                                : "text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        )}
+                                    >
+                                        <span className='ms-3'>{label}</span>
+                                    </a>
+                                </Link>
+                            </li>
+                        ))}
                     </ul>
                 </div>
             </aside>
