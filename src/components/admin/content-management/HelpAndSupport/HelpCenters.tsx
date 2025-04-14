@@ -15,7 +15,7 @@ import { ModalCenters } from "./NewHelpSupportModal";
 import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import { toast } from "react-toastify";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const HelpCenters: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -24,11 +24,13 @@ const HelpCenters: React.FC = () => {
     );
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { token } = useTokenContext();
+    if (!token) return null;
 
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-        dispatch(fetchHelpSupports(token));
+        if (token) {
+            dispatch(fetchHelpSupports(token));
+        }
     }, [dispatch]);
 
     const exportToCSV = () => {
@@ -43,8 +45,6 @@ const HelpCenters: React.FC = () => {
     };
 
     const handleDelete = (id: string) => {
-        const token = getAccessToken();
-        if (!token) return;
         dispatch(deleteHelpSupport({ helpSupportId: id, token }));
     };
 

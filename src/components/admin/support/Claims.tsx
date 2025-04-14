@@ -16,7 +16,7 @@ import {
     updateAdminClaim,
     fetchAdminClaimById,
 } from "@/store/features/admin/claimSlice";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 export interface Claim {
     id?: string;
@@ -89,28 +89,25 @@ const Claims: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalTwoOpen, setIsModalTwoOpen] = useState(false);
     const [currentClaim, setCurrentClaim] = useState<Claim | null>(null);
-
+    const { token } = useTokenContext();
+    if (!token) return null;
     const { data: claims, loading } = useSelector(
         (state: RootState) => state.claim
     );
 
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-
-        dispatch(fetchAdminClaims(token))
-            .then(() => {
-                toast.success("Claims fetched successfully!");
-            })
-            .catch((error) => {
-                toast.error("Failed to fetch claims. Please try again.");
-            });
+        if (token) {
+            dispatch(fetchAdminClaims(token))
+                .then(() => {
+                    toast.success("Claims fetched successfully!");
+                })
+                .catch((error) => {
+                    toast.error("Failed to fetch claims. Please try again.");
+                });
+        }
     }, [dispatch]);
 
     const handleView = (id: string) => {
-        const token = getAccessToken();
-        if (!token) return;
-
         dispatch(fetchAdminClaimById({ id, token }))
             .then((response) => {
                 if (response.payload) {
@@ -127,8 +124,6 @@ const Claims: React.FC = () => {
     };
 
     const handleApprove = (id: string) => {
-        const token = getAccessToken();
-        if (!token) return;
         dispatch(
             updateAdminClaim({
                 claimId: id,
@@ -148,8 +143,6 @@ const Claims: React.FC = () => {
     };
 
     const handleReject = (id: string) => {
-        const token = getAccessToken();
-        if (!token) return;
         dispatch(
             updateAdminClaim({
                 claimId: id,

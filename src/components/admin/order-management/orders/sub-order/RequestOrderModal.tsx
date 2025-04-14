@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { getAppliedCreators } from "@/store/features/admin/ordersSlice";
 import { CreatorInterface, OrderInterface } from "@/types/interfaces";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface RequestModalProps {
     order: OrderInterface | null;
@@ -25,12 +25,10 @@ const RequestModal: React.FC<RequestModalProps> = ({
     const dispatch = useDispatch<AppDispatch>();
     const [searchTerm, setSearchTerm] = useState("");
     const { currentOrder } = useSelector((state: RootState) => state.orders);
-
+    const { token } = useTokenContext();
+    if (!token) return null;
     useEffect(() => {
         const fetchAppliedCreators = async () => {
-            const token = getAccessToken();
-            if (!token) return;
-
             if (!order?._id) {
                 console.error("Missing  order ID");
                 return;

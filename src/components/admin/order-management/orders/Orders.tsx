@@ -34,7 +34,7 @@ import { toast } from "react-toastify";
 import { OrderInterface } from "@/types/interfaces";
 import { fetchMyBrands } from "@/store/features/profile/brandSlice";
 import ViewModal from "./sub-order/ViewOrderModal";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface SearchBarProps {
     onSearch: (value: string) => void;
@@ -132,21 +132,20 @@ const Orders: React.FC = () => {
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
     const [isModalViewOpen, setIsViewModalOpen] = useState(false);
     const [isModalRequestsOpen, setIsModalRequestsOpen] = useState(false);
-
+    const { token } = useTokenContext();
+    if (!token) return null;
     useEffect(() => {
         const fetchOrdersData = async () => {
-            const token = getAccessToken();
-            if (!token) return;
-            try {
-                const res = await dispatch(fetchOrders(token)).unwrap();
-                toast.success(res.message);
-            } catch (error: any) {
-                toast.error(error.message);
+            if (token) {
+                try {
+                    const res = await dispatch(fetchOrders(token)).unwrap();
+                    toast.success(res.message);
+                } catch (error: any) {
+                    toast.error(error.message);
+                }
             }
         };
         const fetchBrands = async () => {
-            const token = getAccessToken();
-            if (!token) return;
             try {
                 const res = await dispatch(fetchMyBrands(token)).unwrap();
                 toast.success(res.message);
@@ -160,9 +159,6 @@ const Orders: React.FC = () => {
 
     const handleDelete = useCallback(
         async (id: string) => {
-            const token = getAccessToken();
-            if (!token) return;
-
             try {
                 await dispatch(deleteOrder({ orderId: id, token })).unwrap();
                 toast.success("Order deleted successfully!");
@@ -175,9 +171,6 @@ const Orders: React.FC = () => {
 
     const handleMarkTheOrderAsCompleted = useCallback(
         async (id: string) => {
-            const token = getAccessToken();
-            if (!token) return;
-
             try {
                 await dispatch(
                     markTheOrderAsCompleted({ orderId: id, token })
@@ -192,9 +185,6 @@ const Orders: React.FC = () => {
 
     const handleMarkTheOrderAsRejected = useCallback(
         async (id: string) => {
-            const token = getAccessToken();
-            if (!token) return;
-
             try {
                 await dispatch(
                     markTheOrderAsRejected({ orderId: id, token })
@@ -209,9 +199,6 @@ const Orders: React.FC = () => {
 
     const handleView = useCallback(
         async (id: string) => {
-            const token = getAccessToken();
-            if (!token) return;
-
             try {
                 await dispatch(fetchOrderById({ orderId: id, token })).unwrap();
                 toast.success("Order details fetched successfully!");
@@ -225,9 +212,6 @@ const Orders: React.FC = () => {
 
     const handleEdit = useCallback(
         async (id: string) => {
-            const token = getAccessToken();
-            if (!token) return;
-
             try {
                 await dispatch(fetchOrderById({ orderId: id, token })).unwrap();
                 setIsModalEditOpen(true);
@@ -241,9 +225,6 @@ const Orders: React.FC = () => {
 
     const handleRequest = useCallback(
         async (id: string) => {
-            const token = getAccessToken();
-            if (!token) return;
-
             try {
                 await dispatch(fetchOrderById({ orderId: id, token })).unwrap();
                 setIsModalRequestsOpen(true);
@@ -259,9 +240,6 @@ const Orders: React.FC = () => {
 
     const handleApproveCreator = useCallback(
         async (orderId: string, creatorId: string) => {
-            const token = getAccessToken();
-            if (!token) return;
-
             try {
                 await dispatch(
                     approveCreator({ orderId, creatorId, token })
@@ -276,9 +254,6 @@ const Orders: React.FC = () => {
 
     const handleRejectCreator = useCallback(
         async (orderId: string, creatorId: string) => {
-            const token = getAccessToken();
-            if (!token) return;
-
             try {
                 await dispatch(
                     rejectCreator({ orderId, creatorId, token })

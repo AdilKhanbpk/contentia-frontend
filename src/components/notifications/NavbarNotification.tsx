@@ -1,10 +1,10 @@
+import { useTokenContext } from "@/context/TokenCheckingContext";
 import {
     markNotificationAsRead,
     NotificationInterface,
     selectNotificationLoading,
 } from "@/store/features/admin/notificationSlice";
 import { AppDispatch } from "@/store/store";
-import { getAccessToken } from "@/utils/checkToken";
 import React, { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -18,6 +18,9 @@ function NavbarNotification({ user, notifications }: NavbarNotificationProps) {
     const loading = useSelector(selectNotificationLoading);
     const dispatch = useDispatch<AppDispatch>();
 
+    const { token } = useTokenContext();
+    if (!token) return null;
+
     const filteredNotifications = useMemo(() => {
         if (tab === "unread") {
             return notifications.filter((n) => !n.readBy?.includes(user?._id));
@@ -26,8 +29,6 @@ function NavbarNotification({ user, notifications }: NavbarNotificationProps) {
     }, [tab, notifications, user?._id]);
 
     const handleMarkAsRead = async (notification: NotificationInterface) => {
-        const token = getAccessToken();
-        if (!token) return;
         const isUnread = !notification.readBy?.includes(user?._id);
 
         if (isUnread && user?._id) {

@@ -8,8 +8,8 @@ import {
     updateEmailNotification,
     fetchEmailNotifications,
 } from "@/store/features/admin/emailNotificationSlice";
-import { getAccessToken } from "@/utils/checkToken";
 import { EmailNotificationInterface } from "@/types/interfaces";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -39,6 +39,8 @@ export default function EditEmailNotification({
 
     const emailBody = watch("emailContent", emailNotification.emailContent);
     const userType = watch("userType", emailNotification.userType);
+    const { token } = useTokenContext();
+    if (!token) return null;
 
     useEffect(() => {
         if (emailNotification) {
@@ -47,9 +49,6 @@ export default function EditEmailNotification({
     }, [emailNotification, reset]);
 
     const onSubmit = async (data: any) => {
-        const token = getAccessToken();
-        if (!token) return;
-
         const usersArray = Array.isArray(data.users)
             ? data.users
             : typeof data.users === "string"

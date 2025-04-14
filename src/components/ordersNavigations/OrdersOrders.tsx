@@ -7,10 +7,10 @@ import ModelRevision from "./sub-profile/ModelRevision";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { fetchOrders, Order } from "@/store/features/profile/orderSlice";
-import { getAccessToken } from "@/utils/checkToken";
 import ModelClaim from "./sub-profile/ModelClaim";
 import EditOrder from "./sub-profile/EditOrder";
 import ViewOrderDetails from "./sub-profile/ModelDetails";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 export default function OrdersOrders() {
     const dispatch = useDispatch<AppDispatch>();
@@ -22,11 +22,13 @@ export default function OrdersOrders() {
     const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [selectedFilter, setSelectedFilter] = useState<string>("all");
+    const { token } = useTokenContext();
+    if (!token) return null;
 
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-        dispatch(fetchOrders(token));
+        if (token) {
+            dispatch(fetchOrders(token));
+        }
     }, [dispatch]);
 
     const openEditModal = (order: Order) => {

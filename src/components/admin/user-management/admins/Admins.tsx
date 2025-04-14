@@ -21,7 +21,7 @@ import { Customer } from "@/types/interfaces";
 import ModalNew from "./sub-admin/ModalNew";
 import ModalView from "./sub-admin/ModalView";
 import ModalEdit from "./sub-admin/ModalEdit";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const SearchBar = memo(
     ({ onSearch }: { onSearch: (value: string) => void }) => (
@@ -78,7 +78,8 @@ const Admins: React.FC = () => {
     const { adminData: customers = [], loading } = useSelector(
         (state: RootState) => state.adminCustomers
     );
-
+    const { token } = useTokenContext();
+    if (!token) return null;
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
@@ -87,9 +88,6 @@ const Admins: React.FC = () => {
 
     const handleDelete = useCallback(
         (id: string) => {
-            const token = getAccessToken();
-            if (!token) return;
-
             dispatch(deleteAdminCustomer({ customerId: id, token }))
                 .unwrap()
                 .then(() => {
@@ -113,8 +111,6 @@ const Admins: React.FC = () => {
     };
 
     const handleCreate = async (customerData: any) => {
-        const token = getAccessToken();
-        if (!token) return;
         if (!customerData || Object.keys(customerData).length === 0) {
             toast.error("Admin data is missing or empty.");
             return;
@@ -133,9 +129,6 @@ const Admins: React.FC = () => {
     };
 
     const handleUpdate = async (customerData: Customer) => {
-        const token = getAccessToken();
-        if (!token) return;
-
         const customerId = customerData._id;
         const dataToUpdate = {
             fullName: customerData.fullName ?? "",
@@ -204,10 +197,9 @@ const Admins: React.FC = () => {
     }, [customers]);
 
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-
-        dispatch(fetchAdmins(token));
+        if (token) {
+            dispatch(fetchAdmins(token));
+        }
     }, [dispatch]);
 
     const columns = React.useMemo(

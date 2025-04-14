@@ -7,6 +7,7 @@ import { AppDispatch } from "@/store/store";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface IFormInput {
     email: string;
@@ -24,10 +25,14 @@ const LoginForm = () => {
     } = useForm<IFormInput>();
     const dispatch = useDispatch<AppDispatch>();
     const { loading } = useSelector((state: RootState) => state.login);
+    const { setToken } = useTokenContext();
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         try {
             const response = await dispatch(loginUser(data)).unwrap();
+            if (response.token) {
+                setToken(response.token);
+            }
             const admin = response.user.role === "admin";
             const customer = response.user.role === "user";
 

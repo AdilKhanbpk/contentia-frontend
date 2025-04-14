@@ -8,7 +8,7 @@ import { AppDispatch } from "@/store/store"; // Adjust import path as needed
 import { createBlog } from "@/store/features/admin/blogSlice"; // Adjust import path as needed
 import { toast } from "react-toastify"; // Assuming you're using react-toastify for notifications
 import { BlogInterface } from "@/types/interfaces";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -19,6 +19,8 @@ export default function NewBlogs() {
     );
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const { token } = useTokenContext();
+    if (!token) return null;
     const {
         register,
         handleSubmit,
@@ -30,8 +32,6 @@ export default function NewBlogs() {
     const onSubmit = async (data: BlogInterface) => {
         try {
             setIsSubmitting(true);
-            const token = getAccessToken();
-            if (!token) return;
 
             // Create FormData for file upload
             const formData = new FormData();

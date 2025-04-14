@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { Claim, updateAdminClaim } from "@/store/features/admin/claimSlice";
 import { toast } from "react-toastify";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface ModalTwoProps {
     claim: Claim | null;
@@ -22,10 +22,10 @@ export default function ModalTwo({ claim }: ModalTwoProps) {
     } = useForm<Pick<Claim, "claimContent">>({
         defaultValues: { claimContent: claim?.claimContent || "" },
     });
+    const { token } = useTokenContext();
+    if (!token) return null;
 
     const onSubmit: SubmitHandler<Pick<Claim, "claimContent">> = (data) => {
-        const token = getAccessToken();
-        if (!token) return;
         if (claim?.id) {
             setLoading(true); // Set loading to true before the dispatch
             dispatch(

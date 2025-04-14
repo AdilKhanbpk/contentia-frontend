@@ -4,7 +4,6 @@ import { AppDispatch } from "@/store/store";
 import { useForm, Controller, ControllerRenderProps } from "react-hook-form";
 import { CreatorInterface } from "@/types/interfaces";
 import { toast } from "react-toastify";
-import { getAccessToken } from "@/utils/checkToken";
 import {
     fetchAdminCreators,
     updateAdminCreator,
@@ -19,6 +18,7 @@ import {
     FormDescription,
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface FourthTabProps {
     editCreatorForm: CreatorInterface | null;
@@ -27,7 +27,8 @@ interface FourthTabProps {
 
 const FourthTab: React.FC<FourthTabProps> = ({ editCreatorForm }) => {
     const dispatch = useDispatch<AppDispatch>();
-
+    const { token } = useTokenContext();
+    if (!token) return null;
     const form = useForm({
         defaultValues: {
             isNotificationOn:
@@ -52,9 +53,6 @@ const FourthTab: React.FC<FourthTabProps> = ({ editCreatorForm }) => {
                 );
                 return;
             }
-
-            const token = getAccessToken();
-            if (!token) return;
 
             try {
                 const response = await dispatch(

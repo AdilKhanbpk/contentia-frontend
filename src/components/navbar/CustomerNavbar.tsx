@@ -12,7 +12,6 @@ import {
 } from "@/store/features/profile/profileSlice";
 import { AppDispatch } from "@/store/store";
 import { Dropdown } from "./AdminNavbar";
-import { getAccessToken } from "@/utils/checkToken";
 import { toast } from "react-toastify";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -23,6 +22,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { IoLogOut } from "react-icons/io5";
 import clsx from "clsx";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const navItems = [
     { href: "/orders", label: "Ana Sayfa" },
@@ -41,12 +41,14 @@ export default function Navbar() {
     const { t } = useTranslation();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const user = useSelector(selectProfileUser);
+    const { token } = useTokenContext();
+    if (!token) return null;
 
     const toggleSidebar = () => {
         setSidebarOpen(!isSidebarOpen);
     };
     const handleLogout = () => {
-        dispatch(logoutUser())
+        dispatch(logoutUser(token))
             .then(() => {
                 toast.success("Logout successful");
                 router.push("/contentiaio/authentication");
@@ -57,10 +59,9 @@ export default function Navbar() {
     };
 
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-
-        dispatch(fetchProfile(token));
+        if (token) {
+            dispatch(fetchProfile(token));
+        }
     }, [dispatch]);
     return (
         <>

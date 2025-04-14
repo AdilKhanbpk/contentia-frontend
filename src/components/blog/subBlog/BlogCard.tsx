@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store/store";
 import { fetchBlogs } from "@/store/features/admin/blogSlice";
 import { BlogInterface } from "@/types/interfaces";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface BlogCardProps {
     selectedCategory: string;
@@ -16,12 +16,13 @@ interface BlogCardProps {
 const BlogCard: React.FC<BlogCardProps> = ({ selectedCategory }) => {
     const dispatch = useDispatch<AppDispatch>();
     const { blogs } = useSelector((state: RootState) => state.blog);
+    const { token } = useTokenContext();
+    if (!token) return null;
 
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-
-        dispatch(fetchBlogs(token));
+        if (token) {
+            dispatch(fetchBlogs(token));
+        }
     }, [dispatch]);
 
     const filteredBlogs =

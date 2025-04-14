@@ -17,7 +17,6 @@ import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import { toast } from "react-toastify";
 import { TermsInterface } from "@/types/interfaces";
-import { getAccessToken } from "@/utils/checkToken";
 import CustomModelAdmin from "../../../modal/CustomModelAdmin";
 
 import {
@@ -29,6 +28,7 @@ import {
 import { CreateTerms } from "./CreateTerms";
 import { EditTerms } from "./EditTerms";
 import { ViewTerms } from "./ViewTerms";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const SearchBar = memo(
     ({ onSearch }: { onSearch: (value: string) => void }) => (
@@ -92,12 +92,11 @@ const TermsConditions: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
+    const { token } = useTokenContext();
+    if (!token) return null;
 
     const handleDelete = useCallback(
         (id: string) => {
-            const token = getAccessToken();
-            if (!token) return;
-
             dispatch(deleteTerm({ termId: id, token }))
                 .unwrap()
                 .then(() => {
@@ -113,15 +112,11 @@ const TermsConditions: React.FC = () => {
     );
 
     const handleView = async (id: string) => {
-        const token = getAccessToken();
-        if (!token) return;
         await dispatch(fetchTermById({ termId: id, token })).unwrap();
         setIsModalViewOpen(true);
     };
 
     const handleUpdate = async (termData: TermsInterface) => {
-        const token = getAccessToken();
-        if (!token) return;
         if (!termData._id) {
             toast.error("Term ID is missing!");
             return;
@@ -145,8 +140,6 @@ const TermsConditions: React.FC = () => {
     };
 
     const handleEdit = async (id: string) => {
-        const token = getAccessToken();
-        if (!token) return;
         await dispatch(fetchTermById({ termId: id, token })).unwrap();
         setIsModalEditOpen(true);
     };
@@ -172,8 +165,6 @@ const TermsConditions: React.FC = () => {
     }, [terms]);
 
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
         dispatch(fetchTerms(token));
     }, [dispatch]);
 

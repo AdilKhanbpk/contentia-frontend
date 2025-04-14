@@ -8,10 +8,10 @@ import { AppDispatch, RootState } from "@/store/store";
 import { fetchFaqs } from "@/store/features/admin/faqSlice";
 import { fetchHowItWorks } from "@/store/features/admin/howWorkSlice";
 import { toast } from "react-toastify";
-import { getAccessToken } from "@/utils/checkToken";
 import DOMPurify from "dompurify";
 import SmallCards from "../contentiaio/sections/SmallCards";
 import WhyContentia from "../contentiaio/sections/WhyContentia";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 export default function HowItWorks() {
     const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -19,15 +19,14 @@ export default function HowItWorks() {
     const { faqs } = useSelector((state: RootState) => state.faq);
     const { sections } = useSelector((state: RootState) => state.howWork);
     const { t } = useTranslation();
+    const { token } = useTokenContext();
+    if (!token) return null;
 
     const toggleFAQ = (index: number) => {
         setOpenIndex(openIndex === index ? null : index);
     };
 
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-
         const fetchData = async () => {
             try {
                 await dispatch(fetchFaqs(token)).unwrap();
@@ -43,8 +42,9 @@ export default function HowItWorks() {
                 toast.error("Failed to fetch data");
             }
         };
-
-        fetchData();
+        if (token) {
+            fetchData();
+        }
     }, [dispatch]);
 
     const isLoading = !sections.length || !faqs.length;

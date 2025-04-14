@@ -11,8 +11,8 @@ import {
     selectOrderIsLoading,
 } from "@/store/features/profile/orderSlice";
 import { useFileContext } from "@/context/FileContext";
-import { getAccessToken } from "@/utils/checkToken";
 import CustomModalAdmin from "@/components/modal/CustomModelAdmin";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
     setActiveTab,
@@ -36,12 +36,11 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
     const [showTooltipThree, setShowTooltipThree] = useState(false);
     const { register, handleSubmit, watch } = useForm();
 
+    const { token } = useTokenContext();
+    if (!token) return null;
     const contentTypes = watch("preferences.contentType") || [];
 
     const onSubmit = async (data: any) => {
-        const token = getAccessToken();
-        if (!token) return;
-
         try {
             const preferencesData = {
                 preferences: {

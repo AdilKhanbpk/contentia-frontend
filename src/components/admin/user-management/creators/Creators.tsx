@@ -18,7 +18,7 @@ import { exportCsvFile } from "@/utils/exportCsvFile";
 import EditCreatorForm from "./sub-creator/EditCreatorForm";
 import { toast } from "react-toastify";
 import { CreatorInterface } from "@/types/interfaces";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const SearchBar = memo(
     ({ onSearch }: { onSearch: (value: string) => void }) => (
@@ -76,6 +76,8 @@ const Creators: React.FC = () => {
         (state: RootState) => state.adminCreators
     );
 
+    const { token } = useTokenContext();
+    if (!token) return null;
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
@@ -86,8 +88,6 @@ const Creators: React.FC = () => {
 
     const handleDelete = useCallback(
         (id: string) => {
-            const token = getAccessToken();
-            if (!token) return;
             dispatch(deleteAdminCreator({ creatorId: id, token }))
                 .unwrap()
                 .then(() => {
@@ -114,9 +114,6 @@ const Creators: React.FC = () => {
     };
 
     const handleCreate = async (creatorData: any) => {
-        const token = getAccessToken();
-        if (!token) return;
-
         const dataToUpdate = {
             fullName: creatorData.fullName ?? "",
             password: creatorData.password ?? "",
@@ -166,9 +163,6 @@ const Creators: React.FC = () => {
     };
 
     const handleUpdate = async (creatorData: any) => {
-        const token = getAccessToken();
-        if (!token) return;
-
         const creatorId = creatorData._id;
         const dataToUpdate = {
             fullName: creatorData.fullName ?? "",
@@ -335,10 +329,9 @@ const Creators: React.FC = () => {
     }, [creators]);
 
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-
-        dispatch(fetchAdminCreators(token));
+        if (!token) {
+            dispatch(fetchAdminCreators(token));
+        }
     }, [dispatch]);
 
     const columns = React.useMemo(

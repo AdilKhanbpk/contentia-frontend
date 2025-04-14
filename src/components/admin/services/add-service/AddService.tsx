@@ -8,7 +8,7 @@ import {
     updateAdditionalService,
 } from "@/store/features/admin/addPriceSlice";
 import { toast } from "react-toastify";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 type FormData = {
     editPrice: number;
@@ -32,18 +32,19 @@ const AddService: React.FC = () => {
         reset,
         formState: { isSubmitting },
     } = useForm<FormData>();
+    const { token } = useTokenContext();
+    if (!token) return null;
 
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-
-        dispatch(fetchAdditionalServices(token) as any)
-            .then(() => {
-                toast.success("Services fetched successfully!");
-            })
-            .catch((err: Error) => {
-                toast.error(err.message || "Failed to fetch services");
-            });
+        if (token) {
+            dispatch(fetchAdditionalServices(token) as any)
+                .then(() => {
+                    toast.success("Services fetched successfully!");
+                })
+                .catch((err: Error) => {
+                    toast.error(err.message || "Failed to fetch services");
+                });
+        }
     }, [dispatch]);
 
     useEffect(() => {
@@ -63,7 +64,6 @@ const AddService: React.FC = () => {
     }, [additionalService, reset]);
 
     const handleSaveService: SubmitHandler<FormData> = (data) => {
-        const token = getAccessToken();
         if (!token) return;
         if (additionalService) {
             const updatedService = {

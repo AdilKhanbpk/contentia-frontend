@@ -13,9 +13,9 @@ import {
     selectNotifications,
 } from "@/store/features/admin/notificationSlice";
 import { toast } from "react-toastify";
-import { getAccessToken } from "@/utils/checkToken";
 import ModalNew from "./sub-push/ModalNew";
 import CustomTable from "@/components/custom-table/CustomTable";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface TableActionsProps {
     onView: (id: string) => void;
@@ -27,16 +27,14 @@ const PushNotifications: React.FC = () => {
     const notifications = useSelector(selectNotifications);
     const currentNotification = useSelector(selectCurrentNotification);
     const loading = useSelector(selectNotificationLoading);
-
+    const { token } = useTokenContext();
+    if (!token) return null;
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
     const handleView = useCallback(
         async (id: string) => {
-            const token = getAccessToken();
-            if (!token) return;
-
             try {
                 await dispatch(
                     fetchNotificationById({
@@ -115,9 +113,9 @@ const PushNotifications: React.FC = () => {
     );
 
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-        dispatch(fetchNotifications(token));
+        if (token) {
+            dispatch(fetchNotifications(token));
+        }
     }, [dispatch]);
 
     return (

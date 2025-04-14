@@ -10,7 +10,7 @@ import {
 import { AppDispatch, RootState } from "@/store/store";
 import { PricePlan } from "@/store/features/admin/pricingSlice";
 import { toast } from "react-toastify";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const VideoIcon = () => <span className='text-3xl'>📹</span>;
 
@@ -26,6 +26,8 @@ type Plan = {
 
 const PricingPlans = () => {
     const dispatch = useDispatch<AppDispatch>();
+    const { token } = useTokenContext();
+    if (!token) return null;
     const {
         data: serverPlans,
         loading,
@@ -71,9 +73,6 @@ const PricingPlans = () => {
     };
 
     const handleSave = async (data: Plan) => {
-        const token = getAccessToken();
-        if (!token) return;
-
         const serverPlan = serverPlans?.find(
             (plan: PricePlan) => plan._id === editingPlan
         );

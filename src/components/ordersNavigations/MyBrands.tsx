@@ -13,7 +13,7 @@ import CustomModelAdmin from "../modal/CustomModelAdmin";
 import ModelBrand from "./sub-profile/ModelBrand";
 import EditableBrand from "./sub-profile/EditableBrand";
 import { toast } from "react-toastify";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 export default function MyBrands() {
     const dispatch = useDispatch<AppDispatch>();
@@ -21,19 +21,19 @@ export default function MyBrands() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingBrandId, setEditingBrandId] = useState<string | null>(null);
     const brands = useSelector((state: RootState) => state.brand.myBrands);
+    const { token } = useTokenContext();
+    if (!token) return null;
 
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-        dispatch(fetchMyBrands(token));
+        if (token) {
+            dispatch(fetchMyBrands(token));
+        }
     }, [dispatch]);
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
 
     const onSubmit = async (data: any) => {
-        const token = getAccessToken();
-        if (!token) return;
         if (!editingBrandId) return;
 
         const brandData = data.brands[editingBrandId];

@@ -1,9 +1,9 @@
+import { useTokenContext } from "@/context/TokenCheckingContext";
 import {
     PaymentInterface,
     uploadInvoiceImage,
 } from "@/store/features/admin/incomingPaymentSlice";
 import { AppDispatch, RootState } from "@/store/store";
-import { getAccessToken } from "@/utils/checkToken";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -26,10 +26,11 @@ export default function CreateInvoiceModal({
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useForm();
+    const { token } = useTokenContext();
+    if (!token) return null;
 
     const onSubmit = async (data: any) => {
-        const token = getAccessToken();
-        if (!token || !currentInvoice?.orderId) return;
+        if (!currentInvoice?.orderId) return;
 
         const formData = new FormData();
         formData.append("invoiceImage", data.invoiceImage[0]);

@@ -17,11 +17,11 @@ import {
     fetchNotifications,
     selectNotifications,
 } from "@/store/features/admin/notificationSlice";
-import { getAccessToken } from "@/utils/checkToken";
 import { toast } from "react-toastify";
 import { usePathname, useRouter } from "next/navigation";
 import { logoutUser } from "@/store/features/auth/loginSlice";
 import NavbarNotification from "../notifications/NavbarNotification";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const menuItems = [
     {
@@ -155,12 +155,13 @@ export default function AdminNavbar() {
     const [isEmailOpen, setIsEmailOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-
+    const { token } = useTokenContext();
+    if (!token) return null;
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-        dispatch(fetchProfile(token));
-        dispatch(fetchNotifications(token));
+        if (token) {
+            dispatch(fetchProfile(token));
+            dispatch(fetchNotifications(token));
+        }
     }, [dispatch]);
 
     useEffect(() => {
@@ -178,7 +179,7 @@ export default function AdminNavbar() {
     }, []);
 
     const handleLogout = () => {
-        dispatch(logoutUser())
+        dispatch(logoutUser(token))
             .then(() => {
                 toast.success("Logout successful");
                 router.push("/contentiaio/authentication");

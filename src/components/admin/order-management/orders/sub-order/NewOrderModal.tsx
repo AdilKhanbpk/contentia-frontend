@@ -7,7 +7,7 @@ import { createOrder } from "@/store/features/admin/ordersSlice";
 import { AppDispatch } from "@/store/store";
 import { toast } from "react-toastify";
 import { OrderInterface } from "@/types/interfaces";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 export default function NewModal() {
     const dispatch = useDispatch<AppDispatch>();
@@ -21,6 +21,8 @@ export default function NewModal() {
     const [creatorType, setCreatorType] = useState<boolean>(false);
     const [isShipping, setIsShipping] = useState<boolean>(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const { token } = useTokenContext();
+    if (!token) return null;
     const { register, handleSubmit, reset, control } = useForm<OrderInterface>({
         defaultValues: {
             additionalServices: {
@@ -47,8 +49,6 @@ export default function NewModal() {
 
     const onSubmitForm: SubmitHandler<OrderInterface> = async (data) => {
         setIsSubmitting(true);
-        const token = getAccessToken();
-        if (!token) return;
 
         const orderData = {
             orderOwner: data.orderOwner,

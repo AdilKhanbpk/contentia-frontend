@@ -8,7 +8,7 @@ import { fetchAdditionalServices } from "@/store/features/admin/addPriceSlice";
 import { setOrderFormData } from "@/store/features/profile/orderSlice";
 import { fetchPricePlans } from "@/store/features/admin/pricingSlice";
 import Image from "next/image";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 export default function TabFirst({
     setActiveTab,
@@ -16,6 +16,8 @@ export default function TabFirst({
     setActiveTab: (id: number) => void;
 }) {
     const dispatch = useDispatch();
+    const { token } = useTokenContext();
+    if (!token) return null;
 
     // State Management
     const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
@@ -50,10 +52,9 @@ export default function TabFirst({
     // Fetch data on component mount
     useEffect(() => {
         dispatch(fetchPricePlans() as any);
-        const token = getAccessToken();
-        if (!token) return;
-
-        dispatch(fetchAdditionalServices(token) as any);
+        if (token) {
+            dispatch(fetchAdditionalServices(token) as any);
+        }
     }, [dispatch]);
 
     const handleQuantityChange = (change: number) => {

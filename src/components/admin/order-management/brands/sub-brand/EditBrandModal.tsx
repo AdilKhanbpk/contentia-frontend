@@ -4,8 +4,7 @@ import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { Brand, updateBrand } from "@/store/features/profile/brandSlice";
 import { toast } from "react-toastify";
-import { getAccessToken } from "@/utils/checkToken";
-
+import { useTokenContext } from "@/context/TokenCheckingContext";
 interface BrandFormInputs {
     brandName: string;
     brandCategory: string;
@@ -31,7 +30,8 @@ const EditBrand: React.FC<EditBrandProps> = ({ brand }) => {
         setValue,
         formState: { errors },
     } = useForm<BrandFormInputs>();
-
+    const { token } = useTokenContext();
+    if (!token) return null;
     useEffect(() => {
         if (brand) {
             setValue("brandName", brand.brandName);
@@ -42,9 +42,6 @@ const EditBrand: React.FC<EditBrandProps> = ({ brand }) => {
     }, [brand, setValue]);
 
     const onSubmit: SubmitHandler<BrandFormInputs> = async (data) => {
-        const token = getAccessToken();
-        if (!token) return;
-
         setLoading(true);
         const formData = new FormData();
         formData.append("brandName", data.brandName);

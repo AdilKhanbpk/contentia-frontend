@@ -27,7 +27,7 @@ import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import { toast } from "react-toastify";
 import { BlogInterface } from "@/types/interfaces";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const SearchBar = memo(
     ({ onSearch }: { onSearch: (value: string) => void }) => (
@@ -92,11 +92,11 @@ const ManageBlogs: React.FC = () => {
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
 
+    const { token } = useTokenContext();
+    if (!token) return null;
+
     const handleDelete = useCallback(
         (id: string) => {
-            const token = getAccessToken();
-            if (!token) return;
-
             dispatch(deleteBlog({ blogId: id, token }))
                 .unwrap()
                 .then(() => {
@@ -112,15 +112,11 @@ const ManageBlogs: React.FC = () => {
     );
 
     const handleView = async (id: string) => {
-        const token = getAccessToken();
-        if (!token) return;
         await dispatch(fetchBlogById({ blogId: id, token })).unwrap();
         setIsModalViewOpen(true);
     };
 
     const handleUpdate = async (blogData: BlogInterface) => {
-        const token = getAccessToken();
-        if (!token) return;
         if (!blogData._id) {
             toast.error("Blog ID is missing!");
             return;
@@ -160,9 +156,6 @@ const ManageBlogs: React.FC = () => {
     };
 
     const handleCreate = async (blogData: BlogInterface) => {
-        const token = getAccessToken();
-        if (!token) return;
-
         if (!blogData || Object.keys(blogData).length === 0) {
             toast.error("Blog data is empty");
             return;
@@ -200,8 +193,6 @@ const ManageBlogs: React.FC = () => {
     };
 
     const handleEdit = async (id: string) => {
-        const token = getAccessToken();
-        if (!token) return;
         await dispatch(fetchBlogById({ blogId: id, token })).unwrap();
         setIsModalEditOpen(true);
     };
@@ -229,9 +220,9 @@ const ManageBlogs: React.FC = () => {
     }, [blogs]);
 
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-        dispatch(fetchBlogs(token));
+        if (token) {
+            dispatch(fetchBlogs(token));
+        }
     }, [dispatch]);
 
     const columns = React.useMemo(

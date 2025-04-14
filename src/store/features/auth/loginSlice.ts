@@ -56,7 +56,6 @@ export const signupUser = createAsyncThunk(
       const token = response.data.data.accessToken;
 
       localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("accessToken", token);
 
       return { user, token };
     } catch (error: any) {
@@ -67,12 +66,8 @@ export const signupUser = createAsyncThunk(
 
 export const logoutUser = createAsyncThunk(
   'logout/logoutUser',
-  async (_, { rejectWithValue }) => {
+  async (token: string, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('accessToken');
-      if (!token) {
-        throw new Error('No token found in localStorage');
-      }
       await axiosInstance.get('/users/logout', {
         headers: {
           Authorization: `Bearer ${token}`,

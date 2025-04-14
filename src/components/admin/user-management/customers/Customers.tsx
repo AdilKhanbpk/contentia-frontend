@@ -19,7 +19,7 @@ import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import { toast } from "react-toastify";
 import { Customer } from "@/types/interfaces";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const SearchBar = memo(
     ({ onSearch }: { onSearch: (value: string) => void }) => (
@@ -76,7 +76,8 @@ const Customers: React.FC = () => {
     const { data: customers = [], loading } = useSelector(
         (state: RootState) => state.adminCustomers
     );
-
+    const { token } = useTokenContext();
+    if (!token) return null;
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
@@ -85,9 +86,6 @@ const Customers: React.FC = () => {
 
     const handleDelete = useCallback(
         (id: string) => {
-            const token = getAccessToken();
-            if (!token) return;
-
             dispatch(deleteAdminCustomer({ customerId: id, token }))
                 .unwrap()
                 .then(() => {
@@ -111,12 +109,7 @@ const Customers: React.FC = () => {
     };
 
     const handleCreate = async (customerData: any) => {
-        const tokenFromStorage = localStorage.getItem("accessToken");
-
         try {
-            const token = getAccessToken();
-            if (!token) return;
-
             if (!customerData || Object.keys(customerData).length === 0) {
                 toast.error("Customer data is missing or empty.");
                 return;
@@ -138,9 +131,6 @@ const Customers: React.FC = () => {
     };
 
     const handleUpdate = async (customerData: Customer) => {
-        const token = getAccessToken();
-        if (!token) return;
-
         const customerId = customerData._id;
         const dataToUpdate = {
             fullName: customerData.fullName ?? "",
@@ -209,9 +199,9 @@ const Customers: React.FC = () => {
     }, [customers]);
 
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-        dispatch(fetchAdminCustomers(token));
+        if (token) {
+            dispatch(fetchAdminCustomers(token));
+        }
     }, [dispatch]);
 
     const columns = React.useMemo(

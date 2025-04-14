@@ -15,7 +15,7 @@ import {
 } from "@/store/features/admin/couponSlice";
 import { RootState } from "@/store/store";
 import { toast } from "react-toastify";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 export interface CouponForm {
     _id: string;
@@ -41,22 +41,22 @@ export default function Coupon() {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editId, setEditId] = useState<string | null>(null);
-    const [token, setToken] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string>("");
 
     const { reset } = useForm<CouponForm>();
 
-    useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-        setToken(token);
+    const { token } = useTokenContext();
+    if (!token) return null;
 
-        dispatch(getCoupons(token) as any)
-            .then(() => toast.success("Coupons fetched successfully!"))
-            .catch((err: Error) => {
-                setErrorMessage(err.message || "Failed to fetch coupons");
-                toast.error(err.message || "Failed to fetch coupons");
-            });
+    useEffect(() => {
+        if (token) {
+            dispatch(getCoupons(token) as any)
+                .then(() => toast.success("Coupons fetched successfully!"))
+                .catch((err: Error) => {
+                    setErrorMessage(err.message || "Failed to fetch coupons");
+                    toast.error(err.message || "Failed to fetch coupons");
+                });
+        }
     }, [dispatch]);
 
     const openCreateModal = () => setIsCreateModalOpen(true);

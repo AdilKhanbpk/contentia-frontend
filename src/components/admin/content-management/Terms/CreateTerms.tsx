@@ -7,8 +7,8 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import { toast } from "react-toastify";
 import { TermsInterface } from "@/types/interfaces";
-import { getAccessToken } from "@/utils/checkToken";
 import { createTerm } from "@/store/features/admin/termsSlice";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -24,11 +24,12 @@ export function CreateTerms({ onClose }: { onClose: () => void }) {
         reset,
     } = useForm<TermsInterface>();
 
+    const { token } = useTokenContext();
+    if (!token) return null;
+
     const onSubmit = async (data: TermsInterface) => {
         try {
             setIsSubmitting(true);
-            const token = getAccessToken();
-            if (!token) return;
 
             // Dispatch create term action
             const result = await dispatch(createTerm({ term: data, token }));

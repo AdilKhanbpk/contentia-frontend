@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { changeProfilePicture } from "@/store/features/profile/profileSlice";
 import { toast } from "react-toastify";
 import { AppDispatch } from "@/store/store";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface ProfileChangerProps {
     currentImage?: string | null;
@@ -15,6 +15,9 @@ export default function ProfileChanger({ currentImage }: ProfileChangerProps) {
     const [previewImage, setPreviewImage] = useState<string | null>(
         currentImage || null
     );
+
+    const { token } = useTokenContext();
+    if (!token) return null;
     const [imageFile, setImageFile] = useState<File | null>(null);
 
     useEffect(() => {
@@ -37,9 +40,6 @@ export default function ProfileChanger({ currentImage }: ProfileChangerProps) {
             setPreviewImage(reader.result as string);
         };
         reader.readAsDataURL(file);
-
-        const token = getAccessToken();
-        if (!token) return;
 
         try {
             const result = await dispatch(

@@ -1,23 +1,24 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "@/store/store";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/store/store";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import { toast } from "react-toastify";
-import { useRouter, usePathname } from "next/navigation";
-import { getAccessToken } from "@/utils/checkToken";
+import { useRouter } from "next/navigation";
 import { logoutUser } from "@/store/features/auth/loginSlice";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 export default function Navbar() {
     const dispatch: AppDispatch = useDispatch();
     const router = useRouter();
     const { t } = useTranslation();
+    const { token } = useTokenContext();
+    if (!token) return null;
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
-
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
     };
@@ -26,16 +27,12 @@ export default function Navbar() {
         setSidebarOpen(!isSidebarOpen);
     };
 
-    const asPath = usePathname();
-
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
         setIsLoggedIn(!!token);
-    }, [asPath]);
+    }, [token]);
 
     const handleLogout = () => {
-        dispatch(logoutUser())
+        dispatch(logoutUser(token))
             .then(() => {
                 toast.success("Logout successful");
                 router.push("/contentiaio/authentication");

@@ -12,7 +12,7 @@ import {
 } from "@/store/features/admin/aboutSlice";
 import ImageUploader from "./AboutImageUploader";
 import { toast } from "react-toastify";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 interface AboutFormData {
@@ -31,7 +31,8 @@ export default function Abouts() {
     const { sections, loading, error } = useSelector(
         (state: RootState) => state.about
     );
-
+    const { token } = useTokenContext();
+    if (!token) return null;
     const {
         register,
         handleSubmit,
@@ -52,9 +53,6 @@ export default function Abouts() {
     });
 
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-
         dispatch(fetchAbout(token) as any)
             .then((action: any) => {
                 toast.success("Data fetched successfully!");
@@ -90,9 +88,6 @@ export default function Abouts() {
     }, [sections, reset]);
 
     const onSubmit = (data: AboutFormData) => {
-        const token = getAccessToken();
-        if (!token) return;
-
         if (sections) {
             const sectionId = sections._id;
 

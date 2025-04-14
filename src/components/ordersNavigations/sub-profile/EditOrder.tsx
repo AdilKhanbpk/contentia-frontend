@@ -1,10 +1,10 @@
+import { useTokenContext } from "@/context/TokenCheckingContext";
 import {
     selectOrderIsLoading,
     updateOrder,
     type Order,
 } from "@/store/features/profile/orderSlice";
 import { AppDispatch } from "@/store/store";
-import { getAccessToken } from "@/utils/checkToken";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -16,6 +16,9 @@ interface EditOrderProps {
 export default function EditOrder({ orderData }: EditOrderProps) {
     const loading = useSelector(selectOrderIsLoading);
     const dispatch = useDispatch<AppDispatch>();
+
+    const { token } = useTokenContext();
+    if (!token) return null;
     const { register, handleSubmit } = useForm({
         defaultValues: {
             "briefContent.productServiceName":
@@ -28,8 +31,6 @@ export default function EditOrder({ orderData }: EditOrderProps) {
     });
 
     const onSubmit = async (data: any) => {
-        const token = getAccessToken();
-        if (!token) return;
         const updatedData = {
             ...orderData,
             briefContent: {

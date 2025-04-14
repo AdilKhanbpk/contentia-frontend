@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store/store";
 import { fetchBlogs } from "@/store/features/admin/blogSlice";
 import { BlogInterface } from "@/types/interfaces";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface DetailPostProps {
     params: {
@@ -18,12 +18,12 @@ interface DetailPostProps {
 const BlogDetails: React.FC<DetailPostProps> = ({ params }) => {
     const dispatch = useDispatch<AppDispatch>();
     const { blogs } = useSelector((state: RootState) => state.blog);
-
+    const { token } = useTokenContext();
+    if (!token) return null;
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-
-        dispatch(fetchBlogs(token));
+        if (token) {
+            dispatch(fetchBlogs(token));
+        }
     }, [dispatch]);
 
     const { id } = params;

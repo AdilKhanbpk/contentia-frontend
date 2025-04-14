@@ -8,7 +8,7 @@ import {
 import { AppDispatch } from "@/store/store";
 import { toast } from "react-toastify";
 import { CreatorInterface } from "@/types/interfaces";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface FirstTabProps {
     editCreatorForm: CreatorInterface | null;
@@ -23,6 +23,8 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
         reset,
         formState: { errors, isSubmitting },
     } = useForm();
+    const { token } = useTokenContext();
+    if (!token) return null;
 
     useEffect(() => {
         if (editCreatorForm) {
@@ -64,9 +66,6 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
             toast.error("Creator ID not found!");
             return;
         }
-
-        const token = getAccessToken();
-        if (!token) return;
 
         const updateData = {
             fullName: formData.fullName,

@@ -11,7 +11,7 @@ import CustomModelAdmin from "@/components/modal/CustomModelAdmin";
 import { FaSpinner } from "react-icons/fa";
 import { updateOrder } from "@/store/features/admin/ordersSlice";
 import { toast } from "react-toastify";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface EditModalProps {
     order: OrderInterface | null;
@@ -40,7 +40,8 @@ export default function EditModal({ order }: EditModalProps) {
     const brandRecords = useSelector(
         (state: RootState) => state.brand.myBrands
     );
-
+    const { token } = useTokenContext();
+    if (!token) return null;
     const handleRemoveFile = (index: number) => {
         const updatedFiles = selectedFiles.filter((_, i) => i !== index);
         setSelectedFiles(updatedFiles);
@@ -104,9 +105,9 @@ export default function EditModal({ order }: EditModalProps) {
     }, [order, reset]);
 
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-        dispatch(fetchMyBrands(token));
+        if (token) {
+            dispatch(fetchMyBrands(token));
+        }
     }, [dispatch]);
 
     const brands = brandRecords.map((record: any) => record.brandName);
@@ -142,9 +143,6 @@ export default function EditModal({ order }: EditModalProps) {
     };
 
     const submitForm = async (data: OrderInterface) => {
-        const token = getAccessToken();
-        if (!token) return;
-
         data.assignedCreators = formatAssignedCreators(
             data.assignedCreators as unknown as string
         );

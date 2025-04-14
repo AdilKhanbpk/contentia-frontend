@@ -20,7 +20,7 @@ import {
 } from "@/store/features/profile/brandSlice";
 import ViewBrand from "./sub-brand/ViewBrandModal";
 import EditBrand from "./sub-brand/EditBrandModal";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface SearchBarProps {
     onSearch: (value: string) => void;
@@ -82,11 +82,10 @@ const Brands: React.FC = () => {
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
     const [isModalViewOpen, setIsViewModalOpen] = useState(false);
     const [isModalRequestsOpen, setIsModalRequestsOpen] = useState(false);
-
+    const { token } = useTokenContexttext();
+    if (!token) return null;
     useEffect(() => {
         const fetchBrandsData = async () => {
-            const token = getAccessToken();
-            if (!token) return;
             try {
                 const res = await dispatch(fetchBrands(token)).unwrap();
                 toast.success(res.message);
@@ -99,9 +98,6 @@ const Brands: React.FC = () => {
 
     const handleDelete = useCallback(
         async (id: string) => {
-            const token = getAccessToken();
-            if (!token) return;
-
             try {
                 await dispatch(deleteBrand({ brandId: id, token })).unwrap();
                 toast.success("Order deleted successfully!");
@@ -114,9 +110,6 @@ const Brands: React.FC = () => {
 
     const handleView = useCallback(
         async (id: string) => {
-            const token = getAccessToken();
-            if (!token) return;
-
             try {
                 await dispatch(
                     fetchSingleBrand({ brandId: id, token })
@@ -132,9 +125,6 @@ const Brands: React.FC = () => {
 
     const handleEdit = useCallback(
         async (id: string) => {
-            const token = getAccessToken();
-            if (!token) return;
-
             try {
                 await dispatch(
                     fetchSingleBrand({ brandId: id, token })

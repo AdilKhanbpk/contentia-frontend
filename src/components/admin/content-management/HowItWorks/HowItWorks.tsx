@@ -8,7 +8,7 @@ import {
 } from "@/store/features/admin/howWorkSlice";
 import { RootState } from "@/store/store";
 import { toast } from "react-toastify";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface FormData {
     howItWorksTitle1: string;
@@ -24,7 +24,8 @@ export default function HowItWorks() {
     const { sections, loading, error } = useSelector(
         (state: RootState) => state.howWork
     );
-
+    const { token } = useTokenContext();
+    if (!token) return null;
     const {
         register,
         handleSubmit,
@@ -39,9 +40,9 @@ export default function HowItWorks() {
     });
 
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-        dispatch(fetchHowItWorks(token) as any);
+        if (token) {
+            dispatch(fetchHowItWorks(token) as any);
+        }
     }, [dispatch]);
 
     useEffect(() => {
@@ -62,9 +63,6 @@ export default function HowItWorks() {
     }, [sections, reset]);
 
     const onSubmit = (data: FormData) => {
-        const token = getAccessToken();
-        if (!token) return;
-
         const formattedData = {
             sectionTitle: data.howItWorksTitle1,
             sectionDescription: data.howItWorksSubtitle1,

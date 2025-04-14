@@ -13,7 +13,7 @@ import { InvoiceInfo } from "./sub-profile/InvoiceInfo";
 import { PasswordChange } from "./sub-profile/PasswordChange";
 import { AppDispatch } from "@/store/store";
 import { toast } from "react-toastify";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const OrdersProfile: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -24,15 +24,16 @@ const OrdersProfile: React.FC = () => {
     const [invoiceType, setInvoiceType] = useState("individual");
     const profile = useSelector((state: RootState) => state.profile);
 
+    const { token } = useTokenContext();
+    if (!token) return null;
+
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-        dispatch(fetchProfile(token));
+        if (token) {
+            dispatch(fetchProfile(token));
+        }
     }, [dispatch]);
 
     const onSubmitProfileInvoice = async (data: any) => {
-        const token = getAccessToken();
-        if (!token) return;
         try {
             await dispatch(updateProfile({ data, token }));
             dispatch(fetchProfile(token));
@@ -61,8 +62,6 @@ const OrdersProfile: React.FC = () => {
     }, [profile.data]);
 
     const onSubmitPasswordChange = async (data: any) => {
-        const token = getAccessToken();
-        if (!token) return;
         try {
             const result = await dispatch(
                 changePassword({

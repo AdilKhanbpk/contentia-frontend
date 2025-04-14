@@ -27,7 +27,7 @@ import {
     selectTotalSales,
 } from "@/store/features/admin/dashboardSlice";
 import { AppDispatch } from "@/store/store";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const Analytics: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -39,15 +39,18 @@ const Analytics: React.FC = () => {
     const sales = useSelector(selectTotalSales);
     const recentOrders = useSelector(selectRecentOrders);
 
+    const { token } = useTokenContext();
+    if (!token) return null;
+
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-        dispatch(fetchRecentOrders(token));
-        dispatch(fetchTotalSalesByMonth(token));
-        dispatch(fetchTotalCreators(token));
-        dispatch(fetchTotalCustomers(token));
-        dispatch(fetchTotalOrders(token));
-    }, []);
+        if (token) {
+            dispatch(fetchRecentOrders(token));
+            dispatch(fetchTotalSalesByMonth(token));
+            dispatch(fetchTotalCreators(token));
+            dispatch(fetchTotalCustomers(token));
+            dispatch(fetchTotalOrders(token));
+        }
+    }, [token]);
 
     const totalCustomerAndCreators =
         (creators?.totalCreatorsCount || 0) +

@@ -11,15 +11,15 @@ import {
   selectNotifications,
   setNotifications,
 } from "@/store/features/admin/notificationSlice";
-import { getAccessToken } from "@/utils/checkToken";
 
 function InitializeSocket() {
   const dispatch = useDispatch();
 
+  const { token } = useTokenContext();
+  if (!token) return null;
 
   useEffect(() => {
-    const token = getAccessToken();
-    if (!token) return;
+
 
     dispatch(setSocketLoading());
     try {

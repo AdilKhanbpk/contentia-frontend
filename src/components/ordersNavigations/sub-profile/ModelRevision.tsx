@@ -5,7 +5,7 @@ import { createClaim } from "@/store/features/profile/orderSlice";
 import { useState } from "react";
 import type { Order } from "@/store/features/profile/orderSlice";
 import { toast } from "react-toastify";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface RevisionFormData {
     claimContent: string;
@@ -18,6 +18,9 @@ interface ModelRevisionProps {
 export default function ModelRevision({ orderData }: ModelRevisionProps) {
     const dispatch = useDispatch<AppDispatch>();
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const { token } = useTokenContext();
+    if (!token) return null;
 
     const {
         register,
@@ -34,9 +37,6 @@ export default function ModelRevision({ orderData }: ModelRevisionProps) {
 
         setIsSubmitting(true);
         try {
-            const token = getAccessToken();
-            if (!token) return;
-
             const resultAction = await dispatch(
                 createClaim({
                     orderId: orderData._id,

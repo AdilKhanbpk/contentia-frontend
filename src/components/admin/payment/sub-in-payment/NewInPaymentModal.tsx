@@ -1,6 +1,6 @@
+import { useTokenContext } from "@/context/TokenCheckingContext";
 import { createPayment } from "@/store/features/admin/incomingPaymentSlice";
 import { AppDispatch, RootState } from "@/store/store";
-import { getAccessToken } from "@/utils/checkToken";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -13,6 +13,8 @@ export default function CreatePayment({ onClose }: CreateInvoiceModalProps) {
     const { loading, error } = useSelector(
         (state: RootState) => state.incomingPayment
     );
+    const { token } = useTokenContext();
+    if (!token) return null;
     const {
         register,
         handleSubmit,
@@ -20,9 +22,6 @@ export default function CreatePayment({ onClose }: CreateInvoiceModalProps) {
     } = useForm();
 
     const onSubmit = async (data: any) => {
-        const token = getAccessToken();
-        if (!token) return;
-
         const formData = new FormData();
         formData.append("orderId", data.orderId);
         formData.append("invoiceImage", data.invoiceImage[0]);

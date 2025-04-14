@@ -20,7 +20,6 @@ import CustomModelAdmin from "../../../modal/CustomModelAdmin";
 import Modal from "./sub-emails/NewModal";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
-import { getAccessToken } from "@/utils/checkToken";
 import {
     deleteEmailNotification,
     fetchEmailNotificationById,
@@ -30,6 +29,7 @@ import { exportCsvFile } from "@/utils/exportCsvFile";
 import CustomTable from "@/components/custom-table/CustomTable";
 import EditModal from "./sub-emails/EditModal";
 import ViewModal from "./sub-emails/ViewModal";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const Emails: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -39,14 +39,15 @@ const Emails: React.FC = () => {
         loading,
     } = useSelector((state: RootState) => state.emailNotification);
 
+    const { token } = useTokenContext();
+    if (!token) return null;
+
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
 
     const handleView = async (id: string) => {
-        const token = getAccessToken();
-        if (!token) return;
         await dispatch(
             fetchEmailNotificationById({ emailNotificationId: id, token })
         ).unwrap();
@@ -54,8 +55,6 @@ const Emails: React.FC = () => {
     };
 
     const handleEdit = async (id: string) => {
-        const token = getAccessToken();
-        if (!token) return;
         await dispatch(
             fetchEmailNotificationById({ emailNotificationId: id, token })
         ).unwrap();
@@ -63,8 +62,6 @@ const Emails: React.FC = () => {
     };
 
     const handleDelete = async (id: string) => {
-        const token = getAccessToken();
-        if (!token) return;
         await dispatch(
             deleteEmailNotification({ emailNotificationId: id, token })
         ).unwrap();
@@ -91,9 +88,9 @@ const Emails: React.FC = () => {
     }, [emailNotifications]);
 
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-        dispatch(fetchEmailNotifications(token));
+        if (token) {
+            dispatch(fetchEmailNotifications(token));
+        }
     }, [dispatch]);
 
     const TableActions = memo(

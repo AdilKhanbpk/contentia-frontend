@@ -6,10 +6,10 @@ import {
     uploadInvoiceImage,
 } from "@/store/features/admin/incomingPaymentSlice";
 import { AppDispatch, RootState } from "@/store/store";
-import { getAccessToken } from "@/utils/checkToken";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface EditInvoiceModalProps {
     currentInvoice: PaymentInterface | null;
@@ -27,12 +27,12 @@ const EditInvoiceModal: React.FC<EditInvoiceModalProps> = ({
         formState: { errors, isSubmitting },
     } = useForm();
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
-
+    const { token } = useTokenContext();
+    if (!token) return null;
     if (!currentInvoice) return null;
 
     const onSubmit = async (data: any) => {
-        const token = getAccessToken();
-        if (!token || !currentInvoice._id) return;
+        if (!currentInvoice._id) return;
 
         try {
             const formData = new FormData();

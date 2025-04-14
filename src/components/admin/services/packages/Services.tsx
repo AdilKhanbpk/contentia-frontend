@@ -12,7 +12,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import CustomModelAdmin from "../../../modal/CustomModelAdmin";
 import Modal from "./sub-packages/Modal";
 import { toast } from "react-toastify";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const PackageIcon = () => (
     <img
@@ -48,17 +48,19 @@ const Packages = () => {
         formState: { errors },
     } = useForm<PackageFormData>();
     const [isSaving, setIsSaving] = useState(false);
+    const { token } = useTokenContext();
+    if (!token) return null;
 
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-        dispatch(fetchPackages())
-            .then(() => {
-                toast.success("Packages fetched successfully!");
-            })
-            .catch((err: Error) => {
-                toast.error(err.message || "Failed to fetch packages.");
-            });
+        if (token) {
+            dispatch(fetchPackages())
+                .then(() => {
+                    toast.success("Packages fetched successfully!");
+                })
+                .catch((err: Error) => {
+                    toast.error(err.message || "Failed to fetch packages.");
+                });
+        }
     }, [dispatch]);
 
     useEffect(() => {
@@ -86,7 +88,6 @@ const Packages = () => {
     };
 
     const handleSave = async (data: PackageFormData) => {
-        const token = getAccessToken();
         if (!token) return;
         const packageToUpdate = serverPackages?.find(
             (pkg: Package) => pkg._id === editingPackage

@@ -13,7 +13,6 @@ import CustomModelAdmin from "../../modal/CustomModelAdmin";
 import NewModal from "./sub-in-payment/NewInPaymentModal";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
-import { getAccessToken } from "@/utils/checkToken";
 import {
     refundPayment,
     fetchPayments,
@@ -27,13 +26,15 @@ import ViewModal from "./sub-in-payment/ViewInPaymentModal";
 import CustomTable from "@/components/custom-table/CustomTable";
 import { toast } from "react-toastify";
 import EditInvoiceModal from "./sub-in-payment/EditInPaymentInvoiceModal";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const InPayments: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { payments = [], loading } = useSelector(
         (state: RootState) => state.incomingPayment
     );
-
+    const { token } = useTokenContext();
+    if (!token) return null;
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditInvoiceModalOpen, setIsEditInvoiceModalOpen] = useState(false);
@@ -44,14 +45,12 @@ const InPayments: React.FC = () => {
     const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
 
     useEffect(() => {
-        const token = getAccessToken();
-        if (!token) return;
-        dispatch(fetchPayments(token));
+        if (token) {
+            dispatch(fetchPayments(token));
+        }
     }, [dispatch]);
 
     const handleRefund = async (id: string) => {
-        const token = getAccessToken();
-        if (!token) return;
         try {
             await dispatch(refundPayment({ paymentId: id, token })).unwrap();
             toast.success("Refund Status Active");
@@ -71,8 +70,6 @@ const InPayments: React.FC = () => {
 
     const handleDelete = useCallback(
         (id: string) => {
-            const token = getAccessToken();
-            if (!token) return;
             dispatch(deletePayment({ paymentId: id, token }))
                 .unwrap()
                 .then(() => {
@@ -91,9 +88,6 @@ const InPayments: React.FC = () => {
     );
 
     const handleEdit = async (id: any) => {
-        const token = getAccessToken();
-        if (!token) return;
-
         const payment = payments.find((payment) => payment._id === id);
         if (payment) {
             setCurrentPayment(payment);

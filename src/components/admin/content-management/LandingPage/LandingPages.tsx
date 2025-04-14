@@ -10,7 +10,7 @@ import {
 } from "@/store/features/admin/lanPageSlice";
 import "react-quill/dist/quill.snow.css";
 import { toast } from "react-toastify";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -42,7 +42,8 @@ export default function LandingPages() {
             videos: [],
         },
     });
-
+    const { token } = useTokenContext();
+    if (!token) return null;
     const fixedId = data?._id || "";
 
     useEffect(() => {
@@ -78,8 +79,6 @@ export default function LandingPages() {
 
     const onSubmit = async (formData: FormData) => {
         setIsSubmitting(true);
-        const token = getAccessToken();
-        if (!token) return;
 
         if (!fixedId || !token) return;
 

@@ -10,8 +10,8 @@ import CustomModelAdmin from "../../modal/CustomModelAdmin";
 import ModalTwo from "./sub-in-payment/ViewInPaymentModal";
 import { OrderInterface } from "@/types/interfaces";
 import Image from "next/image";
-import { getAccessToken } from "@/utils/checkToken";
 import CustomTable from "@/components/custom-table/CustomTable";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface TableActionsProps {
     onApprove: (id: string) => void;
@@ -24,7 +24,8 @@ const OutPayments: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const [searchTerm, setSearchTerm] = useState("");
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-
+    const { token } = useTokenContext();
+    if (!token) return null;
     const { data: orders, loading } = useSelector(
         (state: RootState) => state.orders
     );
@@ -44,20 +45,14 @@ const OutPayments: React.FC = () => {
     }, []);
 
     const handleView = useCallback(async (id: string) => {
-        const token = getAccessToken();
-        if (!token) return;
         setIsViewModalOpen(true);
     }, []);
 
     const handleApprove = useCallback(async (id: string) => {
-        const token = getAccessToken();
-        if (!token) return;
         toast.success("Payment Sent successfully!");
     }, []);
 
     const handleReject = useCallback(async (id: string) => {
-        const token = getAccessToken();
-        if (!token) return;
         toast.dark("Payment rejected for the Order!");
     }, []);
 

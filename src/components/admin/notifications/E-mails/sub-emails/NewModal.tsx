@@ -8,7 +8,7 @@ import {
     createEmailNotification,
     fetchEmailNotifications,
 } from "@/store/features/admin/emailNotificationSlice";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 interface CreateModalProps {
@@ -26,11 +26,10 @@ export default function Modal({ onClose }: CreateModalProps) {
     } = useForm();
     const emailBody = watch("emailContent", "");
     const userType = watch("userType", "");
+    const { token } = useTokenContext();
+    if (!token) return null;
 
     const onSubmit = async (data: any) => {
-        const token = getAccessToken();
-        if (!token) return;
-
         const payload = {
             emailTitle: data.emailTitle,
             emailContent: data.emailContent,

@@ -19,10 +19,10 @@ import { RootState } from "@/store/store";
 import { toast } from "react-toastify";
 import { PackageInterface } from "@/types/interfaces";
 import { fetchMyBrands } from "@/store/features/profile/brandSlice";
-import { getAccessToken } from "@/utils/checkToken";
 import NewPackageModal from "./sub-packages/NewPackageModal";
 import EditPackageModal from "./sub-packages/EditPackageModal";
 import ViewPackageModal from "./sub-packages/ViewPackageModal";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface SearchBarProps {
     onSearch: (value: string) => void;
@@ -86,11 +86,10 @@ const Packages: React.FC = () => {
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
     const [isModalViewOpen, setIsViewModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState("All");
-
+    const { token } = useTokenContext();
+    if (!token) return null;
     useEffect(() => {
         const fetchPackagesData = async () => {
-            const token = getAccessToken();
-            if (!token) return;
             try {
                 const res = await dispatch(fetchPackages(token)).unwrap();
                 toast.success(res.message);
@@ -99,8 +98,6 @@ const Packages: React.FC = () => {
             }
         };
         const fetchBrands = async () => {
-            const token = getAccessToken();
-            if (!token) return;
             try {
                 const res = await dispatch(fetchMyBrands(token)).unwrap();
                 toast.success(res.message);
@@ -108,15 +105,14 @@ const Packages: React.FC = () => {
                 toast.error(error.message);
             }
         };
-        fetchBrands();
-        fetchPackagesData();
+        if (token) {
+            fetchBrands();
+            fetchPackagesData();
+        }
     }, [dispatch]);
 
     const handleDelete = useCallback(
         async (id: string) => {
-            const token = getAccessToken();
-            if (!token) return;
-
             try {
                 await dispatch(
                     deletePackage({ packageId: id, token })
@@ -131,9 +127,6 @@ const Packages: React.FC = () => {
 
     const handleView = useCallback(
         async (id: string) => {
-            const token = getAccessToken();
-            if (!token) return;
-
             try {
                 await dispatch(
                     fetchPackageById({ packageId: id, token })
@@ -149,9 +142,6 @@ const Packages: React.FC = () => {
 
     const handleEdit = useCallback(
         async (id: string) => {
-            const token = getAccessToken();
-            if (!token) return;
-
             try {
                 await dispatch(
                     fetchPackageById({ packageId: id, token })

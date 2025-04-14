@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { updateAboutImage } from "@/store/features/admin/aboutSlice";
 import { toast } from "react-toastify";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface ImageUploaderProps {
     aboutId: string;
@@ -19,6 +19,8 @@ export default function ImageUploader({
         currentImage || null
     );
     const [imageFile, setImageFile] = useState<File | null>(null);
+    const { token } = useTokenContext();
+    if (!token) return null;
 
     useEffect(() => {
         if (currentImage) {
@@ -45,9 +47,6 @@ export default function ImageUploader({
             toast.error("No image selected. Please choose an image to upload.");
             return;
         }
-
-        const token = getAccessToken();
-        if (!token) return;
 
         try {
             dispatch(

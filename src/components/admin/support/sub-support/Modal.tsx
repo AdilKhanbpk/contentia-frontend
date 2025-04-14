@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { createAdminClaim } from "@/store/features/admin/claimSlice";
 import { toast } from "react-toastify";
-import { getAccessToken } from "@/utils/checkToken";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface ClaimFormData {
     status: string;
@@ -17,7 +17,8 @@ interface ClaimFormData {
 export default function Modal() {
     const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
     const [loading, setLoading] = useState(false);
-
+    const { token } = useTokenContext();
+    if (!token) return null;
     const {
         register,
         handleSubmit,
@@ -34,8 +35,6 @@ export default function Modal() {
     });
 
     const onSubmit: SubmitHandler<ClaimFormData> = (data) => {
-        const token = getAccessToken();
-        if (!token) return;
         setLoading(true); // Start loading
         dispatch(
             createAdminClaim({
