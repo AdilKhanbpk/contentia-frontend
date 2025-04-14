@@ -17,6 +17,7 @@ import {
     fetchNotifications,
     selectNotificationLoading,
     selectNotifications,
+    selectUnReadNotificationTotalCount,
 } from "@/store/features/admin/notificationSlice";
 import { getAccessToken } from "@/utils/checkToken";
 import { toast } from "react-toastify";
@@ -142,6 +143,7 @@ export default function AdminNavbar() {
     const dispatch = useDispatch<AppDispatch>();
     const user = useSelector(selectProfileUser);
     const notifications = useSelector(selectNotifications);
+    const unreadNotifications = useSelector(selectUnReadNotificationTotalCount);
     const loading = useSelector(selectNotificationLoading);
     const router = useRouter();
     const pathname = usePathname();
@@ -151,6 +153,20 @@ export default function AdminNavbar() {
     const [isEmailOpen, setIsEmailOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+    const [hasMarkedAsRead, setHasMarkedAsRead] = useState(false);
+
+    const handleNotificationToggle = () => {
+        const willOpen = !isNotificationsOpen;
+        setIsNotificationsOpen(willOpen);
+
+        if (willOpen && !hasMarkedAsRead) {
+            const token = getAccessToken();
+            if (token) {
+                // dispatch(markAllNotificationsAsRead(token));
+                setHasMarkedAsRead(true);
+            }
+        }
+    };
 
     useEffect(() => {
         const token = getAccessToken();
@@ -236,13 +252,13 @@ export default function AdminNavbar() {
                         {/* Notifications Dropdown */}
                         <Dropdown
                             isOpen={isNotificationsOpen}
-                            setIsOpen={setIsNotificationsOpen}
+                            setIsOpen={handleNotificationToggle}
                             icon={
                                 <div className='relative'>
                                     <AiOutlineBell size={24} />
-                                    {notifications?.length > 0 && (
+                                    {unreadNotifications > 0 && (
                                         <span className='absolute -top-2 -right-2 flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-semibold text-white bg-red-600 rounded-full'>
-                                            {notifications.length}
+                                            {unreadNotifications}
                                         </span>
                                     )}
                                 </div>

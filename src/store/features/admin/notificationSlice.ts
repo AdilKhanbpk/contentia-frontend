@@ -1,5 +1,5 @@
 import { axiosInstance } from "@/store/axiosInstance";
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction, createSelector } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
 
 // Types
@@ -334,3 +334,10 @@ export const selectNotificationLoading = (state: { notification: NotificationSta
 export const selectNotificationError = (state: { notification: NotificationState }) => state.notification.error;
 export const selectNotificationSuccess = (state: { notification: NotificationState }) => state.notification.success;
 export const selectTotalCount = (state: { notification: NotificationState }) => state.notification.totalCount;
+export const selectUnReadNotificationTotalCount = createSelector(
+  selectNotifications,
+  (notifications) =>
+    Array.isArray(notifications)
+      ? notifications.filter((notification) => !notification.isRead).length
+      : 0
+);
