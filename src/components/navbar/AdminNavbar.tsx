@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -15,14 +15,13 @@ import {
 } from "@/store/features/profile/profileSlice";
 import {
     fetchNotifications,
-    selectNotificationLoading,
     selectNotifications,
-    selectUnReadNotificationTotalCount,
 } from "@/store/features/admin/notificationSlice";
 import { getAccessToken } from "@/utils/checkToken";
 import { toast } from "react-toastify";
 import { usePathname, useRouter } from "next/navigation";
 import { logoutUser } from "@/store/features/auth/loginSlice";
+import NavbarNotification from "../notifications/NavbarNotification";
 
 const menuItems = [
     {
@@ -129,7 +128,7 @@ export const Dropdown = ({ isOpen, setIsOpen, icon, children }: any) => {
             </button>
 
             {isOpen && (
-                <div className='absolute right-0 mt-2 w-60 bg-white shadow-lg rounded-lg border border-gray-200'>
+                <div className='absolute right-0 mt-2 w-80 bg-white shadow-lg rounded-lg border border-gray-200'>
                     {children}
                 </div>
             )}
@@ -143,8 +142,11 @@ export default function AdminNavbar() {
     const dispatch = useDispatch<AppDispatch>();
     const user = useSelector(selectProfileUser);
     const notifications = useSelector(selectNotifications);
-    const unreadNotifications = useSelector(selectUnReadNotificationTotalCount);
-    const loading = useSelector(selectNotificationLoading);
+    const unreadNotifications = useMemo(() => {
+        return notifications.filter((n) => !n.readBy?.includes(user?._id))
+            .length;
+    }, [notifications, user]);
+
     const router = useRouter();
     const pathname = usePathname();
 
@@ -153,20 +155,6 @@ export default function AdminNavbar() {
     const [isEmailOpen, setIsEmailOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-    const [hasMarkedAsRead, setHasMarkedAsRead] = useState(false);
-
-    const handleNotificationToggle = () => {
-        const willOpen = !isNotificationsOpen;
-        setIsNotificationsOpen(willOpen);
-
-        if (willOpen && !hasMarkedAsRead) {
-            const token = getAccessToken();
-            if (token) {
-                // dispatch(markAllNotificationsAsRead(token));
-                setHasMarkedAsRead(true);
-            }
-        }
-    };
 
     useEffect(() => {
         const token = getAccessToken();
@@ -252,7 +240,7 @@ export default function AdminNavbar() {
                         {/* Notifications Dropdown */}
                         <Dropdown
                             isOpen={isNotificationsOpen}
-                            setIsOpen={handleNotificationToggle}
+                            setIsOpen={setIsNotificationsOpen}
                             icon={
                                 <div className='relative'>
                                     <AiOutlineBell size={24} />
@@ -264,34 +252,10 @@ export default function AdminNavbar() {
                                 </div>
                             }
                         >
-                            <div className='p-2 text-gray-700 font-semibold border-b'>
-                                Notifications
-                            </div>
-                            <ul className='p-2 text-sm max-h-64 overflow-auto'>
-                                {loading ? (
-                                    <li className='p-2 text-center'>
-                                        Loading...
-                                    </li>
-                                ) : notifications?.length > 0 ? (
-                                    notifications.map((notification) => (
-                                        <li
-                                            key={notification._id}
-                                            className='p-2 hover:bg-gray-100 cursor-pointer'
-                                        >
-                                            <span className='block font-medium'>
-                                                {notification.title}
-                                            </span>
-                                            <span className='block text-xs text-gray-500'>
-                                                {notification.details}
-                                            </span>
-                                        </li>
-                                    ))
-                                ) : (
-                                    <li className='p-2 text-center text-gray-500'>
-                                        No notifications
-                                    </li>
-                                )}
-                            </ul>
+                            <NavbarNotification
+                                user={user}
+                                notifications={notifications}
+                            />
                         </Dropdown>
 
                         {/* Email Dropdown */}
