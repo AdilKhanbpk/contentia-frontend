@@ -14,11 +14,18 @@ export default function Navbar() {
     const dispatch: AppDispatch = useDispatch();
     const router = useRouter();
     const { t } = useTranslation();
-    const { token } = useTokenContext();
-    if (!token) return null;
     const [isSidebarOpen, setSidebarOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+
+    const { isAuthenticated, setToken, token, loading } = useTokenContext();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        if (!loading) {
+            setIsLoggedIn(!!token);
+        }
+    }, [token, loading]);
+
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
     };
@@ -27,20 +34,23 @@ export default function Navbar() {
         setSidebarOpen(!isSidebarOpen);
     };
 
-    useEffect(() => {
-        setIsLoggedIn(!!token);
-    }, [token]);
+    const handleLogout = async () => {
+        if (!token) return;
 
-    const handleLogout = () => {
-        dispatch(logoutUser(token))
-            .then(() => {
-                toast.success("Logout successful");
-                router.push("/contentiaio/authentication");
-            })
-            .catch(() => {
-                toast.error("Logout failed");
-            });
-        setIsLoggedIn(false);
+        try {
+            await dispatch(logoutUser(token));
+
+            setToken(null);
+
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("user");
+
+            toast.success("Logout successful");
+
+            router.push("/contentiaio/authentication");
+        } catch (error) {
+            toast.error("Logout failed");
+        }
     };
 
     return (
@@ -181,29 +191,23 @@ export default function Navbar() {
                                     </a>
                                 </Link>
                             </li>
-                            {!isLoggedIn ? (
-                                <>
-                                    <li>
-                                        <Link
-                                            legacyBehavior
-                                            href='/contentiaio/authentication'
-                                        >
-                                            <a className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'>
-                                                Giriş Yap
-                                            </a>
-                                        </Link>
-                                    </li>
-                                </>
+
+                            {isAuthenticated ? (
+                                <button
+                                    onClick={handleLogout}
+                                    className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
+                                >
+                                    Oturumu Kapat
+                                </button>
                             ) : (
-                                <li>
-                                    <button
-                                        onClick={handleLogout}
-                                        className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
-                                    >
-                                        Oturumu kapat
-                                    </button>
-                                </li>
+                                <Link
+                                    href='/contentiaio/authentication'
+                                    className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
+                                >
+                                    Giriş Yap
+                                </Link>
                             )}
+
                             <li>
                                 <div>
                                     <button className='Button text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>

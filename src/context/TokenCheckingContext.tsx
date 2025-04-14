@@ -15,19 +15,29 @@ export const TokenProvider: React.FC<{ children: React.ReactNode }> = ({
     const [token, setToken] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
+    // Load token on first render
     useEffect(() => {
         const storedToken = localStorage.getItem("accessToken");
         if (storedToken) {
             setToken(storedToken);
+            console.log(
+                "[TokenProvider] Loaded token from localStorage:",
+                storedToken
+            );
+        } else {
+            console.log("[TokenProvider] No token found in localStorage");
         }
-        setLoading(false); // Mark token check complete
+        setLoading(false);
     }, []);
 
+    // Sync token to localStorage
     useEffect(() => {
         if (token) {
             localStorage.setItem("accessToken", token);
+            console.log("[TokenProvider] Token set in localStorage:", token);
         } else {
             localStorage.removeItem("accessToken");
+            console.log("[TokenProvider] Token removed from localStorage");
         }
     }, [token]);
 

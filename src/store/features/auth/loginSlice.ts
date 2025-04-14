@@ -73,8 +73,6 @@ export const logoutUser = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('user');
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Logout failed');
     }

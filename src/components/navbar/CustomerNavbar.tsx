@@ -9,7 +9,6 @@ import { logoutUser, selectUser } from "@/store/features/auth/loginSlice";
 import {
     fetchProfile,
     selectProfileUser,
-    // clearProfile, // optionally import this if created
 } from "@/store/features/profile/profileSlice";
 import { AppDispatch } from "@/store/store";
 import { Dropdown } from "./AdminNavbar";
@@ -33,28 +32,31 @@ export default function Navbar() {
     const { t } = useTranslation();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const user = useSelector(selectProfileUser);
-    const { token } = useTokenContext();
-    if (!token) return null;
-
-    const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
-
-    const handleLogout = () => {
-        dispatch(logoutUser(token))
-            .then(() => {
-                // dispatch(clearProfile()); // optional if implemented
-                toast.success("Logout successful");
-                router.push("/contentiaio/authentication");
-            })
-            .catch(() => {
-                toast.error("Logout failed");
-            });
-    };
+    const { token, setToken } = useTokenContext();
 
     useEffect(() => {
         if (token) {
             dispatch(fetchProfile(token));
         }
     }, [dispatch, token]);
+
+    const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
+
+    const handleLogout = async () => {
+        if (!token) return;
+
+        try {
+            await dispatch(logoutUser(token));
+            setToken(null);
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("user");
+
+            toast.success("Logout successful");
+            router.push("/contentiaio/authentication");
+        } catch (error) {
+            toast.error("Logout failed");
+        }
+    };
 
     const navItems = useMemo(
         () => [
@@ -66,6 +68,8 @@ export default function Navbar() {
         ],
         []
     );
+
+    if (!token) return null;
 
     return (
         <>
