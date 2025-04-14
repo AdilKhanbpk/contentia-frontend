@@ -38,7 +38,7 @@ export default function Page({ params }: PageProps) {
                 <p className='text-xl text-red-500'>{error}</p>
                 <button
                     onClick={() => router.push("/")}
-                    className='mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition'
+                    className='mt-4 px-4 py-2 Button text-white rounded-lg shadow-md hover:bg-blue-600 transition'
                 >
                     Go to Home
                 </button>

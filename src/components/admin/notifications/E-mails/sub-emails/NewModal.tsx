@@ -109,7 +109,7 @@ export default function Modal({ onClose }: CreateModalProps) {
             <div className='flex justify-end mt-4'>
                 <button
                     type='submit'
-                    className='bg-blue-600 text-white px-8 py-2 rounded-lg font-semibold'
+                    className='Button text-white px-8 py-2 rounded-lg font-semibold'
                 >
                     {isSubmitting ? "Sending..." : "Send"}
                 </button>

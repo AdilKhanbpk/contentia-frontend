@@ -56,7 +56,7 @@ export default function ModalNew({ onClose }: CreateModalProps) {
         >
             <h1 className='text-lg font-semibold'>Push Notification</h1>
 
-            <div className='mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4'>
+            <div className='mt-4 grid grid-cols-1  gap-4'>
                 <div>
                     <label className='block text-sm font-semibold'>
                         User Type
@@ -73,17 +73,19 @@ export default function ModalNew({ onClose }: CreateModalProps) {
                     </select>
                 </div>
 
-                <div>
-                    <label className='block text-sm font-semibold'>
-                        Select Users (comma-separated IDs)
-                    </label>
-                    <input
-                        {...register("users")}
-                        type='text'
-                        className='w-full px-3 py-2 border border-gray-400 rounded-md'
-                        disabled={!userType.includes("some")}
-                    />
-                </div>
+                {userType?.includes("some") && (
+                    <div>
+                        <label className='block text-sm font-semibold'>
+                            Select Users (comma-separated IDs)
+                        </label>
+                        <input
+                            {...register("users")}
+                            type='text'
+                            className='w-full px-3 py-2 border border-gray-400 rounded-md'
+                            disabled={!userType?.includes("some")}
+                        />
+                    </div>
+                )}
             </div>
 
             <div className='mt-4'>
@@ -110,7 +112,7 @@ export default function ModalNew({ onClose }: CreateModalProps) {
             <div className='flex justify-end mt-4'>
                 <button
                     type='submit'
-                    className='bg-blue-600 text-white px-8 py-2 rounded-lg font-semibold'
+                    className='Button text-white px-8 py-2 rounded-lg font-semibold'
                 >
                     {isSubmitting ? "Sending..." : "Send"}
                 </button>

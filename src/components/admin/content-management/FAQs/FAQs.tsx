@@ -158,7 +158,7 @@ const ModalFAQs = memo(
                             </button>
                             <button
                                 type='submit'
-                                className='ButtonBlue text-white px-8 py-2 rounded-md'
+                                className='Button text-white px-8 py-2 rounded-md'
                             >
                                 {mode === "edit" ? "Update" : "Save"}
                             </button>
@@ -331,7 +331,7 @@ const FAQs: React.FC = () => {
                     <div className='flex flex-row space-x-2'>
                         <button
                             onClick={() => handleModalOpen("create")}
-                            className='px-4 py-2 ButtonBlue text-white rounded-md'
+                            className='px-4 py-2 Button text-white rounded-md'
                         >
                             Add FAQ
                         </button>

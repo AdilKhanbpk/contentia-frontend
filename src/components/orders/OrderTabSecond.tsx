@@ -186,7 +186,7 @@ export default function TabSecond({
                                     className='border px-3 py-2 mb-4 rounded-md focus:outline-none '
                                 />
                                 <div>
-                                    <button className='ButtonBlue text-white px-4 py-2 rounded-md font-semibold'>
+                                    <button className='Button text-white px-4 py-2 rounded-md font-semibold'>
                                         Uygula
                                     </button>
                                 </div>
@@ -507,7 +507,7 @@ export default function TabSecond({
                                 <button
                                     type='submit'
                                     onClick={() => setActiveTab(2)}
-                                    className='w-full ButtonBlue text-white px-4 py-2 rounded-md font-semibold'
+                                    className='w-full Button text-white px-4 py-2 rounded-md font-semibold'
                                 >
                                     <div className='flex flex-row space-x-8'>
                                         <div className='w-1/4 flex justify-end items-center'>

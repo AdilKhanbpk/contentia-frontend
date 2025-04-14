@@ -218,7 +218,7 @@ export default function OrdersOrders() {
                                                     onClick={() =>
                                                         openViewModal(order)
                                                     }
-                                                    className='px-4 py-1 sm:px-6 sm:py-2 md:px-8 md:py-1 lg:px-8 lg:py-1 text-sm font-semibold ButtonBlue text-white rounded-lg'
+                                                    className='px-4 py-1 sm:px-6 sm:py-2 md:px-8 md:py-1 lg:px-8 lg:py-1 text-sm font-semibold Button text-white rounded-lg'
                                                 >
                                                     Detaylar
                                                 </button>

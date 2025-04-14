@@ -238,7 +238,7 @@ const Brands: React.FC = () => {
                     <div className='flex flex-row space-x-2'>
                         <button
                             onClick={() => setIsModalOpen(true)}
-                            className='px-4 py-2 ButtonBlue text-white rounded-md'
+                            className='px-4 py-2 Button text-white rounded-md'
                         >
                             Add Brand
                         </button>

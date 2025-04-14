@@ -249,7 +249,7 @@ export default function TabFirst({
                                                 className={`px-1 py-1 min-w-16 max-w-20 border text-xs rounded-sm ${
                                                     selectedPlatform ===
                                                     platform.value
-                                                        ? "ButtonBlue text-white"
+                                                        ? "Button text-white"
                                                         : "bg-gray-100"
                                                 }`}
                                                 onClick={() => {
@@ -273,7 +273,7 @@ export default function TabFirst({
                                             type='button'
                                             className={`text-sm px-3 py-1 rounded ${
                                                 activeDuration === "15s"
-                                                    ? "ButtonBlue text-white"
+                                                    ? "Button text-white"
                                                     : "bg-white text-black"
                                             }`}
                                             onClick={() =>
@@ -287,7 +287,7 @@ export default function TabFirst({
                                             type='button'
                                             className={`text-sm px-3 py-1 rounded ${
                                                 activeDuration === "30s"
-                                                    ? "ButtonBlue text-white"
+                                                    ? "Button text-white"
                                                     : "bg-white text-black"
                                             }`}
                                             onClick={() =>
@@ -301,7 +301,7 @@ export default function TabFirst({
                                             type='button'
                                             className={`text-sm px-3 py-1 rounded ${
                                                 activeDuration === "Diger"
-                                                    ? "ButtonBlue text-white"
+                                                    ? "Button text-white"
                                                     : "bg-white text-black"
                                             }`}
                                             onClick={() =>
@@ -323,7 +323,7 @@ export default function TabFirst({
                                             type='button'
                                             className={`text-sm px-3 py-1 rounded ${
                                                 activeEdit === true
-                                                    ? "ButtonBlue text-white"
+                                                    ? "Button text-white"
                                                     : "bg-white text-black"
                                             }`}
                                             onClick={() => setActiveEdit(true)}
@@ -335,7 +335,7 @@ export default function TabFirst({
                                             type='button'
                                             className={`text-sm px-3 py-1 rounded ${
                                                 activeEdit === false
-                                                    ? "ButtonBlue text-white"
+                                                    ? "Button text-white"
                                                     : "bg-white text-black"
                                             }`}
                                             onClick={() => setActiveEdit(false)}
@@ -391,7 +391,7 @@ export default function TabFirst({
                                             type='button'
                                             className={`text-sm px-3 py-1 rounded ${
                                                 activeRatio === "9:16"
-                                                    ? "ButtonBlue text-white"
+                                                    ? "Button text-white"
                                                     : "bg-white text-black"
                                             }`}
                                             onClick={() =>
@@ -404,7 +404,7 @@ export default function TabFirst({
                                             type='button'
                                             className={`text-sm px-3 py-1 rounded ${
                                                 activeRatio === "16:9"
-                                                    ? "ButtonBlue text-white"
+                                                    ? "Button text-white"
                                                     : "bg-white text-black"
                                             }`}
                                             onClick={() =>
@@ -452,7 +452,7 @@ export default function TabFirst({
                                             </p>
                                             <div className='mb-2'>
                                                 {option.strikeThroughPrice && (
-                                                    <p className='ButtonBlue inline text-white font-medium rounded-md px-1 py-0.5 text-xs'>
+                                                    <p className='Button inline text-white font-medium rounded-md px-1 py-0.5 text-xs'>
                                                         {(
                                                             option.strikeThroughPrice -
                                                             option.finalPrice
@@ -644,7 +644,7 @@ export default function TabFirst({
                             <button
                                 type='submit'
                                 // onClick={() => setActiveTab(1)}
-                                className='ButtonBlue text-white font-semibold py-2 px-4 rounded-lg'
+                                className='Button text-white font-semibold py-2 px-4 rounded-lg'
                             >
                                 İleri
                             </button>

@@ -138,7 +138,7 @@ const LoginForm = () => {
 
             <button
                 type='submit'
-                className='w-full ButtonBlue text-white py-2 rounded-lg font-semibold'
+                className='w-full Button text-white py-2 rounded-lg font-semibold'
                 disabled={loading}
             >
                 {loading ? "Yükleniyor..." : "Giriş Yap"}

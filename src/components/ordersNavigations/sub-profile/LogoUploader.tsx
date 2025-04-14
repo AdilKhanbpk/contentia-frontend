@@ -83,7 +83,7 @@ export default function LogoUploader({
                         className='w-full h-full object-cover rounded-md'
                     />
                 ) : (
-                    <div className='w-28 h-28 ButtonBlue text-white rounded-full flex items-center justify-center'>
+                    <div className='w-28 h-28 Button text-white rounded-full flex items-center justify-center'>
                         Logo
                     </div>
                 )}

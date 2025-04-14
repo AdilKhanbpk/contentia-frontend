@@ -290,7 +290,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                     </div>
 
                     <div className='flex justify-end'>
-                        <button className='ButtonBlue text-white text-base font-semibold rounded-xl p-1 px-14'>
+                        <button className='Button text-white text-base font-semibold rounded-xl p-1 px-14'>
                             {isSubmitting ? "Yükleniyor..." : "Kaydet"}
                         </button>
                     </div>
@@ -327,7 +327,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                         </div>
                         <button
                             onClick={handleVerify}
-                            className='ButtonBlue text-white text-base font-semibold rounded-2xl p-1 mt-5 px-8'
+                            className='Button text-white text-base font-semibold rounded-2xl p-1 mt-5 px-8'
                         >
                             Doğrula
                         </button>

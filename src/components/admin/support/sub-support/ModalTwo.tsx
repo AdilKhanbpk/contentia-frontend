@@ -126,7 +126,7 @@ export default function ModalTwo({ claim }: ModalTwoProps) {
                     <div className='flex justify-end'>
                         <button
                             type='submit'
-                            className='ButtonBlue text-white px-8 py-1 rounded-lg font-semibold'
+                            className='Button text-white px-8 py-1 rounded-lg font-semibold'
                             disabled={loading} // Disable button during loading
                         >
                             {loading ? "Updating..." : "Update Claim"}

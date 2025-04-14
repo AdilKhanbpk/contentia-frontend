@@ -176,7 +176,7 @@ export function ModalEdit({ blogData, onClose, onSubmit }: BlogEditModelProps) {
                     </button>
                     <button
                         type='submit'
-                        className='ButtonBlue text-white px-8 py-1 rounded-lg font-semibold'
+                        className='Button text-white px-8 py-1 rounded-lg font-semibold'
                     >
                         Update
                     </button>

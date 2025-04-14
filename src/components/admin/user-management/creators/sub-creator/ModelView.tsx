@@ -341,7 +341,7 @@ const ModalView: React.FC<ModalViewProps> = ({
             <div className='flex justify-end'>
                 <button
                     onClick={onClose}
-                    className='px-4 py-2 ButtonBlue text-white rounded-md'
+                    className='px-4 py-2 Button text-white rounded-md'
                 >
                     Close
                 </button>

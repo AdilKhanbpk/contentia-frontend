@@ -149,7 +149,7 @@ export default function NewPackageModal() {
                                                         className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
                                                             selectedPlatform ===
                                                             platform.value
-                                                                ? "ButtonBlue text-white"
+                                                                ? "Button text-white"
                                                                 : "bg-gray-200"
                                                         }`}
                                                         onClick={() => {
@@ -187,7 +187,7 @@ export default function NewPackageModal() {
                                                             type='button'
                                                             className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
                                                                 duration === dur
-                                                                    ? "ButtonBlue text-white"
+                                                                    ? "Button text-white"
                                                                     : "bg-gray-200"
                                                             }`}
                                                             onClick={() => {
@@ -224,7 +224,7 @@ export default function NewPackageModal() {
                                                         type='button'
                                                         className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
                                                             isEdit === option
-                                                                ? "ButtonBlue text-white"
+                                                                ? "Button text-white"
                                                                 : "bg-gray-200"
                                                         }`}
                                                         onClick={() => {
@@ -261,7 +261,7 @@ export default function NewPackageModal() {
                                                             className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
                                                                 aspectRatio ===
                                                                 ratio
-                                                                    ? "ButtonBlue text-white"
+                                                                    ? "Button text-white"
                                                                     : "bg-gray-200"
                                                             }`}
                                                             onClick={() => {
@@ -298,7 +298,7 @@ export default function NewPackageModal() {
                                                         type='button'
                                                         className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
                                                             isShare === option
-                                                                ? "ButtonBlue text-white"
+                                                                ? "Button text-white"
                                                                 : "bg-gray-200"
                                                         }`}
                                                         onClick={() => {
@@ -333,7 +333,7 @@ export default function NewPackageModal() {
                                                         className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
                                                             isCoverPicture ==
                                                             option
-                                                                ? "ButtonBlue text-white"
+                                                                ? "Button text-white"
                                                                 : "bg-gray-200"
                                                         }`}
                                                         onClick={() => {
@@ -372,7 +372,7 @@ export default function NewPackageModal() {
                                                             className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
                                                                 creatorType ===
                                                                 type
-                                                                    ? "ButtonBlue text-white"
+                                                                    ? "Button text-white"
                                                                     : "bg-gray-200"
                                                             }`}
                                                             onClick={() => {
@@ -410,7 +410,7 @@ export default function NewPackageModal() {
                                                         className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
                                                             isShipping ===
                                                             option
-                                                                ? "ButtonBlue text-white"
+                                                                ? "Button text-white"
                                                                 : "bg-gray-200"
                                                         }`}
                                                         onClick={() => {
@@ -436,7 +436,7 @@ export default function NewPackageModal() {
                     <div className='mt-6 text-right'>
                         <button
                             type='submit'
-                            className='ButtonBlue text-white px-6 py-0.5 rounded'
+                            className='Button text-white px-6 py-0.5 rounded'
                         >
                             {isSubmitting ? "Saving..." : "Save"}
                         </button>

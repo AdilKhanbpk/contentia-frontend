@@ -95,7 +95,7 @@ export default function ImageUploader({
                 <button
                     type='button'
                     onClick={handleImageUpload}
-                    className='ButtonBlue text-white px-4 py-1 rounded-lg font-semibold mt-2'
+                    className='Button text-white px-4 py-1 rounded-lg font-semibold mt-2'
                 >
                     Upload Image
                 </button>

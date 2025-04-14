@@ -263,7 +263,7 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                     <div className='flex justify-center items-center lg:-ml-32'>
                                         <button
                                             type='button'
-                                            className='mt-4 py-1 px-16 ButtonBlue font-semibold text-white rounded-xl focus:outline-none'
+                                            className='mt-4 py-1 px-16 Button font-semibold text-white rounded-xl focus:outline-none'
                                         >
                                             Yükle
                                         </button>
@@ -313,7 +313,7 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
                         <button
                             type='submit'
                             // onClick={() => setActiveTab(3)}
-                            className='py-2 px-4 ButtonBlue font-semibold text-white rounded-md focus:outline-none'
+                            className='py-2 px-4 Button font-semibold text-white rounded-md focus:outline-none'
                         >
                             İleri
                         </button>

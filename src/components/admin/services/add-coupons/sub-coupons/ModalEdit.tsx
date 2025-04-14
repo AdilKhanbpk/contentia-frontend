@@ -253,7 +253,7 @@ export default function ModalEdit({
                     <div className='mt-6 text-right'>
                         <button
                             type='submit'
-                            className='ButtonBlue text-white px-5 py-2 rounded'
+                            className='Button text-white px-5 py-2 rounded'
                             disabled={isSubmitting}
                         >
                             {isSubmitting ? "Updating..." : "Update"}

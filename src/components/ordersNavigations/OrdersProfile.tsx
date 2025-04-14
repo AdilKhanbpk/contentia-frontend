@@ -106,7 +106,7 @@ const OrdersProfile: React.FC = () => {
                         <div className='w-full mt-4 lg:w-1/4 flex justify-end items-end'>
                             <button
                                 type='submit'
-                                className='font-semibold px-8 py-0.5 ButtonBlue text-white rounded-lg'
+                                className='font-semibold px-8 py-0.5 Button text-white rounded-lg'
                             >
                                 Güncelle
                             </button>
@@ -129,7 +129,7 @@ const OrdersProfile: React.FC = () => {
                         <div className='w-full flex justify-end items-end'>
                             <button
                                 type='submit'
-                                className='font-semibold px-8 py-0.5 ButtonBlue text-white rounded-lg'
+                                className='font-semibold px-8 py-0.5 Button text-white rounded-lg'
                             >
                                 Şifre Güncelle
                             </button>

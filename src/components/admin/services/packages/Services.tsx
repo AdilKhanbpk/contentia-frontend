@@ -215,7 +215,7 @@ const Packages = () => {
                                 <div className='flex space-x-2'>
                                     <button
                                         type='submit'
-                                        className='w-full ButtonBlue text-white py-2 rounded-md transition'
+                                        className='w-full Button text-white py-2 rounded-md transition'
                                         disabled={isSaving} // Disable button during save
                                     >
                                         {isSaving ? "Saving..." : "Save"}

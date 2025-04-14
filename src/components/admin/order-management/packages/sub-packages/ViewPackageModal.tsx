@@ -234,7 +234,7 @@ export default function ViewPackage({ currentPackage }: any) {
                 </div>
 
                 <div className='flex justify-end'>
-                    <button className='ButtonBlue text-white px-8 py-1 rounded-lg font-semibold'>
+                    <button className='Button text-white px-8 py-1 rounded-lg font-semibold'>
                         Save
                     </button>
                 </div>

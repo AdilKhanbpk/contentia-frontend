@@ -50,7 +50,7 @@ function NavbarNotification({ user, notifications }: NavbarNotificationProps) {
                         onClick={() => setTab("all")}
                         className={`px-3 py-1 rounded-full transition ${
                             tab === "all"
-                                ? "bg-blue-600 text-white"
+                                ? "BlueBg text-white"
                                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                         }`}
                     >
@@ -60,7 +60,7 @@ function NavbarNotification({ user, notifications }: NavbarNotificationProps) {
                         onClick={() => setTab("unread")}
                         className={`px-3 py-1 rounded-full transition ${
                             tab === "unread"
-                                ? "bg-blue-600 text-white"
+                                ? "BlueBg text-white"
                                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                         }`}
                     >

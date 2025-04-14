@@ -133,7 +133,7 @@ const About = () => {
                                         Hizmetlerimiz için bilgi almak adına
                                         temsilcimizle görüşme gerçekleştirin!
                                     </p>
-                                    <button className='ButtonBlue text-white w-fit px-6 py-2 rounded-full font-bold mt-6'>
+                                    <button className='Button text-white w-fit px-6 py-2 rounded-full font-bold mt-6'>
                                         İletişime Geç
                                     </button>
                                 </div>

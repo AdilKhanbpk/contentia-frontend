@@ -26,7 +26,9 @@ interface ModalCentersProps {
 
 export const ModalCenters: React.FC<ModalCentersProps> = ({ onClose }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const { currentHelpSupport } = useSelector((state: RootState) => state.help);
+    const { currentHelpSupport } = useSelector(
+        (state: RootState) => state.help
+    );
 
     const {
         register,
@@ -57,13 +59,17 @@ export const ModalCenters: React.FC<ModalCentersProps> = ({ onClose }) => {
 
     const onSubmit = async (formData: HelpSupportFormData) => {
         try {
-             const token = getAccessToken();
-                       if (!token) return;
+            const token = getAccessToken();
+            if (!token) return;
             const submitData = new FormData();
             submitData.append("title", formData.title.trim());
             submitData.append("category", formData.category.trim());
             submitData.append("content", formData.content.trim());
-            if (iconField && iconField instanceof FileList && iconField.length > 0) {
+            if (
+                iconField &&
+                iconField instanceof FileList &&
+                iconField.length > 0
+            ) {
                 submitData.append("icon", iconField[0]);
             }
             if (currentHelpSupport) {
@@ -91,87 +97,110 @@ export const ModalCenters: React.FC<ModalCentersProps> = ({ onClose }) => {
     };
 
     return (
-        <div className="bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6">
-            <h1 className="text-lg font-semibold">
-                {currentHelpSupport ? "Edit Help Support" : "Create Help Support"}
+        <div className='bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6'>
+            <h1 className='text-lg font-semibold'>
+                {currentHelpSupport
+                    ? "Edit Help Support"
+                    : "Create Help Support"}
             </h1>
 
-            <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                encType='multipart/form-data'
+            >
                 {/* Title */}
-                <div className="mt-4">
-                    <label className="block text-sm font-semibold">Help Title</label>
+                <div className='mt-4'>
+                    <label className='block text-sm font-semibold'>
+                        Help Title
+                    </label>
                     <input
-                        type="text"
-                        {...register("title", { required: "Title is required" })}
-                        placeholder="Enter help title"
-                        className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none"
+                        type='text'
+                        {...register("title", {
+                            required: "Title is required",
+                        })}
+                        placeholder='Enter help title'
+                        className='w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none'
                     />
                     {errors.title && (
-                        <span className="text-red-500 text-sm">{errors.title.message}</span>
+                        <span className='text-red-500 text-sm'>
+                            {errors.title.message}
+                        </span>
                     )}
                 </div>
 
                 {/* Category */}
-                <div className="mt-4">
-                    <label className="block text-sm font-semibold">Select Category</label>
+                <div className='mt-4'>
+                    <label className='block text-sm font-semibold'>
+                        Select Category
+                    </label>
                     <select
-                        {...register("category", { required: "Category is required" })}
-                        className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none"
+                        {...register("category", {
+                            required: "Category is required",
+                        })}
+                        className='w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none'
                     >
-                        <option value="">Select a category</option>
-                        <option value="tech">Tech</option>
-                        <option value="support">Support</option>
-                        <option value="general">General</option>
+                        <option value=''>Select a category</option>
+                        <option value='tech'>Tech</option>
+                        <option value='support'>Support</option>
+                        <option value='general'>General</option>
                     </select>
                     {errors.category && (
-                        <span className="text-red-500 text-sm">{errors.category.message}</span>
+                        <span className='text-red-500 text-sm'>
+                            {errors.category.message}
+                        </span>
                     )}
                 </div>
 
                 {/* Content */}
-                <div className="mt-4">
-                    <label className="block text-sm font-semibold">Help Details</label>
+                <div className='mt-4'>
+                    <label className='block text-sm font-semibold'>
+                        Help Details
+                    </label>
                     <Controller
-                        name="content"
+                        name='content'
                         control={control}
                         rules={{ required: "Content is required" }}
                         render={({ field: { onChange, value } }) => (
                             <ReactQuill
-                                value={value || ''}
+                                value={value || ""}
                                 onChange={onChange}
-                                theme="snow"
-                                className="w-full border border-gray-400 rounded-lg mt-2"
+                                theme='snow'
+                                className='w-full border border-gray-400 rounded-lg mt-2'
                             />
                         )}
                     />
                     {errors.content && (
-                        <span className="text-red-500 text-sm">{errors.content.message}</span>
+                        <span className='text-red-500 text-sm'>
+                            {errors.content.message}
+                        </span>
                     )}
                 </div>
 
                 {/* Icon Upload */}
-                <div className="mt-4">
-                    <label className="block text-sm font-semibold">Upload Icon</label>
+                <div className='mt-4'>
+                    <label className='block text-sm font-semibold'>
+                        Upload Icon
+                    </label>
                     <input
-                        type="file"
-                        accept="image/*"
+                        type='file'
+                        accept='image/*'
                         {...register("icon")}
-                        className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none"
+                        className='w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none'
                     />
                 </div>
 
                 {/* Buttons */}
-                <div className="mt-4 flex justify-end">
+                <div className='mt-4 flex justify-end'>
                     <button
-                        type="button"
+                        type='button'
                         onClick={onClose}
-                        className="px-4 py-2 bg-gray-500 text-white rounded-md mr-2"
+                        className='px-4 py-2 bg-gray-500 text-white rounded-md mr-2'
                     >
                         Cancel
                     </button>
                     <button
-                        type="submit"
-                        className="px-4 py-2 ButtonBlue text-white rounded-md"
+                        type='submit'
+                        className='px-4 py-2 Button text-white rounded-md'
                     >
                         {currentHelpSupport ? "Update" : "Create"}
                     </button>

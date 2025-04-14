@@ -181,7 +181,7 @@ export default function HowItWorks() {
                     <button
                         type='submit'
                         disabled={loading}
-                        className='ButtonBlue text-white px-8 py-1 rounded-lg font-semibold'
+                        className='Button text-white px-8 py-1 rounded-lg font-semibold'
                     >
                         {loading ? "Saving..." : "Save"}
                     </button>

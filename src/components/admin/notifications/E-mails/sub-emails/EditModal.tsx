@@ -148,7 +148,7 @@ export default function EditEmailNotification({
                 </button>
                 <button
                     type='submit'
-                    className='bg-blue-600 text-white px-8 py-2 rounded-lg font-semibold'
+                    className='Button text-white px-8 py-2 rounded-lg font-semibold'
                 >
                     {isSubmitting ? "Updating..." : "Update"}
                 </button>

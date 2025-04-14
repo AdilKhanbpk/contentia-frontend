@@ -211,7 +211,7 @@ const AddService: React.FC = () => {
                 <div className='flex lg:w-1/2 justify-end'>
                     <button
                         type='submit'
-                        className='w-32 ButtonBlue text-white px-3 py-2 rounded-md mt-4'
+                        className='w-32 Button text-white px-3 py-2 rounded-md mt-4'
                     >
                         {isSubmitting ? "Saving..." : "Save"}
                     </button>

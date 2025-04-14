@@ -190,7 +190,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                         {/* Track background and active track */}
                                         <div className='absolute w-full h-2 bg-gray-200 rounded-full' />
                                         <div
-                                            className='absolute h-2 bg-blue-600 rounded-full'
+                                            className='absolute h-2 BlueBg rounded-full'
                                             style={{
                                                 left: `${
                                                     ((minAge - 18) /
@@ -539,7 +539,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                         <div className='w-full flex justify-end'>
                             <button
                                 type='submit'
-                                className=' ButtonBlue text-white py-2 px-4 rounded-md'
+                                className=' Button text-white py-2 px-4 rounded-md'
                             >
                                 {orderLoading ? "Tamamlanıyor..." : "Tamamla"}
                             </button>

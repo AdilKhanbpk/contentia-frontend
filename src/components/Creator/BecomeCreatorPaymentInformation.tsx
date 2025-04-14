@@ -574,7 +574,7 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
                     <div className='flex justify-end'>
                         <button
                             type='submit'
-                            className='ButtonBlue text-white text-lg font-bold rounded-xl p-1 px-14'
+                            className='Button text-white text-lg font-bold rounded-xl p-1 px-14'
                         >
                             {isSubmitting ? "Kaydediliyor..." : "Kaydet"}
                         </button>

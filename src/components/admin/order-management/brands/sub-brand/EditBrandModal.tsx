@@ -194,7 +194,7 @@ const EditBrand: React.FC<EditBrandProps> = ({ brand }) => {
             <div className='mt-4'>
                 <button
                     type='submit'
-                    className='px-4 py-1 ButtonBlue text-white rounded-xl'
+                    className='px-4 py-1 Button text-white rounded-xl'
                     disabled={loading}
                 >
                     {loading ? "Updating..." : "Update"}

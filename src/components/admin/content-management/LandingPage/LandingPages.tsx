@@ -223,7 +223,7 @@ export default function LandingPages() {
                 <div className='flex justify-end my-12'>
                     <button
                         type='submit'
-                        className='ButtonBlue text-white px-10 py-1 rounded-lg font-semibold'
+                        className='Button text-white px-10 py-1 rounded-lg font-semibold'
                     >
                         {isSubmitting ? "Saving..." : "Save"}
                     </button>

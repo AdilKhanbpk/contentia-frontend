@@ -35,7 +35,7 @@ const BannerCard = memo(
             </h3>
             <button
                 onClick={() => onEdit(banner)}
-                className='w-full ButtonBlue text-white px-4 py-2 rounded-md'
+                className='w-full Button text-white px-4 py-2 rounded-md'
             >
                 Update
             </button>
@@ -195,7 +195,7 @@ const ModalBanner = memo(
                         </button>
                         <button
                             type='submit'
-                            className='ButtonBlue text-white px-8 py-2 rounded-md'
+                            className='Button text-white px-8 py-2 rounded-md'
                         >
                             {mode === "edit" ? "Update" : "Save"}
                         </button>
@@ -301,7 +301,7 @@ const Banners: React.FC = () => {
                     <h1 className='text-lg font-semibold'>Banners</h1>
                     <button
                         onClick={() => handleModalOpen("create")}
-                        className='ButtonBlue text-white px-6 py-2 rounded-lg font-semibold'
+                        className='Button text-white px-6 py-2 rounded-lg font-semibold'
                     >
                         Create
                     </button>

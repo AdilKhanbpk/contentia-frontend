@@ -128,7 +128,7 @@ const Preferences: React.FC<PreferencesProps> = ({ setActiveTab }) => {
                 <div className='flex justify-center xs:mt-[-38px] lg:justify-end lg:mt-[-50px] lg:mr-36'>
                     <button
                         type='submit'
-                        className='ButtonBlue text-white lg:text-lg font-bold rounded-xl p-1 xs:px-4 lg:px-8'
+                        className='Button text-white lg:text-lg font-bold rounded-xl p-1 xs:px-4 lg:px-8'
                     >
                         {isSubmitting ? "Tamamlama..." : " Tamamla"}
                     </button>

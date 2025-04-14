@@ -116,7 +116,7 @@ const HelpCenters: React.FC = () => {
                                 dispatch(setCurrentHelpSupport(null));
                                 setIsModalOpen(true);
                             }}
-                            className='px-1 md:px-4 py-0.5 md:py-2 ButtonBlue text-white rounded-md'
+                            className='px-1 md:px-4 py-0.5 md:py-2 Button text-white rounded-md'
                         >
                             Add
                         </button>

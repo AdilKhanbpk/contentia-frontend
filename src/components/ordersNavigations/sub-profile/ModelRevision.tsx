@@ -101,7 +101,7 @@ export default function ModelRevision({ orderData }: ModelRevisionProps) {
                             <button
                                 type='submit'
                                 disabled={isSubmitting}
-                                className='ButtonBlue text-white px-8 py-1 rounded-lg font-semibold'
+                                className='Button text-white px-8 py-1 rounded-lg font-semibold'
                             >
                                 {isSubmitting ? "Gönderiliyor..." : "Gönder"}
                             </button>

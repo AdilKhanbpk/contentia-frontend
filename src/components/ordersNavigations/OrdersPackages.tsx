@@ -33,7 +33,7 @@ export default function OrdersPackages() {
                 <div className='flex flex-col'>
                     <div className='p-4 my-6 sm:p-5 sm:my-7 md:p-6 md:my-8 lg:p-6 lg:my-8'>
                         <div className='mb-5'>
-                            <button className='font-semibold px-2 py-1 ButtonBlue text-white rounded-lg'>
+                            <button className='font-semibold px-2 py-1 Button text-white rounded-lg'>
                                 UGC Siparişini Oluştur
                             </button>
                         </div>
@@ -47,7 +47,7 @@ export default function OrdersPackages() {
                                             <h2 className='text-base font-semibold mb-12'>
                                                 Profil Bilgileri
                                             </h2>
-                                            <div className='w-36 h-36 ButtonBlue font-semibold text-white rounded-full flex items-center justify-center'>
+                                            <div className='w-36 h-36 Button font-semibold text-white rounded-full flex items-center justify-center'>
                                                 SK
                                             </div>
                                         </div>

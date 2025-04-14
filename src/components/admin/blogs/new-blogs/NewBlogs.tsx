@@ -252,7 +252,7 @@ export default function NewBlogs() {
                 <div className='flex justify-end my-6'>
                     <button
                         type='submit'
-                        className='ButtonBlue text-white px-8 py-1 rounded-lg font-semibold'
+                        className='Button text-white px-8 py-1 rounded-lg font-semibold'
                     >
                         {isSubmitting ? "Saving..." : "Save"}
                     </button>

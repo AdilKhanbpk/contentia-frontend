@@ -372,7 +372,7 @@ export default function EditModal({ order }: EditModalProps) {
                                                                     className={`px-1 py-0.5 min-w-16 max-w-18 border text-xs rounded-sm ${
                                                                         field.value ===
                                                                         value
-                                                                            ? "ButtonBlue text-white"
+                                                                            ? "Button text-white"
                                                                             : "bg-gray-200"
                                                                     }`}
                                                                     onClick={() =>
@@ -412,7 +412,7 @@ export default function EditModal({ order }: EditModalProps) {
                                                                 className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
                                                                     field.value ===
                                                                     dur
-                                                                        ? "ButtonBlue text-white"
+                                                                        ? "Button text-white"
                                                                         : "bg-gray-200"
                                                                 }`}
                                                                 onClick={() =>
@@ -449,7 +449,7 @@ export default function EditModal({ order }: EditModalProps) {
                                                                         field.value ===
                                                                         (option ===
                                                                             "Yes")
-                                                                            ? "ButtonBlue text-white"
+                                                                            ? "Button text-white"
                                                                             : "bg-gray-200"
                                                                     }`}
                                                                     onClick={() =>
@@ -487,7 +487,7 @@ export default function EditModal({ order }: EditModalProps) {
                                                                     className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
                                                                         field.value ===
                                                                         ratio
-                                                                            ? "ButtonBlue text-white"
+                                                                            ? "Button text-white"
                                                                             : "bg-gray-200"
                                                                     }`}
                                                                     onClick={() =>
@@ -525,7 +525,7 @@ export default function EditModal({ order }: EditModalProps) {
                                                                         field.value ===
                                                                         (option ===
                                                                             "Yes")
-                                                                            ? "ButtonBlue text-white"
+                                                                            ? "Button text-white"
                                                                             : "bg-gray-200"
                                                                     }`}
                                                                     onClick={() =>
@@ -564,7 +564,7 @@ export default function EditModal({ order }: EditModalProps) {
                                                                         field.value ===
                                                                         (option ===
                                                                             "Yes")
-                                                                            ? "ButtonBlue text-white"
+                                                                            ? "Button text-white"
                                                                             : "bg-gray-200"
                                                                     }`}
                                                                     onClick={() =>
@@ -603,7 +603,7 @@ export default function EditModal({ order }: EditModalProps) {
                                                                         field.value ===
                                                                         (option ===
                                                                             "Micro")
-                                                                            ? "ButtonBlue text-white"
+                                                                            ? "Button text-white"
                                                                             : "bg-gray-200"
                                                                     }`}
                                                                     onClick={() =>
@@ -642,7 +642,7 @@ export default function EditModal({ order }: EditModalProps) {
                                                                         field.value ===
                                                                         (option ===
                                                                             "Yes")
-                                                                            ? "ButtonBlue text-white"
+                                                                            ? "Button text-white"
                                                                             : "bg-gray-200"
                                                                     }`}
                                                                     onClick={() =>
@@ -845,7 +845,7 @@ export default function EditModal({ order }: EditModalProps) {
                                             <div className='flex justify-center items-center lg:-ml-32'>
                                                 <button
                                                     type='button'
-                                                    className='mt-4 py-1 px-16 ButtonBlue font-semibold text-white rounded-xl focus:outline-none'
+                                                    className='mt-4 py-1 px-16 Button font-semibold text-white rounded-xl focus:outline-none'
                                                 >
                                                     Yükle
                                                 </button>
@@ -1158,7 +1158,7 @@ export default function EditModal({ order }: EditModalProps) {
                                 {/* Track background and active track */}
                                 <div className='absolute w-full h-2 bg-gray-200 rounded-full' />
                                 <div
-                                    className='absolute h-2 bg-blue-600 rounded-full'
+                                    className='absolute h-2 BlueBg rounded-full'
                                     style={{
                                         left: `${
                                             ((minAge - 18) / (65 - 18)) * 100
@@ -1402,7 +1402,7 @@ export default function EditModal({ order }: EditModalProps) {
                                 </div>
                             </div>
                             <div className='flex justify-end'>
-                                <button className='ButtonBlue text-white px-8 py-1 rounded-lg font-semibold'>
+                                <button className='Button text-white px-8 py-1 rounded-lg font-semibold'>
                                     {isSubmitting ? <FaSpinner /> : "Kaydet"}
                                 </button>
                             </div>
@@ -1576,7 +1576,7 @@ export default function EditModal({ order }: EditModalProps) {
                             </div>
                         </div>
                         <div className='flex justify-end'>
-                            <button className='ButtonBlue text-white px-8 py-1 rounded-lg font-semibold'>
+                            <button className='Button text-white px-8 py-1 rounded-lg font-semibold'>
                                 Submit
                             </button>
                         </div>

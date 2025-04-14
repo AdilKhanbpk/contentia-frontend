@@ -64,7 +64,7 @@ const EditableBrand: React.FC<EditableBrandProps> = ({
             {isEditing && (
                 <button
                     type='submit'
-                    className='mt-4 px-8 py-0.5 ButtonBlue text-white rounded-lg'
+                    className='mt-4 px-8 py-0.5 Button text-white rounded-lg'
                 >
                     Güncelle
                 </button>

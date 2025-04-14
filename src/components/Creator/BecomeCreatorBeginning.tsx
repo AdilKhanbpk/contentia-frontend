@@ -66,7 +66,7 @@ const Beginning: React.FC<{ setActiveTab: (id: number) => void }> = ({
                         onClick={() => {
                             setActiveTab(1);
                         }}
-                        className='ButtonBlue text-white text-lg font-bold rounded-xl p-1 px-14'
+                        className='Button text-white text-lg font-bold rounded-xl p-1 px-14'
                     >
                         İleri
                     </button>

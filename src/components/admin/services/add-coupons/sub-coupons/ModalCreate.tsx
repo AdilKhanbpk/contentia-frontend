@@ -198,7 +198,7 @@ export default function ModalCreate({ closeModal, token }: ModalCreateProps) {
                     <button
                         type='submit'
                         disabled={isSubmitting}
-                        className={`ButtonBlue text-white px-5 py-2 rounded ${
+                        className={`Button text-white px-5 py-2 rounded ${
                             isSubmitting ? "opacity-50 cursor-not-allowed" : ""
                         }`}
                     >

@@ -202,7 +202,7 @@ export default function NewModal() {
                                                         className={`px-2 py-0.5 min-w-16 max-w-18 border text-xs rounded-sm ${
                                                             selectedPlatform ===
                                                             platform.value
-                                                                ? "ButtonBlue text-white"
+                                                                ? "Button text-white"
                                                                 : "bg-gray-200"
                                                         }`}
                                                         onClick={() => {
@@ -240,7 +240,7 @@ export default function NewModal() {
                                                             type='button'
                                                             className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
                                                                 duration === dur
-                                                                    ? "ButtonBlue text-white"
+                                                                    ? "Button text-white"
                                                                     : "bg-gray-200"
                                                             }`}
                                                             onClick={() => {
@@ -281,7 +281,7 @@ export default function NewModal() {
                                                                     "Yes") ||
                                                             (!isEdit &&
                                                                 option === "No")
-                                                                ? "ButtonBlue text-white"
+                                                                ? "Button text-white"
                                                                 : "bg-gray-200"
                                                         }`}
                                                         onClick={() => {
@@ -321,7 +321,7 @@ export default function NewModal() {
                                                             className={`px-1 py-0.5 min-w-16 max-w-16 border text-xs rounded-sm ${
                                                                 aspectRatio ===
                                                                 ratio
-                                                                    ? "ButtonBlue text-white"
+                                                                    ? "Button text-white"
                                                                     : "bg-gray-200"
                                                             }`}
                                                             onClick={() => {
@@ -362,7 +362,7 @@ export default function NewModal() {
                                                                     "Yes") ||
                                                             (!isShare &&
                                                                 option === "No")
-                                                                ? "ButtonBlue text-white"
+                                                                ? "Button text-white"
                                                                 : "bg-gray-200"
                                                         }`}
                                                         onClick={() => {
@@ -405,7 +405,7 @@ export default function NewModal() {
                                                                     "Yes") ||
                                                             (!isCoverPicture &&
                                                                 option === "No")
-                                                                ? "ButtonBlue text-white"
+                                                                ? "Button text-white"
                                                                 : "bg-gray-200"
                                                         }`}
                                                         onClick={() => {
@@ -450,7 +450,7 @@ export default function NewModal() {
                                                                 (!creatorType &&
                                                                     option ===
                                                                         "Nano")
-                                                                    ? "ButtonBlue text-white"
+                                                                    ? "Button text-white"
                                                                     : "bg-gray-200"
                                                             }`}
                                                             onClick={() => {
@@ -494,7 +494,7 @@ export default function NewModal() {
                                                                     "Yes") ||
                                                             (!isShipping &&
                                                                 option === "No")
-                                                                ? "ButtonBlue text-white"
+                                                                ? "Button text-white"
                                                                 : "bg-gray-200"
                                                         }`}
                                                         onClick={() => {
@@ -523,7 +523,7 @@ export default function NewModal() {
                     <div className='mt-6 text-right'>
                         <button
                             type='submit'
-                            className='ButtonBlue text-white px-6 py-0.5 rounded'
+                            className='Button text-white px-6 py-0.5 rounded'
                         >
                             {isSubmitting ? "Saving..." : "Save"}
                         </button>

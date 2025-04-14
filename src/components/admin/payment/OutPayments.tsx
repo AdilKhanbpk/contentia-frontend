@@ -239,7 +239,7 @@ const OutPayments: React.FC = () => {
                         className='p-2 border border-gray-300 rounded-lg'
                     />
                     <div className='flex flex-col md:flex-row lg:space-x-2'>
-                        <button className='px-1 md:px-4 py-0.5 md:py-2 ButtonBlue text-white rounded-md'>
+                        <button className='px-1 md:px-4 py-0.5 md:py-2 Button text-white rounded-md'>
                             Add Out Payment
                         </button>
                         <button
