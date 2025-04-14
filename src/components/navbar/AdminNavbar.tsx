@@ -363,12 +363,13 @@ export default function AdminNavbar() {
                                     {section.title}
                                 </span>
                                 {section.links.map((link, linkIndex) => {
+                                    const currentPath = normalizePath(pathname);
+                                    const linkPath = normalizePath(link.href);
+
                                     const isActive =
-                                        normalizePath(pathname) ===
-                                            normalizePath(link.href) ||
-                                        normalizePath(pathname).startsWith(
-                                            normalizePath(link.href)
-                                        );
+                                        linkPath === "/admin"
+                                            ? currentPath === "/admin"
+                                            : currentPath.startsWith(linkPath);
 
                                     return (
                                         <li
@@ -379,7 +380,7 @@ export default function AdminNavbar() {
                                                 href={link.href}
                                                 className={`flex items-center p-2 rounded-lg group ${
                                                     isActive
-                                                        ? "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white font-semibold"
+                                                        ? "BlueBg dark:bg-gray-700 text-white dark:text-white font-semibold"
                                                         : "text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                                                 }`}
                                             >
