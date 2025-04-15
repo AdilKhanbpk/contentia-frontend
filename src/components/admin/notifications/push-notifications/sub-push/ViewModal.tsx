@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/store/store";
-import { Notification } from "@/store/features/admin/notificationSlice";
+import React from "react";
+import { NotificationInterface } from "@/store/features/admin/notificationSlice";
 
 interface ModalProps {
-    notification: Notification | null;
+    notification: NotificationInterface | null;
 }
 
 export default function Modal({ notification }: ModalProps) {

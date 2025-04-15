@@ -1,20 +1,12 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
-import {
-    createEmailNotification,
-    fetchEmailNotifications,
-} from "@/store/features/admin/emailNotificationSlice";
 import {
     createNotification,
     fetchNotifications,
 } from "@/store/features/admin/notificationSlice";
 import { useTokenContext } from "@/context/TokenCheckingContext";
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-
 interface CreateModalProps {
     onClose: () => void;
 }
