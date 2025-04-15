@@ -149,7 +149,7 @@ const Analytics: React.FC = () => {
                     <div className='col-span-1'>
                         <AnalyticEcommerce
                             title='Total Sales'
-                            count={`$${totalPriceOfCompletedOrders}`}
+                            count={`${totalPriceOfCompletedOrders}`}
                         />
                     </div>
                 </div>

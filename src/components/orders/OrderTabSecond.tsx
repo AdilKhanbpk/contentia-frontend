@@ -1,22 +1,11 @@
 "use client";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
-
-// Define interfaces for the form data structure
-interface AdditionalServices {
-    share?: boolean;
-    coverPicture?: boolean;
-    creatorType?: boolean;
-    productShipping?: boolean;
-}
-
-interface OrderFormData {
-    additionalServices?: AdditionalServices;
-    noOfUgc?: number;
-    totalPrice?: number;
-}
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import { validateCoupon } from "@/store/features/admin/couponSlice";
+import { useTokenContext } from "@/context/TokenCheckingContext";
+import { OrderInterface } from "@/types/interfaces";
 
 // Define form input types
 interface PaymentFormInputs {
@@ -46,8 +35,8 @@ export default function TabSecond({
     const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
     // Type the selector properly
-    const orderFormData = useSelector<RootState, OrderFormData | null>(
-        (state: RootState) => state.order.orderFormData as OrderFormData
+    const orderFormData = useSelector<RootState, OrderInterface | null>(
+        (state: RootState) => state.order.orderFormData as OrderInterface
     );
 
     const deliveryStartDate = new Date(orderDate);
@@ -73,13 +62,56 @@ export default function TabSecond({
         formState: { errors },
     } = useForm<PaymentFormInputs>();
 
+    const dispatch = useDispatch<AppDispatch>();
+
     const onSubmit = async (data: PaymentFormInputs) => {
         console.log(data);
     };
 
+    const { token } = useTokenContext();
+
     const basePrice = 3000;
     const quantity = orderFormData?.noOfUgc || 1;
     const totalPrice = orderFormData?.totalPrice || 0;
+
+    const [couponCode, setCouponCode] = useState("");
+    const [couponError, setCouponError] = useState("");
+    const [discount, setDiscount] = useState(0);
+    const [finalPrice, setFinalPrice] = useState(totalPrice);
+
+    const handleApplyCoupon = async () => {
+        try {
+            if (token) {
+                const result = await dispatch(
+                    validateCoupon({
+                        code: couponCode,
+                        token,
+                    })
+                ).unwrap();
+
+                // Calculate discount
+                let discountAmount = 0;
+
+                if (result.discountTl) {
+                    discountAmount = result.discountTl;
+                } else if (result.discountPercentage) {
+                    discountAmount =
+                        (totalPrice * result.discountPercentage) / 100;
+                }
+
+                const updatedFinalPrice = Math.max(
+                    0,
+                    Math.round((totalPrice - discountAmount) * 100) / 100
+                );
+
+                setDiscount(discountAmount);
+                setFinalPrice(updatedFinalPrice);
+                setCouponError("");
+            }
+        } catch (error: any) {
+            setCouponError(error.message || "Bir hata oluştu");
+        }
+    };
 
     return (
         <>
@@ -170,7 +202,18 @@ export default function TabSecond({
                         <div className='border-t mt-4 pt-4'>
                             <div className='flex justify-between font-semibold text-lg'>
                                 <p>Toplam</p>
-                                <p>{totalPrice} TL</p>
+                                <p>
+                                    {discount > 0 ? (
+                                        <>
+                                            <span className='line-through text-gray-400 mr-2'>
+                                                {totalPrice} TL
+                                            </span>
+                                            <span>{finalPrice} TL</span>
+                                        </>
+                                    ) : (
+                                        `${totalPrice} TL`
+                                    )}
+                                </p>
                             </div>
                         </div>
 
@@ -182,14 +225,23 @@ export default function TabSecond({
                             <div className='flex flex-col lg:flex-row  lg:space-x-3'>
                                 <input
                                     type='text'
-                                    placeholder=''
+                                    value={couponCode}
+                                    onChange={(e) =>
+                                        setCouponCode(e.target.value)
+                                    }
                                     className='border px-3 py-2 mb-4 rounded-md focus:outline-none '
                                 />
-                                <div>
-                                    <button className='Button text-white px-4 py-2 rounded-md font-semibold'>
-                                        Uygula
-                                    </button>
-                                </div>
+                                <button
+                                    onClick={handleApplyCoupon}
+                                    className='Button text-white px-4 py-2 rounded-md font-semibold'
+                                >
+                                    Uygula
+                                </button>
+                                {couponError && (
+                                    <p className='text-red-500 mt-2'>
+                                        {couponError}
+                                    </p>
+                                )}
                             </div>
                         </div>
 

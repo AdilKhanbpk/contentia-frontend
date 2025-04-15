@@ -1,37 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { axiosInstance } from '@/store/axiosInstance';
 import { AxiosError } from 'axios';
-
-export interface BillingInformation {
-    invoiceStatus: boolean;
-    trId: string;
-    address: string;
-    fullName: string;
-    companyName: string;
-    taxNumber: string;
-    taxOffice: string;
-}
-
-export interface Customer {
-    _id: string;
-    billingInformation: BillingInformation;
-    authProvider: string;
-    status: string;
-    userType: string;
-    role: string;
-    email: string;
-    customerStatus: string;
-    password: string;
-    rememberMe: boolean;
-    termsAndConditionsApproved: boolean;
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-    age: number;
-    fullName: string;
-    invoiceType: string;
-    phoneNumber: string;
-}
+import { Customer } from '@/types/interfaces';
 
 export interface Coupon {
     _id: string;
@@ -183,13 +153,13 @@ export const deleteCoupon = createAsyncThunk(
 export const validateCoupon = createAsyncThunk(
     'coupon/validateCoupon',
     async (
-        { code, orderId, token }: { code: string; orderId: string; token: string },
+        { code, token }: { code: string; token: string },
         { rejectWithValue }
     ) => {
         try {
             const response = await axiosInstance.post(
                 '/admin/coupons/validate',
-                { code, orderId },
+                { code },
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
