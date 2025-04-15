@@ -82,7 +82,7 @@ const Brands: React.FC = () => {
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
     const [isModalViewOpen, setIsViewModalOpen] = useState(false);
     const [isModalRequestsOpen, setIsModalRequestsOpen] = useState(false);
-    const { token } = useTokenContexttext();
+    const { token } = useTokenContext();
     if (!token) return null;
     useEffect(() => {
         const fetchBrandsData = async () => {
