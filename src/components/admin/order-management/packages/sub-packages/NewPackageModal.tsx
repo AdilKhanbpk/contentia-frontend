@@ -96,7 +96,7 @@ export default function NewPackageModal() {
                                     Total Price:
                                 </span>
                                 <span className='text-lg BlueText font-semibold'>
-                                    {totalPrice.toFixed(2)} TL
+                                    {totalPrice.toLocaleString("tr-TR")} TL
                                 </span>
                             </div>
                         </div>

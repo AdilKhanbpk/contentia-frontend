@@ -147,7 +147,8 @@ const OutPayments: React.FC = () => {
 
         {
             name: "Amount Paid",
-            selector: (row: any) => `${row.totalPrice / 2} TL`,
+            selector: (row: any) =>
+                `${(row.totalPrice / 2).toLocaleString("tr-TR")} TL`,
             sortable: true,
         },
         {

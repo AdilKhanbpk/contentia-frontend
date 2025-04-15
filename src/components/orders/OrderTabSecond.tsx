@@ -212,12 +212,22 @@ export default function TabSecond({
                                     ) : discount > 0 ? (
                                         <>
                                             <span className='line-through text-gray-400 mr-2'>
-                                                {totalPrice} TL
+                                                {totalPrice.toLocaleString(
+                                                    "tr-TR"
+                                                )}{" "}
+                                                TL
                                             </span>
-                                            <span>{finalPrice} TL</span>
+                                            <span>
+                                                {finalPrice.toLocaleString(
+                                                    "tr-TR"
+                                                )}{" "}
+                                                TL
+                                            </span>
                                         </>
                                     ) : (
-                                        `${totalPrice} TL`
+                                        `${totalPrice.toLocaleString(
+                                            "tr-TR"
+                                        )} TL`
                                     )}
                                 </p>
                             </div>

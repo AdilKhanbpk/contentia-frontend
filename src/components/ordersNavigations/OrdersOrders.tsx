@@ -187,7 +187,10 @@ export default function OrdersOrders() {
                                                     Toplam:
                                                 </p>
                                                 <p className='font-semibold'>
-                                                    {order.totalPrice} TL
+                                                    {order.totalPrice.toLocaleString(
+                                                        "tr-TR"
+                                                    )}{" "}
+                                                    TL
                                                 </p>
                                             </div>
                                         </div>

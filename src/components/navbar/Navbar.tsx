@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "@/store/store";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,18 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { logoutUser } from "@/store/features/auth/loginSlice";
 import { useTokenContext } from "@/context/TokenCheckingContext";
+import {
+    BriefcaseIcon,
+    PaperClipIcon,
+    ShoppingCartIcon,
+    UserIcon,
+} from "@heroicons/react/24/solid";
+import { IoLogOut } from "react-icons/io5";
+import { Dropdown } from "./AdminNavbar";
+import {
+    fetchProfile,
+    selectProfileUser,
+} from "@/store/features/profile/profileSlice";
 
 export default function Navbar() {
     const dispatch: AppDispatch = useDispatch();
@@ -16,6 +28,8 @@ export default function Navbar() {
     const { t } = useTranslation();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const user = useSelector(selectProfileUser);
 
     const { isAuthenticated, setToken, token, loading } = useTokenContext();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -25,6 +39,12 @@ export default function Navbar() {
             setIsLoggedIn(!!token);
         }
     }, [token, loading]);
+
+    useEffect(() => {
+        if (token) {
+            dispatch(fetchProfile(token));
+        }
+    }, [dispatch, token]);
 
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
@@ -47,7 +67,7 @@ export default function Navbar() {
 
             toast.success("Logout successful");
 
-            router.push("/contentiaio/authentication");
+            router.push("/");
         } catch (error) {
             toast.error("Logout failed");
         }
@@ -165,6 +185,14 @@ export default function Navbar() {
                                         href='#'
                                         className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
                                     >
+                                        Fiyatlandırma
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
+                                        href='#'
+                                        className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
+                                    >
                                         Hakkımızda
                                     </Link>
                                 </li>
@@ -179,43 +207,107 @@ export default function Navbar() {
                             </ul>
                         </div>
 
-                        {/* Sidebar links aligned with the logo on large screens */}
-                        <ul className='hidden lg:flex lg:justify-center lg:items-center space-x-4 ms-10 font-medium'>
-                            <li>
-                                <Link
-                                    legacyBehavior
-                                    href='/contentiaio/become-creator'
-                                >
-                                    <a className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'>
-                                        İçerik Üretici Ol
-                                    </a>
-                                </Link>
-                            </li>
+                        {!isAuthenticated ? (
+                            <ul className='hidden lg:flex lg:justify-center lg:items-center space-x-4 ms-10 font-medium'>
+                                <li>
+                                    <Link
+                                        legacyBehavior
+                                        href='/contentiaio/become-creator'
+                                    >
+                                        <a className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'>
+                                            İçerik Üretici Ol
+                                        </a>
+                                    </Link>
+                                </li>
 
-                            {isAuthenticated ? (
-                                <button
-                                    onClick={handleLogout}
-                                    className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
-                                >
-                                    Oturumu Kapat
-                                </button>
-                            ) : (
-                                <Link
-                                    href='/contentiaio/authentication'
-                                    className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
-                                >
-                                    Giriş Yap
-                                </Link>
-                            )}
+                                <li>
+                                    <Link
+                                        href='/contentiaio/authentication'
+                                        className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
+                                    >
+                                        Giriş Yap
+                                    </Link>
+                                </li>
 
-                            <li>
-                                <div>
-                                    <button className='Button text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>
-                                        {t("getStarted")}
+                                <li>
+                                    <div>
+                                        <button className='Button text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>
+                                            {t("getStarted")}
+                                        </button>
+                                    </div>
+                                </li>
+                            </ul>
+                        ) : (
+                            <div className='flex items-center space-x-4'>
+                                <div className='relative'>
+                                    <button
+                                        type='button'
+                                        className='flex items-center text-sm rounded-full focus:outline-none'
+                                        id='user-menu-button'
+                                    >
+                                        <span className='sr-only'>
+                                            Open user menu
+                                        </span>
+                                        <Dropdown
+                                            isOpen={isProfileOpen}
+                                            setIsOpen={setIsProfileOpen}
+                                            icon={
+                                                <Image
+                                                    className='w-10 h-10 rounded-full border-2 border-gray-600'
+                                                    src={
+                                                        user?.profilePic ||
+                                                        "/defaultProfile.png"
+                                                    }
+                                                    alt='Profile'
+                                                    width={100}
+                                                    height={100}
+                                                />
+                                            }
+                                        >
+                                            <ul className='p-2 text-sm'>
+                                                <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                    <Image
+                                                        className='w-8 h-8 rounded-full border-2 border-gray-600'
+                                                        src={
+                                                            user?.profilePic ||
+                                                            "/defaultProfile.png"
+                                                        }
+                                                        alt='Profile'
+                                                        width={100}
+                                                        height={100}
+                                                    />
+                                                    {user?.fullName ||
+                                                        "John Doe"}
+                                                </li>
+                                                <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                    <UserIcon className='w-4 h-4' />
+                                                    Profil
+                                                </li>
+                                                <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                    <ShoppingCartIcon className='w-4 h-4' />
+                                                    Siparisler
+                                                </li>
+                                                <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                    <PaperClipIcon className='w-4 h-4' />
+                                                    Paketler
+                                                </li>
+                                                <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                    <BriefcaseIcon className='w-4 h-4' />
+                                                    Markalarim
+                                                </li>
+                                                <li
+                                                    className='p-2 BlueText hover:bg-red-100 cursor-pointer text-red-600 flex items-center gap-2'
+                                                    onClick={handleLogout}
+                                                >
+                                                    <IoLogOut className='w-4 h-4' />
+                                                    Cikis Yap
+                                                </li>
+                                            </ul>
+                                        </Dropdown>
                                     </button>
                                 </div>
-                            </li>
-                        </ul>
+                            </div>
+                        )}
                     </div>
                 </div>
             </nav>

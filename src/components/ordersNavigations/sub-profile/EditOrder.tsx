@@ -297,7 +297,8 @@ export default function EditOrder({ orderData }: EditOrderProps) {
                         <div className='flex justify-between text-lg font-bold mt-2 sm:mt-3 md:mt-4 lg:mt-4'>
                             <p>Toplam</p>
                             <p className='BlueText'>
-                                {orderData.totalPrice} TL
+                                {orderData.totalPrice.toLocaleString("tr-TR")}{" "}
+                                TL
                             </p>
                         </div>
                     </div>
