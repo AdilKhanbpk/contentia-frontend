@@ -147,7 +147,7 @@ export default function TabFirst({
 
         dispatch(setOrderFormData(formData));
         toast.success("Order Details Saved Successfully!");
-        setActiveTab(2);
+        setActiveTab(1);
     };
 
     // Available additional services

@@ -78,8 +78,10 @@ export default function TabSecond({
     const [couponError, setCouponError] = useState("");
     const [discount, setDiscount] = useState(0);
     const [finalPrice, setFinalPrice] = useState(totalPrice);
+    const [isCouponAppliedLoading, setIsCouponAppliedLoading] = useState(false);
 
     const handleApplyCoupon = async () => {
+        setIsCouponAppliedLoading(true);
         try {
             if (token) {
                 const result = await dispatch(
@@ -89,7 +91,6 @@ export default function TabSecond({
                     })
                 ).unwrap();
 
-                // Calculate discount
                 let discountAmount = 0;
 
                 if (result.discountTl) {
@@ -110,6 +111,8 @@ export default function TabSecond({
             }
         } catch (error: any) {
             setCouponError(error.message || "Bir hata oluştu");
+        } finally {
+            setIsCouponAppliedLoading(false);
         }
     };
 
@@ -203,7 +206,11 @@ export default function TabSecond({
                             <div className='flex justify-between font-semibold text-lg'>
                                 <p>Toplam</p>
                                 <p>
-                                    {discount > 0 ? (
+                                    {isCouponAppliedLoading ? (
+                                        <span className='text-gray-500 animate-pulse'>
+                                            Hesaplanıyor...
+                                        </span>
+                                    ) : discount > 0 ? (
                                         <>
                                             <span className='line-through text-gray-400 mr-2'>
                                                 {totalPrice} TL
@@ -222,20 +229,30 @@ export default function TabSecond({
                             <div>
                                 <label>Kupon Kodu</label>
                             </div>
-                            <div className='flex flex-col lg:flex-row  lg:space-x-3'>
+                            <div className='flex flex-col lg:flex-row lg:space-x-3 items-start lg:items-center'>
                                 <input
                                     type='text'
                                     value={couponCode}
                                     onChange={(e) =>
                                         setCouponCode(e.target.value)
                                     }
-                                    className='border px-3 py-2 mb-4 rounded-md focus:outline-none '
+                                    className='border px-3 py-2 rounded-md focus:outline-none'
+                                    disabled={isCouponAppliedLoading}
                                 />
                                 <button
                                     onClick={handleApplyCoupon}
-                                    className='Button text-white px-4 py-2 rounded-md font-semibold'
+                                    disabled={
+                                        isCouponAppliedLoading || !couponCode
+                                    }
+                                    className={`Button text-white px-4 py-2 rounded-md font-semibold ${
+                                        isCouponAppliedLoading
+                                            ? "opacity-60 cursor-not-allowed"
+                                            : ""
+                                    }`}
                                 >
-                                    Uygula
+                                    {isCouponAppliedLoading
+                                        ? "Uygulanıyor..."
+                                        : "Uygula"}
                                 </button>
                                 {couponError && (
                                     <p className='text-red-500 mt-2'>
