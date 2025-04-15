@@ -155,7 +155,7 @@ export default function TabFirst({
         {
             id: 1,
             key: "share",
-            image: "/videoCarousal.png",
+            image: "/order/orderPic4.svg",
             alt: "Sosyal Medyada Paylaşım",
             title: "Sosyal Medyada Paylaşılsın",
             description:
@@ -165,7 +165,7 @@ export default function TabFirst({
         {
             id: 2,
             key: "cover",
-            image: "/videoCarousal.png",
+            image: "/order/orderPic5.svg",
             alt: "Kapak Görseli",
             title: "Kapak Görseli",
             description:
@@ -175,7 +175,7 @@ export default function TabFirst({
         {
             id: 3,
             key: "influencer",
-            image: "/videoCarousal.png",
+            image: "/order/orderPic6.svg",
             alt: "Influencer Paketi",
             title: "Influencer Paketi",
             description:
@@ -185,7 +185,7 @@ export default function TabFirst({
         {
             id: 4,
             key: "shipping",
-            image: "/videoCarousal.png",
+            image: "/order/orderPic7.svg",
             alt: "Ürün Gönderimi Kargo Ücreti",
             title: "Ürün Gönderimi Kargo Ücreti",
             description:
@@ -431,7 +431,7 @@ export default function TabFirst({
                                     .filter(
                                         (option: any) => option.videoCount !== 1
                                     )
-                                    .map((option) => (
+                                    .map((option: any) => (
                                         <div
                                             key={option._id}
                                             onClick={() =>

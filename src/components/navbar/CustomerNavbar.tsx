@@ -63,7 +63,7 @@ export default function Navbar() {
             { href: "/orders", label: "Ana Sayfa" },
             { href: "/orders/profile", label: "Profil" },
             { href: "/orders/orders", label: "Siparişler" },
-            { href: "/orders/packages", label: "Paketler" },
+            // { href: "/orders/packages", label: "Paketler" },
             { href: "/orders/my-brands", label: "Markalarım" },
         ],
         []
