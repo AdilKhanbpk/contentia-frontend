@@ -11,11 +11,11 @@ import {
     getCoupons,
     deleteCoupon,
     Coupon as ReduxCoupon,
-    Customer,
 } from "@/store/features/admin/couponSlice";
 import { RootState } from "@/store/store";
 import { toast } from "react-toastify";
 import { useTokenContext } from "@/context/TokenCheckingContext";
+import { Customer } from "@/types/interfaces";
 
 export interface CouponForm {
     _id: string;
