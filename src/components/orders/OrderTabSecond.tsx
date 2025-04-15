@@ -38,6 +38,7 @@ export default function TabSecond({
     const orderFormData = useSelector<RootState, OrderInterface | null>(
         (state: RootState) => state.order.orderFormData as OrderInterface
     );
+    console.log("🚀 ~ orderFormData:", orderFormData);
 
     const deliveryStartDate = new Date(orderDate);
     deliveryStartDate.setDate(deliveryStartDate.getDate() + 30);
@@ -70,7 +71,7 @@ export default function TabSecond({
 
     const { token } = useTokenContext();
 
-    const basePrice = 3000;
+    const basePrice = orderFormData?.totalPrice;
     const quantity = orderFormData?.noOfUgc || 1;
     const totalPrice = orderFormData?.totalPrice || 0;
 
@@ -136,9 +137,7 @@ export default function TabSecond({
                                         {basePrice} TL / Video
                                     </p>
                                 </div>
-                                <p className='font-semibold'>
-                                    {basePrice * quantity} TL
-                                </p>
+                                <p className='font-semibold'>{basePrice} TL</p>
                             </div>
 
                             {/* Additional Services */}
