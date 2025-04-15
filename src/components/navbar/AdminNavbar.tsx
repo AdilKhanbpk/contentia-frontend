@@ -117,15 +117,22 @@ const menuItems = [
 export const Dropdown = ({ isOpen, setIsOpen, icon, children }: any) => {
     return (
         <div className='relative dropdown'>
-            <button
-                className='text-gray-600 hover:text-gray-800'
+            <div
+                role='button'
+                tabIndex={0}
+                className='text-gray-600 hover:text-gray-800 cursor-pointer'
                 onClick={(e) => {
-                    e.stopPropagation(); // Prevent closing when clicking inside
+                    e.stopPropagation();
                     setIsOpen((prev: boolean) => !prev);
+                }}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                        setIsOpen((prev: boolean) => !prev);
+                    }
                 }}
             >
                 {icon}
-            </button>
+            </div>
 
             {isOpen && (
                 <div className='absolute right-0 mt-2 w-80 bg-white shadow-lg rounded-lg border border-gray-200'>
