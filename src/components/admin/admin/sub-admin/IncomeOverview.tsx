@@ -2,9 +2,9 @@
 import { useState } from "react";
 import IncomeChart from "./IncomeChart";
 
-// By sales => Total amount of money paid by customers
-// By margin => The amount paid to the platform
-// By volume => The orders
+// By sales => Total Price Of orders
+// By margin => Total price of order - Total amount of money paid to creators
+// By volume => The amount of order in the relevant week/month
 
 const IncomeOverview = () => {
     const [slot, setSlot] = useState<"week" | "month">("month");

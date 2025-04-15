@@ -37,6 +37,7 @@ const Analytics: React.FC = () => {
     const customers = useSelector(selectTotalCustomers);
     const orders = useSelector(selectTotalOrders);
     const sales = useSelector(selectTotalSales);
+    console.log("🚀 ~ sales:", sales);
     const recentOrders = useSelector(selectRecentOrders);
 
     const { token } = useTokenContext();
@@ -91,7 +92,10 @@ const Analytics: React.FC = () => {
                     {/* TOTAL SALES */}
                     <AnalyticsDataCard
                         title='Total Sales'
-                        count={sales?.totalSales ?? 0}
+                        count={`${(sales?.totalSales || 0).toLocaleString(
+                            "tr-TR"
+                        )} Tl`}
+                        percentage={sales?.percentageChange}
                     >
                         <SalesCardChart
                             salesByMonth={sales?.totalSalesByMonth ?? []}
@@ -149,7 +153,9 @@ const Analytics: React.FC = () => {
                     <div className='col-span-1'>
                         <AnalyticEcommerce
                             title='Total Sales'
-                            count={`${totalPriceOfCompletedOrders}`}
+                            count={`${totalPriceOfCompletedOrders.toLocaleString(
+                                "tr-TR"
+                            )} Tl`}
                         />
                     </div>
                 </div>

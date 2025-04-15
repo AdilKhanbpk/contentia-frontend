@@ -3,7 +3,7 @@ import { ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/24/solid";
 
 interface AnalyticsDataCardProps {
     title: string;
-    count: number;
+    count: number | string;
     percentage?: string;
     isLoss?: boolean;
     children: React.ReactNode;

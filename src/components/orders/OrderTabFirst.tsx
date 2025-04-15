@@ -117,10 +117,12 @@ export default function TabFirst({
             if (selectedPackage) {
                 return (
                     selectedPackage.finalPrice + additionalCharges
-                ).toString();
+                ).toLocaleString("tr-TR");
             }
         }
-        return (quantity * oneVideoPrice + additionalCharges).toString();
+        return (quantity * oneVideoPrice + additionalCharges).toLocaleString(
+            "tr-TR"
+        );
     };
 
     // Handle form submission
@@ -536,7 +538,9 @@ export default function TabFirst({
                                                 </button>
                                             </div>
                                             <p className='mt-6 text-sm BlueText font-semibold'>
-                                                {oneVideoPrice}
+                                                {oneVideoPrice.toLocaleString(
+                                                    "tr-TR"
+                                                )}
                                                 TL
                                                 <span className='text-xs text-black font-thin'>
                                                     {" "}
@@ -595,7 +599,10 @@ export default function TabFirst({
                                             {service.description}
                                         </p>
                                         <span className='font-semibold text-black'>
-                                            {service.price}
+                                            {service.price.toLocaleString(
+                                                "tr-TR"
+                                            )}{" "}
+                                            TL
                                             <span className='text-sm font-thin'>
                                                 {" "}
                                                 / Video
@@ -630,7 +637,8 @@ export default function TabFirst({
                             {/* Left Section */}
                             <div className='mr-4'>
                                 <p className='text-lg font-semibold BlueText'>
-                                    1 Video x {oneVideoPrice} TL
+                                    1 Video x{" "}
+                                    {oneVideoPrice.toLocaleString("tr-TR")} TL
                                 </p>
                                 <p className='text-sm BlueText'>
                                     Toplam:{" "}
