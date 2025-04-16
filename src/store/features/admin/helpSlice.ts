@@ -80,9 +80,8 @@ export const fetchHelpSupports = createAsyncThunk(
 // Fetch a help support by ID
 export const fetchHelpSupportById = createAsyncThunk(
     "helpSupport/fetchHelpSupportById",
-    async ({ helpSupportId, token }: { helpSupportId: string; token: string }, { rejectWithValue }) => {
+    async ({ helpSupportId }: { helpSupportId: string }, { rejectWithValue }) => {
         try {
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             const response = await axiosInstance.get(`/admin/helpSupport/${helpSupportId}`);
             return response.data.data;
         } catch (error) {

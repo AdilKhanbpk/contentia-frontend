@@ -124,7 +124,7 @@ const BlogDetails: React.FC<DetailPostProps> = ({ params }) => {
 
                 {/* Content Text */}
                 <div
-                    className='text-sm font-semibold my-6 '
+                    className='prose prose-sm sm:prose lg:prose-lg max-w-none mt-6 text-gray-700'
                     dangerouslySetInnerHTML={{ __html: post.content }}
                 ></div>
             </div>

@@ -133,7 +133,7 @@ const ModalFAQs = memo(
                         </label>
                         {isViewMode ? (
                             <div
-                                className='mt-2'
+                                className='prose prose-sm sm:prose lg:prose-lg max-w-none mt-4 text-gray-700'
                                 dangerouslySetInnerHTML={{ __html: answer }}
                             />
                         ) : (

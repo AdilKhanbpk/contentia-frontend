@@ -30,7 +30,7 @@ export function ViewTerms({ termData, onClose }: TermViewModelProps) {
                     Description
                 </label>
                 <div
-                    className='w-full px-3 py-2 border border-gray-200 rounded-md bg-gray-50 prose max-w-none'
+                    className='prose prose-sm sm:prose lg:prose-lg max-w-none mt-6 text-gray-700'
                     dangerouslySetInnerHTML={{
                         __html:
                             termData.pageContent || "No description provided",

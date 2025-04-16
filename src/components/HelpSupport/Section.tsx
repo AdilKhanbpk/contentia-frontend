@@ -14,7 +14,6 @@ import {
     fetchHelpSupports,
     HelpSupport,
 } from "@/store/features/admin/helpSlice";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const helpCategories = [
     {
@@ -59,12 +58,11 @@ const helpCategories = [
     },
 ];
 
-const Section: React.FC = () => {
+const HelpSupportPage: React.FC = () => {
     const [selectedCategory, setSelectedCategory] = useState<number>(0);
     const { helpSupports: helpSupportData } = useSelector(
         (state: any) => state.helpSupport
     );
-    console.log("🚀 ~ helpSupportData:", helpSupportData);
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
@@ -76,7 +74,6 @@ const Section: React.FC = () => {
     const filteredHelpSupports = helpSupportData.filter(
         (support: HelpSupport) => support.category === selectedCategoryValue
     );
-    console.log("🚀 ~ helpSupportData:", helpSupportData);
 
     return (
         <div className='px-4 sm:px-6 md:px-8 lg:px-32'>
@@ -139,7 +136,7 @@ const Section: React.FC = () => {
                                             alt={helpSupport.title}
                                         />
                                         <Link
-                                            href={`/help-support/detail/${helpSupport._id}`}
+                                            href={`/contentiaio/help-support/detail/${helpSupport._id}`}
                                         >
                                             <span className='cursor-pointer hover:underline'>
                                                 {helpSupport.title}
@@ -160,4 +157,4 @@ const Section: React.FC = () => {
     );
 };
 
-export default Section;
+export default HelpSupportPage;

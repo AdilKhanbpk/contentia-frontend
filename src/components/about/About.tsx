@@ -52,6 +52,7 @@ const About = () => {
                             {sections?.content ? (
                                 <>
                                     <div
+                                        className='prose prose-sm sm:prose lg:prose-lg max-w-none mt-6 text-gray-700'
                                         dangerouslySetInnerHTML={{
                                             __html: sections.content,
                                         }}

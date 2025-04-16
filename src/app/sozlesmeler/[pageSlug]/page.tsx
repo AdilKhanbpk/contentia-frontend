@@ -52,7 +52,7 @@ export default function Page({ params }: PageProps) {
                     {currentTerm?.pageTitle}
                 </h1>
                 <div
-                    className='mt-6 text-gray-700 leading-relaxed'
+                    className='prose prose-sm sm:prose lg:prose-lg max-w-none mt-6 text-gray-700'
                     dangerouslySetInnerHTML={{
                         __html: currentTerm?.pageContent || "",
                     }}
