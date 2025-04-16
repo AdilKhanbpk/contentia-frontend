@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store/store";
 import { fetchBlogs } from "@/store/features/admin/blogSlice";
 import { BlogInterface } from "@/types/interfaces";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface DetailPostProps {
     params: {
@@ -18,16 +17,12 @@ interface DetailPostProps {
 const BlogDetails: React.FC<DetailPostProps> = ({ params }) => {
     const dispatch = useDispatch<AppDispatch>();
     const { blogs } = useSelector((state: RootState) => state.blog);
-    const { token } = useTokenContext();
-    if (!token) return null;
+
     useEffect(() => {
-        if (token) {
-            dispatch(fetchBlogs(token));
-        }
+        dispatch(fetchBlogs());
     }, [dispatch]);
 
     const { id } = params;
-    // Add null check for blogs
     const post = blogs?.find((blog: BlogInterface) => blog._id === id);
 
     if (!post) {
@@ -38,7 +33,6 @@ const BlogDetails: React.FC<DetailPostProps> = ({ params }) => {
         );
     }
 
-    // Format date
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return date.toLocaleDateString("en-US", {
@@ -48,7 +42,6 @@ const BlogDetails: React.FC<DetailPostProps> = ({ params }) => {
         });
     };
 
-    // Estimate read time
     const estimateReadTime = (content: string) => {
         const wordsPerMinute = 200;
         const wordCount = content.split(/\s+/).length;
@@ -71,14 +64,14 @@ const BlogDetails: React.FC<DetailPostProps> = ({ params }) => {
                 <h4 className='truncate'>{post.title}</h4>
             </div>
 
-            {/* Title Section */}
+            {/* Title */}
             <div className='mt-9 '>
                 <h1 className='text-xl sm:text-2xl lg:text-3xl font-bold leading-tight'>
                     {post.title}
                 </h1>
             </div>
 
-            {/* Post Meta Info */}
+            {/* Meta Info */}
             <div className='mt-6 text-sm sm:text-base'>
                 <span className='font-bold'>Updated:</span>
                 <span> {formatDate(post.updatedAt)}</span>
@@ -88,12 +81,14 @@ const BlogDetails: React.FC<DetailPostProps> = ({ params }) => {
                 </span>
             </div>
 
-            {/* Author Section */}
+            {/* Author */}
             <div className='mt-6 flex items-center gap-3 flex-wrap'>
                 <div className='flex-shrink-0'>
                     <Image
                         className='w-16 mt-4 rounded-full'
-                        src={post.author?.profilePic}
+                        src={
+                            post.author?.profilePic || influencerMarketingImage
+                        }
                         alt='Author Image'
                         width={64}
                         height={64}
@@ -109,24 +104,22 @@ const BlogDetails: React.FC<DetailPostProps> = ({ params }) => {
                 </div>
             </div>
 
-            {/* Main Content */}
+            {/* Content */}
             <div className='mx-auto mt-9 max-w-full'>
-                {/* Image Section */}
-                <div className='w-full lg:w-[650px] '>
+                <div className='w-full lg:w-[650px]'>
                     <Image
                         src={post.bannerImage || influencerMarketingImage}
                         alt='Post Image'
                         width={650}
                         height={400}
-                        layout='responsive'
+                        style={{ width: "100%", height: "auto" }}
                     />
                 </div>
 
-                {/* Content Text */}
                 <div
                     className='prose prose-sm sm:prose lg:prose-lg max-w-none mt-6 text-gray-700'
                     dangerouslySetInnerHTML={{ __html: post.content }}
-                ></div>
+                />
             </div>
         </div>
     );

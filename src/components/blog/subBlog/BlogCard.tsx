@@ -9,36 +9,19 @@ import { fetchBlogs } from "@/store/features/admin/blogSlice";
 import { BlogInterface } from "@/types/interfaces";
 import { useTokenContext } from "@/context/TokenCheckingContext";
 
-interface BlogCardProps {
-    selectedCategory: string;
-}
-
-const BlogCard: React.FC<BlogCardProps> = ({ selectedCategory }) => {
+const BlogCard: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { blogs } = useSelector((state: RootState) => state.blog);
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchBlogs(token));
-        }
+        dispatch(fetchBlogs());
     }, [dispatch]);
-
-    const filteredBlogs =
-        (blogs &&
-            (selectedCategory === "All"
-                ? blogs
-                : blogs.filter(
-                      (blog) => blog.category === selectedCategory
-                  ))) ||
-        [];
 
     const [currentPage, setCurrentPage] = useState(1);
     const blogsPerPage = 6;
-    const totalPages = Math.ceil((filteredBlogs?.length || 0) / blogsPerPage);
+    const totalPages = Math.ceil((blogs?.length || 0) / blogsPerPage);
 
-    const currentBlogs = filteredBlogs.slice(
+    const currentBlogs = blogs.slice(
         (currentPage - 1) * blogsPerPage,
         currentPage * blogsPerPage
     );
@@ -47,7 +30,6 @@ const BlogCard: React.FC<BlogCardProps> = ({ selectedCategory }) => {
         setCurrentPage(page);
     };
 
-    // Function to format the date
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return date.toLocaleDateString("en-US", {
@@ -56,7 +38,6 @@ const BlogCard: React.FC<BlogCardProps> = ({ selectedCategory }) => {
         });
     };
 
-    // Function to estimate read time based on content length
     const estimateReadTime = (content: string) => {
         const wordsPerMinute = 200;
         const wordCount = content.split(/\s+/).length;
@@ -88,7 +69,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ selectedCategory }) => {
                             <p className='text-sm font-semibold mt-1'>
                                 {blog.title}
                             </p>
-                            <Link href={`/blog/blogdetails/${blog._id}`}>
+                            <Link href={`/blog/details/${blog._id}`}>
                                 <button className='border w-full p-2 rounded-full BlueText BlueBorder mt-4 transition'>
                                     Devamını Oku
                                 </button>

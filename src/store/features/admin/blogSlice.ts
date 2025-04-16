@@ -47,11 +47,9 @@ export const createBlog = createAsyncThunk(
 // Fetch all blogs
 export const fetchBlogs = createAsyncThunk(
   'blog/fetchBlogs',
-  async (token: string, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/admin/blogs', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.get('/admin/blogs');
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -66,13 +64,11 @@ export const fetchBlogs = createAsyncThunk(
 export const fetchBlogById = createAsyncThunk(
   'blog/fetchBlogById',
   async (
-    { blogId, token }: { blogId: string; token: string },
+    { blogId }: { blogId: string },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.get(`/admin/blogs/${blogId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.get(`/admin/blogs/${blogId}`);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
