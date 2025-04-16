@@ -28,9 +28,7 @@ const HelpCenters: React.FC = () => {
     if (!token) return null;
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchHelpSupports(token));
-        }
+        dispatch(fetchHelpSupports());
     }, [dispatch]);
 
     const exportToCSV = () => {

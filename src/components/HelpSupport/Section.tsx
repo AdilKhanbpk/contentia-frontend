@@ -3,17 +3,11 @@ import { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import Image from "next/image";
 import Link from "next/link";
-import img7 from "../../../public/helpcenter/img7.svg";
 import img1 from "../../../public/helpcenter/img1.svg";
 import img2 from "../../../public/helpcenter/img2.svg";
 import img3 from "../../../public/helpcenter/img3.svg";
 import img4 from "../../../public/helpcenter/img4.svg";
-import img5 from "../../../public/helpcenter/img5.svg";
-import img6 from "../../../public/helpcenter/img6.svg";
-import card from "../../../public/helpcenter/card.svg";
-import card1 from "../../../public/helpcenter/card1.svg";
-import card2 from "../../../public/helpcenter/card2.png";
-import card3 from "../../../public/helpcenter/card3.svg";
+
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import {
@@ -22,267 +16,46 @@ import {
 } from "@/store/features/admin/helpSlice";
 import { useTokenContext } from "@/context/TokenCheckingContext";
 
-interface Subtitle {
-    text: string;
-    icon: JSX.Element;
-}
-
-interface HelpCategory {
-    title: string;
-    icon: JSX.Element;
-    subtitles: Subtitle[];
-}
-
-const helpCategories: HelpCategory[] = [
+const helpCategories = [
     {
         title: "Sipariş Oluşturma",
+        value: "orders",
         icon: (
             <Image
-                src={card}
-                alt=''
-                width={25}
-                height={25}
+                src={img1}
+                alt='img1'
             />
         ),
-        subtitles: [
-            {
-                text: "UGC Siparişi",
-                icon: (
-                    <Image
-                        src={img7}
-                        alt='UGC Siparişi'
-                        width={20}
-                        height={20}
-                    />
-                ),
-            },
-            {
-                text: "Paket Seçimi",
-                icon: (
-                    <Image
-                        src={img1}
-                        alt='Paket Seçimi'
-                        width={20}
-                        height={20}
-                    />
-                ),
-            },
-            {
-                text: "Marka Yönetimi",
-                icon: (
-                    <Image
-                        src={img2}
-                        alt='Marka Yönetimi'
-                        width={20}
-                        height={20}
-                    />
-                ),
-            },
-            {
-                text: "İçerik Türleri",
-                icon: (
-                    <Image
-                        src={img3}
-                        alt='İçerik Türleri'
-                        width={20}
-                        height={20}
-                    />
-                ),
-            },
-            {
-                text: "İçerik Üretici Tercihleri",
-                icon: (
-                    <Image
-                        src={img4}
-                        alt='İçerik Üretici Tercihleri'
-                        width={20}
-                        height={20}
-                    />
-                ),
-            },
-            {
-                text: "Ek Hizmetler",
-                icon: (
-                    <Image
-                        src={img5}
-                        alt='Ek Hizmetler'
-                        width={20}
-                        height={20}
-                    />
-                ),
-            },
-            {
-                text: "Ödeme ve Faturalandırma",
-                icon: (
-                    <Image
-                        src={img6}
-                        alt='Ödeme ve Faturalandırma'
-                        width={20}
-                        height={20}
-                    />
-                ),
-            },
-        ],
     },
     {
-        title: "Content’iniz Nasıl Çalışır?",
+        title: "Contentia Nasıl Çalışır?",
+        value: "contents",
         icon: (
             <Image
-                src={card1}
-                alt=''
-                width={25}
-                height={25}
+                src={img2}
+                alt='img2'
             />
         ),
-        subtitles: [
-            {
-                text: "İçerik Türleri",
-                icon: (
-                    <Image
-                        src={img3}
-                        alt='İçerik Türleri'
-                        width={20}
-                        height={20}
-                    />
-                ),
-            },
-            {
-                text: "İçerik Üretici Tercihleri",
-                icon: (
-                    <Image
-                        src={img4}
-                        alt='İçerik Üretici Tercihleri'
-                        width={20}
-                        height={20}
-                    />
-                ),
-            },
-            {
-                text: "Ek Hizmetler",
-                icon: (
-                    <Image
-                        src={img5}
-                        alt='Ek Hizmetler'
-                        width={20}
-                        height={20}
-                    />
-                ),
-            },
-            {
-                text: "Ödeme ve Faturalandırma",
-                icon: (
-                    <Image
-                        src={img6}
-                        alt='Ödeme ve Faturalandırma'
-                        width={20}
-                        height={20}
-                    />
-                ),
-            },
-        ],
     },
     {
         title: "Kullanım Koşulları",
+        value: "terms",
         icon: (
             <Image
-                src={card2}
-                alt=''
-                width={25}
-                height={25}
+                src={img3}
+                alt='img3'
             />
         ),
-        subtitles: [
-            {
-                text: "UGC Siparişi",
-                icon: (
-                    <Image
-                        src={img7}
-                        alt='UGC Siparişi'
-                        width={20}
-                        height={20}
-                    />
-                ),
-            },
-            {
-                text: "Paket Seçimi",
-                icon: (
-                    <Image
-                        src={img1}
-                        alt='Paket Seçimi'
-                        width={20}
-                        height={20}
-                    />
-                ),
-            },
-            {
-                text: "Marka Yönetimi",
-                icon: (
-                    <Image
-                        src={img2}
-                        alt='Marka Yönetimi'
-                        width={20}
-                        height={20}
-                    />
-                ),
-            },
-            {
-                text: "İçerik Türleri",
-                icon: (
-                    <Image
-                        src={img3}
-                        alt='İçerik Türleri'
-                        width={20}
-                        height={20}
-                    />
-                ),
-            },
-        ],
     },
     {
-        title: "İçerik Üreticiler",
+        title: "İçerik Üreticileri",
+        value: "creators",
         icon: (
             <Image
-                src={card3}
-                alt=''
-                width={25}
-                height={25}
+                src={img4}
+                alt='img4'
             />
         ),
-        subtitles: [
-            {
-                text: "Marka Yönetimi",
-                icon: (
-                    <Image
-                        src={img2}
-                        alt='Marka Yönetimi'
-                        width={20}
-                        height={20}
-                    />
-                ),
-            },
-            {
-                text: "İçerik Türleri",
-                icon: (
-                    <Image
-                        src={img3}
-                        alt='İçerik Türleri'
-                        width={20}
-                        height={20}
-                    />
-                ),
-            },
-            {
-                text: "İçerik Üretici Tercihleri",
-                icon: (
-                    <Image
-                        src={img4}
-                        alt='İçerik Üretici Tercihleri'
-                        width={20}
-                        height={20}
-                    />
-                ),
-            },
-        ],
     },
 ];
 
@@ -291,20 +64,24 @@ const Section: React.FC = () => {
     const { helpSupports: helpSupportData } = useSelector(
         (state: any) => state.helpSupport
     );
-    const dispatch = useDispatch<AppDispatch>();
-    const { token } = useTokenContext();
     console.log("🚀 ~ helpSupportData:", helpSupportData);
+    const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchHelpSupports(token));
-        }
+        dispatch(fetchHelpSupports());
     }, [dispatch]);
 
+    const selectedCategoryValue = helpCategories[selectedCategory].value;
+
+    const filteredHelpSupports = helpSupportData.filter(
+        (support: HelpSupport) => support.category === selectedCategoryValue
+    );
+    console.log("🚀 ~ helpSupportData:", helpSupportData);
+
     return (
-        <div className='px-4 sm:px-6 md:px-8 lg:px-32 '>
-            <div className=' py-24 sm:py-24 md:py-24 lg:py-[100px]'>
-                <div className=' border border-gray-400 rounded-md p-2 sm:p-4 md:p-8 lg:px-12 lg:py-8'>
+        <div className='px-4 sm:px-6 md:px-8 lg:px-32'>
+            <div className='py-24 sm:py-24 md:py-24 lg:py-[100px]'>
+                <div className='border border-gray-400 rounded-md p-2 sm:p-4 md:p-8 lg:px-12 lg:py-8'>
                     <div>
                         <h4 className='text-gray-600'>Merhaba</h4>
                         <h1 className='w-full mt-1 text-xl md:text-3xl font-semibold text-gray-800 whitespace-nowrap'>
@@ -323,12 +100,15 @@ const Section: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className='flex justify-between md:justify-between  gap-1 mt-4'>
+                    {/* Categories */}
+                    <div className='flex flex-wrap justify-between gap-1 mt-4'>
                         {helpCategories.map((category, index) => (
                             <div
                                 key={index}
-                                className={`px-1 py-0.5 sm:px-2 sm:py-1 md:px-3 md:py-1.5 lg:px-8 lg:py-4 rounded-md text-white flex flex-col items-center cursor-pointer ${
-                                    selectedCategory === index ? "" : ""
+                                className={`px-1 py-0.5 sm:px-2 sm:py-1 md:px-3 md:py-1.5 lg:px-8 lg:py-4 rounded-md text-white flex flex-col items-center cursor-pointer transition-all ${
+                                    selectedCategory === index
+                                        ? "ring-2 ring-offset-2 ring-blue-500"
+                                        : ""
                                 }`}
                                 style={{ backgroundColor: "#4D4EC9" }}
                                 onClick={() => setSelectedCategory(index)}
@@ -343,28 +123,36 @@ const Section: React.FC = () => {
                         ))}
                     </div>
 
-                    {/* Render subtitles for the selected category with unique icons */}
+                    {/* Filtered Help Supports */}
                     <div className='flex flex-col gap-4 mt-8 font-medium'>
-                        {helpSupportData.map((helpSupport: HelpSupport) => (
-                            <div
-                                className='flex gap-3 items-center'
-                                key={helpSupport._id}
-                            >
-                                <Image
-                                    src={helpSupport.icon}
-                                    width={30}
-                                    height={30}
-                                    alt={helpSupport.title}
-                                />
-                                <Link
-                                    href={`/help-support/detail/${helpSupport._id}`}
-                                >
-                                    <span className='cursor-pointer'>
-                                        {helpSupport.title}
-                                    </span>{" "}
-                                </Link>
-                            </div>
-                        ))}
+                        {filteredHelpSupports.length > 0 ? (
+                            filteredHelpSupports.map(
+                                (helpSupport: HelpSupport) => (
+                                    <div
+                                        className='flex gap-3 items-center'
+                                        key={helpSupport._id}
+                                    >
+                                        <Image
+                                            src={helpSupport.icon}
+                                            width={30}
+                                            height={30}
+                                            alt={helpSupport.title}
+                                        />
+                                        <Link
+                                            href={`/help-support/detail/${helpSupport._id}`}
+                                        >
+                                            <span className='cursor-pointer hover:underline'>
+                                                {helpSupport.title}
+                                            </span>
+                                        </Link>
+                                    </div>
+                                )
+                            )
+                        ) : (
+                            <p className='text-gray-500'>
+                                Bu kategoride içerik bulunamadı.
+                            </p>
+                        )}
                     </div>
                 </div>
             </div>

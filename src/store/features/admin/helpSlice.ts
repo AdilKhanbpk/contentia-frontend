@@ -64,9 +64,8 @@ export const createHelpSupport = createAsyncThunk(
 // Fetch all help supports
 export const fetchHelpSupports = createAsyncThunk(
     "helpSupport/fetchHelpSupports",
-    async (token: string, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             const response = await axiosInstance.get("/admin/helpSupport");
             return response.data.data;
         } catch (error) {
