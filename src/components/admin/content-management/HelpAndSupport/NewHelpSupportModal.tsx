@@ -38,7 +38,7 @@ export const ModalCenters: React.FC<ModalCentersProps> = ({ onClose }) => {
         control,
         reset,
         watch,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<HelpSupportFormData>({
         defaultValues: {
             title: "",
@@ -140,9 +140,12 @@ export const ModalCenters: React.FC<ModalCentersProps> = ({ onClose }) => {
                         className='w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none'
                     >
                         <option value=''>Select a category</option>
-                        <option value='tech'>Tech</option>
-                        <option value='support'>Support</option>
-                        <option value='general'>General</option>
+                        <option value='orders'>Sipariş Oluşturma</option>
+                        <option value='contents'>
+                            Contentia Nasıl Çalışır?
+                        </option>
+                        <option value='terms'>Kullanım Koşulları</option>
+                        <option value='creators'>İçerik Üreticileri</option>
                     </select>
                     {errors.category && (
                         <span className='text-red-500 text-sm'>
@@ -202,7 +205,13 @@ export const ModalCenters: React.FC<ModalCentersProps> = ({ onClose }) => {
                         type='submit'
                         className='px-4 py-2 Button text-white rounded-md'
                     >
-                        {currentHelpSupport ? "Update" : "Create"}
+                        {currentHelpSupport
+                            ? isSubmitting
+                                ? "Updating..."
+                                : "Update"
+                            : isSubmitting
+                            ? "Creating..."
+                            : "Create"}
                     </button>
                 </div>
             </form>

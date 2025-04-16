@@ -103,7 +103,7 @@ export const updateHelpSupport = createAsyncThunk(
     ) => {
         try {
             axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-            const response = await axiosInstance.patch(
+            const response = await axiosInstance.patchForm(
                 `/admin/helpSupport/${helpSupportId}`,
                 data,
                 { headers: { "Content-Type": "multipart/form-data" } }
@@ -124,7 +124,7 @@ export const updateHelpSupportIcon = createAsyncThunk(
     async ({ helpSupportId, data, token }: UpdateHelpSupportPayload, { rejectWithValue }) => {
         try {
             axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            const response = await axiosInstance.patch(`/admin/helpSupport/icon/${helpSupportId}`, data, {
+            const response = await axiosInstance.patchForm(`/admin/helpSupport/icon/${helpSupportId}`, data, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
             return response.data.data;

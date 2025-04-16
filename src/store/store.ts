@@ -29,6 +29,7 @@ import customPackageSlice from "./features/admin/customPackageSlice";
 import dashboardReducer from "./features/admin/dashboardSlice";
 import incomingPaymentSlice from "./features/admin/incomingPaymentSlice";
 import termSlice from "./features/admin/termsSlice";
+import helpSupportSlice from "./features/admin/helpSlice";
 
 // 🔹 Configure redux-persist
 const persistConfig = {
@@ -67,6 +68,7 @@ const rootReducer = combineReducers({
   emailNotification: emailNotificationSlice,
   incomingPayment: incomingPaymentSlice,
   terms: termSlice,
+  helpSupport: helpSupportSlice
 });
 
 // 🔹 Apply persistReducer

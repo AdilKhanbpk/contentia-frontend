@@ -73,6 +73,21 @@ const HelpCenters: React.FC = () => {
                 sortable: true,
             },
             {
+                name: "Icon",
+                selector: (row: HelpSupport) => {
+                    return row.icon ? (
+                        <img
+                            src={row.icon}
+                            alt='Help Support Icon'
+                            className='w-10 h-10'
+                        />
+                    ) : (
+                        "No Icon"
+                    );
+                },
+                sortable: true,
+            },
+            {
                 name: "Actions",
                 cell: (row: HelpSupport) => (
                     <div className='flex space-x-3'>
