@@ -339,3 +339,12 @@ export interface TermsInterface {
     createdAt?: string;
     updatedAt?: string;
 }
+
+export interface FilesInterface {
+    creatorId: string;
+    fullName: string;
+    email: string;
+    profilePic: string;
+    orderId: string;
+    googleDriveUrl: string;
+}
