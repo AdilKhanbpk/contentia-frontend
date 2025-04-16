@@ -50,15 +50,15 @@ const AddService: React.FC = () => {
     useEffect(() => {
         if (additionalService) {
             reset({
-                editPrice: additionalService.editPrice || 1000,
-                sharePrice: additionalService.sharePrice || 1000,
-                coverPicPrice: additionalService.coverPicPrice || 1000,
-                creatorTypePrice: additionalService.creatorTypePrice || 1000,
-                shippingPrice: additionalService.shippingPrice || 1000,
+                editPrice: additionalService.editPrice || 0,
+                sharePrice: additionalService.sharePrice || 0,
+                coverPicPrice: additionalService.coverPicPrice || 0,
+                creatorTypePrice: additionalService.creatorTypePrice || 0,
+                shippingPrice: additionalService.shippingPrice || 0,
                 thirtySecondDurationPrice:
-                    additionalService.thirtySecondDurationPrice || 1000,
+                    additionalService.thirtySecondDurationPrice || 0,
                 sixtySecondDurationPrice:
-                    additionalService.sixtySecondDurationPrice || 1000,
+                    additionalService.sixtySecondDurationPrice || 0,
             });
         }
     }, [additionalService, reset]);

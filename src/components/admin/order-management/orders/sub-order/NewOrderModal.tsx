@@ -128,7 +128,7 @@ export default function NewModal() {
                             {/* Select Price */}
                             <div>
                                 <label className='block text-sm font-semibold mt-2'>
-                                    Select Price:
+                                    Select Base Price:
                                 </label>
                                 <input
                                     type='number'

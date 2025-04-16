@@ -19,12 +19,17 @@ import {
     fetchTotalCreators,
     fetchTotalCustomers,
     fetchTotalOrders,
+    fetchTotalRevenueByMonth,
     fetchTotalSalesByMonth,
+    fetchTotalUsersForCurrentMonth,
+    OrderAnalytics,
     selectRecentOrders,
     selectTotalCreators,
     selectTotalCustomers,
     selectTotalOrders,
+    selectTotalRevenue,
     selectTotalSales,
+    selectTotalUsers,
 } from "@/store/features/admin/dashboardSlice";
 import { AppDispatch } from "@/store/store";
 import { useTokenContext } from "@/context/TokenCheckingContext";
@@ -36,9 +41,11 @@ const Analytics: React.FC = () => {
     const creators = useSelector(selectTotalCreators);
     const customers = useSelector(selectTotalCustomers);
     const orders = useSelector(selectTotalOrders);
+    console.log("🚀 ~ orders:", orders);
     const sales = useSelector(selectTotalSales);
-    console.log("🚀 ~ sales:", sales);
     const recentOrders = useSelector(selectRecentOrders);
+    const revenue = useSelector(selectTotalRevenue);
+    const users = useSelector(selectTotalUsers);
 
     const { token } = useTokenContext();
     if (!token) return null;
@@ -50,15 +57,14 @@ const Analytics: React.FC = () => {
             dispatch(fetchTotalCreators(token));
             dispatch(fetchTotalCustomers(token));
             dispatch(fetchTotalOrders(token));
+            dispatch(fetchTotalRevenueByMonth(token));
+            dispatch(fetchTotalUsersForCurrentMonth(token));
         }
     }, [token]);
 
     const totalCustomerAndCreators =
         (creators?.totalCreatorsCount || 0) +
         (customers?.totalCustomersCount || 0);
-    const totalCompletedOrders = orders?.completedOrders ?? 0;
-    const totalPriceOfCompletedOrders =
-        orders?.totalPriceOfCompletedOrders ?? 0;
 
     return (
         <>
@@ -123,7 +129,13 @@ const Analytics: React.FC = () => {
 
                 <div className='my-4 flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4'>
                     <div className='w-full lg:w-3/5 bg-white shadow-md rounded-lg'>
-                        <IncomeOverview />
+                        {orders && sales && revenue && (
+                            <IncomeOverview
+                                orders={orders}
+                                sales={sales}
+                                revenue={revenue}
+                            />
+                        )}
                     </div>
                     <div className='w-full lg:w-2/5 bg-white shadow-md rounded-lg'>
                         <PageViews />
@@ -141,19 +153,23 @@ const Analytics: React.FC = () => {
                     <div className='col-span-1'>
                         <AnalyticEcommerce
                             title='Total Users'
-                            count={totalCustomerAndCreators.toString()}
+                            count={(
+                                users?.totalUsersForCurrentMonth ?? ""
+                            ).toString()}
                         />
                     </div>
                     <div className='col-span-1'>
                         <AnalyticEcommerce
                             title='Total Orders'
-                            count={totalCompletedOrders.toString()}
+                            count={(
+                                orders?.completedOrdersThisMonth ?? 0
+                            ).toString()}
                         />
                     </div>
                     <div className='col-span-1'>
                         <AnalyticEcommerce
                             title='Total Sales'
-                            count={`${totalPriceOfCompletedOrders.toLocaleString(
+                            count={`${sales?.currentMonthTotal.toLocaleString(
                                 "tr-TR"
                             )} Tl`}
                         />
@@ -208,9 +224,13 @@ const Analytics: React.FC = () => {
                                     <h6 className='text-gray-500'>
                                         This Week Statistics
                                     </h6>
-                                    <p className='text-2xl font-bold'>$7,650</p>
+                                    <p className='text-2xl font-bold'>
+                                        {sales?.currentWeekTotalSale.toLocaleString(
+                                            "tr-TR"
+                                        ) + " TL"}
+                                    </p>
                                 </div>
-                                <MonthlyBarChart />
+                                {sales && <MonthlyBarChart sales={sales} />}
                             </div>
                         </div>
                     </div>

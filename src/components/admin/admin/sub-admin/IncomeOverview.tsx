@@ -1,12 +1,21 @@
 "use client";
 import { useState } from "react";
 import IncomeChart from "./IncomeChart";
+import { OrderInterface } from "@/types/interfaces";
 
 // By sales => Total Price Of orders
 // By margin => Total price of order - Total amount of money paid to creators
 // By volume => The amount of order in the relevant week/month
 
-const IncomeOverview = () => {
+const IncomeOverview = ({
+    orders,
+    sales,
+    revenue,
+}: {
+    orders: any;
+    sales: any;
+    revenue: any;
+}) => {
     const [slot, setSlot] = useState<"week" | "month">("month");
     const [quantity, setQuantity] = useState<
         "By volume" | "By margin" | "By sales"
@@ -62,6 +71,9 @@ const IncomeOverview = () => {
                 <IncomeChart
                     slot={slot}
                     quantity={quantity}
+                    orders={orders}
+                    sales={sales}
+                    revenue={revenue}
                 />
             </div>
         </div>

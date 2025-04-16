@@ -49,13 +49,16 @@ const areaChartOptions = {
 interface Props {
     slot: string;
     quantity: any;
+    orders: any;
+    sales: any;
+    revenue: any;
 }
 
 // By sales => Total Price Of orders
 // By margin => Total price of order - Total amount of money paid to creators
 // By volume => The amount of order in the relevant week/month
 
-const IncomeAreaChart = ({ slot, quantity }: Props) => {
+const IncomeAreaChart = ({ slot, quantity, orders, sales, revenue }: Props) => {
     const [options, setOptions] = useState<ChartProps>(areaChartOptions);
     const [series, setSeries] = useState([
         {
@@ -121,42 +124,33 @@ const IncomeAreaChart = ({ slot, quantity }: Props) => {
             case "By volume":
                 setSeries([
                     {
-                        name: "Income",
+                        name: "Orders",
                         data:
                             slot === "month"
-                                ? [
-                                      100, 40, 60, 40, 40, 40, 80, 40, 40, 50,
-                                      40, 40,
-                                  ]
-                                : [100, 20, 60, 20, 20, 80, 20],
+                                ? orders.totalOrdersByMonth
+                                : orders.totalOrdersByWeek,
                     },
                 ]);
                 break;
             case "By margin":
                 setSeries([
                     {
-                        name: "Income",
+                        name: "Total Revenue",
                         data:
                             slot === "month"
-                                ? [
-                                      120, 85, 101, 98, 87, 105, 91, 114, 94,
-                                      86, 115, 35,
-                                  ]
-                                : [51, 40, 28, 51, 42, 109, 100],
+                                ? revenue.totalRevenueByMonth
+                                : revenue.totalRevenueByWeek,
                     },
                 ]);
                 break;
             case "By sales":
                 setSeries([
                     {
-                        name: "Income",
+                        name: "Total Price Of Orders",
                         data:
                             slot === "month"
-                                ? [
-                                      90, 85, 101, 98, 87, 105, 91, 114, 94, 86,
-                                      115, 35,
-                                  ]
-                                : [21, 40, 28, 51, 42, 109, 100],
+                                ? sales.totalSalesByMonth
+                                : sales.totalSalesByWeek,
                     },
                 ]);
                 break;

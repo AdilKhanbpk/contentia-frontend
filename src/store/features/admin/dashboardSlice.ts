@@ -10,9 +10,18 @@ interface DashboardState {
     totalOrders: OrderAnalytics | null;
     recentOrders: OrderInterface | null;
     totalSales: SalesByMonth | null;
+    totalRevenue: SalesByMonth | null;
+    totalUsers: UserInterface | null;
     loading: boolean;
     error: string | null;
 }
+
+export interface UserInterface {
+    creatorCount: number;
+    customerCount: number;
+    totalUsersForCurrentMonth: number;
+}
+
 export interface CreatorAnalytics {
     totalCreatorsCount: number;
     totalCreatorsByMonth: number[];
@@ -41,14 +50,19 @@ export interface OrderAnalytics {
     activeOrders: number;
     revisionOrders: number;
     canceledOrders: number;
+    completedOrdersThisMonth: number;
 }
 
 export interface SalesByMonth {
     totalSalesByMonth: number[];
+    currentWeekTotal: number;
+    currentMonthTotal: number;
     currentMonthCount: number;
     previousMonthCount: number;
     percentageChange: string;
     totalSales: number;
+    currentWeekTotalSale: number;
+    totalSalesByWeek: number[];
 
 }
 
@@ -58,6 +72,8 @@ const initialState: DashboardState = {
     totalOrders: null,
     recentOrders: null,
     totalSales: null,
+    totalRevenue: null,
+    totalUsers: null,
     loading: false,
     error: null,
 };
@@ -131,6 +147,23 @@ export const fetchRecentOrders = createAsyncThunk(
 );
 
 // Fetch Recent Orders
+export const fetchTotalUsersForCurrentMonth = createAsyncThunk(
+    "dashboard/fetchTotalUsers",
+    async (token: string, { rejectWithValue }) => {
+        try {
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            const response = await axiosInstance.get("/admin/dashboard/total-users-for-current-month");
+            return response.data.data;
+        } catch (error) {
+            const axiosError = error as AxiosError;
+            return rejectWithValue(
+                axiosError.response?.data || "Failed to fetch recent orders"
+            );
+        }
+    }
+);
+
+// Fetch Recent Orders
 export const fetchTotalSalesByMonth = createAsyncThunk(
     "dashboard/fetchTotalSalesByMonth",
     async (token: string, { rejectWithValue }) => {
@@ -147,6 +180,23 @@ export const fetchTotalSalesByMonth = createAsyncThunk(
     }
 );
 
+
+// Fetch Recent Orders
+export const fetchTotalRevenueByMonth = createAsyncThunk(
+    "dashboard/fetchTotalRevenueByMonth",
+    async (token: string, { rejectWithValue }) => {
+        try {
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            const response = await axiosInstance.get("/admin/dashboard/total-revenue-by-month");
+            return response.data.data;
+        } catch (error) {
+            const axiosError = error as AxiosError;
+            return rejectWithValue(
+                axiosError.response?.data || "Failed to Fetch Total Sales By Month"
+            );
+        }
+    }
+);
 
 
 const dashboardSlice = createSlice({
@@ -210,7 +260,7 @@ const dashboardSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload as string;
             })
-            // Fetch Recent Orders
+            // Fetch Total sales Orders
             .addCase(fetchTotalSalesByMonth.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -222,15 +272,48 @@ const dashboardSlice = createSlice({
             .addCase(fetchTotalSalesByMonth.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
-            });
+            })
+
+            // Fetch total revenue Orders
+            .addCase(fetchTotalRevenueByMonth.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchTotalRevenueByMonth.fulfilled, (state, action: PayloadAction<SalesByMonth>) => {
+                state.loading = false;
+                state.totalRevenue = action.payload;
+            })
+            .addCase(fetchTotalRevenueByMonth.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+
+            // Fetch total revenue Orders
+            .addCase(fetchTotalUsersForCurrentMonth.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchTotalUsersForCurrentMonth.fulfilled, (state, action: PayloadAction<UserInterface>) => {
+                state.loading = false;
+                state.totalUsers = action.payload;
+            })
+            .addCase(fetchTotalUsersForCurrentMonth.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+
+
+
     },
 });
 
 export const selectTotalCreators = (state: RootState) => state.dashboard.totalCreators;
+export const selectTotalUsers = (state: RootState) => state.dashboard.totalUsers;
 export const selectTotalCustomers = (state: RootState) => state.dashboard.totalCustomers;
 export const selectTotalOrders = (state: RootState) => state.dashboard.totalOrders;
 export const selectRecentOrders = (state: RootState) => state.dashboard.recentOrders;
 export const selectTotalSales = (state: RootState) => state.dashboard.totalSales;
+export const selectTotalRevenue = (state: RootState) => state.dashboard.totalRevenue;
 export const selectDashboardLoading = (state: RootState) => state.dashboard.loading;
 export const selectDashboardError = (state: RootState) => state.dashboard.error;
 
