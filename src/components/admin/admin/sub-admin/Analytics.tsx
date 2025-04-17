@@ -41,9 +41,12 @@ const Analytics: React.FC = () => {
     const creators = useSelector(selectTotalCreators);
     const customers = useSelector(selectTotalCustomers);
     const orders = useSelector(selectTotalOrders);
+    console.log("🚀 ~ orders:", orders);
     const sales = useSelector(selectTotalSales);
+    console.log("🚀 ~ sales:", sales);
     const recentOrders = useSelector(selectRecentOrders);
     const revenue = useSelector(selectTotalRevenue);
+    console.log("🚀 ~ revenue:", revenue);
     const users = useSelector(selectTotalUsers);
 
     const { token } = useTokenContext();

@@ -64,7 +64,7 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                     Total Price:
                                 </div>
                                 <div className='text-right font-bold BlueText'>
-                                    {order.totalPrice.toLocaleString("tr-TR")}{" "}
+                                    {order?.totalPrice?.toLocaleString("tr-TR")}{" "}
                                     TL
                                 </div>
                             </div>
