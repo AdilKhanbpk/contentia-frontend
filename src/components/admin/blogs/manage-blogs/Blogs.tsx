@@ -101,7 +101,7 @@ const ManageBlogs: React.FC = () => {
                 .unwrap()
                 .then(() => {
                     toast.success("Blog deleted successfully");
-                    dispatch(fetchBlogs(token));
+                    dispatch(fetchBlogs());
                 })
                 .catch((error: any) => {
                     toast.error("Delete failed");
@@ -112,7 +112,7 @@ const ManageBlogs: React.FC = () => {
     );
 
     const handleView = async (id: string) => {
-        await dispatch(fetchBlogById({ blogId: id, token })).unwrap();
+        await dispatch(fetchBlogById({ blogId: id })).unwrap();
         setIsModalViewOpen(true);
     };
 
@@ -143,7 +143,7 @@ const ManageBlogs: React.FC = () => {
                 updateBlog({ blogId: blogData._id, blogData: formData, token })
             ).unwrap();
             toast.success("Blog updated successfully");
-            await dispatch(fetchBlogs(token));
+            await dispatch(fetchBlogs());
             setIsModalEditOpen(false);
         } catch (error: any) {
             toast.error(
@@ -181,7 +181,7 @@ const ManageBlogs: React.FC = () => {
             await dispatch(createBlog({ blog: formData, token })).unwrap();
             toast.success("Blog created successfully");
             setIsModalOpen(false);
-            await dispatch(fetchBlogs(token));
+            await dispatch(fetchBlogs());
         } catch (error: any) {
             toast.error(
                 `Blog creation failed: ${
@@ -193,7 +193,7 @@ const ManageBlogs: React.FC = () => {
     };
 
     const handleEdit = async (id: string) => {
-        await dispatch(fetchBlogById({ blogId: id, token })).unwrap();
+        await dispatch(fetchBlogById({ blogId: id })).unwrap();
         setIsModalEditOpen(true);
     };
 
@@ -221,7 +221,7 @@ const ManageBlogs: React.FC = () => {
 
     useEffect(() => {
         if (token) {
-            dispatch(fetchBlogs(token));
+            dispatch(fetchBlogs());
         }
     }, [dispatch]);
 
