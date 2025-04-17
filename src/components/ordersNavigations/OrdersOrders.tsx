@@ -6,11 +6,12 @@ import ModelDetails from "./sub-profile/ModelDetails";
 import ModelRevision from "./sub-profile/ModelRevision";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
-import { fetchOrders, Order } from "@/store/features/profile/orderSlice";
+import { fetchOrders } from "@/store/features/profile/orderSlice";
 import ModelClaim from "./sub-profile/ModelClaim";
 import EditOrder from "./sub-profile/EditOrder";
 import ViewOrderDetails from "./sub-profile/ModelDetails";
 import { useTokenContext } from "@/context/TokenCheckingContext";
+import { OrderInterface } from "@/types/interfaces";
 
 export default function OrdersOrders() {
     const dispatch = useDispatch<AppDispatch>();
@@ -20,7 +21,9 @@ export default function OrdersOrders() {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isRevModalOpen, setIsRevModalOpen] = useState(false);
     const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
-    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+    const [selectedOrder, setSelectedOrder] = useState<OrderInterface | null>(
+        null
+    );
     const [selectedFilter, setSelectedFilter] = useState<string>("all");
     const { token } = useTokenContext();
     if (!token) return null;
@@ -31,22 +34,22 @@ export default function OrdersOrders() {
         }
     }, [dispatch]);
 
-    const openEditModal = (order: Order) => {
+    const openEditModal = (order: OrderInterface) => {
         setSelectedOrder(order);
         setIsEditModalOpen(true);
     };
 
-    const openViewModal = (order: Order) => {
+    const openViewModal = (order: OrderInterface) => {
         setIsViewModalOpen(true);
         setSelectedOrder(order);
     };
 
-    const openClaimModal = (order: Order) => {
+    const openClaimModal = (order: OrderInterface) => {
         setSelectedOrder(order);
         setIsClaimModalOpen(true);
     };
 
-    const openRevModal = (order: Order) => {
+    const openRevModal = (order: OrderInterface) => {
         setSelectedOrder(order);
         setIsRevModalOpen(true);
     };
@@ -167,7 +170,7 @@ export default function OrdersOrders() {
                                                 <p className='font-semibold'>
                                                     {
                                                         order.briefContent
-                                                            .brandName
+                                                            ?.brandName
                                                     }
                                                 </p>
                                             </div>
@@ -178,7 +181,7 @@ export default function OrdersOrders() {
                                                 <p className='font-semibold'>
                                                     {
                                                         order.briefContent
-                                                            .productServiceName
+                                                            ?.productServiceName
                                                     }
                                                 </p>
                                             </div>
