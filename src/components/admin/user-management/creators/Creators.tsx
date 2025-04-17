@@ -329,7 +329,7 @@ const Creators: React.FC = () => {
     }, [creators]);
 
     useEffect(() => {
-        if (!token) {
+        if (token) {
             dispatch(fetchAdminCreators(token));
         }
     }, [dispatch]);
