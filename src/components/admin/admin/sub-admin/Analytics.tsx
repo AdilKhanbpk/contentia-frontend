@@ -41,7 +41,6 @@ const Analytics: React.FC = () => {
     const creators = useSelector(selectTotalCreators);
     const customers = useSelector(selectTotalCustomers);
     const orders = useSelector(selectTotalOrders);
-    console.log("🚀 ~ orders:", orders);
     const sales = useSelector(selectTotalSales);
     const recentOrders = useSelector(selectRecentOrders);
     const revenue = useSelector(selectTotalRevenue);
@@ -284,7 +283,7 @@ const Analytics: React.FC = () => {
                                     </h5>
                                 </li>
                             </ul>
-                            <ReportChart />
+                            {sales && <ReportChart sales={sales} />}
                         </div>
                     </div>
                 </div>

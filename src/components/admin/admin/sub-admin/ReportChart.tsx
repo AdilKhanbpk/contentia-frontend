@@ -1,60 +1,75 @@
 "use client";
-import { useEffect, useState } from 'react';
-import ReactApexChart from 'react-apexcharts';
-import { Props as ChartProps } from 'react-apexcharts';
+import { useEffect, useState } from "react";
+import ReactApexChart from "react-apexcharts";
+import { Props as ChartProps } from "react-apexcharts";
 
-const areaChartOptions = {
-  chart: {
-    height: 340,
-    type: 'line',
-    toolbar: { show: false }
-  },
-  dataLabels: { enabled: false },
-  stroke: { curve: 'smooth', width: 1.5 },
-  grid: { strokeDashArray: 4 },
-  xaxis: {
-    type: 'datetime',
-    categories: [
-      '2018-05-19T00:00:00.000Z',
-      '2018-06-19T00:00:00.000Z',
-      '2018-07-19T01:30:00.000Z',
-      '2018-08-19T02:30:00.000Z',
-      '2018-09-19T03:30:00.000Z',
-      '2018-10-19T04:30:00.000Z',
-      '2018-11-19T05:30:00.000Z',
-      '2018-12-19T06:30:00.000Z'
-    ],
-    labels: { format: 'MMM' },
-    axisBorder: { show: false },
-    axisTicks: { show: false }
-  },
-  yaxis: { show: false },
-  tooltip: { x: { format: 'MM' } }
-};
+const ReportChart = ({ sales }: { sales: { totalSalesByMonth: number[] } }) => {
+    const [options, setOptions] = useState<ChartProps>({
+        chart: {
+            height: 340,
+            type: "line",
+            toolbar: { show: false },
+        },
+        dataLabels: { enabled: false },
+        stroke: { curve: "smooth", width: 1.5 },
+        grid: { strokeDashArray: 4 },
+        xaxis: {
+            type: "datetime",
+            categories: [], // will set dynamically
+            labels: { format: "MMM" },
+            axisBorder: { show: false },
+            axisTicks: { show: false },
+        },
+        yaxis: { show: false },
+        tooltip: {
+            x: { format: "MMM" },
+        },
+    });
 
-const ReportChart = () => {
-  const [options, setOptions] = useState<ChartProps>(areaChartOptions);
-  const [series] = useState([{ name: 'Income', data: [58, 90, 38, 83, 63, 75, 35, 55] }]);
+    const [series, setSeries] = useState([
+        { name: "Income", data: sales.totalSalesByMonth },
+    ]);
 
-  useEffect(() => {
-    setOptions((prevState) => ({
-      ...prevState,
-      tooltip: {
-        y: {
-          formatter(val: number) {
-            return `$ ${val}`;
-          }
-        }
-      },
-      legend: {
-        labels: {
-          colors: 'grey.500'
-        }
-      }
-    }));
-  }, []);
+    useEffect(() => {
+        // Generate months from January of the current year
+        const year = new Date().getFullYear();
+        const months = sales.totalSalesByMonth.map((_, index) => {
+            const date = new Date(year, index, 1);
+            return date.toISOString();
+        });
 
-  return <ReactApexChart options={options} series={series} type="line" height={340} />;
+        setOptions((prevState) => ({
+            ...prevState,
+            xaxis: {
+                ...prevState.xaxis,
+                categories: months,
+            },
+            tooltip: {
+                ...prevState.tooltip,
+                y: {
+                    formatter(val: number) {
+                        return `$ ${val}`;
+                    },
+                },
+            },
+            legend: {
+                labels: {
+                    colors: "grey.500",
+                },
+            },
+        }));
+
+        setSeries([{ name: "Income", data: sales.totalSalesByMonth }]);
+    }, [sales.totalSalesByMonth]);
+
+    return (
+        <ReactApexChart
+            options={options}
+            series={series}
+            type='line'
+            height={340}
+        />
+    );
 };
 
 export default ReportChart;
