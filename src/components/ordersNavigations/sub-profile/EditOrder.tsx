@@ -2,15 +2,15 @@ import { useTokenContext } from "@/context/TokenCheckingContext";
 import {
     selectOrderIsLoading,
     updateOrder,
-    type Order,
 } from "@/store/features/profile/orderSlice";
 import { AppDispatch } from "@/store/store";
+import { OrderInterface } from "@/types/interfaces";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 interface EditOrderProps {
-    orderData: Order;
+    orderData: OrderInterface;
 }
 
 export default function EditOrder({ orderData }: EditOrderProps) {
@@ -22,11 +22,11 @@ export default function EditOrder({ orderData }: EditOrderProps) {
     const { register, handleSubmit } = useForm({
         defaultValues: {
             "briefContent.productServiceName":
-                orderData.briefContent.productServiceName || "",
-            "briefContent.scenario": orderData.briefContent.scenario || "",
+                orderData.briefContent?.productServiceName || "",
+            "briefContent.scenario": orderData.briefContent?.scenario || "",
             "briefContent.productServiceDesc":
-                orderData.briefContent.productServiceDesc || "",
-            "briefContent.caseStudy": orderData.briefContent.caseStudy || "",
+                orderData.briefContent?.productServiceDesc || "",
+            "briefContent.caseStudy": orderData.briefContent?.caseStudy || "",
         },
     });
 
@@ -159,7 +159,11 @@ export default function EditOrder({ orderData }: EditOrderProps) {
                             </div>
                             <div className='text-gray-700'>Sipariş Tarihi:</div>
                             <div className='text-right BlueText font-bold'>
-                                {orderData.createdAt}
+                                {orderData.createdAt
+                                    ? orderData.createdAt.toLocaleDateString(
+                                          "tr-TR"
+                                      )
+                                    : "N/A"}
                             </div>
                             <div className='text-gray-700'>Sipariş Durumu:</div>
                             <div className='text-right BlueText font-bold'>
@@ -194,11 +198,11 @@ export default function EditOrder({ orderData }: EditOrderProps) {
                                 Ürün / Hizmet Adı:
                             </div>
                             <div className='text-right BlueText font-bold'>
-                                {orderData.briefContent.productServiceName}
+                                {orderData.briefContent?.productServiceName}
                             </div>
                             <div className='text-gray-700'>Marka:</div>
                             <div className='text-right BlueText font-bold'>
-                                {orderData.briefContent.brandName}{" "}
+                                {orderData.briefContent?.brandName}{" "}
                             </div>
                             <div className='text-gray-700'>Platform:</div>
                             <div className='text-right BlueText font-bold'>

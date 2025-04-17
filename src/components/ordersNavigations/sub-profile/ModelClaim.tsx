@@ -3,16 +3,16 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import { createClaim } from "@/store/features/profile/orderSlice";
 import { useState } from "react";
-import type { Order } from "@/store/features/profile/orderSlice";
 import { toast } from "react-toastify";
 import { useTokenContext } from "@/context/TokenCheckingContext";
+import { OrderInterface } from "@/types/interfaces";
 
 interface RevisionFormData {
     claimContent: string;
 }
 
 interface ModelClaimProps {
-    orderData: Order;
+    orderData: OrderInterface;
 }
 
 export default function ModelClaim({ orderData }: ModelClaimProps) {

@@ -1,7 +1,7 @@
-import { type Order } from "@/store/features/profile/orderSlice";
+import { OrderInterface } from "@/types/interfaces";
 
 interface ViewOrderDetailsProps {
-    orderData: Order;
+    orderData: OrderInterface;
 }
 
 export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
@@ -110,7 +110,11 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                             Sipariş Tarihi:
                         </div>
                         <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData.createdAt}
+                            {orderData.createdAt
+                                ? orderData.createdAt.toLocaleDateString(
+                                      "tr-TR"
+                                  )
+                                : "N/A"}
                         </div>
                         <div className='text-gray-700 text-sm lg:text-base'>
                             Sipariş Durumu:
@@ -153,13 +157,13 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                             Ürün / Hizmet Adı:
                         </div>
                         <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData.briefContent.productServiceName}
+                            {orderData.briefContent?.productServiceName}
                         </div>
                         <div className='text-gray-700 text-sm lg:text-base'>
                             Marka:
                         </div>
                         <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData.briefContent.brandName}
+                            {orderData.briefContent?.brandName}
                         </div>
                         <div className='text-gray-700 text-sm lg:text-base'>
                             Platform:
@@ -258,7 +262,7 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                         Ürün / Hizmet Adı:
                     </label>
                     <p className='border rounded-md p-2 bg-gray-50 text-sm lg:text-base'>
-                        {orderData.briefContent.productServiceName}
+                        {orderData.briefContent?.productServiceName}
                     </p>
                 </div>
                 <div>
@@ -266,7 +270,7 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                         Senaryo (Opsiyonel):
                     </label>
                     <p className='border rounded-md p-2 bg-gray-50 text-sm lg:text-base'>
-                        {orderData.briefContent.scenario}
+                        {orderData.briefContent?.scenario}
                     </p>
                 </div>
                 <div>
@@ -274,7 +278,7 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                         Brief:
                     </label>
                     <p className='border rounded-md p-2 bg-gray-50 text-sm lg:text-base'>
-                        {orderData.briefContent.productServiceDesc}
+                        {orderData.briefContent?.productServiceDesc}
                     </p>
                 </div>
                 <div>
@@ -282,7 +286,7 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                         Örnek Çalışma (Opsiyonel):
                     </label>
                     <p className='border rounded-md p-2 bg-gray-50 text-sm lg:text-base'>
-                        {orderData.briefContent.caseStudy}
+                        {orderData.briefContent?.caseStudy}
                     </p>
                 </div>
             </div>
