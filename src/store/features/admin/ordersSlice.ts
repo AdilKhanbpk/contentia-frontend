@@ -33,7 +33,7 @@ export const createOrder = createAsyncThunk(
       const transformedData = {
         customer: typeof data.orderOwner === 'object' ? data.orderOwner._id : data.orderOwner,
         assignedCreators: Array.isArray(data.assignedCreators) ? data.assignedCreators : [data.assignedCreators],
-        totalPrice: parseFloat(data.totalPrice?.toString() || '0'),
+        basePrice: parseFloat(data.basePrice?.toString() || '0'),
         noOfUgc: parseInt(data.noOfUgc?.toString() || '0', 10),
         additionalServices: {
           platform: data.additionalServices?.platform?.toLowerCase() || 'tiktok',

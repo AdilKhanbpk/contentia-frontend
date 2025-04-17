@@ -71,7 +71,7 @@ export default function TabSecond({
 
     const { token } = useTokenContext();
 
-    const basePrice = orderFormData?.totalPrice;
+    const basePrice = orderFormData?.basePrice;
     const quantity = orderFormData?.noOfUgc || 1;
     const totalPrice = orderFormData?.totalPrice || 0;
 

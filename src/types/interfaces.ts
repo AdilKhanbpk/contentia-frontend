@@ -153,6 +153,9 @@ export interface OrderInterface {
     profilePic?: string;
     noOfUgc: number;
     totalPrice: number;
+    basePrice?: number;
+    totalPriceForCustomer?: number;
+    totalPriceForCreator?: number;
     orderStatus: "pending" | "active" | "completed" | "cancelled" | "revision";
     paymentStatus: "paid" | "pending" | "refunded" | "cancelled";
     contentsDelivered?: number;

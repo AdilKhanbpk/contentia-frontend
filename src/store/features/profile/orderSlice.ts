@@ -50,31 +50,11 @@ interface UploadFile {
   uploadedDate: Date;
 }
 
-export interface Order {
-  _id: string;
-  coupon?: string;
-  orderOwner: string;
-  assignedCreators: string[];
-  appliedCreators: string[];
-  noOfUgc: number;
-  totalPrice: number;
-  orderStatus: "pending" | "active" | "completed" | "cancelled" | "revision";
-  paymentStatus: "paid" | "pending" | "refunded" | "cancelled";
-  contentsDelivered: number;
-  additionalServices: AdditionalServices;
-  preferences: Preferences;
-  briefContent: BriefContent;
-  numberOfRequests?: number;
-  orderQuota?: number;
-  quotaLeft?: number;
-  uploadFiles: UploadFile[];
-  createdAt?: string;
-  updatedAt?: string;
-}
+
 
 export interface OrderState {
-  orders: Order[];
-  currentOrder: Order | null;
+  orders: OrderInterface[];
+  currentOrder: OrderInterface | null;
   loading: boolean;
   error: string | null;
   orderFormData: object;
@@ -82,7 +62,7 @@ export interface OrderState {
 
 interface UpdateOrderPayload {
   orderId: string;
-  data: Partial<Order>;
+  data: Partial<OrderInterface>;
   token: string;
 }
 
@@ -122,7 +102,7 @@ export const createOrder = createAsyncThunk(
       // Convert orderData to FormData
       const formData = new FormData();
       formData.append("noOfUgc", String(orderData.noOfUgc || 0));
-      formData.append("totalPrice", String(orderData.totalPrice || 0));
+      formData.append("basePrice", String(orderData.basePrice || 0));
 
       // Append additional services if available
       if (orderData.additionalServices) {
@@ -312,13 +292,13 @@ const orderSlice = createSlice({
     resetOrderFormData: (state) => {
       state.orderFormData = {};
     },
-    setCurrentOrder: (state, action: PayloadAction<Order | null>) => {
+    setCurrentOrder: (state, action: PayloadAction<OrderInterface | null>) => {
       state.currentOrder = action.payload;
     },
-    addOrderToState: (state, action: PayloadAction<Order>) => {
+    addOrderToState: (state, action: PayloadAction<OrderInterface>) => {
       state.orders.push(action.payload);
     },
-    updateOrderInState: (state, action: PayloadAction<Order>) => {
+    updateOrderInState: (state, action: PayloadAction<OrderInterface>) => {
       const index = state.orders.findIndex(
         (order) => order._id === action.payload._id
       );
@@ -337,7 +317,7 @@ const orderSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(createOrder.fulfilled, (state, action: PayloadAction<Order>) => {
+      .addCase(createOrder.fulfilled, (state, action: PayloadAction<OrderInterface>) => {
         state.loading = false;
         state.orders.push(action.payload);
         state.orderFormData = {}; // Reset form data on success
@@ -352,7 +332,7 @@ const orderSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchOrders.fulfilled, (state, action: PayloadAction<Order[]>) => {
+      .addCase(fetchOrders.fulfilled, (state, action: PayloadAction<OrderInterface[]>) => {
         state.loading = false;
         state.orders = action.payload;
       })
@@ -368,7 +348,7 @@ const orderSlice = createSlice({
       })
       .addCase(
         fetchSingleOrder.fulfilled,
-        (state, action: PayloadAction<Order>) => {
+        (state, action: PayloadAction<OrderInterface>) => {
           state.loading = false;
           state.currentOrder = action.payload;
         }
@@ -383,7 +363,7 @@ const orderSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateOrder.fulfilled, (state, action: PayloadAction<Order>) => {
+      .addCase(updateOrder.fulfilled, (state, action: PayloadAction<OrderInterface>) => {
         state.loading = false;
         const index = state.orders.findIndex(
           (order) => order._id === action.payload._id
@@ -424,7 +404,7 @@ const orderSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(createClaim.fulfilled, (state, action: PayloadAction<Order>) => {
+      .addCase(createClaim.fulfilled, (state, action: PayloadAction<OrderInterface>) => {
         state.loading = false;
         const index = state.orders.findIndex(
           (order) => order._id === action.payload._id

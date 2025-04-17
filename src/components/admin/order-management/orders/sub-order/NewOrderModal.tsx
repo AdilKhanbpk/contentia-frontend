@@ -56,7 +56,7 @@ export default function NewModal() {
                 data.assignedCreators as unknown as string
             ), // Add formatting here
             noOfUgc: data.noOfUgc,
-            totalPrice: data.totalPrice,
+            basePrice: data.basePrice,
             additionalServices: {
                 platform: selectedPlatform.toLowerCase(),
                 duration: duration,
@@ -128,13 +128,13 @@ export default function NewModal() {
                             {/* Select Price */}
                             <div>
                                 <label className='block text-sm font-semibold mt-2'>
-                                    Select Base Price:
+                                    Enter Base Price:
                                 </label>
                                 <input
                                     type='number'
                                     placeholder='Enter price'
                                     className='w-full px-3 py-1 border rounded-md focus:outline-none'
-                                    {...register("totalPrice", {
+                                    {...register("basePrice", {
                                         required: "Price is required",
                                     })}
                                 />

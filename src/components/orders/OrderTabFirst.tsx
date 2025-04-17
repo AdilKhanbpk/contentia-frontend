@@ -22,7 +22,9 @@ export default function TabFirst({
     // State Management
     const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
     const [selectedCard, setSelectedCard] = useState<number | string>("");
-    const [additionalCharges, setAdditionalCharges] = useState<number[]>([]);
+    const [selectedServices, setSelectedServices] = useState<{
+        [key: string]: number;
+    }>({});
     const [activeEdit, setActiveEdit] = useState(false);
     const [showTooltipOne, setShowTooltipOne] = useState(false);
     const [activeRatio, setActiveRatio] = useState<string>("9:16");
@@ -30,16 +32,6 @@ export default function TabFirst({
     const [selectedPlatform, setSelectedPlatform] =
         useState<string>("instagram");
 
-    const [selectedServices, setSelectedServices] = useState<{
-        [key: string]: boolean;
-    }>({
-        share: false,
-        cover: false,
-        influencer: false,
-        shipping: false,
-    });
-
-    // Fetch Redux State
     const { data: additionalService } = useSelector(
         (state: RootState) => state.addPrice
     );
@@ -49,7 +41,8 @@ export default function TabFirst({
         pricing?.find((option: any) => option.videoCount === 1)?.finalPrice ||
         3000;
 
-    // Fetch data on component mount
+    const [basePrice, setBasePrice] = useState<number>(0);
+
     useEffect(() => {
         dispatch(fetchPricePlans() as any);
         if (token) {
@@ -57,15 +50,26 @@ export default function TabFirst({
         }
     }, [dispatch]);
 
-    const handleQuantityChange = (change: number) => {
-        setSelectedQuantity((prevQuantity) =>
-            Math.max(1, prevQuantity + change)
+    useEffect(() => {
+        const selectedOption = pricing?.find(
+            (option) => option._id === selectedCard
         );
 
-        // Only reset selected plan if it's already selected
-        if (selectedCard) {
+        if (selectedOption) {
+            if (![3, 6, 12].includes(selectedQuantity)) {
+                setSelectedCard("");
+                setBasePrice(selectedOption.finalPrice * selectedQuantity);
+            } else {
+                setBasePrice(selectedOption.finalPrice);
+            }
+        } else {
             setSelectedCard("");
+            setBasePrice(oneVideoPrice * selectedQuantity);
         }
+    }, [selectedCard, selectedQuantity, pricing]);
+
+    const handleQuantityChange = (change: number) => {
+        setSelectedQuantity((prev) => Math.max(1, prev + change));
     };
 
     const handleCardSelect = (cardId: string | number) => {
@@ -73,77 +77,55 @@ export default function TabFirst({
         const selectedOption = pricing?.find(
             (option: any) => option._id === cardId
         );
-
         if (selectedOption) {
-            setSelectedQuantity(selectedOption.videoCount); // Set quantity based on the selected plan
+            setSelectedQuantity(selectedOption.videoCount);
         }
     };
 
-    // Handle additional service selection
-    const handleAddService = (
-        serviceType: keyof typeof selectedServices,
-        charge?: number
-    ) => {
-        if (charge !== undefined) {
-            setSelectedServices((prev) => ({
-                ...prev,
-                [serviceType]: !prev[serviceType],
-            }));
+    const handleAddService = (key: string, price: number) => {
+        setSelectedServices((prev) => {
+            const updated = { ...prev };
+            if (updated[key]) {
+                delete updated[key];
+            } else {
+                updated[key] = price;
+            }
+            return updated;
+        });
 
-            setAdditionalCharges((prev) =>
-                prev.includes(charge)
-                    ? prev.filter((c) => c !== charge)
-                    : [...prev, charge]
-            );
+        if (key === "edit") {
+            setActiveEdit((prev) => !prev);
         }
     };
 
-    // Calculate total additional charges
-    const totalAdditionalCharges = additionalCharges.reduce(
+    const isServiceSelected = (key: string) =>
+        selectedServices.hasOwnProperty(key);
+
+    const totalAdditionalCharges = Object.values(selectedServices).reduce(
         (acc, charge) => acc + charge,
         0
     );
 
-    // Calculate final price
-    const getPrice = (
-        quantity: number,
-        cardId: number | string,
-        additionalCharges: number
-    ): string => {
-        if (cardId) {
-            const selectedPackage = pricing?.find(
-                (option: any) => option._id === cardId
-            );
-            if (selectedPackage) {
-                return (
-                    selectedPackage.finalPrice + additionalCharges
-                ).toLocaleString("tr-TR");
-            }
-        }
-        return (quantity * oneVideoPrice + additionalCharges).toLocaleString(
-            "tr-TR"
-        );
+    const getTotalPrice = () => {
+        return (basePrice + totalAdditionalCharges).toLocaleString("tr-TR");
     };
 
-    // Handle form submission
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        // Construct form data
         const formData = {
             noOfUgc: selectedQuantity,
-            totalPrice: Number(
-                getPrice(selectedQuantity, selectedCard, totalAdditionalCharges)
-            ),
+            basePrice: basePrice,
+            totalPrice: getTotalPrice(),
             additionalServices: {
                 platform: selectedPlatform,
                 duration: activeDuration,
-                edit: activeEdit,
+                edit: isServiceSelected("edit"),
                 aspectRatio: activeRatio,
-                share: selectedServices.share,
-                coverPicture: selectedServices.cover,
-                creatorType: selectedServices.influencer,
-                productShipping: selectedServices.shipping,
+                share: isServiceSelected("share"),
+                coverPicture: isServiceSelected("cover"),
+                creatorType: isServiceSelected("influencer"),
+                productShipping: isServiceSelected("shipping"),
             },
         };
 
@@ -152,7 +134,22 @@ export default function TabFirst({
         setActiveTab(1);
     };
 
-    // Available additional services
+    useEffect(() => {
+        const updated = { ...selectedServices };
+
+        if (activeDuration === "30s") {
+            updated["duration"] =
+                additionalService?.thirtySecondDurationPrice || 0;
+        } else if (activeDuration === "60s") {
+            updated["duration"] =
+                additionalService?.sixtySecondDurationPrice || 0;
+        } else {
+            delete updated["duration"]; // 15s is base, no extra cost
+        }
+
+        setSelectedServices(updated);
+    }, [activeDuration, additionalService]);
+
     const services = [
         {
             id: 1,
@@ -303,7 +300,7 @@ export default function TabFirst({
                                         <button
                                             type='button'
                                             className={`text-sm px-3 py-1 rounded ${
-                                                activeDuration === "Diger"
+                                                activeDuration === "60s"
                                                     ? "Button text-white"
                                                     : "bg-white text-black"
                                             }`}
@@ -311,76 +308,103 @@ export default function TabFirst({
                                                 setActiveDuration("60s")
                                             }
                                         >
-                                            Diğer
+                                            60s
                                         </button>
                                     </div>
                                 </div>
 
                                 {/* Edit Section */}
-                                <div className='sectionBG py-2 flex flex-row px-2 items-end rounded-md'>
-                                    <h3 className='text-sm font-semibold mb-1 w-1/4'>
+                                <div className='sectionBG py-3 px-4 flex items-center justify-between rounded-md'>
+                                    <h3 className='text-sm font-semibold w-1/4'>
                                         Edit:
                                     </h3>
-                                    <div className='flex space-x-2 w-2/4'>
+
+                                    <div className='flex gap-2 w-2/4'>
+                                        {/* Evet Button */}
                                         <button
                                             type='button'
-                                            className={`text-sm px-3 py-1 rounded ${
-                                                activeEdit === true
-                                                    ? "Button text-white"
-                                                    : "bg-white text-black"
+                                            className={`text-sm px-4 py-1 rounded-md transition ${
+                                                activeEdit
+                                                    ? "BlueBg text-white"
+                                                    : "bg-white border border-gray-300 text-black"
                                             }`}
-                                            onClick={() => setActiveEdit(true)}
+                                            onClick={() => {
+                                                if (!activeEdit) {
+                                                    setActiveEdit(true);
+                                                    setSelectedServices(
+                                                        (prev) => ({
+                                                            ...prev,
+                                                            edit:
+                                                                additionalService?.editPrice ??
+                                                                0,
+                                                        })
+                                                    );
+                                                }
+                                            }}
                                         >
                                             Evet
                                         </button>
 
+                                        {/* Hayır Button */}
                                         <button
                                             type='button'
-                                            className={`text-sm px-3 py-1 rounded ${
-                                                activeEdit === false
-                                                    ? "Button text-white"
-                                                    : "bg-white text-black"
+                                            className={`text-sm px-4 py-1 rounded-md transition ${
+                                                !activeEdit
+                                                    ? "BlueBg text-white"
+                                                    : "bg-white border border-gray-300 text-black"
                                             }`}
-                                            onClick={() => setActiveEdit(false)}
+                                            onClick={() => {
+                                                if (activeEdit) {
+                                                    setActiveEdit(false);
+                                                    setSelectedServices(
+                                                        (prev) => {
+                                                            const updated = {
+                                                                ...prev,
+                                                            };
+                                                            delete updated.edit;
+                                                            return updated;
+                                                        }
+                                                    );
+                                                }
+                                            }}
                                         >
                                             Hayır
                                         </button>
+                                    </div>
 
-                                        <div className='relative w-1/4 flex justify-end items-end'>
-                                            <button
-                                                type='button'
-                                                className='text-black text-sm px-3 py-1 rounded-full'
-                                                onMouseEnter={() =>
-                                                    setShowTooltipOne(true)
-                                                }
-                                                onMouseLeave={() =>
-                                                    setShowTooltipOne(false)
-                                                }
-                                            >
-                                                <Image
-                                                    src='/tooltipIcon.png'
-                                                    alt='tooltip icon'
-                                                    height={16}
-                                                    width={16}
-                                                    className='rounded-full'
-                                                />
-                                            </button>
+                                    {/* Tooltip */}
+                                    <div className='relative w-1/4 flex justify-end'>
+                                        <button
+                                            type='button'
+                                            className='text-black text-sm p-1 rounded-full'
+                                            onMouseEnter={() =>
+                                                setShowTooltipOne(true)
+                                            }
+                                            onMouseLeave={() =>
+                                                setShowTooltipOne(false)
+                                            }
+                                        >
+                                            <Image
+                                                src='/tooltipIcon.png'
+                                                alt='tooltip icon'
+                                                height={16}
+                                                width={16}
+                                                className='rounded-full'
+                                            />
+                                        </button>
 
-                                            {/* Tooltip Content */}
-                                            {showTooltipOne && (
-                                                <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
-                                                    İçeriklerinizin orjinal
-                                                    versiyonu ile birlikte,
-                                                    seçtiğiniz sosyal medyaya
-                                                    göre paylaşıma hazır
-                                                    versiyonunu alın! Başlıklar,
-                                                    altyazılar, telif hakkı
-                                                    bulunmayan müzikler,
-                                                    geçişler ve daha fazlasıyla
-                                                    destekleyin.
-                                                </div>
-                                            )}
-                                        </div>
+                                        {showTooltipOne && (
+                                            <div className='absolute z-10 top-8 right-0 w-64 bg-gray-800 text-white text-xs p-3 rounded-md shadow-lg'>
+                                                İçeriklerinizin orijinal
+                                                versiyonu ile birlikte,
+                                                seçtiğiniz sosyal medyaya göre
+                                                paylaşıma hazır versiyonunu
+                                                alın! Başlıklar, altyazılar,
+                                                telif hakkı olmayan müzikler,
+                                                geçişler ve daha fazlasıyla
+                                                desteklenir.
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 
@@ -641,13 +665,7 @@ export default function TabFirst({
                                     {oneVideoPrice.toLocaleString("tr-TR")} TL
                                 </p>
                                 <p className='text-sm BlueText'>
-                                    Toplam:{" "}
-                                    {getPrice(
-                                        selectedQuantity,
-                                        selectedCard,
-                                        totalAdditionalCharges
-                                    )}{" "}
-                                    TL
+                                    Toplam: {getTotalPrice()} TL
                                 </p>
                             </div>
                             <button
