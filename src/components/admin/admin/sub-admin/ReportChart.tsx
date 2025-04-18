@@ -29,20 +29,26 @@ const ReportChart = ({ sales }: { sales: { totalSalesByMonth: number[] } }) => {
     const [series, setSeries] = useState([
         { name: "Income", data: sales.totalSalesByMonth },
     ]);
-
     useEffect(() => {
-        // Generate months from January of the current year
-        const year = new Date().getFullYear();
-        const months = sales.totalSalesByMonth.map((_, index) => {
-            const date = new Date(year, index, 1);
-            return date.toISOString();
-        });
-
         setOptions((prevState) => ({
             ...prevState,
             xaxis: {
                 ...prevState.xaxis,
-                categories: months,
+                type: "category",
+                categories: [
+                    "Jan",
+                    "Feb",
+                    "Mar",
+                    "Apr",
+                    "May",
+                    "Jun",
+                    "Jul",
+                    "Aug",
+                    "Sep",
+                    "Oct",
+                    "Nov",
+                    "Dec",
+                ],
             },
             tooltip: {
                 ...prevState.tooltip,
@@ -50,11 +56,6 @@ const ReportChart = ({ sales }: { sales: { totalSalesByMonth: number[] } }) => {
                     formatter(val: number) {
                         return `$ ${val}`;
                     },
-                },
-            },
-            legend: {
-                labels: {
-                    colors: "grey.500",
                 },
             },
         }));

@@ -21,6 +21,18 @@ const IncomeOverview = ({
         "By volume" | "By margin" | "By sales"
     >("By volume");
 
+    const getTotal = (arr: number[]) =>
+        arr.reduce((acc, curr) => acc + curr, 0);
+
+    const totalWeekOrdersCount = getTotal(orders.totalOrdersByWeek);
+    const totalMonthOrdersCount = getTotal(orders.totalOrdersByMonth);
+
+    const totalWeeksSale = getTotal(sales.totalSalesByWeek);
+    const totalMonthsSale = getTotal(sales.totalSalesByMonth);
+
+    const totalWeeksRevenue = getTotal(revenue.totalRevenueByWeek);
+    const totalMonthsRevenue = getTotal(revenue.totalRevenueByMonth);
+
     return (
         <div className='p-6 md:p-4 sm:p-3 xs:p-2 bg-white rounded-lg'>
             <div className='flex  flex-col md:flex-row justify-between items-center'>
@@ -61,8 +73,33 @@ const IncomeOverview = ({
                     </select>
                 </div>
             </div>
-            <div className='text-red-500 mt-4 flex items-center'>
-                <span>1</span>
+            <div className='text-gray-500 mt-4 flex items-center'>
+                <span>
+                    {(() => {
+                        if (slot === "month" && quantity === "By volume")
+                            return `${totalMonthOrdersCount} Orders`;
+                        if (slot === "month" && quantity === "By margin")
+                            return `TL ${totalMonthsRevenue.toLocaleString(
+                                "tr-TR"
+                            )} in Revenue`;
+                        if (slot === "month" && quantity === "By sales")
+                            return `TL ${totalMonthsSale.toLocaleString(
+                                "tr-TR"
+                            )} in Sales`;
+                        if (slot === "week" && quantity === "By volume")
+                            return `${totalWeekOrdersCount} Orders`;
+                        if (slot === "week" && quantity === "By margin")
+                            return `TL ${totalWeeksRevenue.toLocaleString(
+                                "tr-TR"
+                            )} in Revenue`;
+                        if (slot === "week" && quantity === "By sales")
+                            return `TL ${totalWeeksSale.toLocaleString(
+                                "tr-TR"
+                            )} in Sales`;
+                        return "0"; // fallback
+                    })()}
+                </span>
+
                 <span className='text-gray-400 ml-2 text-sm'>
                     {/* Compare to : 01 Dec 2021-08 Jan 2022 */}
                 </span>
