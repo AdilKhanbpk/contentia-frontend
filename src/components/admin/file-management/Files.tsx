@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback, memo } from "react";
-import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
+import { FaEdit, FaTrashAlt, FaEye, FaExternalLinkAlt } from "react-icons/fa";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store/store";
@@ -102,15 +102,15 @@ const Files: React.FC = () => {
                 cell: (row: any) =>
                     row.googleDriveUrl ? (
                         <a
-                            href={
-                                row.googleDriveUrl ||
-                                "https://google.com/google"
-                            }
+                            href={row.googleDriveUrl}
                             target='_blank'
                             rel='noopener noreferrer'
-                            className='text-blue-500 hover:underline text-xs'
+                            className='text-blue-500 hover:underline text-xs flex items-center gap-3'
                         >
-                            {row.googleDriveUrl}
+                            <span className='BlueText max-w-[180px]'>
+                                Folder Link
+                            </span>
+                            <FaExternalLinkAlt className='BlueText w-3.5 h-3.5' />
                         </a>
                     ) : (
                         "-"
