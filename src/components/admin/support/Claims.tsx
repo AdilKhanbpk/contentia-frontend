@@ -167,8 +167,8 @@ const Claims: React.FC = () => {
             "#No": index + 1,
             "Customer Name": claim.customer?.fullName || "",
             "Customer Email": claim.customer?.email || "",
-            "Customer ID": claim.customer?.id || "",
-            "Order ID": claim.order?.id || "",
+            "Customer ID": claim.customer?._id || "",
+            "Order ID": claim.order?._id || "",
             "Claim Date": claim.claimDate
                 ? new Date(claim.claimDate).toLocaleDateString()
                 : "",
@@ -182,7 +182,7 @@ const Claims: React.FC = () => {
         () => [
             {
                 name: "#Claim Id",
-                selector: (row: ClaimInterface) => row.id || "N/A",
+                selector: (row: ClaimInterface) => row._id || "N/A",
                 sortable: true,
                 width: "100px",
             },
@@ -220,6 +220,13 @@ const Claims: React.FC = () => {
                 width: "250px",
             },
             {
+                name: "Customer ID",
+                selector: (row: ClaimInterface) => row.customer?._id || "N/A",
+                sortable: true,
+                width: "150px",
+            },
+            ,
+            {
                 name: "Creator Info",
                 cell: (row: ClaimInterface) => (
                     <div className='flex items-center space-x-2'>
@@ -249,14 +256,8 @@ const Claims: React.FC = () => {
             },
 
             {
-                name: "Customer ID",
-                selector: (row: ClaimInterface) => row.customer?.id || "N/A",
-                sortable: true,
-                width: "150px",
-            },
-            {
                 name: "Order ID",
-                selector: (row: ClaimInterface) => row.order?.id || "N/A",
+                selector: (row: ClaimInterface) => row.order?._id || "N/A",
                 sortable: true,
                 width: "150px",
             },
@@ -294,7 +295,7 @@ const Claims: React.FC = () => {
                         onView={handleView}
                         onApprove={handleApprove}
                         onReject={handleReject}
-                        id={row.id || ""}
+                        id={row._id || ""}
                     />
                 ),
                 width: "150px",
@@ -313,8 +314,8 @@ const Claims: React.FC = () => {
                 claim.creator?.email
                     ?.toLowerCase()
                     .includes(lowerCaseSearchTerm) ||
-                claim.creator?.id?.toString().includes(lowerCaseSearchTerm) ||
-                claim.order?.id?.toString().includes(lowerCaseSearchTerm)
+                claim.creator?._id?.toString().includes(lowerCaseSearchTerm) ||
+                claim.order?._id?.toString().includes(lowerCaseSearchTerm)
         );
     }, [claims, searchTerm]);
 

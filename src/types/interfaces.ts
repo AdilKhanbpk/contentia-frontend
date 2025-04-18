@@ -353,22 +353,22 @@ export interface FilesInterface {
 }
 
 export interface ClaimInterface {
-    id: string;
+    _id: string;
     status: "pending" | "approved" | "rejected";
     customer: {
-        id?: string;
+        _id?: string;
         fullName?: string;
         email?: string;
         profilePic?: string;
     };
     creator: {
-        id?: string;
+        _id?: string;
         fullName?: string;
         email?: string;
         profilePic?: string;
     };
     order: {
-        id?: string;
+        _id?: string;
     };
     claimDate?: Date | string;
     claimContent: string;

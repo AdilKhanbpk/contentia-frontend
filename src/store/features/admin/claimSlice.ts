@@ -28,31 +28,8 @@ export const fetchAdminClaims = createAsyncThunk(
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            if (response.data && response.data.data) {
-                const claims = response.data.data.map((claim: any) => ({
-                    id: claim._id ?? null,
-                    status: claim.status ?? 'pending',
-                    customer: {
-                        id: claim.customer?._id ?? null,
-                        fullName: claim.customer?.fullName ?? '',
-                        email: claim.customer?.email ?? ''
-                    },
-                    creator: {
-                        id: claim.creator?._id ?? null,
-                        fullName: claim.creator?.fullName ?? '',
-                        email: claim.creator?.email ?? ''
-                    },
-                    order: {
-                        id: claim.order?._id ?? null
-                    },
-                    claimDate: claim.claimDate ?? new Date(),
-                    claimContent: claim.claimContent ?? ''
-                }));
-                console.groupEnd();
-                return claims;
-            } else {
-                return [];
-            }
+            return response.data.data
+
         } catch (error) {
             throw Error('Failed to fetch admin claims');
         }
@@ -68,31 +45,7 @@ export const fetchAdminClaimById = createAsyncThunk(
             const response = await axiosInstance.get(`/admin/claims/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            console.log("🚀 ~ response:", response)
-
-
-            const claim = {
-                id: response.data.data?._id ?? null,
-                status: response.data.data?.status ?? 'pending',
-                customer: {
-                    id: response.data.data?.customer?._id ?? null,
-                    fullName: response.data.data?.customer?.billingInformation?.fullName ?? '',
-                    email: response.data.data?.customer?.billingInformation?.email ?? '',
-                },
-                creator: {
-                    id: response.data.data?.creator?._id ?? null,
-                    fullName: response.data.data?.creator?.fullName ?? '',
-                    email: response.data.data?.creator?.email ?? '',
-                },
-                order: {
-                    id: response.data.data?.order?._id ?? null,
-                },
-                claimDate: response.data.data?.claimDate ?? null,
-                claimContent: response.data.data?.claimContent ?? '',
-            };
-            console.log("🚀 ~ claim:", claim)
-
-            return claim;
+            return response.data.data
 
         } catch (error) {
             return rejectWithValue('Failed to fetch admin claim by ID');
@@ -117,8 +70,8 @@ export const createAdminClaim = createAsyncThunk(
 
             const formattedData = {
                 status: data.status,
-                creatorId: data.creator?.id,
-                orderId: data.order?.id,
+                creatorId: data.creator?._id,
+                orderId: data.order?._id,
                 claimDate: data.claimDate,
                 claimContent: data.claimContent,
             };
@@ -131,20 +84,20 @@ export const createAdminClaim = createAsyncThunk(
             });
 
             const newClaim: ClaimInterface = {
-                id: response.data.data._id,
+                _id: response.data.data._id,
                 status: response.data.data.status,
                 customer: {
-                    id: response.data.data.customer?._id ?? null,
+                    _id: response.data.data.customer?._id ?? null,
                     fullName: response.data.data.customer?.fullName ?? '',
                     email: response.data.data.customer?.email ?? '',
                 },
                 creator: {
-                    id: response.data.data.creator?._id ?? null,
+                    _id: response.data.data.creator?._id ?? null,
                     fullName: response.data.data.creator?.fullName ?? '',
                     email: response.data.data.creator?.email ?? '',
                 },
                 order: {
-                    id: response.data.data.order?._id ?? null,
+                    _id: response.data.data.order?._id ?? null,
                 },
                 claimDate: response.data.data.claimDate,
                 claimContent: response.data.data.claimContent,
@@ -180,20 +133,20 @@ export const updateAdminClaim = createAsyncThunk(
             });
 
             const updatedClaim = {
-                id: response.data._id,
+                _id: response.data._id,
                 status: response.data.status,
                 customer: {
-                    id: response.data.customer?._id,
+                    _id: response.data.customer?._id,
                     fullName: response.data.customer?.fullName,
                     email: response.data.customer?.email
                 },
                 creator: {
-                    id: response.data.creator?._id,
+                    _id: response.data.creator?._id,
                     fullName: response.data.creator?.fullName,
                     email: response.data.creator?.email
                 },
                 order: {
-                    id: response.data.order?._id
+                    _id: response.data.order?._id
                 },
                 claimDate: response.data.claimDate,
                 claimContent: response.data.claimContent
@@ -289,7 +242,7 @@ const adminClaimsSlice = createSlice({
                 state.loading = false;
                 const updatedClaim = action.payload;
                 const updatedData = state.data.map((claim) =>
-                    claim.id === updatedClaim.id ? updatedClaim : claim
+                    claim._id === updatedClaim._id ? updatedClaim : claim
                 );
                 state.data = updatedData;
             })
@@ -305,7 +258,7 @@ const adminClaimsSlice = createSlice({
             })
             .addCase(deleteAdminClaim.fulfilled, (state, action: PayloadAction<string>) => {
                 state.loading = false;
-                state.data = state.data.filter((claim) => claim.id !== action.payload);
+                state.data = state.data.filter((claim) => claim._id !== action.payload);
             })
             .addCase(deleteAdminClaim.rejected, (state, action) => {
                 state.loading = false;
