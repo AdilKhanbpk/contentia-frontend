@@ -286,7 +286,7 @@ const Orders: React.FC = () => {
             "# Order Id": order._id,
             "Order Title": order.associatedBrands?.brandName,
             "No of UGC": order.noOfUgc,
-            "Total Price": order.totalPrice,
+            "Total Price": order.totalPriceForCustomer,
             "Order Status": order.orderStatus,
             "Payment Status": order.paymentStatus,
             "Contents Delivered": order.contentsDelivered || 0,
@@ -356,7 +356,7 @@ const Orders: React.FC = () => {
             },
             {
                 name: "Total Price",
-                selector: (row: OrderInterface) => row.totalPrice,
+                selector: (row: OrderInterface) => row.totalPriceForCustomer,
                 sortable: true,
             },
             {
