@@ -351,3 +351,25 @@ export interface FilesInterface {
     orderId: string;
     googleDriveUrl: string;
 }
+
+export interface ClaimInterface {
+    id: string;
+    status: "pending" | "approved" | "rejected";
+    customer: {
+        id?: string;
+        fullName?: string;
+        email?: string;
+        profilePic?: string;
+    };
+    creator: {
+        id?: string;
+        fullName?: string;
+        email?: string;
+        profilePic?: string;
+    };
+    order: {
+        id?: string;
+    };
+    claimDate?: Date | string;
+    claimContent: string;
+}

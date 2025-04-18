@@ -17,21 +17,7 @@ import {
     fetchAdminClaimById,
 } from "@/store/features/admin/claimSlice";
 import { useTokenContext } from "@/context/TokenCheckingContext";
-
-export interface Claim {
-    id?: string;
-    status?: "pending" | "approved" | "rejected";
-    customer?: {
-        id?: string;
-        fullName?: string;
-        email?: string;
-    };
-    order?: {
-        id?: string;
-    };
-    claimDate?: Date | string;
-    claimContent: string;
-}
+import { ClaimInterface } from "@/types/interfaces";
 
 const SearchBar = memo(
     ({ onSearch }: { onSearch: (value: string) => void }) => (
@@ -88,7 +74,9 @@ const Claims: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalTwoOpen, setIsModalTwoOpen] = useState(false);
-    const [currentClaim, setCurrentClaim] = useState<Claim | null>(null);
+    const [currentClaim, setCurrentClaim] = useState<ClaimInterface | null>(
+        null
+    );
     const { token } = useTokenContext();
     if (!token) return null;
     const { data: claims, loading } = useSelector(
@@ -111,7 +99,7 @@ const Claims: React.FC = () => {
         dispatch(fetchAdminClaimById({ id, token }))
             .then((response) => {
                 if (response.payload) {
-                    setCurrentClaim(response.payload as Claim);
+                    setCurrentClaim(response.payload as ClaimInterface);
                     setIsModalTwoOpen(true);
                     toast.success("Claim details fetched successfully!");
                 } else {
@@ -193,19 +181,21 @@ const Claims: React.FC = () => {
     const columns = React.useMemo(
         () => [
             {
-                name: "#",
-                selector: (row: Claim, index: number) => index + 1,
+                name: "#Claim Id",
+                selector: (row: ClaimInterface) => row.id || "N/A",
                 sortable: true,
                 width: "100px",
             },
             {
                 name: "Customer Info",
-                cell: (row: Claim) => (
+                cell: (row: ClaimInterface) => (
                     <div className='flex items-center space-x-2'>
                         <Image
                             width={10}
                             height={10}
-                            src='/icons/avatar.png'
+                            src={
+                                row.customer?.profilePic || "/icons/avatar.png"
+                            }
                             alt='avatar'
                             className='w-10 h-10 rounded-full'
                         />
@@ -220,7 +210,7 @@ const Claims: React.FC = () => {
                                           0,
                                           20
                                       )}...`
-                                    : row.customer?.email || "N/A"}
+                                    : row.customer?.email || "No Email"}
                             </div>
                         </div>
                     </div>
@@ -230,20 +220,49 @@ const Claims: React.FC = () => {
                 width: "250px",
             },
             {
+                name: "Creator Info",
+                cell: (row: ClaimInterface) => (
+                    <div className='flex items-center space-x-2'>
+                        <Image
+                            width={10}
+                            height={10}
+                            src={row.creator?.profilePic || "/icons/avatar.png"}
+                            alt='avatar'
+                            className='w-10 h-10 rounded-full'
+                        />
+                        <div className='whitespace-nowrap'>
+                            <div className='font-semibold'>
+                                {row.creator?.fullName || "N/A"}
+                            </div>
+                            <div className='text-gray-500 text-sm'>
+                                {row.creator?.email &&
+                                row.creator.email.length > 20
+                                    ? `${row.creator.email.substring(0, 20)}...`
+                                    : row.customer?.email || "No Email"}
+                            </div>
+                        </div>
+                    </div>
+                ),
+                sortable: false,
+                grow: 2,
+                width: "250px",
+            },
+
+            {
                 name: "Customer ID",
-                selector: (row: Claim) => row.customer?.id || "N/A",
+                selector: (row: ClaimInterface) => row.customer?.id || "N/A",
                 sortable: true,
                 width: "150px",
             },
             {
                 name: "Order ID",
-                selector: (row: Claim) => row.order?.id || "N/A",
+                selector: (row: ClaimInterface) => row.order?.id || "N/A",
                 sortable: true,
                 width: "150px",
             },
             {
                 name: "Claim Date",
-                selector: (row: Claim) =>
+                selector: (row: ClaimInterface) =>
                     row.claimDate
                         ? new Date(row.claimDate).toLocaleDateString()
                         : "N/A",
@@ -252,7 +271,7 @@ const Claims: React.FC = () => {
             },
             {
                 name: "Claim Status",
-                cell: (row: Claim) => (
+                cell: (row: ClaimInterface) => (
                     <span
                         className={`px-3 py-1 rounded-full text-sm font-semibold ${
                             row.status === "approved"
@@ -270,7 +289,7 @@ const Claims: React.FC = () => {
             },
             {
                 name: "Actions",
-                cell: (row: Claim) => (
+                cell: (row: ClaimInterface) => (
                     <TableActions
                         onView={handleView}
                         onApprove={handleApprove}
@@ -288,13 +307,13 @@ const Claims: React.FC = () => {
         const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
         return claims.filter(
             (claim) =>
-                claim.customer?.fullName
+                claim.creator?.fullName
                     ?.toLowerCase()
                     .includes(lowerCaseSearchTerm) ||
-                claim.customer?.email
+                claim.creator?.email
                     ?.toLowerCase()
                     .includes(lowerCaseSearchTerm) ||
-                claim.customer?.id?.toString().includes(lowerCaseSearchTerm) ||
+                claim.creator?.id?.toString().includes(lowerCaseSearchTerm) ||
                 claim.order?.id?.toString().includes(lowerCaseSearchTerm)
         );
     }, [claims, searchTerm]);

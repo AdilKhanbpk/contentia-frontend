@@ -2,15 +2,20 @@ import { useState, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
-import { Claim, updateAdminClaim } from "@/store/features/admin/claimSlice";
+import {
+    fetchAdminClaims,
+    updateAdminClaim,
+} from "@/store/features/admin/claimSlice";
 import { toast } from "react-toastify";
 import { useTokenContext } from "@/context/TokenCheckingContext";
+import { ClaimInterface } from "@/types/interfaces";
 
 interface ModalTwoProps {
-    claim: Claim | null;
+    claim: ClaimInterface | null;
 }
 
 export default function ModalTwo({ claim }: ModalTwoProps) {
+    console.log("🚀 ~ ModalTwo ~ claim:", claim);
     const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
     const [loading, setLoading] = useState(false);
 
@@ -19,13 +24,15 @@ export default function ModalTwo({ claim }: ModalTwoProps) {
         handleSubmit,
         reset,
         formState: { errors },
-    } = useForm<Pick<Claim, "claimContent">>({
+    } = useForm<Pick<ClaimInterface, "claimContent">>({
         defaultValues: { claimContent: claim?.claimContent || "" },
     });
     const { token } = useTokenContext();
     if (!token) return null;
 
-    const onSubmit: SubmitHandler<Pick<Claim, "claimContent">> = (data) => {
+    const onSubmit: SubmitHandler<Pick<ClaimInterface, "claimContent">> = (
+        data
+    ) => {
         if (claim?.id) {
             setLoading(true); // Set loading to true before the dispatch
             dispatch(
@@ -39,6 +46,7 @@ export default function ModalTwo({ claim }: ModalTwoProps) {
                 .then(() => {
                     toast.success("Claim content updated successfully!");
                     setLoading(false); // Reset loading state after success
+                    dispatch(fetchAdminClaims(token));
                 })
                 .catch((error) => {
                     toast.error(
@@ -69,16 +77,18 @@ export default function ModalTwo({ claim }: ModalTwoProps) {
             <div className='mt-4 sm:mt-6 md:mt-8 lg:mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6 lg:gap-6'>
                 <div>
                     <label className='block text-sm font-semibold mt-2 sm:mt-3 md:mt-4 lg:mt-4'>
-                        Customer Name
+                        Creator Name
                     </label>
-                    <p className='mt-3'>{claim.customer?.fullName || "N/A"}</p>
+                    <p className='mt-3'>
+                        {claim.creator?.fullName || "No Name "}
+                    </p>
                 </div>
 
                 <div>
                     <label className='block text-sm font-semibold mt-2 sm:mt-3 md:mt-4 lg:mt-4'>
-                        Customer ID
+                        Creator ID
                     </label>
-                    <p className='mt-3'>{claim.customer?.id || "N/A"}</p>
+                    <p className='mt-3'>{claim.creator?.id || "N/A"}</p>
                 </div>
             </div>
 

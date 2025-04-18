@@ -1,27 +1,15 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { axiosInstance } from '@/store/axiosInstance';
 import { AxiosError } from 'axios';
+import { ClaimInterface } from '@/types/interfaces';
 
-export interface Claim {
-    id?: string;
-    status?: 'pending' | 'approved' | 'rejected';
-    customer?: {
-        id?: string;
-        fullName?: string;
-        email?: string;
-    };
-    order?: {
-        id?: string;
-    };
-    claimDate?: Date | string;
-    claimContent: string;
-}
+
 
 export interface AdminClaimsState {
-    data: Claim[];
+    data: ClaimInterface[];
     loading: boolean;
     error: string | null;
-    selectedClaim: Claim | null;
+    selectedClaim: ClaimInterface | null;
 }
 
 const initialState: AdminClaimsState = {
@@ -49,6 +37,11 @@ export const fetchAdminClaims = createAsyncThunk(
                         fullName: claim.customer?.fullName ?? '',
                         email: claim.customer?.email ?? ''
                     },
+                    creator: {
+                        id: claim.creator?._id ?? null,
+                        fullName: claim.creator?.fullName ?? '',
+                        email: claim.creator?.email ?? ''
+                    },
                     order: {
                         id: claim.order?._id ?? null
                     },
@@ -75,6 +68,7 @@ export const fetchAdminClaimById = createAsyncThunk(
             const response = await axiosInstance.get(`/admin/claims/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
+            console.log("🚀 ~ response:", response)
 
 
             const claim = {
@@ -85,12 +79,18 @@ export const fetchAdminClaimById = createAsyncThunk(
                     fullName: response.data.data?.customer?.billingInformation?.fullName ?? '',
                     email: response.data.data?.customer?.billingInformation?.email ?? '',
                 },
+                creator: {
+                    id: response.data.data?.creator?._id ?? null,
+                    fullName: response.data.data?.creator?.fullName ?? '',
+                    email: response.data.data?.creator?.email ?? '',
+                },
                 order: {
                     id: response.data.data?.order?._id ?? null,
                 },
                 claimDate: response.data.data?.claimDate ?? null,
                 claimContent: response.data.data?.claimContent ?? '',
             };
+            console.log("🚀 ~ claim:", claim)
 
             return claim;
 
@@ -103,7 +103,7 @@ export const fetchAdminClaimById = createAsyncThunk(
 export const createAdminClaim = createAsyncThunk(
     'adminClaims/createAdminClaim',
     async (
-        { data, token }: { data: Partial<Claim>; token: string },
+        { data, token }: { data: Partial<ClaimInterface>; token: string },
         { rejectWithValue }
     ) => {
         console.group("createAdminClaim Thunk Debugging");
@@ -117,7 +117,7 @@ export const createAdminClaim = createAsyncThunk(
 
             const formattedData = {
                 status: data.status,
-                customerId: data.customer?.id,
+                creatorId: data.creator?.id,
                 orderId: data.order?.id,
                 claimDate: data.claimDate,
                 claimContent: data.claimContent,
@@ -130,10 +130,22 @@ export const createAdminClaim = createAsyncThunk(
                 },
             });
 
-            const newClaim = {
+            const newClaim: ClaimInterface = {
+                id: response.data.data._id,
                 status: response.data.data.status,
-                customerId: response.data.data.customer, // Getting the customer ID from response
-                orderId: response.data.data.order, // Getting the order ID from response
+                customer: {
+                    id: response.data.data.customer?._id ?? null,
+                    fullName: response.data.data.customer?.fullName ?? '',
+                    email: response.data.data.customer?.email ?? '',
+                },
+                creator: {
+                    id: response.data.data.creator?._id ?? null,
+                    fullName: response.data.data.creator?.fullName ?? '',
+                    email: response.data.data.creator?.email ?? '',
+                },
+                order: {
+                    id: response.data.data.order?._id ?? null,
+                },
                 claimDate: response.data.data.claimDate,
                 claimContent: response.data.data.claimContent,
             };
@@ -154,7 +166,7 @@ export const createAdminClaim = createAsyncThunk(
 export const updateAdminClaim = createAsyncThunk(
     'adminClaims/updateAdminClaim',
     async (
-        { claimId, data, token }: { claimId: string; data: Partial<Claim>; token: string },
+        { claimId, data, token }: { claimId: string; data: Partial<ClaimInterface>; token: string },
         { rejectWithValue }
     ) => {
 
@@ -174,6 +186,11 @@ export const updateAdminClaim = createAsyncThunk(
                     id: response.data.customer?._id,
                     fullName: response.data.customer?.fullName,
                     email: response.data.customer?.email
+                },
+                creator: {
+                    id: response.data.creator?._id,
+                    fullName: response.data.creator?.fullName,
+                    email: response.data.creator?.email
                 },
                 order: {
                     id: response.data.order?._id
@@ -226,7 +243,7 @@ const adminClaimsSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchAdminClaims.fulfilled, (state, action: PayloadAction<Claim[]>) => {
+            .addCase(fetchAdminClaims.fulfilled, (state, action: PayloadAction<ClaimInterface[]>) => {
                 state.loading = false;
                 state.data = action.payload;
             })
@@ -240,7 +257,7 @@ const adminClaimsSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchAdminClaimById.fulfilled, (state, action: PayloadAction<Claim>) => {
+            .addCase(fetchAdminClaimById.fulfilled, (state, action: PayloadAction<ClaimInterface>) => {
                 state.loading = false;
                 state.selectedClaim = action.payload;
             })
@@ -254,7 +271,7 @@ const adminClaimsSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(createAdminClaim.fulfilled, (state, action: PayloadAction<Claim>) => {
+            .addCase(createAdminClaim.fulfilled, (state, action: PayloadAction<ClaimInterface>) => {
                 state.loading = false;
                 state.data.push(action.payload);
             })
@@ -268,7 +285,7 @@ const adminClaimsSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(updateAdminClaim.fulfilled, (state, action: PayloadAction<Claim>) => {
+            .addCase(updateAdminClaim.fulfilled, (state, action: PayloadAction<ClaimInterface>) => {
                 state.loading = false;
                 const updatedClaim = action.payload;
                 const updatedData = state.data.map((claim) =>

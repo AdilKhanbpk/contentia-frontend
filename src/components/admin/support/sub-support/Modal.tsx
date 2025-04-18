@@ -2,13 +2,16 @@ import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
-import { createAdminClaim } from "@/store/features/admin/claimSlice";
+import {
+    createAdminClaim,
+    fetchAdminClaims,
+} from "@/store/features/admin/claimSlice";
 import { toast } from "react-toastify";
 import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface ClaimFormData {
     status: string;
-    customerId: string;
+    creatorId: string;
     orderId: string;
     claimDate: string;
     claimContent: string;
@@ -27,7 +30,7 @@ export default function Modal() {
     } = useForm<ClaimFormData>({
         defaultValues: {
             status: "pending",
-            customerId: "",
+            creatorId: "",
             orderId: "",
             claimDate: new Date().toISOString().split("T")[0],
             claimContent: "",
@@ -40,7 +43,7 @@ export default function Modal() {
             createAdminClaim({
                 data: {
                     status: "pending",
-                    customer: { id: data.customerId },
+                    creator: { id: data.creatorId },
                     order: { id: data.orderId },
                     claimDate: data.claimDate,
                     claimContent: data.claimContent,
@@ -52,6 +55,7 @@ export default function Modal() {
             .then(() => {
                 reset();
                 toast.success("Claim created successfully!");
+                dispatch(fetchAdminClaims(token));
             })
             .catch((error) => {
                 toast.error(
@@ -76,15 +80,15 @@ export default function Modal() {
                         </label>
                         <input
                             type='text'
-                            {...register("customerId", {
+                            {...register("creatorId", {
                                 required: "Customer ID is required",
                             })}
                             placeholder=''
                             className='w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none overflow-auto'
                         />
-                        {errors.customerId && (
+                        {errors.creatorId && (
                             <p className='text-red-500 text-sm mt-1'>
-                                {errors.customerId.message}
+                                {errors.creatorId.message}
                             </p>
                         )}
                     </div>
