@@ -160,9 +160,9 @@ export default function EditOrder({ orderData }: EditOrderProps) {
                             <div className='text-gray-700'>Sipariş Tarihi:</div>
                             <div className='text-right BlueText font-bold'>
                                 {orderData.createdAt
-                                    ? orderData.createdAt.toLocaleDateString(
-                                          "tr-TR"
-                                      )
+                                    ? new Date(
+                                          orderData.createdAt
+                                      ).toLocaleDateString()
                                     : "N/A"}
                             </div>
                             <div className='text-gray-700'>Sipariş Durumu:</div>
@@ -301,7 +301,9 @@ export default function EditOrder({ orderData }: EditOrderProps) {
                         <div className='flex justify-between text-lg font-bold mt-2 sm:mt-3 md:mt-4 lg:mt-4'>
                             <p>Toplam</p>
                             <p className='BlueText'>
-                                {orderData.totalPrice.toLocaleString("tr-TR")}{" "}
+                                {orderData.totalPriceForCustomer?.toLocaleString(
+                                    "tr-TR"
+                                )}{" "}
                                 TL
                             </p>
                         </div>

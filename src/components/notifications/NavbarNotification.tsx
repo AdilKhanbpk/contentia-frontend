@@ -1,5 +1,6 @@
 import { useTokenContext } from "@/context/TokenCheckingContext";
 import {
+    markAllAsRead,
     markNotificationAsRead,
     NotificationInterface,
     selectNotificationLoading,
@@ -40,11 +41,28 @@ function NavbarNotification({ user, notifications }: NavbarNotificationProps) {
             );
         }
     };
+
+    const handleMarkAllAsRead = () => {
+        dispatch(markAllAsRead(token));
+    };
+
     return (
         <>
             <div className='p-2 border-b border-gray-200'>
-                <div className='text-gray-700 font-semibold mb-2'>
-                    Notifications
+                <div className='flex items-center justify-between mb-2'>
+                    <div className='text-gray-700 font-semibold'>
+                        Notifications
+                    </div>
+                    {filteredNotifications.some(
+                        (n) => !n.readBy?.includes(user?._id)
+                    ) && (
+                        <button
+                            onClick={handleMarkAllAsRead}
+                            className='text-xs text-gray-700 hover:underline'
+                        >
+                            Mark all as read
+                        </button>
+                    )}
                 </div>
                 <div className='flex space-x-2 text-sm font-medium'>
                     <button

@@ -115,6 +115,31 @@ export const markNotificationAsRead = createAsyncThunk(
   }
 );
 
+export const markAllAsRead = createAsyncThunk(
+  "notification/markAllAsRead",
+  async (
+    token: string,
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axiosInstance.patch(
+        `/admin/notifications/mark-all-as-read`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      return response.data.data;
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+      const axiosError = error as AxiosError;
+      return rejectWithValue(
+        axiosError.response?.data || "Failed to mark notification as read"
+      );
+    }
+  }
+);
+
 export const createNotification = createAsyncThunk(
   "notification/createNotification",
   async (
@@ -341,6 +366,13 @@ const notificationSlice = createSlice({
 
       // Mark as read
       .addCase(markNotificationAsRead.fulfilled, (state, action) => {
+        const updated = action.payload;
+        state.notifications = state.notifications.map((n) =>
+          n._id === updated._id ? updated : n
+        );
+      })
+
+      .addCase(markAllAsRead.fulfilled, (state, action) => {
         const updated = action.payload;
         state.notifications = state.notifications.map((n) =>
           n._id === updated._id ? updated : n

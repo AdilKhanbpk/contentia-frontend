@@ -111,9 +111,9 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                         </div>
                         <div className='text-right BlueText font-bold text-sm lg:text-base'>
                             {orderData.createdAt
-                                ? orderData.createdAt.toLocaleDateString(
-                                      "tr-TR"
-                                  )
+                                ? new Date(
+                                      orderData.createdAt
+                                  ).toLocaleDateString()
                                 : "N/A"}
                         </div>
                         <div className='text-gray-700 text-sm lg:text-base'>
@@ -249,7 +249,10 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                     <div className='flex justify-between text-lg font-bold mt-4'>
                         <p>Toplam</p>
                         <p className='BlueText'>
-                            {orderData.totalPrice.toLocaleString("tr-TR")} TL
+                            {orderData.totalPriceForCustomer?.toLocaleString(
+                                "tr-TR"
+                            )}{" "}
+                            TL
                         </p>
                     </div>
                 </div>
