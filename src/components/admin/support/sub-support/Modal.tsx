@@ -43,8 +43,8 @@ export default function Modal() {
             createAdminClaim({
                 data: {
                     status: "pending",
-                    creator: { id: data.creatorId },
-                    order: { id: data.orderId },
+                    creator: { _id: data.creatorId },
+                    order: { _id: data.orderId },
                     claimDate: data.claimDate,
                     claimContent: data.claimContent,
                 },

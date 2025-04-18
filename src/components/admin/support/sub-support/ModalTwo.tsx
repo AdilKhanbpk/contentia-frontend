@@ -33,11 +33,11 @@ export default function ModalTwo({ claim }: ModalTwoProps) {
     const onSubmit: SubmitHandler<Pick<ClaimInterface, "claimContent">> = (
         data
     ) => {
-        if (claim?.id) {
+        if (claim?._id) {
             setLoading(true); // Set loading to true before the dispatch
             dispatch(
                 updateAdminClaim({
-                    claimId: claim.id,
+                    claimId: claim._id,
                     data,
                     token,
                 })
@@ -88,7 +88,7 @@ export default function ModalTwo({ claim }: ModalTwoProps) {
                     <label className='block text-sm font-semibold mt-2 sm:mt-3 md:mt-4 lg:mt-4'>
                         Creator ID
                     </label>
-                    <p className='mt-3'>{claim.creator?.id || "N/A"}</p>
+                    <p className='mt-3'>{claim.creator?._id || "N/A"}</p>
                 </div>
             </div>
 
@@ -98,7 +98,7 @@ export default function ModalTwo({ claim }: ModalTwoProps) {
                     <label className='block text-sm font-semibold mt-2 sm:mt-3 md:mt-4 lg:mt-4'>
                         Order ID
                     </label>
-                    <p className='mt-3'>{claim.order?.id || "N/A"}</p>
+                    <p className='mt-3'>{claim.order?._id || "N/A"}</p>
                 </div>
 
                 <div>
