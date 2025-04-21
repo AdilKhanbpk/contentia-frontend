@@ -40,9 +40,7 @@ export default function HowItWorks() {
     });
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchHowItWorks(token) as any);
-        }
+        dispatch(fetchHowItWorks() as any);
     }, [dispatch]);
 
     useEffect(() => {
