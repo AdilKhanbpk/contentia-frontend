@@ -58,7 +58,7 @@ export default function Navbar() {
 
     const navItems = useMemo(
         () => [
-            { href: "/orders", label: "Ana Sayfa" },
+            { href: "/", label: "Ana Sayfa" },
             { href: "/orders/profile", label: "Profil" },
             { href: "/orders/orders", label: "Siparişler" },
             { href: "/orders/my-brands", label: "Markalarım" },
@@ -213,7 +213,7 @@ export default function Navbar() {
                                                 onClick={handleLogout}
                                             >
                                                 <IoLogOut className='w-4 h-4' />
-                                                Cikis Yap
+                                                Çıkış Yap
                                             </li>
                                         </ul>
                                     </Dropdown>

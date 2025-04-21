@@ -39,11 +39,11 @@ const CustomCard: React.FC<CardProps> = ({
                         </button>
                         <div className='cardTextBlack px-4'>
                             <p className='mt-5 mb-2 text-sm sm:text-base'>
-                                Daha fazlasına mi ihtiyacınız var?
+                                Daha fazlasına mı ihtiyacın var?
                             </p>
                             <div className='flex flex-row items-baseline mb-2'>
                                 <h1 className='text-[#4d4ec9] sm:text-xl font-semibold '>
-                                    Ihtiyacina uygun paketi birlikte planlayalim
+                                    İhtiyacına uygun paketi birlikte planlayalım
                                 </h1>
                             </div>
                         </div>
@@ -55,7 +55,7 @@ const CustomCard: React.FC<CardProps> = ({
                                 onClick={onOrderClick}
                             >
                                 <p className='text-white text-sm sm:text-base'>
-                                    Iletisime Gec{" "}
+                                    İletişime Geç
                                 </p>
                             </button>
                         </div>

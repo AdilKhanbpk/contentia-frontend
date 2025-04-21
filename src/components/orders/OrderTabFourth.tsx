@@ -464,10 +464,13 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                                 </div>
                                             </div>
                                             <label className='block text-sm font-medium text-gray-700 mb-2'>
-                                                Lütfen tanıtılmasını istediğiniz
-                                                mekanın adres bilgilerini
-                                                belirtin
+                                                {contentTypes.includes(
+                                                    "product"
+                                                )
+                                                    ? "Lütfen ürünlerinizi teslim alınacağı adres bilgisini girin."
+                                                    : "Lütfen tanıtılmasını istediğiniz mekanın adres bilgilerini belirtin"}
                                             </label>
+
                                             <div className='grid lg:grid-cols-2 gap-x-8 gap-y-8'>
                                                 <div>
                                                     <label className='block text-sm font-semibold mb-2'>

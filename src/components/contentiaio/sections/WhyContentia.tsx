@@ -28,7 +28,7 @@ export default function WhyContentia() {
                                     Influencer
                                 </th>
                                 <th className='px-4 py-3 text-gray-500 text-center'>
-                                    Raklam Ajansi
+                                    Reklam Ajansı
                                 </th>
                             </tr>
                         </thead>

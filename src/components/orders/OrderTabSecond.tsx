@@ -6,6 +6,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import { validateCoupon } from "@/store/features/admin/couponSlice";
 import { useTokenContext } from "@/context/TokenCheckingContext";
 import { OrderInterface } from "@/types/interfaces";
+import Image from "next/image";
 
 // Define form input types
 interface PaymentFormInputs {
@@ -589,8 +590,8 @@ export default function TabSecond({
                                 >
                                     <div className='flex flex-row space-x-8'>
                                         <div className='w-1/4 flex justify-end items-center'>
-                                            <img
-                                                src='/lockIcon.png'
+                                            <Image
+                                                src='/lockIcon.svg'
                                                 alt='brand logo'
                                                 height={20}
                                                 width={20}
