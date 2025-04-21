@@ -18,9 +18,6 @@ export default function HowItWorks() {
     const dispatch = useDispatch<AppDispatch>();
     const { faqs } = useSelector((state: RootState) => state.faq);
     const { sections } = useSelector((state: RootState) => state.howWork);
-    const { t } = useTranslation();
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     const toggleFAQ = (index: number) => {
         setOpenIndex(openIndex === index ? null : index);
