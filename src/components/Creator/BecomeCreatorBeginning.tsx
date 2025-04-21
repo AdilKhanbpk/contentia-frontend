@@ -30,7 +30,7 @@ const Beginning: React.FC<{ setActiveTab: (id: number) => void }> = ({
                     <div className='w-full sm:w-[45%] md:w-[30%] lg:w-[250px] flex flex-col items-center mb-6'>
                         <img
                             className='w-full h-auto'
-                            src={"/nasil1"}
+                            src={"/BecomeCreator/nasil1.svg"}
                             alt='Image'
                         />
                         <p className='text-center text-lg mt-2'>
@@ -41,7 +41,7 @@ const Beginning: React.FC<{ setActiveTab: (id: number) => void }> = ({
                     <div className='w-full sm:w-[45%] md:w-[30%] lg:w-[250px] flex flex-col items-center mb-6'>
                         <img
                             className='w-full h-auto'
-                            src={"/nasil2"}
+                            src={"/BecomeCreator/nasil2.svg"}
                             alt='Image'
                         />
                         <p className='text-center text-lg mt-2'>
@@ -53,7 +53,7 @@ const Beginning: React.FC<{ setActiveTab: (id: number) => void }> = ({
                     <div className='w-full sm:w-[45%] md:w-[30%] lg:w-[250px] flex flex-col items-center'>
                         <img
                             className='w-full h-auto'
-                            src={"nasil3"}
+                            src={"/BecomeCreator/nasil3.svg"}
                             alt='Image'
                         />
                         <p className='text-center text-lg mt-2'>

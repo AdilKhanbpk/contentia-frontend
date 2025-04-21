@@ -252,11 +252,7 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                             id='iletisim'
                             type='checkbox'
                             {...register(
-                                "preferences.socialInformation.approvedCommercial",
-                                {
-                                    required:
-                                        "Ticari Elektronik İleti ve İletişim İzni'ni onaylamak zorunludur.",
-                                }
+                                "preferences.socialInformation.approvedCommercial"
                             )}
                             className='mt-1 mr-2'
                         />
@@ -272,15 +268,6 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                             'ni onaylıyorum.
                         </label>
                     </div>
-                    {errors.preferences?.socialInformation
-                        ?.approved_commercial && (
-                        <span className='text-red-500 text-sm'>
-                            {
-                                errors.preferences.socialInformation
-                                    .approved_commercial.message
-                            }
-                        </span>
-                    )}
                 </div>
             </div>
         </div>
