@@ -66,9 +66,8 @@ export const createFaq = createAsyncThunk(
 // Fetch all FAQs
 export const fetchFaqs = createAsyncThunk(
   "faq/fetchFaqs",
-  async (token: string, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       const response = await axiosInstance.get("/admin/faq");
       return response.data.data;
     } catch (error) {

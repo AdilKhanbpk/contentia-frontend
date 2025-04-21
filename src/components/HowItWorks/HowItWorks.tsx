@@ -29,22 +29,21 @@ export default function HowItWorks() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                await dispatch(fetchFaqs(token)).unwrap();
+                await dispatch(fetchFaqs()).unwrap();
                 toast.success("FAQs fetched successfully");
             } catch {
                 toast.error("Failed to fetch FAQs");
             }
 
             try {
-                await dispatch(fetchHowItWorks(token)).unwrap();
+                await dispatch(fetchHowItWorks()).unwrap();
                 toast.success("Data fetched successfully");
             } catch {
                 toast.error("Failed to fetch data");
             }
         };
-        if (token) {
-            fetchData();
-        }
+
+        fetchData();
     }, [dispatch]);
 
     const isLoading = !sections.length || !faqs.length;

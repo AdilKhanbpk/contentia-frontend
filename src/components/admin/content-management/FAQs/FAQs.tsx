@@ -183,18 +183,13 @@ const FAQs: React.FC = () => {
     const [currentFAQ, setCurrentFAQ] = useState<FAQ | null>(null);
 
     useEffect(() => {
-        const tokenFromStorage = localStorage.getItem("accessToken");
-        if (tokenFromStorage) {
-            dispatch(fetchFaqs(tokenFromStorage))
-                .then(() => {
-                    toast.success("FAQs fetched successfully!");
-                })
-                .catch(() => {
-                    toast.error("Failed to fetch FAQs!");
-                });
-        } else {
-            toast.error("No token found in local storage!");
-        }
+        dispatch(fetchFaqs())
+            .then(() => {
+                toast.success("FAQs fetched successfully!");
+            })
+            .catch(() => {
+                toast.error("Failed to fetch FAQs!");
+            });
     }, [dispatch]);
 
     const handleSearch = useCallback((value: string) => {
@@ -241,7 +236,7 @@ const FAQs: React.FC = () => {
                     toast.success("FAQ created successfully!");
                 }
                 handleModalClose();
-                dispatch(fetchFaqs(tokenFromStorage));
+                dispatch(fetchFaqs());
             } catch (error) {
                 toast.error(
                     "Something went wrong while processing your request."
@@ -264,7 +259,7 @@ const FAQs: React.FC = () => {
                     deleteFaq({ faqId: id, token: tokenFromStorage })
                 ).unwrap();
                 toast.success("FAQ deleted successfully!");
-                dispatch(fetchFaqs(tokenFromStorage));
+                dispatch(fetchFaqs());
             } catch (error) {
                 toast.error("Something went wrong while deleting the FAQ.");
             }
