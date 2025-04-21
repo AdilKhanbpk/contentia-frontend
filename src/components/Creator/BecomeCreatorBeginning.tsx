@@ -30,7 +30,7 @@ const Beginning: React.FC<{ setActiveTab: (id: number) => void }> = ({
                     <div className='w-full sm:w-[45%] md:w-[30%] lg:w-[250px] flex flex-col items-center mb-6'>
                         <img
                             className='w-full h-auto'
-                            src='https://images.unsplash.com/photo-1489110804417-276c3f517515?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGxhcHRvcHxlbnwwfHwwfHx8MA%3D%3D'
+                            src={"/nasil1"}
                             alt='Image'
                         />
                         <p className='text-center text-lg mt-2'>
@@ -41,7 +41,7 @@ const Beginning: React.FC<{ setActiveTab: (id: number) => void }> = ({
                     <div className='w-full sm:w-[45%] md:w-[30%] lg:w-[250px] flex flex-col items-center mb-6'>
                         <img
                             className='w-full h-auto'
-                            src='https://images.unsplash.com/photo-1489110804417-276c3f517515?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGxhcHRvcHxlbnwwfHwwfHx8MA%3D%3D'
+                            src={"/nasil2"}
                             alt='Image'
                         />
                         <p className='text-center text-lg mt-2'>
@@ -53,7 +53,7 @@ const Beginning: React.FC<{ setActiveTab: (id: number) => void }> = ({
                     <div className='w-full sm:w-[45%] md:w-[30%] lg:w-[250px] flex flex-col items-center'>
                         <img
                             className='w-full h-auto'
-                            src='https://images.unsplash.com/photo-1489110804417-276c3f517515?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGxhcHRvcHxlbnwwfHwwfHx8MA%3D%3D'
+                            src={"nasil3"}
                             alt='Image'
                         />
                         <p className='text-center text-lg mt-2'>

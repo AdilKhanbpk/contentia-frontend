@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import BrandNames from "./sub-navbar/BrandNames";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutUser, selectUser } from "@/store/features/auth/loginSlice";
+import { logoutUser } from "@/store/features/auth/loginSlice";
 import {
     fetchProfile,
     selectProfileUser,
@@ -44,13 +44,11 @@ export default function Navbar() {
 
     const handleLogout = async () => {
         if (!token) return;
-
         try {
             await dispatch(logoutUser(token));
             setToken(null);
             localStorage.removeItem("accessToken");
             localStorage.removeItem("user");
-
             toast.success("Logout successful");
             router.push("/contentiaio/authentication");
         } catch (error) {
@@ -63,13 +61,37 @@ export default function Navbar() {
             { href: "/orders", label: "Ana Sayfa" },
             { href: "/orders/profile", label: "Profil" },
             { href: "/orders/orders", label: "Siparişler" },
-            // { href: "/orders/packages", label: "Paketler" },
             { href: "/orders/my-brands", label: "Markalarım" },
         ],
         []
     );
 
     if (!token) return null;
+
+    const NavLinks = ({ onClick }: { onClick?: () => void }) => (
+        <>
+            {navItems.map(({ href, label }) => (
+                <li key={href}>
+                    <Link
+                        href={href}
+                        legacyBehavior
+                    >
+                        <a
+                            onClick={onClick}
+                            className={clsx(
+                                "block p-2 rounded-lg transition-all",
+                                pathname === href
+                                    ? "BlueBg dark:bg-gray-800 text-white font-semibold"
+                                    : "text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                            )}
+                        >
+                            {label}
+                        </a>
+                    </Link>
+                </li>
+            ))}
+        </>
+    );
 
     return (
         <>
@@ -125,25 +147,7 @@ export default function Navbar() {
                                     <BrandNames />
                                 </div>
                                 <ul className='hidden lg:flex space-x-4 font-medium'>
-                                    {navItems.map(({ href, label }) => (
-                                        <li key={href}>
-                                            <Link
-                                                href={href}
-                                                legacyBehavior
-                                            >
-                                                <a
-                                                    className={clsx(
-                                                        "p-2 rounded-lg transition-all",
-                                                        pathname === href
-                                                            ? "BlueBg dark:bg-gray-800 text-white font-semibold"
-                                                            : "text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-                                                    )}
-                                                >
-                                                    {label}
-                                                </a>
-                                            </Link>
-                                        </li>
-                                    ))}
+                                    <NavLinks />
                                 </ul>
                             </div>
                         </div>
@@ -230,26 +234,7 @@ export default function Navbar() {
             >
                 <div className='h-full px-3 pb-4 overflow-y-auto'>
                     <ul className='space-y-2 font-medium'>
-                        {navItems.map(({ href, label }) => (
-                            <li key={href}>
-                                <Link
-                                    href={href}
-                                    legacyBehavior
-                                >
-                                    <a
-                                        onClick={() => setSidebarOpen(false)}
-                                        className={clsx(
-                                            "flex items-center p-2 rounded-lg",
-                                            pathname === href
-                                                ? "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white"
-                                                : "text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-                                        )}
-                                    >
-                                        <span className='ms-3'>{label}</span>
-                                    </a>
-                                </Link>
-                            </li>
-                        ))}
+                        <NavLinks onClick={() => setSidebarOpen(false)} />
                     </ul>
                 </div>
             </aside>

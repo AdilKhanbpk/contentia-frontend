@@ -323,11 +323,62 @@ export default function Navbar() {
                 <div className='h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800'>
                     <ul className='space-y-2 font-medium'>
                         <li>
-                            <a
-                                href='#'
-                                className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'
+                            <button
+                                className='flex items-center justify-between w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'
+                                onClick={() => setIsOpen(!isOpen)}
                             >
                                 <span className='ms-3'>{t("services")}</span>
+                                <svg
+                                    className={`w-4 h-4 transition-transform ${
+                                        isOpen ? "rotate-180" : ""
+                                    }`}
+                                    fill='none'
+                                    stroke='currentColor'
+                                    strokeWidth='2'
+                                    viewBox='0 0 24 24'
+                                >
+                                    <path
+                                        strokeLinecap='round'
+                                        strokeLinejoin='round'
+                                        d='M19 9l-7 7-7-7'
+                                    />
+                                </svg>
+                            </button>
+                            {isOpen && (
+                                <ul className='ml-6 space-y-1 mt-1'>
+                                    <li>
+                                        <a
+                                            href='#'
+                                            className='block p-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded'
+                                        >
+                                            Markalar
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href='#'
+                                            className='block p-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded'
+                                        >
+                                            Ajanslar
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href='#'
+                                            className='block p-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded'
+                                        >
+                                            Girişimler
+                                        </a>
+                                    </li>
+                                </ul>
+                            )}
+                        </li>
+                        <li>
+                            <a
+                                href='#'
+                                className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'
+                            >
+                                <span className='ms-3'>{t("pricing")}</span>
                             </a>
                         </li>
                         <li>
@@ -335,82 +386,49 @@ export default function Navbar() {
                                 href='#'
                                 className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'
                             >
-                                <span className='flex-1 ms-3 whitespace-nowrap'>
-                                    {t("pricing")}
-                                </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href='#'
-                                className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'
-                            >
-                                <span className='flex-1 ms-3 whitespace-nowrap'>
-                                    {t("successStories")}
-                                </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href='#'
-                                className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'
-                            >
-                                <span className='flex-1 ms-3 whitespace-nowrap'>
-                                    {t("faq")}
-                                </span>
+                                <span className='ms-3'>Hakkımızda</span>
                             </a>
                         </li>
                         <li>
                             <Link
-                                legacyBehavior
-                                href='/contentiaio/become-creator'
+                                href='/contentiaio/how-it-works'
+                                className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'
                             >
-                                <a className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'>
-                                    <span className='flex-1 ms-3 whitespace-nowrap'>
-                                        {t("becomeContentCreator")}
-                                    </span>
-                                </a>
+                                <span className='ms-3'>Nasıl Çalışır?</span>
                             </Link>
                         </li>
-                        {!isLoggedIn ? (
+                        <li>
+                            <Link
+                                href='/contentiaio/become-creator'
+                                className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'
+                            >
+                                <span className='ms-3'>
+                                    {t("becomeContentCreator")}
+                                </span>
+                            </Link>
+                        </li>
+
+                        {!isLoggedIn && (
                             <>
                                 <li>
                                     <Link
-                                        legacyBehavior
                                         href='/contentiaio/authentication'
+                                        className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'
                                     >
-                                        <a className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'>
-                                            <span className='flex-1 ms-3 whitespace-nowrap'>
-                                                {t("login")}
-                                            </span>
-                                        </a>
+                                        <span className='ms-3'>
+                                            {t("login")}
+                                        </span>
                                     </Link>
                                 </li>
+                                <li>
+                                    <div className='px-2'>
+                                        <button className='w-full Button text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>
+                                            {t("getStarted")}
+                                        </button>
+                                    </div>
+                                </li>
                             </>
-                        ) : (
-                            <li>
-                                <button
-                                    onClick={handleLogout}
-                                    className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'
-                                >
-                                    <span className='flex-1 ms-3 whitespace-nowrap'>
-                                        {t("logout")}
-                                    </span>
-                                </button>
-                            </li>
                         )}
-                        <li>
-                            <a
-                                href='#'
-                                className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'
-                            >
-                                <span className='flex-1 ms-3 whitespace-nowrap'>
-                                    <button className='Button text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>
-                                        {t("getStarted")}
-                                    </button>
-                                </span>
-                            </a>
-                        </li>
                     </ul>
                 </div>
             </aside>
