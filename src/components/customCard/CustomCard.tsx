@@ -79,7 +79,7 @@ const CustomCard: React.FC<CardProps> = ({
                 </button>
                 <div className='cardTextBlack px-4'>
                     <p className='mt-5 mb-2 text-sm sm:text-base'>
-                        Including the following features
+                        Aşağıdaki özelliklerden oluşan
                     </p>
                     <div className='flex flex-row items-baseline mb-2'>
                         <h1 className='headingTextBlue text-lg sm:text-xl lg:text-5xl ml-6 mr-4'>
@@ -134,7 +134,7 @@ const CustomCard: React.FC<CardProps> = ({
                         <div className='cardColorChild rounded-3xl mb-3'>
                             <div className='flex flex-row justify-between px-4 py-2'>
                                 <p className='cardTextWhiteSmall text-white'>
-                                    Aspect Ratio{" "}
+                                    En Boy Oranı{" "}
                                 </p>
                                 <TimeSelector>
                                     {aspectRatioOptions.map((option) => (
@@ -165,7 +165,7 @@ const CustomCard: React.FC<CardProps> = ({
                                 onClick={onOrderClick}
                             >
                                 <p className='text-white text-sm sm:text-base'>
-                                    Order Now{" "}
+                                    Sipariş Ver{" "}
                                 </p>
                             </button>
                         </div>

@@ -139,11 +139,11 @@ export default function EditPackage({ currentPackage }: any) {
                         <div className='text-right BlueText font-bold'>
                             Meta
                         </div>
-                        <div className='text-gray-700'>Duration:</div>
+                        <div className='text-gray-700'>Süre:</div>
                         <div className='text-right BlueText font-bold'>15s</div>
                         <div className='text-gray-700'>Edit:</div>
                         <div className='text-right BlueText font-bold'>Yes</div>
-                        <div className='text-gray-700'>Aspect Ratio:</div>
+                        <div className='text-gray-700'>En Boy Oranı :</div>
                         <div className='text-right BlueText font-bold'>
                             9:16
                         </div>

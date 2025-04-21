@@ -182,7 +182,7 @@ const AddService: React.FC = () => {
                     <div className='flex items-center space-x-4 mb-2'>
                         <div className='flex items-center'>
                             <p className='mr-8 whitespace-nowrap md:w-40 font-semibold text-sm'>
-                                30-Second Duration:
+                                30-Second Süre:
                             </p>
                             <input
                                 {...register("thirtySecondDurationPrice")}
@@ -196,7 +196,7 @@ const AddService: React.FC = () => {
                     <div className='flex items-center space-x-4 mb-2'>
                         <div className='flex items-center'>
                             <p className='mr-8 whitespace-nowrap md:w-40 font-semibold text-sm'>
-                                60-Second Duration:
+                                60-Second Süre:
                             </p>
                             <input
                                 {...register("sixtySecondDurationPrice")}

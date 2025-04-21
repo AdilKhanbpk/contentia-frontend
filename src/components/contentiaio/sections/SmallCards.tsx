@@ -56,9 +56,6 @@ export default function SmallCards() {
     return (
         <div className='w-full ml-2 mt-10 sm:mt-10 md:mt-16 lg:mt-20'>
             <div>
-                <p className='paraText text-center mb-8'>
-                    Yaratıcı videoları talep üzerine almak için daha iyi bir yol
-                </p>
                 <div className='block lg:hidden'>
                     <Slider {...settings}>
                         {CARDS.map((card, index) => (

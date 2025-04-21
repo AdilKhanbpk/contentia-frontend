@@ -82,7 +82,7 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                         "Not specified"}
                                 </div>
 
-                                <div className='text-gray-700'>Duration:</div>
+                                <div className='text-gray-700'>Süre:</div>
                                 <div className='text-right font-bold BlueText'>
                                     {order.additionalServices?.duration ||
                                         "Not specified"}
@@ -96,7 +96,7 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                 </div>
 
                                 <div className='text-gray-700'>
-                                    Aspect Ratio:
+                                    En Boy Oranı
                                 </div>
                                 <div className='text-right font-bold BlueText'>
                                     {order.additionalServices?.aspectRatio ||

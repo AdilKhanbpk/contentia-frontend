@@ -224,7 +224,7 @@ export default function NewModal() {
 
                                 {/* Duration Radio Buttons */}
                                 <div className='text-gray-700 font-semibold'>
-                                    Duration:
+                                    Süre:
                                 </div>
                                 <div className='flex space-x-4'>
                                     <Controller
@@ -304,7 +304,7 @@ export default function NewModal() {
 
                                 {/* Aspect Ratio */}
                                 <div className='text-gray-700 font-semibold'>
-                                    Aspect Ratio:
+                                    En Boy Oranı :
                                 </div>
                                 <div className='flex space-x-4'>
                                     <Controller
