@@ -148,7 +148,7 @@ const OutPayments: React.FC = () => {
         {
             name: "Amount Paid",
             selector: (row: any) =>
-                `${(row.totalPrice / 2).toLocaleString("tr-TR")} TL`,
+                `${row.totalPriceForCreator.toLocaleString("tr-TR")} TL`,
             sortable: true,
         },
         {
@@ -176,7 +176,7 @@ const OutPayments: React.FC = () => {
             ...filteredOrders.map((order: OrderInterface) => [
                 order._id,
                 order.assignedCreators.map((c: any) => c.fullName).join(", "),
-                order.totalPrice / 2,
+                order.totalPriceForCreator,
                 order.paymentStatus,
             ]),
         ];
