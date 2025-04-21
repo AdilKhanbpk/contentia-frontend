@@ -41,7 +41,7 @@ export default function Packages({
                                 description={pkg.description}
                                 videoCount={pkg.videoCount}
                                 durationOptions={["15s", "30s", "60s"]}
-                                editingOptions={["Evet", "Hayir"]}
+                                editingOptions={["Evet", "Hayır"]}
                                 aspectRatioOptions={["9:16", "16:9"]}
                                 price={pkg.finalPrice}
                                 onOrderClick={handleOrderClick}

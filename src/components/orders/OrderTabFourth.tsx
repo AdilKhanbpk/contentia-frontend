@@ -107,12 +107,13 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                     </button>
                                     {showTooltipOne && (
                                         <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
-                                            İçerik Üreticileri için yapmış
-                                            olduğunuz tercihler, sizi doğru
-                                            içerik üreticilerle eşleştirmemize
-                                            yardımcı olacaktır. Tercihlerinizi,
-                                            maksimum düzeyde karşılamaya
-                                            çalışacağız.
+                                            İçerik üreticilerine ürün gönderimi
+                                            sağlayacaksanız ya da üreticilerin
+                                            bir fiziki lokasyona ulaşması
+                                            gerekiyorsa, bu alanda içerik
+                                            türünüzü belirterek lokasyona göre
+                                            eşleştirme gerçekleştirme yapılması
+                                            gerekir.
                                         </div>
                                     )}
                                 </div>

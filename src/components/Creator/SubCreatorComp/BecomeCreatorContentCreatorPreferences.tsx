@@ -50,14 +50,17 @@ const ContentCreatorPreferences: React.FC<{
                                         </button>
                                         {showTooltipTwo && (
                                             <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
-                                                İçerik üreticilerine ürün
-                                                gönderimi sağlayacaksanız ya da
-                                                üreticilerin bir fiziki
-                                                lokasyona ulaşması gerekiyorsa,
-                                                bu alanda içerik türünüzü
-                                                belirterek lokasyona göre
-                                                eşleştirme gerçekleştirme
-                                                yapılması ge
+                                                Ürün tanıtımı gerçekleştiren
+                                                içerik üreticilerinin belirttiği
+                                                adrese ürün gönderimi yapılır.
+                                                Ürün, marka tarafından içerik
+                                                üreticisine hediye edilmektedir.
+                                                Mekan tanıtımı gerçekleştiren
+                                                içerik üreticileri, kendine
+                                                yakın lokasyonda bulunan
+                                                mekanlara giderek içerik
+                                                üretecekleri için adres
+                                                bilgileri alınmaktadır.
                                             </div>
                                         )}
                                     </div>

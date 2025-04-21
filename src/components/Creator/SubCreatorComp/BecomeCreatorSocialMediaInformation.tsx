@@ -44,12 +44,12 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                             </button>
                             {showTooltipTwo && (
                                 <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
-                                    İçerik üreticilerine ürün gönderimi
-                                    sağlayacaksanız ya da üreticilerin bir
-                                    fiziki lokasyona ulaşması gerekiyorsa, bu
-                                    alanda içerik türünüzü belirterek lokasyona
-                                    göre eşleştirme gerçekleştirme yapılması
-                                    gerekir.
+                                    Ürettiğin içerikleri, takipçi sayısından
+                                    bağımsız sosyal medya hesaplarından
+                                    paylaşabilirsin. Takipçi sayısı, İçerik
+                                    Üreticisi türünü belirleyecek olup,
+                                    UGC’lerden elde edeceğin kazancı
+                                    belirleyecektir.
                                 </div>
                             )}
                         </div>
@@ -89,7 +89,7 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                             <div className='w-5 h-5 p-1 border-2 BlueBorder rounded-full peer-checked:bg-[#4D4EC9] transition-all duration-300 ease-in-out'>
                                 <div className='w-full h-full bg-white rounded-full'></div>
                             </div>
-                            <span className='ml-1 text-sm'>Hayir</span>
+                            <span className='ml-1 text-sm'>Hayır</span>
                         </label>
                     </div>
                     {errors.preferences?.socialInformation?.contentType && (

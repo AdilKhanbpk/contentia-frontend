@@ -27,7 +27,7 @@ const BlogDetails: React.FC<DetailPostProps> = ({ params }) => {
 
     if (!post) {
         return (
-            <div className='text-center font-bold text-3xl mx-auto'>
+            <div className='text-center font-bold text-3xl mx-auto pt-28'>
                 Post not found.
             </div>
         );
@@ -50,74 +50,78 @@ const BlogDetails: React.FC<DetailPostProps> = ({ params }) => {
     };
 
     return (
-        <div className='pt-28 lg:mx-28 mx-4'>
-            {/* Breadcrumb Navigation */}
-            <div className='flex items-center text-sm text-gray-500 flex-wrap'>
-                <h4>Blog</h4>
-                <span className='mx-2'>
-                    <IoIosArrowForward />
-                </span>
-                <h4>{post.category}</h4>
-                <span className='mx-2'>
-                    <IoIosArrowForward />
-                </span>
-                <h4 className='truncate'>{post.title}</h4>
-            </div>
-
-            {/* Title */}
-            <div className='mt-9 '>
-                <h1 className='text-xl sm:text-2xl lg:text-3xl font-bold leading-tight'>
-                    {post.title}
-                </h1>
-            </div>
-
-            {/* Meta Info */}
-            <div className='mt-6 text-sm sm:text-base'>
-                <span className='font-bold'>Updated:</span>
-                <span> {formatDate(post.updatedAt)}</span>
-                <span className='font-bold mx-2'>•</span>
-                <span className='font-semibold'>
-                    {estimateReadTime(post.content)}
-                </span>
-            </div>
-
-            {/* Author */}
-            <div className='mt-6 flex items-center gap-3 flex-wrap'>
-                <div className='flex-shrink-0'>
-                    <Image
-                        className='w-16 mt-4 rounded-full'
-                        src={
-                            post.author?.profilePic || influencerMarketingImage
-                        }
-                        alt='Author Image'
-                        width={64}
-                        height={64}
-                    />
+        <div className='py-28 px-4'>
+            <div className='max-w-[800px] mx-auto text-left'>
+                {/* Breadcrumb Navigation */}
+                <div className='flex items-center text-sm text-gray-500 flex-wrap'>
+                    <h4>Blog</h4>
+                    <span className='mx-2'>
+                        <IoIosArrowForward />
+                    </span>
+                    <h4>{post.category}</h4>
+                    <span className='mx-2'>
+                        <IoIosArrowForward />
+                    </span>
+                    <h4 className='truncate max-w-[200px] sm:max-w-xs lg:max-w-sm overflow-hidden text-ellipsis'>
+                        {post.title}
+                    </h4>
                 </div>
-                <div className='flex-grow'>
-                    <p className='BlueText'>
-                        {post.author?.fullName || "Anonymous"}
-                    </p>
-                    <button className='border blogPink text-white text-sm rounded-full px-4 py-1'>
-                        Editor
-                    </button>
-                </div>
-            </div>
 
-            {/* Content */}
-            <div className='mx-auto mt-9 max-w-full'>
-                <div className='w-full lg:w-[650px]'>
+                {/* Title */}
+                <div className='mt-9'>
+                    <h1 className='text-xl sm:text-2xl lg:text-3xl font-bold leading-tight'>
+                        {post.title}
+                    </h1>
+                </div>
+
+                {/* Meta Info */}
+                <div className='mt-6 text-sm sm:text-base'>
+                    <span className='font-bold'>Updated:</span>
+                    <span> {formatDate(post.updatedAt)}</span>
+                    <span className='font-bold mx-2'>•</span>
+                    <span className='font-semibold'>
+                        {estimateReadTime(post.content)}
+                    </span>
+                </div>
+
+                {/* Author */}
+                <div className='mt-6 flex items-center gap-3 flex-wrap'>
+                    <div className='flex-shrink-0'>
+                        <Image
+                            className='w-16 mt-4 rounded-full'
+                            src={
+                                post.author?.profilePic ||
+                                influencerMarketingImage
+                            }
+                            alt='Author Image'
+                            width={64}
+                            height={64}
+                        />
+                    </div>
+                    <div className='flex-grow'>
+                        <p className='BlueText'>
+                            {post.author?.fullName || "Anonymous"}
+                        </p>
+                        <button className='border blogPink text-white text-sm rounded-full px-4 py-1'>
+                            Editor
+                        </button>
+                    </div>
+                </div>
+
+                {/* Banner Image */}
+                <div className='w-full mt-9'>
                     <Image
                         src={post.bannerImage || influencerMarketingImage}
                         alt='Post Image'
-                        width={650}
-                        height={400}
-                        style={{ width: "100%", height: "auto" }}
+                        className='rounded-lg w-full max-h-[500px] object-cover'
+                        width={1000}
+                        height={500}
                     />
                 </div>
 
+                {/* Blog Content */}
                 <div
-                    className='prose prose-sm sm:prose lg:prose-lg max-w-none mt-6 text-gray-700'
+                    className='prose prose-sm sm:prose lg:prose-lg max-w-none mt-6 text-gray-700 text-left'
                     dangerouslySetInnerHTML={{ __html: post.content }}
                 />
             </div>
