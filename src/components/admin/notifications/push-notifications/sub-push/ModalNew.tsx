@@ -56,8 +56,8 @@ export default function ModalNew({ onClose }: CreateModalProps) {
                         className='w-full py-2 border border-gray-400 rounded-md'
                     >
                         <option value='all'>All</option>
-                        <option value='all-creators'>All Creators</option>
-                        <option value='all-customers'>All Customers</option>
+                        <option value='creator'>All Creators</option>
+                        <option value='customer'>All Customers</option>
                         <option value='some-creators'>Some Creators</option>
                         <option value='some-customers'>Some Customers</option>
                     </select>
