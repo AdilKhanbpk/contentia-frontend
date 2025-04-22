@@ -1,122 +1,50 @@
+import React from "react";
+
 interface BlogButtonProps {
     onCategoryChange: (category: string) => void;
     activeCategory: string;
 }
+
+const categories = [
+    { label: "Tümü", value: "all" },
+    { label: "Dijital Pazarlama", value: "digital_marketing" },
+    { label: "Contentia Masterclass", value: "contentia_masterclass" },
+    { label: "UGC", value: "ugc" },
+    { label: "Pazarlama Stratejileri", value: "marketing_strategies" },
+    { label: "Sosyal Medya Pazarlaması", value: "social_media_marketing" },
+];
 
 const BlogButton: React.FC<BlogButtonProps> = ({
     onCategoryChange,
     activeCategory,
 }) => {
     return (
-        <div className=''>
+        <div>
+            {/* Breadcrumb Navigation */}
             <div className='flex gap-2 flex-wrap'>
-                {/* Breadcrumb Navigation */}
-                <p className='BlueText  '>Homepage</p>
+                <p className='BlueText'>Homepage</p>
                 <span>/</span>
-                <p className='BlueText  '>Contentia Blog</p>
+                <p className='BlueText'>Contentia Blog</p>
                 <span>/</span>
-                <p className='text-gray-400 '>{activeCategory}</p>
+                <p className='text-gray-400'>{activeCategory}</p>
             </div>
 
             <div className='mt-12'>
                 <p className='text-lg font-semibold'>Browse by category</p>
-                <div className='flex flex-wrap gap-3 xl:gap-7 mt-4 '>
-                    {/* All button */}
-                    <button
-                        className={`p-2 px-3 rounded-full text-nowrap border transition duration-200 font-semibold ${
-                            activeCategory === "All" ? "Button text-white" : ""
-                        }`}
-                        onClick={() => onCategoryChange("All")}
-                    >
-                        All
-                    </button>
-
-                    <button
-                        className={`p-2 px-3 rounded-full text-nowrap border transition duration-200 font-semibold ${
-                            activeCategory === "Contentia Creator Masterclass"
-                                ? "Button text-white"
-                                : ""
-                        }`}
-                        onClick={() =>
-                            onCategoryChange("Contentia Creator Masterclass")
-                        }
-                    >
-                        Contentia Creator Masterclass
-                    </button>
-                    <button
-                        className={`p-2 px-3 rounded-full text-nowrap border transition duration-200 font-semibold ${
-                            activeCategory === "Digital Marketing"
-                                ? "Button text-white"
-                                : ""
-                        }`}
-                        onClick={() => onCategoryChange("Digital Marketing")}
-                    >
-                        Digital Marketing
-                    </button>
-                    <button
-                        className={`p-2 px-3 rounded-full text-nowrap border transition duration-200 font-semibold ${
-                            activeCategory === "eCommerce Marketing"
-                                ? "Button text-white"
-                                : ""
-                        }`}
-                        onClick={() => onCategoryChange("eCommerce Marketing")}
-                    >
-                        eCommerce Marketing
-                    </button>
-                    <button
-                        className={`p-2 px-3 rounded-full text-nowrap border transition duration-200 font-semibold ${
-                            activeCategory === "Influencers"
-                                ? "Button text-white"
-                                : ""
-                        }`}
-                        onClick={() => onCategoryChange("Influencers")}
-                    >
-                        Influencers
-                    </button>
-                    <button
-                        className={`p-2 px-3 rounded-full text-nowrap border transition duration-200 font-semibold ${
-                            activeCategory === "Marketing Strategies"
-                                ? "Button text-white"
-                                : ""
-                        }`}
-                        onClick={() => onCategoryChange("Marketing Strategies")}
-                    >
-                        Marketing Strategies
-                    </button>
-                    <button
-                        className={`p-2 px-3 rounded-full text-nowrap border transition duration-200 font-semibold ${
-                            activeCategory === "Social Media Marketing"
-                                ? "Button text-white"
-                                : ""
-                        }`}
-                        onClick={() =>
-                            onCategoryChange("Social Media Marketing")
-                        }
-                    >
-                        Social Media Marketing
-                    </button>
-                    <button
-                        className={`p-2 px-3 rounded-full text-nowrap border transition duration-200 font-semibold ${
-                            activeCategory === "User-Generated Content"
-                                ? "Button text-white"
-                                : ""
-                        }`}
-                        onClick={() =>
-                            onCategoryChange("User-Generated Content")
-                        }
-                    >
-                        User-Generated Content
-                    </button>
-                    <button
-                        className={`p-2 px-3 rounded-full text-nowrap border transition duration-200 font-semibold ${
-                            activeCategory === "Video Marketing"
-                                ? "Button text-white"
-                                : ""
-                        }`}
-                        onClick={() => onCategoryChange("Video Marketing")}
-                    >
-                        Video Marketing
-                    </button>
+                <div className='flex flex-wrap gap-3 xl:gap-7 mt-4'>
+                    {categories.map(({ label, value }) => (
+                        <button
+                            key={value}
+                            className={`p-2 px-3 rounded-full text-nowrap border transition duration-200 font-semibold ${
+                                activeCategory === value
+                                    ? "Button text-white"
+                                    : ""
+                            }`}
+                            onClick={() => onCategoryChange(value)}
+                        >
+                            {label}
+                        </button>
+                    ))}
                 </div>
             </div>
         </div>

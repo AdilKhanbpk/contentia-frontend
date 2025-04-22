@@ -124,9 +124,7 @@ const LoginForm = () => {
                     id='rememberMe'
                     type='checkbox'
                     className='mt-1 mr-2'
-                    {...register("rememberMe", {
-                        required: "Lütfen Beni Hatırla'yı işaretleyin",
-                    })}
+                    {...register("rememberMe")}
                 />
                 <label
                     htmlFor='rememberMe'

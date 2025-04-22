@@ -7,9 +7,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store/store";
 import { fetchBlogs } from "@/store/features/admin/blogSlice";
 import { BlogInterface } from "@/types/interfaces";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
-const BlogCard: React.FC = () => {
+interface BlogCardProps {
+    activeCategory: string;
+}
+
+const BlogCard: React.FC<BlogCardProps> = ({ activeCategory }) => {
     const dispatch = useDispatch<AppDispatch>();
     const { blogs } = useSelector((state: RootState) => state.blog);
 
@@ -19,9 +22,15 @@ const BlogCard: React.FC = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const blogsPerPage = 6;
-    const totalPages = Math.ceil((blogs?.length || 0) / blogsPerPage);
 
-    const currentBlogs = blogs.slice(
+    const filteredBlogs =
+        activeCategory === "all"
+            ? blogs
+            : blogs.filter((blog) => blog.category === activeCategory);
+
+    const totalPages = Math.ceil((filteredBlogs.length || 0) / blogsPerPage);
+
+    const currentBlogs = filteredBlogs.slice(
         (currentPage - 1) * blogsPerPage,
         currentPage * blogsPerPage
     );
@@ -46,7 +55,7 @@ const BlogCard: React.FC = () => {
     };
 
     return (
-        <div className='my-3 mt-28'>
+        <div className='my-28'>
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8'>
                 {currentBlogs.map((blog: BlogInterface) => (
                     <div
@@ -79,13 +88,15 @@ const BlogCard: React.FC = () => {
                 ))}
             </div>
 
-            <div className='flex justify-center mt-6'>
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
-                />
-            </div>
+            {totalPages > 1 && (
+                <div className='flex justify-center mt-6'>
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                    />
+                </div>
+            )}
         </div>
     );
 };

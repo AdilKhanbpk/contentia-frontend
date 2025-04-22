@@ -5,11 +5,9 @@ import Feed from "@/components/blog/subBlog/Feed";
 import { useState, useEffect } from "react";
 
 const Blogs = () => {
-    const [activeCategory, setActiveCategory] = useState("All");
-    const [selectedCategory, setSelectedCategory] = useState<string>("All");
+    const [activeCategory, setActiveCategory] = useState("all");
 
     const handleCategoryChange = (category: string) => {
-        setSelectedCategory(category);
         setActiveCategory(category);
     };
 
@@ -23,7 +21,7 @@ const Blogs = () => {
                             activeCategory={activeCategory}
                         />
                         <Feed />
-                        <BlogCard />
+                        <BlogCard activeCategory={activeCategory} />
                     </div>
                 </div>
             </div>
