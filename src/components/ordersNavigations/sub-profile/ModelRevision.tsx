@@ -1,10 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
-import {
-    createClaim,
-    createRevision,
-} from "@/store/features/profile/orderSlice";
+import { createRevision } from "@/store/features/profile/orderSlice";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useTokenContext } from "@/context/TokenCheckingContext";
@@ -52,13 +49,13 @@ export default function ModelRevision({ orderData }: ModelRevisionProps) {
 
             if (createRevision.fulfilled.match(resultAction)) {
                 reset();
-                toast.success("Claim created successfully");
+                toast.success("Revision created successfully");
             } else if (createRevision.rejected.match(resultAction)) {
                 throw new Error(resultAction.error.message);
             }
         } catch (error) {
             console.error("Failed to submit revision request:", error);
-            toast.error("Claim creation failed");
+            toast.error("Revision creation failed");
         } finally {
             setIsSubmitting(false);
         }
