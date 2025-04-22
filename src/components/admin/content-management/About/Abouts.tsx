@@ -53,7 +53,7 @@ export default function Abouts() {
     });
 
     useEffect(() => {
-        dispatch(fetchAbout(token) as any)
+        dispatch(fetchAbout() as any)
             .then((action: any) => {
                 toast.success("Data fetched successfully!");
             })

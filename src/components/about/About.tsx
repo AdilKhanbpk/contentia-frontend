@@ -5,32 +5,28 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { fetchAbout } from "@/store/features/admin/aboutSlice";
 import { toast } from "react-toastify";
+import DOMPurify from "dompurify";
 
 const About = () => {
     const dispatch = useDispatch();
     const { sections } = useSelector((state: RootState) => state.about);
 
     useEffect(() => {
-        const token = localStorage.getItem("accessToken");
-        if (token) {
-            dispatch(fetchAbout(token) as any)
-                .then(() => {
-                    toast.success("Data fetched successfully!");
-                })
-                .catch(() => {
-                    toast.error("Failed to fetch data!");
-                });
-        } else {
-            toast.error("No Token Found in Local Storage");
-        }
+        dispatch(fetchAbout() as any)
+            .then(() => {
+                toast.success("Data fetched successfully!");
+            })
+            .catch(() => {
+                toast.error("Failed to fetch data!");
+            });
     }, [dispatch]);
 
     return (
         <>
             <div className='px-4 sm:px-6 md:px-8 lg:px-[38px] pt-24 sm:pt-24 md:pt-24 lg:pt-[100px]'>
-                <div className='flex flex-col lg:flex-row gap-10 justify-between items-center'>
+                <div className='flex flex-col lg:flex-row gap-10 justify-between'>
                     {/* Display the Image */}
-                    <div className='flex justify-center'>
+                    <div className='flex justify-center max-h-96'>
                         {sections?.aboutImage ? (
                             <Image
                                 className=''
@@ -48,20 +44,22 @@ const About = () => {
                             {sections?.title}
                         </h1>
 
-                        <h2 className='font-semibold mt-8'>
+                        <div className='mt-8'>
                             {sections?.content ? (
                                 <>
                                     <div
                                         className='prose prose-sm sm:prose lg:prose-lg max-w-none mt-6 text-gray-700'
                                         dangerouslySetInnerHTML={{
-                                            __html: sections.content,
+                                            __html: DOMPurify.sanitize(
+                                                sections.content
+                                            ),
                                         }}
                                     />
                                 </>
                             ) : (
-                                ""
+                                "No content available till now"
                             )}
-                        </h2>
+                        </div>
                     </div>
                 </div>
 

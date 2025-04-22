@@ -95,9 +95,8 @@ export const createAbout = createAsyncThunk(
 
 export const fetchAbout = createAsyncThunk(
     "about/fetchAbout",
-    async (token: string, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             const response = await axiosInstance.get("/admin/about");
             return response.data.data;
         } catch (error) {
