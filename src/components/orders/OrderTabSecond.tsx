@@ -34,6 +34,9 @@ export default function TabSecond({
     const [orderDate, setOrderDate] = useState<Date>(new Date());
     const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
     const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+    const { data: additionalService } = useSelector(
+        (state: RootState) => state.addPrice
+    );
 
     // Type the selector properly
     const orderFormData = useSelector<RootState, OrderInterface | null>(
@@ -102,13 +105,10 @@ export default function TabSecond({
                         (totalPrice * result.discountPercentage) / 100;
                 }
 
-                const updatedFinalPrice = Math.max(
-                    0,
-                    Math.round((totalPrice - discountAmount) * 100) / 100
-                );
+                const updatedFinalPrice = totalPrice - discountAmount;
+                setFinalPrice(updatedFinalPrice);
 
                 setDiscount(discountAmount);
-                setFinalPrice(updatedFinalPrice);
                 setCouponError("");
             }
         } catch (error: any) {
@@ -135,10 +135,13 @@ export default function TabSecond({
                                         {quantity} Videos
                                     </p>
                                     <p className='text-sm text-gray-500'>
-                                        {basePrice} TL / Video
+                                        {basePrice?.toLocaleString("tr-TR")} TL
+                                        / Video
                                     </p>
                                 </div>
-                                <p className='font-semibold'>{basePrice} TL</p>
+                                <p className='font-semibold'>
+                                    {basePrice?.toLocaleString("tr-TR")} TL
+                                </p>
                             </div>
 
                             {/* Additional Services */}
@@ -149,10 +152,60 @@ export default function TabSecond({
                                             Sosyal Medya Paylaşım
                                         </p>
                                         <p className='text-sm text-gray-500'>
-                                            500 TL / Video
+                                            {additionalService?.sharePrice?.toLocaleString(
+                                                "tr-TR"
+                                            )}{" "}
+                                            TL / Video
                                         </p>
                                     </div>
-                                    <p className='font-semibold'>500 TL</p>
+                                    <p className='font-semibold'>
+                                        {additionalService?.sharePrice?.toLocaleString(
+                                            "tr-TR"
+                                        )}{" "}
+                                        TL
+                                    </p>
+                                </div>
+                            )}
+
+                            {orderFormData?.additionalServices?.edit && (
+                                <div className='flex justify-between'>
+                                    <div>
+                                        <p className='font-semibold'>
+                                            Düzenleme
+                                        </p>
+                                        <p className='text-sm text-gray-500'>
+                                            {additionalService?.editPrice?.toLocaleString(
+                                                "tr-TR"
+                                            )}{" "}
+                                            TL / Video
+                                        </p>
+                                    </div>
+                                    <p className='font-semibold'>
+                                        {additionalService?.editPrice?.toLocaleString(
+                                            "tr-TR"
+                                        )}{" "}
+                                        TL
+                                    </p>
+                                </div>
+                            )}
+
+                            {orderFormData?.additionalServices?.duration && (
+                                <div className='flex justify-between'>
+                                    <div>
+                                        <p className='font-semibold'>Süre</p>
+                                        <p className='text-sm text-gray-500'>
+                                            {additionalService?.thirtySecondDurationPrice?.toLocaleString(
+                                                "tr-TR"
+                                            )}{" "}
+                                            TL / Video
+                                        </p>
+                                    </div>
+                                    <p className='font-semibold'>
+                                        {additionalService?.thirtySecondDurationPrice?.toLocaleString(
+                                            "tr-TR"
+                                        )}{" "}
+                                        TL
+                                    </p>
                                 </div>
                             )}
 
@@ -164,10 +217,18 @@ export default function TabSecond({
                                             Kapak Görseli
                                         </p>
                                         <p className='text-sm text-gray-500'>
-                                            250 TL / Video
+                                            {additionalService?.coverPicPrice?.toLocaleString(
+                                                "tr-TR"
+                                            )}{" "}
+                                            TL / Video
                                         </p>
                                     </div>
-                                    <p className='font-semibold'>250 TL</p>
+                                    <p className='font-semibold'>
+                                        {additionalService?.coverPicPrice?.toLocaleString(
+                                            "tr-TR"
+                                        )}{" "}
+                                        TL
+                                    </p>
                                 </div>
                             )}
 
@@ -178,10 +239,18 @@ export default function TabSecond({
                                             Influencer Paketi
                                         </p>
                                         <p className='text-sm text-gray-500'>
-                                            1000 TL / Video
+                                            {additionalService?.creatorTypePrice?.toLocaleString(
+                                                "tr-TR"
+                                            )}{" "}
+                                            TL / Video
                                         </p>
                                     </div>
-                                    <p className='font-semibold'>1000 TL</p>
+                                    <p className='font-semibold'>
+                                        {additionalService?.creatorTypePrice?.toLocaleString(
+                                            "tr-TR"
+                                        )}{" "}
+                                        TL
+                                    </p>
                                 </div>
                             )}
 
@@ -193,10 +262,18 @@ export default function TabSecond({
                                             Ürün Gönderimi
                                         </p>
                                         <p className='text-sm text-gray-500'>
-                                            150 TL / Video
+                                            {additionalService?.shippingPrice?.toLocaleString(
+                                                "tr-TR"
+                                            )}{" "}
+                                            TL / Video
                                         </p>
                                     </div>
-                                    <p className='font-semibold'>150 TL</p>
+                                    <p className='font-semibold'>
+                                        {additionalService?.shippingPrice?.toLocaleString(
+                                            "tr-TR"
+                                        )}{" "}
+                                        TL
+                                    </p>
                                 </div>
                             )}
                         </div>
@@ -221,7 +298,7 @@ export default function TabSecond({
                                             <span>
                                                 {finalPrice.toLocaleString(
                                                     "tr-TR"
-                                                )}{" "}
+                                                )}
                                                 TL
                                             </span>
                                         </>

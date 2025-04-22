@@ -107,7 +107,7 @@ export default function TabFirst({
     );
 
     const getTotalPrice = () => {
-        return (basePrice + totalAdditionalCharges).toLocaleString("tr-TR");
+        return basePrice + totalAdditionalCharges;
     };
 
     const handleSubmit = async (event: React.FormEvent) => {
@@ -128,6 +128,10 @@ export default function TabFirst({
                 productShipping: isServiceSelected("shipping"),
             },
         };
+        console.log(
+            "🚀 ~ handleSubmit ~ formData.totalPrice:",
+            formData.totalPrice
+        );
 
         dispatch(setOrderFormData(formData));
         toast.success("Order Details Saved Successfully!");
@@ -422,7 +426,7 @@ export default function TabFirst({
                                                     : "bg-white text-black"
                                             }`}
                                             onClick={() =>
-                                                setActiveDuration("9:16")
+                                                setActiveRatio("9:16")
                                             }
                                         >
                                             9:16
@@ -665,7 +669,8 @@ export default function TabFirst({
                                     {oneVideoPrice.toLocaleString("tr-TR")} TL
                                 </p>
                                 <p className='text-sm BlueText'>
-                                    Toplam: {getTotalPrice()} TL
+                                    Toplam:{" "}
+                                    {getTotalPrice().toLocaleString("tr-TR")} TL
                                 </p>
                             </div>
                             <button
