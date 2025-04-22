@@ -54,7 +54,7 @@ const ReportChart = ({ sales }: { sales: { totalSalesByMonth: number[] } }) => {
                 ...prevState.tooltip,
                 y: {
                     formatter(val: number) {
-                        return `$ ${val}`;
+                        return `${val} TL`;
                     },
                 },
             },

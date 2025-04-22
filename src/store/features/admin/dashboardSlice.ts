@@ -59,6 +59,8 @@ export interface SalesByMonth {
     currentMonthTotal: number;
     currentMonthCount: number;
     previousMonthCount: number;
+    previousMonthTotal: number;
+    previousWeekTotal: number;
     percentageChange: string;
     totalSales: number;
     currentWeekTotalSale: number;

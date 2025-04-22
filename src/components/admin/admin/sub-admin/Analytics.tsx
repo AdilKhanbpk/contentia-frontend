@@ -163,9 +163,7 @@ const Analytics: React.FC = () => {
                     <div className='col-span-1'>
                         <AnalyticEcommerce
                             title='Total Orders'
-                            count={(
-                                orders?.completedOrdersThisMonth ?? 0
-                            ).toString()}
+                            count={(orders?.currentMonthCount ?? 0).toString()}
                         />
                     </div>
                     <div className='col-span-1'>
@@ -270,19 +268,15 @@ const Analytics: React.FC = () => {
                                 <li className='py-3 flex justify-between items-center'>
                                     <span>Company Finance Growth</span>
                                     <h5 className='text-lg font-semibold'>
-                                        +45.14%
-                                    </h5>
-                                </li>
-                                <li className='py-3 flex justify-between items-center'>
-                                    <span>Company Expenses Ratio</span>
-                                    <h5 className='text-lg font-semibold'>
-                                        0.58%
-                                    </h5>
-                                </li>
-                                <li className='py-3 flex justify-between items-center'>
-                                    <span>Business Risk Cases</span>
-                                    <h5 className='text-lg font-semibold'>
-                                        Low
+                                        {(
+                                            ((sales?.currentMonthTotal ?? 0) -
+                                                (sales?.previousMonthTotal ??
+                                                    1)) /
+                                            (sales?.previousMonthTotal ?? 1)
+                                        ).toLocaleString("tr-TR", {
+                                            style: "percent",
+                                            minimumFractionDigits: 2,
+                                        })}
                                     </h5>
                                 </li>
                             </ul>

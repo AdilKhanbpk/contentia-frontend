@@ -79,10 +79,11 @@ export default function OrdersList({
                             </td>
                             <td className='p-2 text-start'>
                                 <NumericFormat
-                                    value={order.totalPrice}
+                                    value={order.totalPriceForCustomer?.toLocaleString(
+                                        "tr-TR"
+                                    )}
                                     displayType='text'
-                                    thousandSeparator
-                                    prefix='$'
+                                    suffix='TL'
                                 />
                             </td>
                         </tr>
