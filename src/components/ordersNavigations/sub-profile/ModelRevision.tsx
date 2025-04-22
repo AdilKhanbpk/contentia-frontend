@@ -1,14 +1,17 @@
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
-import { createClaim } from "@/store/features/profile/orderSlice";
+import {
+    createClaim,
+    createRevision,
+} from "@/store/features/profile/orderSlice";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useTokenContext } from "@/context/TokenCheckingContext";
 import { OrderInterface } from "@/types/interfaces";
 
 interface RevisionFormData {
-    claimContent: string;
+    revisionContent: string;
 }
 
 interface ModelRevisionProps {
@@ -38,19 +41,19 @@ export default function ModelRevision({ orderData }: ModelRevisionProps) {
         setIsSubmitting(true);
         try {
             const resultAction = await dispatch(
-                createClaim({
+                createRevision({
                     orderId: orderData._id,
                     data: {
-                        claimContent: data.claimContent,
+                        revisionContent: data.revisionContent,
                     },
                     token,
                 })
             );
 
-            if (createClaim.fulfilled.match(resultAction)) {
+            if (createRevision.fulfilled.match(resultAction)) {
                 reset();
                 toast.success("Claim created successfully");
-            } else if (createClaim.rejected.match(resultAction)) {
+            } else if (createRevision.rejected.match(resultAction)) {
                 throw new Error(resultAction.error.message);
             }
         } catch (error) {
@@ -78,7 +81,7 @@ export default function ModelRevision({ orderData }: ModelRevisionProps) {
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className='relative mb-2 sm:mb-3 md:mb-3 lg:mb-4'>
                             <textarea
-                                {...register("claimContent", {
+                                {...register("revisionContent", {
                                     required: "Revizyon detayları gereklidir",
                                     minLength: {
                                         value: 10,
@@ -90,9 +93,9 @@ export default function ModelRevision({ orderData }: ModelRevisionProps) {
                                 rows={6}
                                 placeholder=''
                             />
-                            {errors.claimContent && (
+                            {errors.revisionContent && (
                                 <p className='text-red-500 text-sm mt-1'>
-                                    {errors.claimContent.message}
+                                    {errors.revisionContent.message}
                                 </p>
                             )}
                         </div>

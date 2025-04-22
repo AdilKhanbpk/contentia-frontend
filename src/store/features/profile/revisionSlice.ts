@@ -4,6 +4,53 @@ import { AxiosError } from "axios";
 import { RootState } from "@/store/store";
 import { OrderInterface } from "@/types/interfaces";
 
+// Types and Interfaces
+interface AddressDetails {
+  country: string;
+  state: string;
+  district: string;
+  neighborhood: string;
+  fullAddress: string;
+}
+
+interface AdditionalServices {
+  platform: string;
+  duration: string;
+  edit: boolean;
+  aspectRatio: string;
+  share?: boolean;
+  coverPicture?: boolean;
+  creatorType?: boolean;
+  productShipping?: boolean;
+}
+
+interface Preferences {
+  creatorGender?: string;
+  minCreatorAge?: number;
+  maxCreatorAge?: number;
+  areaOfInterest?: string[];
+  contentType?: string;
+  addressDetails: AddressDetails;
+}
+
+interface BriefContent {
+  brandName: string;
+  brief: string;
+  productServiceName: string;
+  productServiceDesc: string;
+  scenario?: string;
+  caseStudy?: string;
+  uploadFiles?: File[];
+  uploadFileDate?: string;
+}
+
+interface UploadFile {
+  uploadedBy: string;
+  fileUrls: string[];
+  uploadedDate: Date;
+}
+
+
 
 export interface OrderState {
   orders: OrderInterface[];
@@ -23,13 +70,6 @@ interface CreateClaimPayload {
   orderId: string;
   data: {
     claimContent: string;
-  };
-  token: string;
-}
-interface CreateRevisionPayload {
-  orderId: string;
-  data: {
-    revisionContent: string;
   };
   token: string;
 }
@@ -124,6 +164,13 @@ export const createOrder = createAsyncThunk(
     }
   }
 );
+
+
+
+
+
+
+
 
 // Fetch All Orders
 export const fetchOrders = createAsyncThunk(
@@ -224,29 +271,6 @@ export const createClaim = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       console.error("Error creating claim:", error);
-      const axiosError = error as AxiosError;
-      const errorMessage =
-        axiosError.response?.data;
-      console.error("Error details:", errorMessage);
-
-      return rejectWithValue(errorMessage);
-    }
-  }
-);
-
-// Create Revision
-export const createRevision = createAsyncThunk(
-  "order/createRevision",
-  async ({ orderId, data, token }: CreateRevisionPayload, { rejectWithValue }) => {
-    try {
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      const response = await axiosInstance.post(
-        `/orders/create-revision/${orderId}`,
-        data
-      );
-      return response.data.data;
-    } catch (error) {
-      console.error("Error creating revision:", error);
       const axiosError = error as AxiosError;
       const errorMessage =
         axiosError.response?.data;
@@ -393,28 +417,6 @@ const orderSlice = createSlice({
         }
       })
       .addCase(createClaim.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
-
-      // Create Revision
-      .addCase(createRevision.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(createRevision.fulfilled, (state, action: PayloadAction<OrderInterface>) => {
-        state.loading = false;
-        const index = state.orders.findIndex(
-          (order) => order._id === action.payload._id
-        );
-        if (index !== -1) {
-          state.orders[index] = action.payload;
-        }
-        if (state.currentOrder?._id === action.payload._id) {
-          state.currentOrder = action.payload;
-        }
-      })
-      .addCase(createRevision.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
