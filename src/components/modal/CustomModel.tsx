@@ -30,7 +30,7 @@ const Modal: React.FC<ModalProps> = ({
             <Dialog
                 as='div'
                 className='relative z-10'
-                onClose={() => {}}
+                onClose={closeModal}
             >
                 <TransitionChild
                     as={Fragment}
@@ -66,14 +66,19 @@ const Modal: React.FC<ModalProps> = ({
                                     <div className=''>
                                         {children}
                                         <div className='absolute top-1 right-1'>
-                                            <Image
-                                                width={20}
-                                                height={20}
-                                                src='/x.png'
-                                                alt='Close Button'
-                                                className='w-8 h-8'
+                                            <button
                                                 onClick={closeModal}
-                                            />
+                                                aria-label='Close Modal'
+                                                className='absolute top-1 right-1 p-1 rounded hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500'
+                                            >
+                                                <Image
+                                                    width={20}
+                                                    height={20}
+                                                    src='/x.png'
+                                                    alt='Close icon'
+                                                    className='w-6 h-6'
+                                                />
+                                            </button>
                                         </div>
                                     </div>
                                 </DialogPanel>
