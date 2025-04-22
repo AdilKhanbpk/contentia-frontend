@@ -77,6 +77,23 @@ export default function OrdersOrders() {
         }
     };
 
+    const getButtonClassByStatus = (status: string) => {
+        switch (status) {
+            case "active":
+                return "bg-blue-500"; // Blue
+            case "pending":
+                return "bg-yellow-500"; // Yellow
+            case "completed":
+                return "bg-green-600"; // Green
+            case "cancelled":
+                return "bg-red-500"; // Red
+            case "revision":
+                return "bg-purple-500"; // Purple
+            default:
+                return "bg-gray-400"; // Fallback
+        }
+    };
+
     const filteredOrders = orders.filter((order) => {
         if (selectedFilter === "all") return true;
         return order.orderStatus === selectedFilter;
@@ -102,6 +119,19 @@ export default function OrdersOrders() {
                                 >
                                     Tümü
                                 </button>
+                                <button
+                                    className={`px-3 py-0.5 lg:px-4 lg:py-1 border-2 text-sm lg:text-base ${
+                                        selectedFilter === "completed"
+                                            ? "BlueBorder bg-white"
+                                            : "border-transparent bg-[#F4F4F4]"
+                                    } BlueColor rounded-full font-medium`}
+                                    onClick={() =>
+                                        setSelectedFilter("completed")
+                                    }
+                                >
+                                    Tamamlandı
+                                </button>
+
                                 <button
                                     className={`px-3 py-0.5 lg:px-4 lg:py-1 border-2 text-sm lg:text-base ${
                                         selectedFilter === "active"
@@ -230,19 +260,23 @@ export default function OrdersOrders() {
                                                 >
                                                     Detaylar
                                                 </button>
-                                                <button
-                                                    onClick={() =>
-                                                        openRevModal(order)
-                                                    }
-                                                    className='px-3 text-sm font-semibold border BlueBorder text-white rounded-lg'
-                                                >
-                                                    <Image
-                                                        width={20}
-                                                        height={20}
-                                                        src='/revisionButton.png'
-                                                        alt='revision icon'
-                                                    />
-                                                </button>
+                                                {order.orderStatus ===
+                                                    "completed" && (
+                                                    <button
+                                                        onClick={() =>
+                                                            openRevModal(order)
+                                                        }
+                                                        className='px-3 text-sm font-semibold border BlueBorder text-white rounded-lg'
+                                                    >
+                                                        <Image
+                                                            width={20}
+                                                            height={20}
+                                                            src='/revisionButton.png'
+                                                            alt='revision icon'
+                                                        />
+                                                    </button>
+                                                )}
+
                                                 <button
                                                     onClick={() =>
                                                         openEditModal(order)
@@ -256,7 +290,11 @@ export default function OrdersOrders() {
                                                         alt='pencil icon'
                                                     />
                                                 </button>
-                                                <button className='px-3 text-sm font-semibold bg-[#00B836] text-white rounded-lg'>
+                                                <button
+                                                    className={`px-3 text-sm font-semibold ${getButtonClassByStatus(
+                                                        order.orderStatus
+                                                    )} text-white rounded-lg`}
+                                                >
                                                     <Image
                                                         width={20}
                                                         height={20}
