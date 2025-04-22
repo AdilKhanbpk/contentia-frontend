@@ -13,6 +13,10 @@ import linkdinIcon from "../../../../../../public/BecomeCreator/linkedin_icon.pn
 import xIcon from "../../../../../../public/BecomeCreator/x_icon.png";
 import tiktokIcon from "../../../../../../public/BecomeCreator/tiktik_icon.png";
 import { CreatorInterface } from "@/types/interfaces";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import { useTokenContext } from "@/context/TokenCheckingContext";
+import { getCreatorStats } from "@/store/features/admin/creatorsSlice";
 
 interface EditCreatorFormProps {
     creatorData: CreatorInterface | null;
@@ -29,6 +33,29 @@ const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
     onSubmit,
 }) => {
     const [activeSection, setActiveSection] = useState("personal-info");
+    const dispatch = useDispatch<AppDispatch>();
+    const creatorStats = useSelector(
+        (state: RootState) => state.adminCreators.creatorStats
+    );
+    console.log("🚀 ~ creatorStats:", creatorStats);
+    const { token } = useTokenContext();
+    if (!token) return null;
+
+    useEffect(() => {
+        if (creatorData?._id) {
+            dispatch(
+                getCreatorStats({
+                    token,
+                    creatorId: creatorData._id,
+                })
+            )
+                .unwrap()
+                .catch((error: any) => {
+                    console.error("Failed to fetch creator stats:", error);
+                });
+        }
+    }, [dispatch, token, creatorData?._id]);
+
     const handleLinkClick = (section: string) => {
         setActiveSection(section);
     };
@@ -169,15 +196,21 @@ const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
 
                     <div className='flex justify-between bg-white p-4 '>
                         <div className='text-center'>
-                            <span className='block text-lg font-bold'>0</span>
+                            <span className='block text-lg font-bold'>
+                                {creatorStats?.creatorTotalOrders}
+                            </span>
                             <span className='text-gray-500'>Orders</span>
                         </div>
                         <div className='text-center'>
-                            <span className='block text-lg font-bold'>0</span>
+                            <span className='block text-lg font-bold'>
+                                {creatorStats?.creatorTotalActiveOrder}
+                            </span>
                             <span className='text-gray-500'>Active Orders</span>
                         </div>
                         <div className='text-center'>
-                            <span className='block text-lg font-bold'>0</span>
+                            <span className='block text-lg font-bold'>
+                                {creatorStats?.creatorCompletedOrderTotalPrice}
+                            </span>
                             <span className='text-gray-500'>Earnings</span>
                         </div>
                     </div>

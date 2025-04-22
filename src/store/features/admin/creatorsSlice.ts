@@ -4,11 +4,20 @@ import { AxiosError } from 'axios';
 import { CreatorInterface } from '@/types/interfaces';
 
 
+
+export interface CreatorStats {
+  creatorTotalActiveOrder: number,
+  creatorTotalOrders: number,
+  creatorTotalCompletedOrders: number,
+  creatorCompletedOrderTotalPrice: number
+}
+
 export interface AdminCreatorsState {
   data: CreatorInterface[];
   loading: boolean;
   error: string | null;
   selectedCreator: CreatorInterface | null;
+  creatorStats: CreatorStats | null;
 }
 
 const initialState: AdminCreatorsState = {
@@ -16,6 +25,7 @@ const initialState: AdminCreatorsState = {
   loading: false,
   error: null,
   selectedCreator: null,
+  creatorStats: null,
 };
 
 // Fetch all creators
@@ -133,6 +143,20 @@ export const fetchAdminCreatorById = createAsyncThunk(
         headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
+    } catch (error) {
+      return rejectWithValue('Failed to fetch admin creator by ID');
+    }
+  }
+);
+
+export const getCreatorStats = createAsyncThunk(
+  'adminCreators/getCreatorStats',
+  async ({ token, creatorId }: { token: string; creatorId: string }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`/creators/get-creator-stats/${creatorId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data.data;
     } catch (error) {
       return rejectWithValue('Failed to fetch admin creator by ID');
     }
@@ -300,7 +324,21 @@ const adminCreatorsSlice = createSlice({
       .addCase(deleteAdminCreator.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+
+      .addCase(getCreatorStats.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getCreatorStats.fulfilled, (state, action: PayloadAction<CreatorStats>) => {
+        state.loading = false;
+        state.creatorStats = action.payload;
+      })
+      .addCase(getCreatorStats.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
+
   },
 });
 
