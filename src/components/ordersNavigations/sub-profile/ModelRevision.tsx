@@ -1,7 +1,10 @@
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
-import { createRevision } from "@/store/features/profile/orderSlice";
+import {
+    createRevision,
+    fetchOrders,
+} from "@/store/features/profile/orderSlice";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useTokenContext } from "@/context/TokenCheckingContext";
@@ -49,6 +52,7 @@ export default function ModelRevision({ orderData }: ModelRevisionProps) {
 
             if (createRevision.fulfilled.match(resultAction)) {
                 reset();
+                await dispatch(fetchOrders(token));
                 toast.success("Revision created successfully");
             } else if (createRevision.rejected.match(resultAction)) {
                 throw new Error(resultAction.error.message);

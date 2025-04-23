@@ -296,7 +296,7 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
             {orderData.creatorNoteOnOrder && (
                 <div className='mt-8'>
                     <div>
-                        <label htmlFor='creatorNoteOnOrder'>
+                        <label className='block text-sm lg:text-base font-semibold mb-1'>
                             Creator Note:
                         </label>
                     </div>
