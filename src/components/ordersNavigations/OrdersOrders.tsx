@@ -228,10 +228,9 @@ export default function OrdersOrders() {
                                                         Marka:
                                                     </p>
                                                     <p className='font-semibold'>
-                                                        {
-                                                            order.briefContent
-                                                                ?.brandName
-                                                        }
+                                                        {order.briefContent
+                                                            ?.brandName ||
+                                                            "N/A"}
                                                     </p>
                                                 </div>
                                                 <div className='flex flex-col lg:flex-row mb-2'>
@@ -239,10 +238,9 @@ export default function OrdersOrders() {
                                                         Ürün / Hizmet Adı:
                                                     </p>
                                                     <p className='font-semibold'>
-                                                        {
-                                                            order.briefContent
-                                                                ?.productServiceName
-                                                        }
+                                                        {order.briefContent
+                                                            ?.productServiceName ||
+                                                            "N/A"}
                                                     </p>
                                                 </div>
                                                 <div className='flex flex-col lg:flex-row'>
