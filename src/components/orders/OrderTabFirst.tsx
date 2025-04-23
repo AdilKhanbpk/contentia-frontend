@@ -119,7 +119,6 @@ export default function TabFirst({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Selected Quantity:", selectedQuantity);
         const formData = {
             noOfUgc: selectedQuantity,
             basePrice,
@@ -135,7 +134,6 @@ export default function TabFirst({
                 productShipping: isServiceSelected("shipping"),
             },
         };
-        console.log("🚀 ~ handleSubmit ~ formData:", formData);
         dispatch(setOrderFormData(formData));
         toast.success("Order Details Saved Successfully!");
         setActiveTab(1);
@@ -664,7 +662,6 @@ export default function TabFirst({
                             {/* Submit Button */}
                             <button
                                 type='submit'
-                                onClick={() => setActiveTab(1)}
                                 className='Button text-white font-semibold py-2 px-4 rounded-lg'
                             >
                                 İleri
