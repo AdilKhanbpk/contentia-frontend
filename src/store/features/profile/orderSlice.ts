@@ -241,7 +241,7 @@ export const createRevision = createAsyncThunk(
     try {
       axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       const response = await axiosInstance.post(
-        `/orders/create-revision/${orderId}`,
+        `/revisions/create-revision/${orderId}`,
         data
       );
       return response.data.data;

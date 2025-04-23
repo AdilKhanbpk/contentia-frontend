@@ -150,6 +150,7 @@ export interface OrderInterface {
         brandName: string;
         brandImage: string;
     };
+    creatorNoteOnOrder?: string;
     profilePic?: string;
     noOfUgc: number;
     totalPrice: number;

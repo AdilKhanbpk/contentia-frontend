@@ -65,18 +65,17 @@ const Modal: React.FC<ModalProps> = ({
                                     </DialogTitle>
                                     <div className=''>
                                         {children}
-                                        <div className='absolute top-1 right-1'>
+                                        <div className='absolute top-4 right-3'>
                                             <button
                                                 onClick={closeModal}
                                                 aria-label='Close Modal'
-                                                className='absolute top-1 right-1 p-1 rounded hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500'
                                             >
                                                 <Image
                                                     width={20}
                                                     height={20}
                                                     src='/x.png'
                                                     alt='Close icon'
-                                                    className='w-6 h-6'
+                                                    className='w-8 h-8'
                                                 />
                                             </button>
                                         </div>

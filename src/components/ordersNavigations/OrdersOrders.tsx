@@ -12,6 +12,8 @@ import EditOrder from "./sub-profile/EditOrder";
 import ViewOrderDetails from "./sub-profile/ModelDetails";
 import { useTokenContext } from "@/context/TokenCheckingContext";
 import { OrderInterface } from "@/types/interfaces";
+import { CiPickerEmpty } from "react-icons/ci";
+import { FaBoxOpen } from "react-icons/fa";
 
 export default function OrdersOrders() {
     const dispatch = useDispatch<AppDispatch>();
@@ -72,6 +74,8 @@ export default function OrdersOrders() {
                 return "Onay Bekliyor";
             case "cancelled":
                 return "İptal";
+            case "revision":
+                return "Revizyon";
             default:
                 return status;
         }
@@ -152,9 +156,194 @@ export default function OrdersOrders() {
                                 >
                                     Onay Bekliyor
                                 </button>
+                                <button
+                                    className={`px-3 py-0.5 lg:px-4 lg:py-1 border-2 text-sm lg:text-base ${
+                                        selectedFilter === "revision"
+                                            ? "BlueBorder bg-white"
+                                            : "border-transparent bg-[#F4F4F4]"
+                                    } BlueColor rounded-full font-medium`}
+                                    onClick={() =>
+                                        setSelectedFilter("revision")
+                                    }
+                                >
+                                    Revizyon
+                                </button>
                             </div>
                         </div>
 
+                        {filteredOrders.length === 0 ? (
+                            <div className='text-center py-16 text-gray-500'>
+                                <FaBoxOpen
+                                    size={100}
+                                    className='mx-auto'
+                                />
+                                <p className='text-lg font-semibold'>
+                                    Hiç sipariş bulunamadı
+                                </p>
+                                <p className='text-sm'>
+                                    Yeni siparişleriniz burada görünecek.
+                                </p>
+                            </div>
+                        ) : (
+                            filteredOrders.map((order) => (
+                                <div
+                                    key={order._id}
+                                    className='py-4'
+                                >
+                                    <div className='bg-white px-4 pt-4 sm:px-5 sm:pt-5 md:px-6 md:pt-6 lg:px-6 lg:pt-6'>
+                                        <div className='flex flex-col lg:flex-row justify-between pb-2 mb-2 sm:pb-3 sm:mb-3 md:pb-4 md:mb-4 lg:pb-4 lg:mb-4'>
+                                            <div className='w-full lg:w-3/4 grid grid-cols-1'>
+                                                <div className='flex flex-col lg:flex-row mb-2'>
+                                                    <p className='w-full lg:w-1/4'>
+                                                        Sipariş No:
+                                                    </p>
+                                                    <p className='font-semibold'>
+                                                        {order._id}
+                                                    </p>
+                                                </div>
+                                                <div className='flex flex-col lg:flex-row mb-2'>
+                                                    <p className='w-full lg:w-1/4'>
+                                                        Sipariş Tarihi:
+                                                    </p>
+                                                    <p className='font-semibold'>
+                                                        {new Date(
+                                                            order.createdAt!
+                                                        ).toLocaleDateString(
+                                                            "tr-TR"
+                                                        )}
+                                                    </p>
+                                                </div>
+                                                <div className='flex flex-col lg:flex-row mb-2'>
+                                                    <p className='w-full lg:w-1/4'>
+                                                        Sipariş Durumu:
+                                                    </p>
+                                                    <p className='font-semibold'>
+                                                        {getOrderStatusText(
+                                                            order.orderStatus
+                                                        )}
+                                                    </p>
+                                                </div>
+                                                <div className='flex flex-col lg:flex-row mb-2'>
+                                                    <p className='w-full lg:w-1/4'>
+                                                        Marka:
+                                                    </p>
+                                                    <p className='font-semibold'>
+                                                        {
+                                                            order.briefContent
+                                                                ?.brandName
+                                                        }
+                                                    </p>
+                                                </div>
+                                                <div className='flex flex-col lg:flex-row mb-2'>
+                                                    <p className='w-full lg:w-1/4'>
+                                                        Ürün / Hizmet Adı:
+                                                    </p>
+                                                    <p className='font-semibold'>
+                                                        {
+                                                            order.briefContent
+                                                                ?.productServiceName
+                                                        }
+                                                    </p>
+                                                </div>
+                                                <div className='flex flex-col lg:flex-row'>
+                                                    <p className='w-full lg:w-1/4'>
+                                                        Toplam:
+                                                    </p>
+                                                    <p className='font-semibold'>
+                                                        {order.totalPriceForCustomer?.toLocaleString(
+                                                            "tr-TR"
+                                                        )}{" "}
+                                                        TL
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className='mt-4 lg:mt-0 flex xs:flex-col-reverse lg:flex-col justify-between space-x-0 lg:space-x-4'>
+                                                <button
+                                                    onClick={() =>
+                                                        openClaimModal(order)
+                                                    }
+                                                >
+                                                    <div className='flex mt-2 flex-row justify-start lg:justify-end xs:space-x-2  lg:space-x-4'>
+                                                        <div>
+                                                            <Image
+                                                                width={28}
+                                                                height={28}
+                                                                src='/userWarningIcon.png'
+                                                                alt='warning icon'
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <p className='text-base'>
+                                                                Sorun Bildir
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </button>
+
+                                                <div className='flex space-x-2 lg:space-x-4'>
+                                                    <button
+                                                        onClick={() =>
+                                                            openViewModal(order)
+                                                        }
+                                                        className='px-4 py-1 sm:px-6 sm:py-2 md:px-8 md:py-1 lg:px-8 lg:py-1 text-sm font-semibold Button text-white rounded-lg'
+                                                    >
+                                                        Detaylar
+                                                    </button>
+                                                    {order.orderStatus ===
+                                                        "completed" && (
+                                                        <button
+                                                            onClick={() =>
+                                                                openRevModal(
+                                                                    order
+                                                                )
+                                                            }
+                                                            className='px-3 text-sm font-semibold border BlueBorder text-white rounded-lg'
+                                                        >
+                                                            <Image
+                                                                width={20}
+                                                                height={20}
+                                                                src='/revisionButton.png'
+                                                                alt='revision icon'
+                                                            />
+                                                        </button>
+                                                    )}
+
+                                                    <button
+                                                        onClick={() =>
+                                                            openEditModal(order)
+                                                        }
+                                                        className='px-3 text-sm font-semibold border BlueBorder text-white rounded-lg'
+                                                    >
+                                                        <Image
+                                                            width={20}
+                                                            height={20}
+                                                            src='/pencil.png'
+                                                            alt='pencil icon'
+                                                        />
+                                                    </button>
+                                                    {order.orderStatus ===
+                                                        "completed" && (
+                                                        <button
+                                                            className={`px-3 text-sm font-semibold ${getButtonClassByStatus(
+                                                                order.orderStatus
+                                                            )} text-white rounded-lg`}
+                                                        >
+                                                            <Image
+                                                                width={20}
+                                                                height={20}
+                                                                src='/approveButton.png'
+                                                                alt='approve icon'
+                                                            />
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
                         {filteredOrders.map((order) => (
                             <div
                                 key={order._id}
@@ -290,18 +479,21 @@ export default function OrdersOrders() {
                                                         alt='pencil icon'
                                                     />
                                                 </button>
-                                                <button
-                                                    className={`px-3 text-sm font-semibold ${getButtonClassByStatus(
-                                                        order.orderStatus
-                                                    )} text-white rounded-lg`}
-                                                >
-                                                    <Image
-                                                        width={20}
-                                                        height={20}
-                                                        src='/approveButton.png'
-                                                        alt='approve icon'
-                                                    />
-                                                </button>
+                                                {order.orderStatus ===
+                                                    "completed" && (
+                                                    <button
+                                                        className={`px-3 text-sm font-semibold ${getButtonClassByStatus(
+                                                            order.orderStatus
+                                                        )} text-white rounded-lg`}
+                                                    >
+                                                        <Image
+                                                            width={20}
+                                                            height={20}
+                                                            src='/approveButton.png'
+                                                            alt='approve icon'
+                                                        />
+                                                    </button>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
