@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { fetchAdditionalServices } from "@/store/features/admin/addPriceSlice";
 import { setOrderFormData } from "@/store/features/profile/orderSlice";
 import { fetchPricePlans } from "@/store/features/admin/pricingSlice";
-import Image from "next/image";
 import { useTokenContext } from "@/context/TokenCheckingContext";
+import Image from "next/image";
 
 export default function TabFirst({
     setActiveTab,
@@ -19,7 +19,7 @@ export default function TabFirst({
     const { token } = useTokenContext();
     if (!token) return null;
 
-    // State Management
+    // State
     const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
     const [selectedCard, setSelectedCard] = useState<number | string>("");
     const [selectedServices, setSelectedServices] = useState<{
@@ -37,48 +37,66 @@ export default function TabFirst({
     );
     const { data: pricing } = useSelector((state: RootState) => state.pricing);
 
-    const oneVideoPrice =
-        pricing?.find((option: any) => option.videoCount === 1)?.finalPrice ||
-        3000;
-
     const [basePrice, setBasePrice] = useState<number>(0);
+
+    const isCustomMode = selectedCard === "";
+
+    const totalAdditionalCharges = useMemo(() => {
+        return Object.values(selectedServices).reduce(
+            (acc, charge) => acc + charge,
+            0
+        );
+    }, [selectedServices]);
+
+    const getTotalPrice = () => basePrice + totalAdditionalCharges;
+
+    const oneVideoPrice = useMemo(() => {
+        if (!isCustomMode) return 0;
+        return selectedQuantity > 0
+            ? (basePrice + totalAdditionalCharges) / selectedQuantity
+            : 0;
+    }, [basePrice, totalAdditionalCharges, selectedQuantity, isCustomMode]);
 
     useEffect(() => {
         dispatch(fetchPricePlans() as any);
-        if (token) {
-            dispatch(fetchAdditionalServices(token) as any);
-        }
+        if (token) dispatch(fetchAdditionalServices(token) as any);
     }, [dispatch]);
 
     useEffect(() => {
         const selectedOption = pricing?.find(
             (option) => option._id === selectedCard
         );
-
-        if (selectedOption) {
-            if (![3, 6, 12].includes(selectedQuantity)) {
-                setSelectedCard("");
-                setBasePrice(selectedOption.finalPrice * selectedQuantity);
-            } else {
-                setBasePrice(selectedOption.finalPrice);
-            }
-        } else {
-            setSelectedCard("");
-            setBasePrice(oneVideoPrice * selectedQuantity);
+        if (selectedOption && [3, 6, 12].includes(selectedOption.videoCount)) {
+            setSelectedQuantity(selectedOption.videoCount);
+            setBasePrice(selectedOption.finalPrice);
         }
-    }, [selectedCard, selectedQuantity, pricing]);
+    }, [selectedCard, pricing]);
 
     const handleQuantityChange = (change: number) => {
-        setSelectedQuantity((prev) => Math.max(1, prev + change));
+        setSelectedQuantity((prev) => {
+            const updated = Math.max(1, prev + change);
+            if ([3, 6, 12].includes(updated)) return updated;
+
+            // Custom mode logic
+            setSelectedCard("");
+            const oneVideo = pricing?.find((option) => option.videoCount === 1);
+            const oneVideoPrice = oneVideo?.finalPrice || 0;
+            setBasePrice(oneVideoPrice * updated);
+
+            return updated;
+        });
     };
 
     const handleCardSelect = (cardId: string | number) => {
         setSelectedCard(cardId);
-        const selectedOption = pricing?.find(
-            (option: any) => option._id === cardId
-        );
+        const selectedOption = pricing?.find((option) => option._id === cardId);
         if (selectedOption) {
-            setSelectedQuantity(selectedOption.videoCount);
+            if ([3, 6, 12].includes(selectedOption.videoCount)) {
+                setSelectedQuantity(selectedOption.videoCount);
+                setBasePrice(selectedOption.finalPrice);
+            } else {
+                setSelectedQuantity(1); // Custom card
+            }
         }
     };
 
@@ -93,29 +111,18 @@ export default function TabFirst({
             return updated;
         });
 
-        if (key === "edit") {
-            setActiveEdit((prev) => !prev);
-        }
+        if (key === "edit") setActiveEdit((prev) => !prev);
     };
 
     const isServiceSelected = (key: string) =>
         selectedServices.hasOwnProperty(key);
 
-    const totalAdditionalCharges = Object.values(selectedServices).reduce(
-        (acc, charge) => acc + charge,
-        0
-    );
-
-    const getTotalPrice = () => {
-        return basePrice + totalAdditionalCharges;
-    };
-
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
-
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        console.log("Selected Quantity:", selectedQuantity);
         const formData = {
             noOfUgc: selectedQuantity,
-            basePrice: basePrice,
+            basePrice,
             totalPrice: getTotalPrice(),
             additionalServices: {
                 platform: selectedPlatform,
@@ -128,11 +135,7 @@ export default function TabFirst({
                 productShipping: isServiceSelected("shipping"),
             },
         };
-        console.log(
-            "🚀 ~ handleSubmit ~ formData.totalPrice:",
-            formData.totalPrice
-        );
-
+        console.log("🚀 ~ handleSubmit ~ formData:", formData);
         dispatch(setOrderFormData(formData));
         toast.success("Order Details Saved Successfully!");
         setActiveTab(1);
@@ -140,7 +143,6 @@ export default function TabFirst({
 
     useEffect(() => {
         const updated = { ...selectedServices };
-
         if (activeDuration === "30s") {
             updated["duration"] =
                 additionalService?.thirtySecondDurationPrice || 0;
@@ -148,9 +150,8 @@ export default function TabFirst({
             updated["duration"] =
                 additionalService?.sixtySecondDurationPrice || 0;
         } else {
-            delete updated["duration"]; // 15s is base, no extra cost
+            delete updated["duration"];
         }
-
         setSelectedServices(updated);
     }, [activeDuration, additionalService]);
 
@@ -458,31 +459,29 @@ export default function TabFirst({
                             {/* Displaying pricing where videoCount is NOT 1 */}
                             {pricing &&
                                 pricing
-                                    .filter(
-                                        (option: any) => option.videoCount !== 1
-                                    )
-                                    .map((option: any) => (
+                                    .filter((option) => option.videoCount !== 1)
+                                    .map((option) => (
                                         <div
                                             key={option._id}
                                             onClick={() =>
                                                 handleCardSelect(option._id)
                                             }
-                                            className={`p-2 sm:p-3 md:p-4 lg:p-4 rounded-lg shadow-xl cursor-pointer ${
+                                            className={`p-4 rounded-lg shadow-xl cursor-pointer ${
                                                 selectedCard === option._id
                                                     ? "border-2 BlueBorder sectionBG"
                                                     : "bg-white"
                                             }`}
                                         >
                                             <h3 className='text-sm font-bold'>
-                                                {option.videoCount} Farklı
-                                                Video,
+                                                {option.videoCount} Farklı Video
                                             </h3>
                                             <p className='text-sm font-bold mb-2'>
                                                 {option.videoCount} Farklı
                                                 İçerik Üretici
                                             </p>
-                                            <div className='mb-2'>
-                                                {option.strikeThroughPrice && (
+
+                                            {option.strikeThroughPrice && (
+                                                <div className='mb-2'>
                                                     <p className='Button inline text-white font-medium rounded-md px-1 py-0.5 text-xs'>
                                                         {(
                                                             option.strikeThroughPrice -
@@ -492,8 +491,8 @@ export default function TabFirst({
                                                         )}{" "}
                                                         TL İndirim
                                                     </p>
-                                                )}
-                                            </div>
+                                                </div>
+                                            )}
 
                                             {option.strikeThroughPrice && (
                                                 <span className='text-sm font-semibold line-through'>
@@ -517,70 +516,56 @@ export default function TabFirst({
                                         </div>
                                     ))}
 
-                            {/* Pricing Option Where videoCount === 1 */}
-                            {pricing &&
-                                pricing
-                                    .filter(
-                                        (option: any) => option.videoCount === 1
-                                    )
-                                    .map((option: any) => (
-                                        <div
-                                            key={option._id}
-                                            className={`bg-white rounded-lg p-2 sm:p-3 md:p-4 lg:p-4 shadow-xl cursor-pointer ${
-                                                selectedCard === option._id
-                                                    ? "border-2 BlueBorder sectionBG"
-                                                    : "sectionBG"
-                                            }`}
-                                        >
-                                            <h3 className='text-base font-bold mb-2'>
-                                                İçerik Adedi Seç:
-                                            </h3>
-                                            <div className='flex items-center gap-4'>
-                                                <button
-                                                    type='button'
-                                                    onClick={() =>
-                                                        handleQuantityChange(-1)
-                                                    }
-                                                    disabled={
-                                                        selectedQuantity === 1
-                                                    }
-                                                    className='border-2 BlueBorder text-white font-medium py-2 w-16 rounded-full flex items-center justify-center'
-                                                >
-                                                    <span className='BlueText text-3xl font-extrabold'>
-                                                        -
-                                                    </span>
-                                                </button>
-                                                <span className='text-sm BlueText font-semibold'>
-                                                    {selectedQuantity} Video
-                                                </span>
-                                                <button
-                                                    type='button'
-                                                    onClick={() =>
-                                                        handleQuantityChange(1)
-                                                    }
-                                                    className='border-2 BlueBorder text-white font-medium py-2 w-16 rounded-full flex items-center justify-center'
-                                                >
-                                                    <span className='BlueText text-3xl font-extrabold'>
-                                                        +
-                                                    </span>
-                                                </button>
-                                            </div>
-                                            <p className='mt-6 text-sm BlueText font-semibold'>
-                                                {oneVideoPrice.toLocaleString(
-                                                    "tr-TR"
-                                                )}
-                                                TL
-                                                <span className='text-xs text-black font-thin'>
-                                                    {" "}
-                                                    / Video
-                                                </span>
-                                            </p>
-                                        </div>
-                                    ))}
+                            {/* Custom Card */}
+                            <div
+                                className={`bg-white rounded-lg p-4 shadow-xl cursor-pointer ${
+                                    isCustomMode
+                                        ? "border-2 BlueBorder sectionBG"
+                                        : "sectionBG"
+                                }`}
+                                onClick={() => setSelectedCard("")}
+                            >
+                                <h3 className='text-base font-bold mb-2'>
+                                    İçerik Adedi Seç:
+                                </h3>
+                                <div className='flex items-center gap-4'>
+                                    <button
+                                        type='button'
+                                        onClick={() => handleQuantityChange(-1)}
+                                        disabled={selectedQuantity === 1}
+                                        className='border-2 BlueBorder text-white font-medium py-2 w-16 rounded-full flex items-center justify-center'
+                                    >
+                                        <span className='BlueText text-3xl font-extrabold'>
+                                            -
+                                        </span>
+                                    </button>
+                                    <span className='text-sm BlueText font-semibold'>
+                                        {selectedQuantity} Video
+                                    </span>
+                                    <button
+                                        type='button'
+                                        onClick={() => handleQuantityChange(1)}
+                                        className='border-2 BlueBorder text-white font-medium py-2 w-16 rounded-full flex items-center justify-center'
+                                    >
+                                        <span className='BlueText text-3xl font-extrabold'>
+                                            +
+                                        </span>
+                                    </button>
+                                </div>
+
+                                <p className='mt-6 text-sm BlueText font-semibold'>
+                                    {isCustomMode
+                                        ? oneVideoPrice.toLocaleString("tr-TR")
+                                        : "—"}{" "}
+                                    TL
+                                    <span className='text-xs text-black font-thin'>
+                                        {" "}
+                                        / Video
+                                    </span>
+                                </p>
+                            </div>
                         </div>
                     </div>
-
-                    {/* //////////////// */}
                     <div className='bg-white px-4 py-2 sm:px-6 sm:py-3 md:px-10 md:py-4 lg:px-16 lg:py-6 rounded-lg '>
                         <div>
                             <div className='flex flex-row justify-between '>
@@ -659,23 +644,27 @@ export default function TabFirst({
                             ))}
                         </div>
                     </div>
-
                     <div className='fixed bottom-0 left-0 w-full mx-auto lg:px-24'>
-                        <div className=' bg-white p-4 flex justify-end items-center border-gray-300'>
+                        <div className='bg-white p-4 flex justify-end items-center border-gray-300'>
                             {/* Left Section */}
                             <div className='mr-4'>
                                 <p className='text-lg font-semibold BlueText'>
                                     1 Video x{" "}
-                                    {oneVideoPrice.toLocaleString("tr-TR")} TL
+                                    {(
+                                        getTotalPrice() / selectedQuantity
+                                    ).toLocaleString("tr-TR")}{" "}
+                                    TL
                                 </p>
                                 <p className='text-sm BlueText'>
                                     Toplam:{" "}
                                     {getTotalPrice().toLocaleString("tr-TR")} TL
                                 </p>
                             </div>
+
+                            {/* Submit Button */}
                             <button
                                 type='submit'
-                                // onClick={() => setActiveTab(1)}
+                                onClick={() => setActiveTab(1)}
                                 className='Button text-white font-semibold py-2 px-4 rounded-lg'
                             >
                                 İleri
