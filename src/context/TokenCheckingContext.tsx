@@ -16,6 +16,13 @@ export const TokenProvider: React.FC<{ children: React.ReactNode }> = ({
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const tokenFromParams = new URLSearchParams(window.location.search).get(
+            "accessToken"
+        );
+        if (tokenFromParams) {
+            setToken(tokenFromParams);
+        }
+
         const storedToken = localStorage.getItem("accessToken");
         if (storedToken) {
             setToken(storedToken);
