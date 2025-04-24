@@ -374,3 +374,8 @@ export interface ClaimInterface {
     claimDate?: Date | string;
     claimContent: string;
 }
+
+export interface AnalyticsInterface {
+    pageViews: string;
+    totalUsers: string;
+}

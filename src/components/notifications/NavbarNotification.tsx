@@ -8,6 +8,7 @@ import {
 import { AppDispatch } from "@/store/store";
 import React, { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import DOMPurify from "dompurify";
 
 interface NavbarNotificationProps {
     notifications: NotificationInterface[];
@@ -107,9 +108,14 @@ function NavbarNotification({ user, notifications }: NavbarNotificationProps) {
                                 <span className='block text-sm'>
                                     {notification.title}
                                 </span>
-                                <span className='block text-xs text-gray-500'>
-                                    {notification.details}
-                                </span>
+                                <div
+                                    className='text-sm font-normal'
+                                    dangerouslySetInnerHTML={{
+                                        __html: DOMPurify.sanitize(
+                                            notification.details
+                                        ),
+                                    }}
+                                />
                             </li>
                         );
                     })

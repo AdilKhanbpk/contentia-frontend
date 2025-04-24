@@ -31,6 +31,7 @@ import incomingPaymentSlice from "./features/admin/incomingPaymentSlice";
 import termSlice from "./features/admin/termsSlice";
 import helpSupportSlice from "./features/admin/helpSlice";
 import fileSlice from "./features/admin/fileSlice";
+import googleAnalyticsSlice from "./features/admin/googleAnalyticsSlice";
 
 // 🔹 Configure redux-persist
 const persistConfig = {
@@ -71,6 +72,7 @@ const rootReducer = combineReducers({
   terms: termSlice,
   helpSupport: helpSupportSlice,
   files: fileSlice,
+  gAnalytics: googleAnalyticsSlice,
 });
 
 // 🔹 Apply persistReducer

@@ -33,6 +33,10 @@ import {
 } from "@/store/features/admin/dashboardSlice";
 import { AppDispatch } from "@/store/store";
 import { useTokenContext } from "@/context/TokenCheckingContext";
+import {
+    fetchGoogleAnalytics,
+    selectAnalytics,
+} from "@/store/features/admin/googleAnalyticsSlice";
 
 const Analytics: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -41,13 +45,12 @@ const Analytics: React.FC = () => {
     const creators = useSelector(selectTotalCreators);
     const customers = useSelector(selectTotalCustomers);
     const orders = useSelector(selectTotalOrders);
-    console.log("🚀 ~ orders:", orders);
     const sales = useSelector(selectTotalSales);
-    console.log("🚀 ~ sales:", sales);
     const recentOrders = useSelector(selectRecentOrders);
     const revenue = useSelector(selectTotalRevenue);
-    console.log("🚀 ~ revenue:", revenue);
     const users = useSelector(selectTotalUsers);
+    const analytics = useSelector(selectAnalytics);
+    console.log("🚀 ~ analytics:", analytics);
 
     const { token } = useTokenContext();
     if (!token) return null;
@@ -61,6 +64,7 @@ const Analytics: React.FC = () => {
             dispatch(fetchTotalOrders(token));
             dispatch(fetchTotalRevenueByMonth(token));
             dispatch(fetchTotalUsersForCurrentMonth(token));
+            dispatch(fetchGoogleAnalytics(token));
         }
     }, [token]);
 
