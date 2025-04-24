@@ -22,7 +22,6 @@ import { fetchMyBrands } from "@/store/features/profile/brandSlice";
 import NewPackageModal from "./sub-packages/NewPackageModal";
 import EditPackageModal from "./sub-packages/EditPackageModal";
 import ViewPackageModal from "./sub-packages/ViewPackageModal";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface SearchBarProps {
     onSearch: (value: string) => void;
@@ -86,12 +85,10 @@ const Packages: React.FC = () => {
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
     const [isModalViewOpen, setIsViewModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState("All");
-    const { token } = useTokenContext();
-    if (!token) return null;
     useEffect(() => {
         const fetchPackagesData = async () => {
             try {
-                const res = await dispatch(fetchPackages(token)).unwrap();
+                const res = await dispatch(fetchPackages()).unwrap();
                 toast.success(res.message);
             } catch (error: any) {
                 toast.error(error.message);
@@ -99,24 +96,21 @@ const Packages: React.FC = () => {
         };
         const fetchBrands = async () => {
             try {
-                const res = await dispatch(fetchMyBrands(token)).unwrap();
+                const res = await dispatch(fetchMyBrands()).unwrap();
                 toast.success(res.message);
             } catch (error: any) {
                 toast.error(error.message);
             }
         };
-        if (token) {
-            fetchBrands();
-            fetchPackagesData();
-        }
+
+        fetchBrands();
+        fetchPackagesData();
     }, [dispatch]);
 
     const handleDelete = useCallback(
         async (id: string) => {
             try {
-                await dispatch(
-                    deletePackage({ packageId: id, token })
-                ).unwrap();
+                await dispatch(deletePackage({ packageId: id })).unwrap();
                 toast.success("Package deleted successfully!");
             } catch (error) {
                 toast.error("Error deleting package.");
@@ -128,9 +122,7 @@ const Packages: React.FC = () => {
     const handleView = useCallback(
         async (id: string) => {
             try {
-                await dispatch(
-                    fetchPackageById({ packageId: id, token })
-                ).unwrap();
+                await dispatch(fetchPackageById({ packageId: id })).unwrap();
                 toast.success("Package details fetched successfully!");
                 setIsViewModalOpen(true);
             } catch (error) {
@@ -143,9 +135,7 @@ const Packages: React.FC = () => {
     const handleEdit = useCallback(
         async (id: string) => {
             try {
-                await dispatch(
-                    fetchPackageById({ packageId: id, token })
-                ).unwrap();
+                await dispatch(fetchPackageById({ packageId: id })).unwrap();
                 setIsModalEditOpen(true);
                 toast.success("Package fetched successfully for editing.");
             } catch (error) {

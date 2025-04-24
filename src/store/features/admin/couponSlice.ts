@@ -35,11 +35,9 @@ const initialState: CouponState = {
 // Create a new coupon
 export const createCoupon = createAsyncThunk(
     'coupon/createCoupon',
-    async ({ data, token }: { data: any; token: string }, { rejectWithValue }) => {
+    async ({ data }: { data: any }, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.post('/admin/coupons', data, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const response = await axiosInstance.post('/admin/coupons', data);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
@@ -53,11 +51,9 @@ export const createCoupon = createAsyncThunk(
 // Get all coupons (admin)
 export const getCoupons = createAsyncThunk(
     'coupon/getCoupons',
-    async (token: string, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get('/admin/coupons', {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const response = await axiosInstance.get('/admin/coupons');
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
@@ -71,11 +67,9 @@ export const getCoupons = createAsyncThunk(
 // Get my coupons (user)
 export const getMyCoupons = createAsyncThunk(
     'coupon/getMyCoupons',
-    async (token: string, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get('/admin/coupons/my-coupons', {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const response = await axiosInstance.get('/admin/coupons/my-coupons');
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
@@ -90,13 +84,11 @@ export const getMyCoupons = createAsyncThunk(
 export const getCouponById = createAsyncThunk(
     'coupon/getCouponById',
     async (
-        { id, token }: { id: string; token: string },
+        { id }: { id: string },
         { rejectWithValue }
     ) => {
         try {
-            const response = await axiosInstance.get(`/admin/coupons/${id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const response = await axiosInstance.get(`/admin/coupons/${id}`);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
@@ -111,13 +103,11 @@ export const getCouponById = createAsyncThunk(
 export const updateCoupon = createAsyncThunk(
     'coupon/updateCoupon',
     async (
-        { id, data, token }: { id: string; data: any; token: string },
+        { id, data }: { id: string; data: any },
         { rejectWithValue }
     ) => {
         try {
-            const response = await axiosInstance.patch(`/admin/coupons/${id}`, data, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const response = await axiosInstance.patch(`/admin/coupons/${id}`, data);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
@@ -132,13 +122,11 @@ export const updateCoupon = createAsyncThunk(
 export const deleteCoupon = createAsyncThunk(
     'coupon/deleteCoupon',
     async (
-        { id, token }: { id: string; token: string },
+        { id }: { id: string },
         { rejectWithValue }
     ) => {
         try {
-            const response = await axiosInstance.delete(`/admin/coupons/${id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const response = await axiosInstance.delete(`/admin/coupons/${id}`);
             return id;
         } catch (error) {
             const axiosError = error as AxiosError;
@@ -153,16 +141,14 @@ export const deleteCoupon = createAsyncThunk(
 export const validateCoupon = createAsyncThunk(
     'coupon/validateCoupon',
     async (
-        { code, token }: { code: string; token: string },
+        { code }: { code: string },
         { rejectWithValue }
     ) => {
         try {
             const response = await axiosInstance.post(
                 '/admin/coupons/validate',
-                { code },
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                }
+                { code }
+
             );
             return response.data.data;
         } catch (error) {

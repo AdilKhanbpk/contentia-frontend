@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { createBrand } from "@/store/features/profile/brandSlice";
 import { toast } from "react-toastify";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface BrandFormInputs {
     brandName: string;
@@ -16,9 +15,6 @@ interface BrandFormInputs {
 
 const ModelBrand: React.FC = () => {
     const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
-
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     const {
         register,
@@ -41,7 +37,6 @@ const ModelBrand: React.FC = () => {
         dispatch(
             createBrand({
                 data: formData,
-                token,
             })
         )
             .unwrap()

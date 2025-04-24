@@ -16,22 +16,22 @@ export interface OrderState {
 interface UpdateOrderPayload {
   orderId: string;
   data: Partial<OrderInterface>;
-  token: string;
+
 }
 
 interface CreateClaimPayload {
   orderId: string;
   data: {
     claimContent: string;
-  };
-  token: string;
+  }
+
 }
 interface CreateRevisionPayload {
   orderId: string;
   data: {
     revisionContent: string;
-  };
-  token: string;
+  }
+
 }
 
 const initialState: OrderState = {
@@ -44,13 +44,13 @@ const initialState: OrderState = {
 
 
 interface OrderData {
-  token: string;
+
   selectedFiles: File[];
 }
 
 export const createOrder = createAsyncThunk(
   "order/createOrder",
-  async ({ token, selectedFiles }: OrderData, { getState, rejectWithValue }) => {
+  async ({ selectedFiles }: OrderData, { getState, rejectWithValue }) => {
     try {
       const state = getState() as RootState;
       const orderData: Partial<OrderInterface> = state.order.orderFormData;
@@ -107,7 +107,6 @@ export const createOrder = createAsyncThunk(
       });
 
       // Set Authorization header
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
       // Make API request
       const response = await axiosInstance.postForm("/orders", formData);
@@ -128,9 +127,8 @@ export const createOrder = createAsyncThunk(
 // Fetch All Orders
 export const fetchOrders = createAsyncThunk(
   "order/fetchOrders",
-  async (token: string, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       const response = await axiosInstance.get("/orders/my-orders");
       return response.data.data;
     } catch (error) {
@@ -149,11 +147,10 @@ export const fetchOrders = createAsyncThunk(
 export const fetchSingleOrder = createAsyncThunk(
   "order/fetchSingleOrder",
   async (
-    { orderId, token }: { orderId: string; token: string },
+    { orderId }: { orderId: string },
     { rejectWithValue }
   ) => {
     try {
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       const response = await axiosInstance.get(`/orders/${orderId}`);
       return response.data.data;
     } catch (error) {
@@ -171,9 +168,8 @@ export const fetchSingleOrder = createAsyncThunk(
 // Update Order
 export const updateOrder = createAsyncThunk(
   "order/updateOrder",
-  async ({ orderId, data, token }: UpdateOrderPayload, { rejectWithValue }) => {
+  async ({ orderId, data }: UpdateOrderPayload, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       const response = await axiosInstance.patch(`/orders/${orderId}`, data);
       return response.data;
     } catch (error) {
@@ -192,11 +188,10 @@ export const updateOrder = createAsyncThunk(
 export const deleteOrder = createAsyncThunk(
   "order/deleteOrder",
   async (
-    { orderId, token }: { orderId: string; token: string },
+    { orderId }: { orderId: string; },
     { rejectWithValue }
   ) => {
     try {
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       await axiosInstance.delete(`/orders/${orderId}`);
       return orderId;
     } catch (error) {
@@ -214,9 +209,8 @@ export const deleteOrder = createAsyncThunk(
 // Create Claim
 export const createClaim = createAsyncThunk(
   "order/createClaim",
-  async ({ orderId, data, token }: CreateClaimPayload, { rejectWithValue }) => {
+  async ({ orderId, data }: CreateClaimPayload, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       const response = await axiosInstance.post(
         `/orders/create-claim/${orderId}`,
         data
@@ -237,9 +231,8 @@ export const createClaim = createAsyncThunk(
 // Create Revision
 export const createRevision = createAsyncThunk(
   "order/createRevision",
-  async ({ orderId, data, token }: CreateRevisionPayload, { rejectWithValue }) => {
+  async ({ orderId, data }: CreateRevisionPayload, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       const response = await axiosInstance.post(
         `/revisions/create-revision/${orderId}`,
         data

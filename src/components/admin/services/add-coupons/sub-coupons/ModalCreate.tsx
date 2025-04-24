@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 
 interface ModalCreateProps {
     closeModal: () => void;
-    token: string;
 }
 
 interface CouponForm {
@@ -20,7 +19,7 @@ interface CouponForm {
     endingDate: string;
 }
 
-export default function ModalCreate({ closeModal, token }: ModalCreateProps) {
+export default function ModalCreate({ closeModal }: ModalCreateProps) {
     const dispatch = useDispatch();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const {
@@ -62,7 +61,7 @@ export default function ModalCreate({ closeModal, token }: ModalCreateProps) {
                 couponData.discountPercentage = formData.discountPercent;
             }
 
-            await dispatch(createCoupon({ data: couponData, token }) as any);
+            await dispatch(createCoupon({ data: couponData }) as any);
             toast.success("Coupon created successfully!");
             closeModal();
         } catch (error) {

@@ -22,11 +22,9 @@ const initialState: AdminClaimsState = {
 // Fetch all claims
 export const fetchAdminClaims = createAsyncThunk(
     'adminClaims/fetchAdminClaims',
-    async (token: string) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get('/admin/claims', {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const response = await axiosInstance.get('/admin/claims');
 
             return response.data.data
 
@@ -39,12 +37,10 @@ export const fetchAdminClaims = createAsyncThunk(
 // Fetch a single claim by ID
 export const fetchAdminClaimById = createAsyncThunk(
     'adminClaims/fetchAdminClaimById',
-    async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
+    async ({ id }: { id: string; }, { rejectWithValue }) => {
 
         try {
-            const response = await axiosInstance.get(`/admin/claims/${id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const response = await axiosInstance.get(`/admin/claims/${id}`);
             return response.data.data
 
         } catch (error) {
@@ -56,17 +52,13 @@ export const fetchAdminClaimById = createAsyncThunk(
 export const createAdminClaim = createAsyncThunk(
     'adminClaims/createAdminClaim',
     async (
-        { data, token }: { data: Partial<ClaimInterface>; token: string },
+        { data }: { data: Partial<ClaimInterface>; },
         { rejectWithValue }
     ) => {
         console.group("createAdminClaim Thunk Debugging");
 
         try {
-            // Validate token
-            if (!token) {
-                console.warn('Authentication token is missing');
-                return rejectWithValue('Authentication token is missing');
-            }
+
 
             const formattedData = {
                 status: data.status,
@@ -76,12 +68,7 @@ export const createAdminClaim = createAsyncThunk(
                 claimContent: data.claimContent,
             };
 
-            const response = await axiosInstance.post('/admin/claims', formattedData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await axiosInstance.post('/admin/claims', formattedData);
 
             const newClaim: ClaimInterface = {
                 _id: response.data.data._id,
@@ -119,18 +106,12 @@ export const createAdminClaim = createAsyncThunk(
 export const updateAdminClaim = createAsyncThunk(
     'adminClaims/updateAdminClaim',
     async (
-        { claimId, data, token }: { claimId: string; data: Partial<ClaimInterface>; token: string },
+        { claimId, data }: { claimId: string; data: Partial<ClaimInterface>; },
         { rejectWithValue }
     ) => {
 
         try {
-            const response = await axiosInstance.patch(`/admin/claims/${claimId}`, data, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                timeout: 10000,
-            });
+            const response = await axiosInstance.patch(`/admin/claims/${claimId}`, data);
 
             const updatedClaim = {
                 _id: response.data._id,
@@ -167,12 +148,10 @@ export const updateAdminClaim = createAsyncThunk(
 // Delete a claim by ID
 export const deleteAdminClaim = createAsyncThunk(
     'adminClaims/deleteAdminClaim',
-    async ({ claimId, token }: { claimId: string; token: string }, { rejectWithValue }) => {
+    async ({ claimId }: { claimId: string }, { rejectWithValue }) => {
 
         try {
-            await axiosInstance.delete(`/admin/claims/${claimId}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            await axiosInstance.delete(`/admin/claims/${claimId}`);
             return claimId;
         } catch (error) {
             const axiosError = error as AxiosError;

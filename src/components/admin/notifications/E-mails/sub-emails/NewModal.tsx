@@ -8,7 +8,6 @@ import {
     createEmailNotification,
     fetchEmailNotifications,
 } from "@/store/features/admin/emailNotificationSlice";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 interface CreateModalProps {
@@ -26,8 +25,6 @@ export default function Modal({ onClose }: CreateModalProps) {
     } = useForm();
     const emailBody = watch("emailContent", "");
     const userType = watch("userType", "");
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     const onSubmit = async (data: any) => {
         const payload = {
@@ -40,8 +37,8 @@ export default function Modal({ onClose }: CreateModalProps) {
         };
 
         console.log("Submitting Data:", payload);
-        await dispatch(createEmailNotification({ data: payload, token }));
-        await dispatch(fetchEmailNotifications(token));
+        await dispatch(createEmailNotification({ data: payload }));
+        await dispatch(fetchEmailNotifications());
 
         onClose();
     };

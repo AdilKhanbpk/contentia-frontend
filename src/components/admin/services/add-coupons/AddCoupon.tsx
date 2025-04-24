@@ -14,7 +14,6 @@ import {
 } from "@/store/features/admin/couponSlice";
 import { RootState } from "@/store/store";
 import { toast } from "react-toastify";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 import { Customer } from "@/types/interfaces";
 
 export interface CouponForm {
@@ -45,18 +44,13 @@ export default function Coupon() {
 
     const { reset } = useForm<CouponForm>();
 
-    const { token } = useTokenContext();
-    if (!token) return null;
-
     useEffect(() => {
-        if (token) {
-            dispatch(getCoupons(token) as any)
-                .then(() => toast.success("Coupons fetched successfully!"))
-                .catch((err: Error) => {
-                    setErrorMessage(err.message || "Failed to fetch coupons");
-                    toast.error(err.message || "Failed to fetch coupons");
-                });
-        }
+        dispatch(getCoupons() as any)
+            .then(() => toast.success("Coupons fetched successfully!"))
+            .catch((err: Error) => {
+                setErrorMessage(err.message || "Failed to fetch coupons");
+                toast.error(err.message || "Failed to fetch coupons");
+            });
     }, [dispatch]);
 
     const openCreateModal = () => setIsCreateModalOpen(true);
@@ -91,7 +85,7 @@ export default function Coupon() {
 
     const handleDelete = async (id: string) => {
         try {
-            await dispatch(deleteCoupon({ id, token }) as any);
+            await dispatch(deleteCoupon({ id }) as any);
             toast.success("Coupon deleted successfully!");
         } catch (err) {
             const errorMessage =
@@ -138,10 +132,7 @@ export default function Coupon() {
                 closeModal={closeCreateModal}
                 title=''
             >
-                <ModalCreate
-                    closeModal={closeCreateModal}
-                    token={token}
-                />
+                <ModalCreate closeModal={closeCreateModal} />
             </CustomModelAdmin>
 
             <CustomModelAdmin
@@ -151,7 +142,6 @@ export default function Coupon() {
             >
                 <ModalEdit
                     closeModal={closeEditModal}
-                    token={token}
                     couponId={editId}
                 />
             </CustomModelAdmin>

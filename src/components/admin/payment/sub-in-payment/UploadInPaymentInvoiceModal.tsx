@@ -1,4 +1,3 @@
-import { useTokenContext } from "@/context/TokenCheckingContext";
 import {
     PaymentInterface,
     uploadInvoiceImage,
@@ -26,8 +25,6 @@ export default function CreateInvoiceModal({
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useForm();
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     const onSubmit = async (data: any) => {
         if (!currentInvoice?.orderId) return;
@@ -40,7 +37,6 @@ export default function CreateInvoiceModal({
                 uploadInvoiceImage({
                     orderId: currentInvoice?.orderId,
                     formData,
-                    token,
                 })
             );
             toast.success("Invoice created successfully!");

@@ -19,18 +19,15 @@ export interface BannerState {
 
 interface CreateBannerPayload {
   data: FormData;
-  token: string;
 }
 
 interface UpdateBannerPayload {
   bannerId: string;
   data: FormData;
-  token: string;
 }
 
 interface DeleteBannerPayload {
   bannerId: string;
-  token: string;
 }
 
 const initialState: BannerState = {
@@ -42,9 +39,8 @@ const initialState: BannerState = {
 
 export const createBanner = createAsyncThunk(
   "banner/createBanner",
-  async ({ data, token }: CreateBannerPayload, { rejectWithValue }) => {
+  async ({ data, }: CreateBannerPayload, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       const response = await axiosInstance.post("/admin/banner", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -60,9 +56,8 @@ export const createBanner = createAsyncThunk(
 
 export const fetchBanners = createAsyncThunk(
   "banner/fetchBanners",
-  async (token: string, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       const response = await axiosInstance.get("/admin/banner");
       return response.data.data;
     } catch (error) {
@@ -76,9 +71,8 @@ export const fetchBanners = createAsyncThunk(
 
 export const updateBanner = createAsyncThunk(
   "banner/updateBanner",
-  async ({ bannerId, data, token }: UpdateBannerPayload, { rejectWithValue }) => {
+  async ({ bannerId, data, }: UpdateBannerPayload, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       const response = await axiosInstance.patch(`/admin/banner/${bannerId}`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -94,9 +88,8 @@ export const updateBanner = createAsyncThunk(
 
 export const deleteBanner = createAsyncThunk(
   "banner/deleteBanner",
-  async ({ bannerId, token }: DeleteBannerPayload, { rejectWithValue }) => {
+  async ({ bannerId, }: DeleteBannerPayload, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       await axiosInstance.delete(`/admin/banner/${bannerId}`);
       return bannerId;
     } catch (error) {

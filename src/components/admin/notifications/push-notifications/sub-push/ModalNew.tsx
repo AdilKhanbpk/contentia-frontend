@@ -6,7 +6,6 @@ import {
     createNotification,
     fetchNotifications,
 } from "@/store/features/admin/notificationSlice";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 interface CreateModalProps {
     onClose: () => void;
 }
@@ -20,8 +19,7 @@ export default function ModalNew({ onClose }: CreateModalProps) {
         formState: { isSubmitting },
     } = useForm();
     const userType = watch("userType", "");
-    const { token } = useTokenContext();
-    if (!token) return null;
+
     const onSubmit = async (data: any) => {
         const payload = {
             title: data.title,
@@ -33,8 +31,8 @@ export default function ModalNew({ onClose }: CreateModalProps) {
         };
 
         console.log("Submitting Data:", payload);
-        await dispatch(createNotification({ data: payload, token }));
-        await dispatch(fetchNotifications(token));
+        await dispatch(createNotification({ data: payload }));
+        await dispatch(fetchNotifications());
 
         onClose();
     };

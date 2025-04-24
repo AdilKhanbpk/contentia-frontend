@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { validateCoupon } from "@/store/features/admin/couponSlice";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 import { OrderInterface } from "@/types/interfaces";
 import Image from "next/image";
 
@@ -73,8 +72,6 @@ export default function TabSecond({
         console.log(data);
     };
 
-    const { token } = useTokenContext();
-
     const basePrice = orderFormData?.basePrice;
     const quantity = orderFormData?.noOfUgc || 1;
     const totalPrice = orderFormData?.totalPrice || 0;
@@ -88,29 +85,25 @@ export default function TabSecond({
     const handleApplyCoupon = async () => {
         setIsCouponAppliedLoading(true);
         try {
-            if (token) {
-                const result = await dispatch(
-                    validateCoupon({
-                        code: couponCode,
-                        token,
-                    })
-                ).unwrap();
+            const result = await dispatch(
+                validateCoupon({
+                    code: couponCode,
+                })
+            ).unwrap();
 
-                let discountAmount = 0;
+            let discountAmount = 0;
 
-                if (result.discountTl) {
-                    discountAmount = result.discountTl;
-                } else if (result.discountPercentage) {
-                    discountAmount =
-                        (totalPrice * result.discountPercentage) / 100;
-                }
-
-                const updatedFinalPrice = totalPrice - discountAmount;
-                setFinalPrice(updatedFinalPrice);
-
-                setDiscount(discountAmount);
-                setCouponError("");
+            if (result.discountTl) {
+                discountAmount = result.discountTl;
+            } else if (result.discountPercentage) {
+                discountAmount = (totalPrice * result.discountPercentage) / 100;
             }
+
+            const updatedFinalPrice = totalPrice - discountAmount;
+            setFinalPrice(updatedFinalPrice);
+
+            setDiscount(discountAmount);
+            setCouponError("");
         } catch (error: any) {
             setCouponError(error.message || "Bir hata oluştu");
         } finally {

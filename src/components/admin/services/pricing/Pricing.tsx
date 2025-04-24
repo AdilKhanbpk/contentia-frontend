@@ -10,7 +10,6 @@ import {
 import { AppDispatch, RootState } from "@/store/store";
 import { PricePlan } from "@/store/features/admin/pricingSlice";
 import { toast } from "react-toastify";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const VideoIcon = () => <span className='text-3xl'>📹</span>;
 
@@ -26,8 +25,6 @@ type Plan = {
 
 const PricingPlans = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { token } = useTokenContext();
-    if (!token) return null;
     const {
         data: serverPlans,
         loading,
@@ -90,7 +87,6 @@ const PricingPlans = () => {
                             Number(data.strikethroughPrice) || 0,
                         finalPrice: Number(data.finalPrice) || 0,
                     },
-                    token,
                 })
             ).unwrap();
 

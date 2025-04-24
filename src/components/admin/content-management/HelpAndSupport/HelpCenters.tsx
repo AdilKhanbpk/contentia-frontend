@@ -14,7 +14,6 @@ import CustomModelAdmin from "../../../modal/CustomModelAdmin";
 import { ModalCenters } from "./NewHelpSupportModal";
 import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const HelpCenters: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -23,8 +22,6 @@ const HelpCenters: React.FC = () => {
     );
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     useEffect(() => {
         dispatch(fetchHelpSupports());
@@ -42,7 +39,7 @@ const HelpCenters: React.FC = () => {
     };
 
     const handleDelete = (id: string) => {
-        dispatch(deleteHelpSupport({ helpSupportId: id, token }));
+        dispatch(deleteHelpSupport({ helpSupportId: id }));
     };
 
     const filteredHelpSupports = useMemo(() => {

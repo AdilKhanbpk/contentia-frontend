@@ -22,27 +22,27 @@ export interface PaymentState {
 interface uploadInvoiceImagePayload {
     orderId: string;
     formData: FormData;
-    token: string;
+
 }
 interface CreatePaymentPayload {
     formData: FormData;
-    token: string;
+
 }
 
 
 interface UpdatePaymentPayload {
     paymentId: string;
     data: FormData;
-    token: string;
+
 }
 
 interface DeletePaymentPayload {
     paymentId: string;
-    token: string;
+
 }
 interface RefundPaymentPayload {
     paymentId: string;
-    token: string;
+
 }
 
 const initialState: PaymentState = {
@@ -54,10 +54,9 @@ const initialState: PaymentState = {
 
 export const uploadInvoiceImage = createAsyncThunk(
     "payment/uploadInvoiceImage",
-    async ({ orderId, formData, token }: uploadInvoiceImagePayload, { rejectWithValue }) => {
+    async ({ orderId, formData }: uploadInvoiceImagePayload, { rejectWithValue }) => {
         try {
             formData.append("orderId", orderId);
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             const response = await axiosInstance.postForm("/admin/incomingPayment", formData);
             return response.data.data;
         } catch (error) {
@@ -68,9 +67,8 @@ export const uploadInvoiceImage = createAsyncThunk(
 );
 export const createPayment = createAsyncThunk(
     "payment/createPayment",
-    async ({ formData, token }: CreatePaymentPayload, { rejectWithValue }) => {
+    async ({ formData }: CreatePaymentPayload, { rejectWithValue }) => {
         try {
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             const response = await axiosInstance.postForm("/admin/incomingPayment", formData);
             return response.data.data;
         } catch (error) {
@@ -82,9 +80,8 @@ export const createPayment = createAsyncThunk(
 
 export const fetchPayments = createAsyncThunk(
     "payment/fetchPayments",
-    async (token: string, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             const response = await axiosInstance.get("/admin/incomingPayment");
             return response.data.data;
         } catch (error) {
@@ -96,9 +93,8 @@ export const fetchPayments = createAsyncThunk(
 
 export const updatePayment = createAsyncThunk(
     "payment/updatePayment",
-    async ({ paymentId, data, token }: UpdatePaymentPayload, { rejectWithValue }) => {
+    async ({ paymentId, data }: UpdatePaymentPayload, { rejectWithValue }) => {
         try {
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             const response = await axiosInstance.patchForm(`/admin/incomingPayment/${paymentId}`, data);
             return response.data.data;
         } catch (error) {
@@ -110,9 +106,8 @@ export const updatePayment = createAsyncThunk(
 
 export const deletePayment = createAsyncThunk(
     "payment/deletePayment",
-    async ({ paymentId, token }: DeletePaymentPayload, { rejectWithValue }) => {
+    async ({ paymentId }: DeletePaymentPayload, { rejectWithValue }) => {
         try {
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             await axiosInstance.delete(`/admin/incomingPayment/${paymentId}`);
             return paymentId;
         } catch (error) {
@@ -124,9 +119,8 @@ export const deletePayment = createAsyncThunk(
 
 export const refundPayment = createAsyncThunk(
     "payment/refundPayment",
-    async ({ paymentId, token }: RefundPaymentPayload, { rejectWithValue }) => {
+    async ({ paymentId }: RefundPaymentPayload, { rejectWithValue }) => {
         try {
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             await axiosInstance.patch(`/admin/incomingPayment/refund-payment/${paymentId}`);
             return paymentId;
         } catch (error) {

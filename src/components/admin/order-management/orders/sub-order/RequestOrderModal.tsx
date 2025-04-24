@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { getAppliedCreators } from "@/store/features/admin/ordersSlice";
 import { CreatorInterface, OrderInterface } from "@/types/interfaces";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface RequestModalProps {
     order: OrderInterface | null;
@@ -25,8 +24,6 @@ const RequestModal: React.FC<RequestModalProps> = ({
     const dispatch = useDispatch<AppDispatch>();
     const [searchTerm, setSearchTerm] = useState("");
     const { currentOrder } = useSelector((state: RootState) => state.orders);
-    const { token } = useTokenContext();
-    if (!token) return null;
     useEffect(() => {
         const fetchAppliedCreators = async () => {
             if (!order?._id) {
@@ -38,7 +35,6 @@ const RequestModal: React.FC<RequestModalProps> = ({
                 const response = await dispatch(
                     getAppliedCreators({
                         orderId: order._id,
-                        token,
                     })
                 ).unwrap();
             } catch (error) {

@@ -11,7 +11,6 @@ import { toast } from "react-toastify";
 
 interface ModalEditProps {
     closeModal: () => void;
-    token: string;
     couponId: string | null;
 }
 
@@ -27,7 +26,7 @@ interface CouponForm {
 
 export default function ModalEdit({
     closeModal,
-    token,
+
     couponId,
 }: ModalEditProps) {
     const dispatch = useDispatch();
@@ -48,11 +47,11 @@ export default function ModalEdit({
 
     useEffect(() => {
         const fetchCouponData = async () => {
-            if (!couponId || !token) return;
+            if (!couponId) return;
 
             setFetchingCoupon(true);
             try {
-                await dispatch(getCouponById({ id: couponId, token }) as any);
+                await dispatch(getCouponById({ id: couponId }) as any);
             } catch (error: any) {
                 toast.error(error?.message || "Failed to fetch coupon data");
             } finally {
@@ -61,7 +60,7 @@ export default function ModalEdit({
         };
 
         fetchCouponData();
-    }, [couponId, token, dispatch]);
+    }, [couponId, , dispatch]);
 
     useEffect(() => {
         if (selectedCoupon) {
@@ -112,7 +111,7 @@ export default function ModalEdit({
             }
 
             await dispatch(
-                updateCoupon({ id: couponId, data: couponData, token }) as any
+                updateCoupon({ id: couponId, data: couponData }) as any
             );
             toast.success("Coupon updated successfully!");
             closeModal();

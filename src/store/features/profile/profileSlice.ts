@@ -19,11 +19,9 @@ const initialState: ProfileState = {
 
 export const fetchProfile = createAsyncThunk(
   'profile/fetchProfile',
-  async (token: string) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/users/me', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.get('/users/me');
       return {
         data: response.data.data,
       };
@@ -36,13 +34,11 @@ export const fetchProfile = createAsyncThunk(
 export const updateProfile = createAsyncThunk(
   'profile/updateProfile',
   async (
-    { data, token, }: { data: any; token: string; },
+    { data }: { data: any },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.patch(`/users/update-me`, data, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.patch(`/users/update-me`, data);
       return response.data;
     } catch (error) {
       let errorMessage = 'Failed to update profile';
@@ -57,15 +53,13 @@ export const updateProfile = createAsyncThunk(
 export const changePassword = createAsyncThunk(
   'profile/changePassword',
   async (
-    { currentPassword, newPassword, confirmNewPassword, token }: { currentPassword: string; newPassword: string; confirmNewPassword: string, token: string },
+    { currentPassword, newPassword, confirmNewPassword }: { currentPassword: string; newPassword: string; confirmNewPassword: string },
     { rejectWithValue }
   ) => {
     try {
-      const headers = { Authorization: `Bearer ${token}` };
       const response = await axiosInstance.patch(
         '/users/change-password',
         { currentPassword, newPassword, confirmNewPassword },
-        { headers }
       );
       return response.data;
     } catch (error) {
@@ -83,19 +77,14 @@ export const changePassword = createAsyncThunk(
 export const changeProfilePicture = createAsyncThunk(
   'profile/changeProfilePicture',
   async (
-    { file, token }: { file: File; token: string },
+    { file }: { file: File; },
     { rejectWithValue }
   ) => {
     try {
       const formData = new FormData();
       formData.append('profilePic', file);
 
-      const response = await axiosInstance.patch('/users/change-profilePic', formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
-        },
-      });
+      const response = await axiosInstance.patch('/users/change-profilePic', formData);
       return response.data;
     } catch (error) {
       let errorMessage = 'Failed to update profile picture';

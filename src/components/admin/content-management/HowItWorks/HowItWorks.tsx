@@ -8,7 +8,6 @@ import {
 } from "@/store/features/admin/howWorkSlice";
 import { RootState } from "@/store/store";
 import { toast } from "react-toastify";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface FormData {
     howItWorksTitle1: string;
@@ -24,8 +23,7 @@ export default function HowItWorks() {
     const { sections, loading, error } = useSelector(
         (state: RootState) => state.howWork
     );
-    const { token } = useTokenContext();
-    if (!token) return null;
+
     const {
         register,
         handleSubmit,
@@ -73,7 +71,6 @@ export default function HowItWorks() {
                 updateHowItWorks({
                     sectionId,
                     data: formattedData,
-                    token,
                 }) as any
             );
         } else {

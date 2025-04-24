@@ -18,7 +18,6 @@ import { exportCsvFile } from "@/utils/exportCsvFile";
 import EditCreatorForm from "./sub-creator/EditCreatorForm";
 import { toast } from "react-toastify";
 import { CreatorInterface } from "@/types/interfaces";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const SearchBar = memo(
     ({ onSearch }: { onSearch: (value: string) => void }) => (
@@ -76,8 +75,6 @@ const Creators: React.FC = () => {
         (state: RootState) => state.adminCreators
     );
 
-    const { token } = useTokenContext();
-    if (!token) return null;
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
@@ -88,7 +85,7 @@ const Creators: React.FC = () => {
 
     const handleDelete = useCallback(
         (id: string) => {
-            dispatch(deleteAdminCreator({ creatorId: id, token }))
+            dispatch(deleteAdminCreator({ creatorId: id }))
                 .unwrap()
                 .then(() => {
                     toast.success("Creator deleted successfully!");
@@ -100,7 +97,7 @@ const Creators: React.FC = () => {
                         }`
                     );
                 });
-            dispatch(fetchAdminCreators(token));
+            dispatch(fetchAdminCreators());
         },
         [dispatch]
     );
@@ -152,14 +149,13 @@ const Creators: React.FC = () => {
         const res = await dispatch(
             createAdminCreator({
                 data: dataToUpdate,
-                token,
             })
         ).unwrap();
 
         setIsModalOpen(false);
 
         toast.success(res.message || "Creator added successfully!");
-        await dispatch(fetchAdminCreators(token));
+        await dispatch(fetchAdminCreators());
     };
 
     const handleUpdate = async (creatorData: any) => {
@@ -281,10 +277,9 @@ const Creators: React.FC = () => {
                 updateAdminCreator({
                     creatorId,
                     data: dataToUpdate,
-                    token,
                 })
             );
-            await dispatch(fetchAdminCreators(token));
+            await dispatch(fetchAdminCreators());
             toast.success("Creator updated successfully!");
         } catch (error) {
             toast.error("Failed to update creator. Please try again.");
@@ -329,9 +324,7 @@ const Creators: React.FC = () => {
     }, [creators]);
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchAdminCreators(token));
-        }
+        dispatch(fetchAdminCreators());
     }, [dispatch]);
 
     const columns = React.useMemo(

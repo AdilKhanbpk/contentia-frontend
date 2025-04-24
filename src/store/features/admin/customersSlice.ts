@@ -23,11 +23,9 @@ const initialState: AdminCustomersState = {
 // Fetch all customers
 export const fetchAdminCustomers = createAsyncThunk(
   'adminCustomers/fetchAdminCustomers',
-  async (token: string) => {
+  async () => {
     try {
-      const response = await axiosInstance.get('/admin/customers', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.get('/admin/customers');
 
       if (response.data && response.data.data) {
         const customers = response.data.data.map((customer: Customer) => ({
@@ -66,11 +64,9 @@ export const fetchAdminCustomers = createAsyncThunk(
 );
 export const fetchAdmins = createAsyncThunk(
   'adminCustomers/fetchAdmins',
-  async (token: string) => {
+  async () => {
     try {
-      const response = await axiosInstance.get('/admin/customers/admins', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.get('/admin/customers/admins');
 
       if (response.data && response.data.data) {
         const customers = response.data.data.map((customer: Customer) => ({
@@ -111,11 +107,9 @@ export const fetchAdmins = createAsyncThunk(
 // Fetch a single customer by ID
 export const fetchAdminCustomerById = createAsyncThunk(
   'adminCustomers/fetchAdminCustomerById',
-  async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
+  async ({ id }: { id: string; }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/admin/customers/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.get(`/admin/customers/${id}`);
       return response.data;
     } catch (error) {
       return rejectWithValue('Failed to fetch admin customer by ID');
@@ -126,24 +120,15 @@ export const fetchAdminCustomerById = createAsyncThunk(
 export const createAdminCustomer = createAsyncThunk(
   'adminCustomers/createAdminCustomer',
   async (
-    { data, token }: { data: AdminCustomersState; token: string },
+    { data }: { data: AdminCustomersState; },
     { rejectWithValue }
   ) => {
     try {
-      // Validate token
-      if (!token) {
-        return rejectWithValue('Authentication token is missing');
-      }
+
 
       const response = await axiosInstance.post(
         '/admin/customers',
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-        }
+        data
       );
 
       return response.data;
@@ -161,14 +146,11 @@ export const createAdminCustomer = createAsyncThunk(
 export const updateAdminCustomer = createAsyncThunk(
   'adminCustomers/updateAdminCustomer',
   async (
-    { customerId, data, token }: { customerId: string; data: any; token: string },
+    { customerId, data }: { customerId: string; data: any },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.patch(`/admin/customers/${customerId}`, data, {
-        headers: { Authorization: `Bearer ${token}` },
-        timeout: 10000,
-      });
+      const response = await axiosInstance.patch(`/admin/customers/${customerId}`, data);
       if (response.status >= 200 && response.status < 300) {
         return response.data;
       } else {
@@ -189,11 +171,9 @@ export const updateAdminCustomer = createAsyncThunk(
 // Delete a customer by ID
 export const deleteAdminCustomer = createAsyncThunk(
   'adminCustomers/deleteAdminCustomer',
-  async ({ customerId, token }: { customerId: string; token: string }, { rejectWithValue }) => {
+  async ({ customerId }: { customerId: string; }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.delete(`/admin/customers/${customerId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.delete(`/admin/customers/${customerId}`);
       return customerId;
     } catch (error) {
       let errorMessage = 'Failed to delete admin customer';

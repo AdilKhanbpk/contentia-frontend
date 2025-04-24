@@ -10,7 +10,6 @@ import { fetchOrders } from "@/store/features/profile/orderSlice";
 import ModelClaim from "./sub-profile/ModelClaim";
 import EditOrder from "./sub-profile/EditOrder";
 import ViewOrderDetails from "./sub-profile/ModelDetails";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 import { OrderInterface } from "@/types/interfaces";
 import { CiPickerEmpty } from "react-icons/ci";
 import { FaBoxOpen } from "react-icons/fa";
@@ -27,13 +26,9 @@ export default function OrdersOrders() {
         null
     );
     const [selectedFilter, setSelectedFilter] = useState<string>("all");
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchOrders(token));
-        }
+        dispatch(fetchOrders());
     }, [dispatch]);
 
     const openEditModal = (order: OrderInterface) => {

@@ -25,13 +25,9 @@ const initialState: EmailNotificationState = {
 // Async Thunks
 export const fetchEmailNotifications = createAsyncThunk(
   "emailNotification/fetchEmailNotifications",
-  async (token: string, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("/admin/emailNotifications", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstance.get("/admin/emailNotifications");
       return {
         emailNotifications: response.data.data,
         totalCount: response.data.data.length
@@ -49,15 +45,11 @@ export const fetchEmailNotifications = createAsyncThunk(
 export const createEmailNotification = createAsyncThunk(
   "emailNotification/createNotification",
   async (
-    { data, token }: { data: EmailNotificationInterface; token: string },
+    { data }: { data: EmailNotificationInterface; },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.post("/admin/emailNotifications", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstance.post("/admin/emailNotifications", data);
       return response.data.data;
     } catch (error) {
       console.error("Error creating emailNotification:", error);
@@ -72,15 +64,13 @@ export const createEmailNotification = createAsyncThunk(
 export const fetchEmailNotificationById = createAsyncThunk(
   "emailNotification/fetchNotificationById",
   async (
-    { emailNotificationId, token }: { emailNotificationId: string; token: string },
+    { emailNotificationId }: { emailNotificationId: string; },
     { rejectWithValue }
   ) => {
     try {
       const response = await axiosInstance.get(
-        `/admin/emailNotifications/${emailNotificationId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        `/admin/emailNotifications/${emailNotificationId}`
+
       );
       return response.data.data;
     } catch (error) {
@@ -99,11 +89,10 @@ export const updateEmailNotification = createAsyncThunk(
     {
       emailNotificationId,
       data,
-      token,
     }: {
       emailNotificationId: string;
       data: EmailNotificationInterface;
-      token: string;
+
     },
     { rejectWithValue }
   ) => {
@@ -111,11 +100,7 @@ export const updateEmailNotification = createAsyncThunk(
       const response = await axiosInstance.patch(
         `/admin/emailNotifications/${emailNotificationId}`,
         data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+
       );
       return response.data.data;
     } catch (error) {
@@ -131,15 +116,12 @@ export const updateEmailNotification = createAsyncThunk(
 export const deleteEmailNotification = createAsyncThunk(
   "emailNotification/deleteNotification",
   async (
-    { emailNotificationId, token }: { emailNotificationId: string; token: string },
+    { emailNotificationId }: { emailNotificationId: string; },
     { rejectWithValue }
   ) => {
     try {
       const response = await axiosInstance.delete(
-        `/admin/emailNotifications/${emailNotificationId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        `/admin/emailNotifications/${emailNotificationId}`
       );
       return response.data.data;
     } catch (error) {

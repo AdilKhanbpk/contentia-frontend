@@ -23,11 +23,9 @@ const initialState: GoogleAnalyticsState = {
 // Fetch all terms
 export const fetchGoogleAnalytics = createAsyncThunk(
     'term/fetchGoogleAnalytics',
-    async (token: string, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get('/page-views/dashboard-stats', {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const response = await axiosInstance.get('/page-views/dashboard-stats');
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;

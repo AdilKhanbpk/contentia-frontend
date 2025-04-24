@@ -12,7 +12,6 @@ import { AppDispatch, RootState } from "@/store/store";
 import CustomModelAdmin from "../../../modal/CustomModelAdmin";
 import Modal from "./sub-packages/Modal";
 import { toast } from "react-toastify";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const PackageIcon = () => (
     <img
@@ -48,19 +47,15 @@ const Packages = () => {
         formState: { errors },
     } = useForm<PackageFormData>();
     const [isSaving, setIsSaving] = useState(false);
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchPackages())
-                .then(() => {
-                    toast.success("Packages fetched successfully!");
-                })
-                .catch((err: Error) => {
-                    toast.error(err.message || "Failed to fetch packages.");
-                });
-        }
+        dispatch(fetchPackages())
+            .then(() => {
+                toast.success("Packages fetched successfully!");
+            })
+            .catch((err: Error) => {
+                toast.error(err.message || "Failed to fetch packages.");
+            });
     }, [dispatch]);
 
     useEffect(() => {
@@ -88,7 +83,6 @@ const Packages = () => {
     };
 
     const handleSave = async (data: PackageFormData) => {
-        if (!token) return;
         const packageToUpdate = serverPackages?.find(
             (pkg: Package) => pkg._id === editingPackage
         );
@@ -105,7 +99,6 @@ const Packages = () => {
                             description: data.description,
                             price: data.price,
                         },
-                        token,
                     }) as any
                 );
 

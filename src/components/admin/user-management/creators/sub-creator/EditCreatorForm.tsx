@@ -15,7 +15,6 @@ import tiktokIcon from "../../../../../../public/BecomeCreator/tiktik_icon.png";
 import { CreatorInterface } from "@/types/interfaces";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 import { getCreatorStats } from "@/store/features/admin/creatorsSlice";
 
 interface EditCreatorFormProps {
@@ -38,14 +37,11 @@ const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
         (state: RootState) => state.adminCreators.creatorStats
     );
     console.log("🚀 ~ creatorStats:", creatorStats);
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     useEffect(() => {
         if (creatorData?._id) {
             dispatch(
                 getCreatorStats({
-                    token,
                     creatorId: creatorData._id,
                 })
             )
@@ -54,7 +50,7 @@ const EditCreatorForm: React.FC<EditCreatorFormProps> = ({
                     console.error("Failed to fetch creator stats:", error);
                 });
         }
-    }, [dispatch, token, creatorData?._id]);
+    }, [dispatch, , creatorData?._id]);
 
     const handleLinkClick = (section: string) => {
         setActiveSection(section);

@@ -9,7 +9,6 @@ import { fetchAdmins } from "@/store/features/admin/customersSlice";
 
 import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 import { fetchCreatorFiles } from "@/store/features/admin/fileSlice";
 import { FilesInterface } from "@/types/interfaces";
 
@@ -31,8 +30,7 @@ const Files: React.FC = () => {
     const { files: creatorFiles, loading } = useSelector(
         (state: RootState) => state.files
     );
-    const { token } = useTokenContext();
-    if (!token) return null;
+
     const [searchTerm, setSearchTerm] = useState("");
 
     const handleSearch = useCallback((value: string) => {
@@ -53,9 +51,7 @@ const Files: React.FC = () => {
     }, [creatorFiles]);
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchCreatorFiles(token));
-        }
+        dispatch(fetchCreatorFiles());
     }, [dispatch]);
 
     const columns = React.useMemo(

@@ -34,7 +34,6 @@ import { toast } from "react-toastify";
 import { OrderInterface } from "@/types/interfaces";
 import { fetchMyBrands } from "@/store/features/profile/brandSlice";
 import ViewModal from "./sub-order/ViewOrderModal";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface SearchBarProps {
     onSearch: (value: string) => void;
@@ -132,22 +131,19 @@ const Orders: React.FC = () => {
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
     const [isModalViewOpen, setIsViewModalOpen] = useState(false);
     const [isModalRequestsOpen, setIsModalRequestsOpen] = useState(false);
-    const { token } = useTokenContext();
-    if (!token) return null;
+
     useEffect(() => {
         const fetchOrdersData = async () => {
-            if (token) {
-                try {
-                    const res = await dispatch(fetchOrders(token)).unwrap();
-                    toast.success(res.message);
-                } catch (error: any) {
-                    toast.error(error.message);
-                }
+            try {
+                const res = await dispatch(fetchOrders()).unwrap();
+                toast.success(res.message);
+            } catch (error: any) {
+                toast.error(error.message);
             }
         };
         const fetchBrands = async () => {
             try {
-                const res = await dispatch(fetchMyBrands(token)).unwrap();
+                const res = await dispatch(fetchMyBrands()).unwrap();
                 toast.success(res.message);
             } catch (error: any) {
                 toast.error(error.message);
@@ -160,7 +156,7 @@ const Orders: React.FC = () => {
     const handleDelete = useCallback(
         async (id: string) => {
             try {
-                await dispatch(deleteOrder({ orderId: id, token })).unwrap();
+                await dispatch(deleteOrder({ orderId: id })).unwrap();
                 toast.success("Order deleted successfully!");
             } catch (error) {
                 toast.error("Error deleting order.");
@@ -173,7 +169,7 @@ const Orders: React.FC = () => {
         async (id: string) => {
             try {
                 await dispatch(
-                    markTheOrderAsCompleted({ orderId: id, token })
+                    markTheOrderAsCompleted({ orderId: id })
                 ).unwrap();
                 toast.success("Order marked as completed successfully!");
             } catch (error) {
@@ -187,7 +183,7 @@ const Orders: React.FC = () => {
         async (id: string) => {
             try {
                 await dispatch(
-                    markTheOrderAsRejected({ orderId: id, token })
+                    markTheOrderAsRejected({ orderId: id })
                 ).unwrap();
                 toast.success("Order marked as rejected successfully!");
             } catch (error) {
@@ -200,7 +196,7 @@ const Orders: React.FC = () => {
     const handleView = useCallback(
         async (id: string) => {
             try {
-                await dispatch(fetchOrderById({ orderId: id, token })).unwrap();
+                await dispatch(fetchOrderById({ orderId: id })).unwrap();
                 toast.success("Order details fetched successfully!");
                 setIsViewModalOpen(true);
             } catch (error) {
@@ -213,7 +209,7 @@ const Orders: React.FC = () => {
     const handleEdit = useCallback(
         async (id: string) => {
             try {
-                await dispatch(fetchOrderById({ orderId: id, token })).unwrap();
+                await dispatch(fetchOrderById({ orderId: id })).unwrap();
                 setIsModalEditOpen(true);
                 toast.success("Order fetched successfully for editing.");
             } catch (error) {
@@ -226,7 +222,7 @@ const Orders: React.FC = () => {
     const handleRequest = useCallback(
         async (id: string) => {
             try {
-                await dispatch(fetchOrderById({ orderId: id, token })).unwrap();
+                await dispatch(fetchOrderById({ orderId: id })).unwrap();
                 setIsModalRequestsOpen(true);
                 toast.success(
                     "Order fetched successfully for creator requests."
@@ -241,9 +237,7 @@ const Orders: React.FC = () => {
     const handleApproveCreator = useCallback(
         async (orderId: string, creatorId: string) => {
             try {
-                await dispatch(
-                    approveCreator({ orderId, creatorId, token })
-                ).unwrap();
+                await dispatch(approveCreator({ orderId, creatorId })).unwrap();
                 toast.success("Creator approved successfully.");
             } catch (error) {
                 toast.error("Error approving creator.");
@@ -255,9 +249,7 @@ const Orders: React.FC = () => {
     const handleRejectCreator = useCallback(
         async (orderId: string, creatorId: string) => {
             try {
-                await dispatch(
-                    rejectCreator({ orderId, creatorId, token })
-                ).unwrap();
+                await dispatch(rejectCreator({ orderId, creatorId })).unwrap();
                 toast.success("Creator rejected successfully.");
             } catch (error) {
                 toast.error("Error rejecting creator.");

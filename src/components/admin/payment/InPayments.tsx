@@ -26,15 +26,12 @@ import ViewModal from "./sub-in-payment/ViewInPaymentModal";
 import CustomTable from "@/components/custom-table/CustomTable";
 import { toast } from "react-toastify";
 import EditInvoiceModal from "./sub-in-payment/EditInPaymentInvoiceModal";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const InPayments: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { payments = [], loading } = useSelector(
         (state: RootState) => state.incomingPayment
     );
-    const { token } = useTokenContext();
-    if (!token) return null;
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditInvoiceModalOpen, setIsEditInvoiceModalOpen] = useState(false);
@@ -45,20 +42,18 @@ const InPayments: React.FC = () => {
     const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchPayments(token));
-        }
+        dispatch(fetchPayments());
     }, [dispatch]);
 
     const handleRefund = async (id: string) => {
         try {
-            await dispatch(refundPayment({ paymentId: id, token })).unwrap();
+            await dispatch(refundPayment({ paymentId: id })).unwrap();
             toast.success("Refund Status Active");
         } catch (error: any) {
             console.log("🚀 ~ handleRefund ~ error:", error);
             toast.error(error.message);
         }
-        await dispatch(fetchPayments(token));
+        await dispatch(fetchPayments());
     };
     const handleView = (id: string) => {
         const payment = payments.find((payment) => payment._id === id);
@@ -70,7 +65,7 @@ const InPayments: React.FC = () => {
 
     const handleDelete = useCallback(
         (id: string) => {
-            dispatch(deletePayment({ paymentId: id, token }))
+            dispatch(deletePayment({ paymentId: id }))
                 .unwrap()
                 .then(() => {
                     toast.success("Payment deleted successfully!");
@@ -82,7 +77,7 @@ const InPayments: React.FC = () => {
                         }`
                     );
                 });
-            dispatch(fetchPayments(token));
+            dispatch(fetchPayments());
         },
         [dispatch]
     );

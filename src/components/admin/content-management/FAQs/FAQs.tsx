@@ -212,27 +212,17 @@ const FAQs: React.FC = () => {
 
     const handleSubmit = useCallback(
         async (data: FAQ) => {
-            const tokenFromStorage = localStorage.getItem("accessToken");
-
-            if (!tokenFromStorage) {
-                toast.error("No token found. Please log in.");
-                return;
-            }
-
             try {
                 if (modalMode === "edit" && currentFAQ?._id) {
                     await dispatch(
                         updateFaq({
                             faqId: currentFAQ._id,
                             data,
-                            token: tokenFromStorage,
                         })
                     ).unwrap();
                     toast.success("FAQ updated successfully!");
                 } else {
-                    await dispatch(
-                        createFaq({ data, token: tokenFromStorage })
-                    ).unwrap();
+                    await dispatch(createFaq({ data })).unwrap();
                     toast.success("FAQ created successfully!");
                 }
                 handleModalClose();
@@ -248,16 +238,8 @@ const FAQs: React.FC = () => {
 
     const handleDelete = useCallback(
         async (id: string) => {
-            const tokenFromStorage = localStorage.getItem("accessToken");
-            if (!tokenFromStorage) {
-                toast.error("No token found. Please log in.");
-                return;
-            }
-
             try {
-                await dispatch(
-                    deleteFaq({ faqId: id, token: tokenFromStorage })
-                ).unwrap();
+                await dispatch(deleteFaq({ faqId: id })).unwrap();
                 toast.success("FAQ deleted successfully!");
                 dispatch(fetchFaqs());
             } catch (error) {

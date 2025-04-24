@@ -16,7 +16,6 @@ import {
     updateAdminClaim,
     fetchAdminClaimById,
 } from "@/store/features/admin/claimSlice";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 import { ClaimInterface } from "@/types/interfaces";
 
 const SearchBar = memo(
@@ -77,26 +76,22 @@ const Claims: React.FC = () => {
     const [currentClaim, setCurrentClaim] = useState<ClaimInterface | null>(
         null
     );
-    const { token } = useTokenContext();
-    if (!token) return null;
     const { data: claims, loading } = useSelector(
         (state: RootState) => state.claim
     );
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchAdminClaims(token))
-                .then(() => {
-                    toast.success("Claims fetched successfully!");
-                })
-                .catch((error) => {
-                    toast.error("Failed to fetch claims. Please try again.");
-                });
-        }
+        dispatch(fetchAdminClaims())
+            .then(() => {
+                toast.success("Claims fetched successfully!");
+            })
+            .catch((error) => {
+                toast.error("Failed to fetch claims. Please try again.");
+            });
     }, [dispatch]);
 
     const handleView = (id: string) => {
-        dispatch(fetchAdminClaimById({ id, token }))
+        dispatch(fetchAdminClaimById({ id }))
             .then((response) => {
                 if (response.payload) {
                     setCurrentClaim(response.payload as ClaimInterface);
@@ -116,12 +111,11 @@ const Claims: React.FC = () => {
             updateAdminClaim({
                 claimId: id,
                 data: { status: "approved" },
-                token,
             })
         )
             .then((response: any) => {
                 if (response.meta.requestStatus === "fulfilled") {
-                    dispatch(fetchAdminClaims(token));
+                    dispatch(fetchAdminClaims());
                     toast.success("Claim approved successfully!");
                 }
             })
@@ -135,12 +129,11 @@ const Claims: React.FC = () => {
             updateAdminClaim({
                 claimId: id,
                 data: { status: "rejected" },
-                token,
             })
         )
             .then((response: any) => {
                 if (response.meta.requestStatus === "fulfilled") {
-                    dispatch(fetchAdminClaims(token));
+                    dispatch(fetchAdminClaims());
                     toast.success("Claim rejected successfully!");
                 }
             })

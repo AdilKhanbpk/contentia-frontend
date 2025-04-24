@@ -24,11 +24,9 @@ const initialState: OrdersState = {
 
 export const createOrder = createAsyncThunk(
   'orders/createOrder',
-  async ({ data, token }: { data: Partial<OrderInterface>; token: string }, { rejectWithValue }) => {
+  async ({ data }: { data: Partial<OrderInterface> }, { rejectWithValue }) => {
     try {
-      if (!token) {
-        return rejectWithValue('Authentication token is missing');
-      }
+
 
       const transformedData = {
         customer: typeof data.orderOwner === 'object' ? data.orderOwner._id : data.orderOwner,
@@ -48,19 +46,10 @@ export const createOrder = createAsyncThunk(
       };
 
       // First create the order
-      const response = await axiosInstance.post('/admin/orders', transformedData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        timeout: 10000,
-      });
+      const response = await axiosInstance.post('/admin/orders', transformedData);
 
       // Then fetch the complete order details to get the full owner information
-      const fullOrderResponse = await axiosInstance.get(`/admin/orders/${response.data.data._id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        timeout: 10000,
-      });
+      const fullOrderResponse = await axiosInstance.get(`/admin/orders/${response.data.data._id}`);
 
       return fullOrderResponse.data.data;
     } catch (error) {
@@ -76,11 +65,9 @@ export const createOrder = createAsyncThunk(
 // Fetch All Orders
 export const fetchOrders = createAsyncThunk(
   'orders/fetchOrders',
-  async (token: string, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/admin/orders', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.get('/admin/orders');
 
       return response.data.data;
 
@@ -99,13 +86,10 @@ export const fetchOrders = createAsyncThunk(
 // Fetch Single Order
 export const fetchOrderById = createAsyncThunk(
   'orders/fetchOrderById',
-  async ({ orderId, token }: { orderId: string; token: string }, { rejectWithValue }) => {
+  async ({ orderId }: { orderId: string; }, { rejectWithValue }) => {
 
     try {
-      const response = await axiosInstance.get(`/admin/orders/${orderId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        timeout: 10000,
-      });
+      const response = await axiosInstance.get(`/admin/orders/${orderId}`);
 
       return response.data.data;
     } catch (error) {
@@ -123,17 +107,11 @@ export const fetchOrderById = createAsyncThunk(
 // Update Order
 export const updateOrder = createAsyncThunk(
   'orders/updateOrder',
-  async ({ orderId, data, token }: { orderId: string; data: FormData; token: string }, { rejectWithValue }) => {
+  async ({ orderId, data }: { orderId: string; data: FormData; }, { rejectWithValue }) => {
 
 
     try {
-      const response = await axiosInstance.patchForm(`/admin/orders/${orderId}`, data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        timeout: 10000,
-      });
+      const response = await axiosInstance.patchForm(`/admin/orders/${orderId}`, data);
 
       return response.data.data;
     } catch (error) {
@@ -151,13 +129,10 @@ export const updateOrder = createAsyncThunk(
 // Delete Order
 export const deleteOrder = createAsyncThunk(
   'orders/deleteOrder',
-  async ({ orderId, token }: { orderId: string; token: string }, { rejectWithValue }) => {
+  async ({ orderId }: { orderId: string; }, { rejectWithValue }) => {
 
     try {
-      const response = await axiosInstance.delete(`/admin/orders/${orderId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        timeout: 10000,
-      });
+      const response = await axiosInstance.delete(`/admin/orders/${orderId}`);
 
       return { orderId, data: response.data.data };
     } catch (error) {
@@ -175,19 +150,13 @@ export const deleteOrder = createAsyncThunk(
 // Approve Creator
 export const approveCreator = createAsyncThunk(
   'orders/approveCreator',
-  async ({ orderId, creatorId, token }: { orderId: string; creatorId: string; token: string }, { rejectWithValue }) => {
+  async ({ orderId, creatorId }: { orderId: string; creatorId: string; }, { rejectWithValue }) => {
 
     try {
       const response = await axiosInstance.patch(
         `/admin/orders/approve-creator/${orderId}/${creatorId}`,
         { creatorId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-          timeout: 10000,
-        }
+
       );
       return response.data.data;
     } catch (error) {
@@ -205,19 +174,13 @@ export const approveCreator = createAsyncThunk(
 // Reject Creator
 export const rejectCreator = createAsyncThunk(
   'orders/rejectCreator',
-  async ({ orderId, creatorId, token }: { orderId: string; creatorId: string; token: string }, { rejectWithValue }) => {
+  async ({ orderId, creatorId }: { orderId: string; creatorId: string; }, { rejectWithValue }) => {
 
     try {
       const response = await axiosInstance.patch(
         `/admin/orders/reject-creator/${orderId}/${creatorId}`,
         { creatorId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-          timeout: 10000,
-        }
+
       );
 
       return response.data.data;
@@ -236,12 +199,9 @@ export const rejectCreator = createAsyncThunk(
 // Get Applied Creators
 export const getAppliedCreators = createAsyncThunk(
   'orders/getAppliedCreators',
-  async ({ orderId, token }: { orderId: string; token: string }, { rejectWithValue }) => {
+  async ({ orderId }: { orderId: string; }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/admin/orders/applied-creators/${orderId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        timeout: 10000,
-      });
+      const response = await axiosInstance.get(`/admin/orders/applied-creators/${orderId}`);
 
       return {
         orderId,
@@ -262,12 +222,9 @@ export const getAppliedCreators = createAsyncThunk(
 
 export const getAssignedOrders = createAsyncThunk(
   'orders/getAssignedCreators',
-  async (token: string, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/admin/orders/assigned-orders`, {
-        headers: { Authorization: `Bearer ${token}` },
-        timeout: 10000,
-      });
+      const response = await axiosInstance.get(`/admin/orders/assigned-orders`);
 
       return response.data.data
 
@@ -284,7 +241,7 @@ export const getAssignedOrders = createAsyncThunk(
 
 export const markTheOrderAsCompleted = createAsyncThunk(
   'orders/markTheOrderAsCompleted',
-  async ({ orderId, token }: { orderId: string; token: string }, { rejectWithValue }) => {
+  async ({ orderId }: { orderId: string; }, { rejectWithValue }) => {
 
     try {
       const response = await axiosInstance.patch(
@@ -304,7 +261,7 @@ export const markTheOrderAsCompleted = createAsyncThunk(
 
 export const markTheOrderAsRejected = createAsyncThunk(
   'orders/markTheOrderAsRejected',
-  async ({ orderId, token }: { orderId: string; token: string }, { rejectWithValue }) => {
+  async ({ orderId }: { orderId: string; }, { rejectWithValue }) => {
 
     try {
       const response = await axiosInstance.patch(`admin/orders/mark-as-rejected/${orderId}`)

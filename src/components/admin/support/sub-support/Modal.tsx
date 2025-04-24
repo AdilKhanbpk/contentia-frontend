@@ -7,7 +7,6 @@ import {
     fetchAdminClaims,
 } from "@/store/features/admin/claimSlice";
 import { toast } from "react-toastify";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface ClaimFormData {
     status: string;
@@ -20,8 +19,6 @@ interface ClaimFormData {
 export default function Modal() {
     const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
     const [loading, setLoading] = useState(false);
-    const { token } = useTokenContext();
-    if (!token) return null;
     const {
         register,
         handleSubmit,
@@ -48,14 +45,13 @@ export default function Modal() {
                     claimDate: data.claimDate,
                     claimContent: data.claimContent,
                 },
-                token,
             })
         )
             .unwrap()
             .then(() => {
                 reset();
                 toast.success("Claim created successfully!");
-                dispatch(fetchAdminClaims(token));
+                dispatch(fetchAdminClaims());
             })
             .catch((error) => {
                 toast.error(

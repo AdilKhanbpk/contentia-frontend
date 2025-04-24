@@ -28,16 +28,11 @@ const initialState: LandingPageState = {
 export const createLandingPage = createAsyncThunk(
   'landingPage/createLandingPage',
   async (
-    { data, token }: { data: FormData; token: string },
+    { data }: { data: FormData; },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.post('/admin/landingPage', data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axiosInstance.post('/admin/landingPage', data);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -67,7 +62,7 @@ export const fetchLandingPage = createAsyncThunk(
 export const updateLandingPage = createAsyncThunk(
   'landingPage/updateLandingPage',
   async (
-    { id, data, token }: { id: string; data: FormData; token: string },
+    { id, data }: { id: string; data: FormData; },
     { rejectWithValue }
   ) => {
     try {
@@ -75,11 +70,6 @@ export const updateLandingPage = createAsyncThunk(
       const response = await axiosInstance.patchForm(
         `/admin/landingPage/${id}`,
         data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
       );
       return response.data.data;
     } catch (error) {

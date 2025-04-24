@@ -22,7 +22,7 @@ interface CreateFaqPayload {
     question: string;
     answer: string;
   };
-  token: string;
+
 }
 
 interface UpdateFaqPayload {
@@ -31,12 +31,12 @@ interface UpdateFaqPayload {
     question: string;
     answer: string;
   };
-  token: string;
+
 }
 
 interface DeleteFaqPayload {
   faqId: string;
-  token: string;
+
 }
 
 const initialState: FaqState = {
@@ -49,9 +49,8 @@ const initialState: FaqState = {
 // Create a new FAQ
 export const createFaq = createAsyncThunk(
   "faq/createFaq",
-  async ({ data, token }: CreateFaqPayload, { rejectWithValue }) => {
+  async ({ data }: CreateFaqPayload, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       const response = await axiosInstance.post("/admin/faq", data);
       return response.data.data;
     } catch (error) {
@@ -82,9 +81,8 @@ export const fetchFaqs = createAsyncThunk(
 // Update a FAQ by ID
 export const updateFaq = createAsyncThunk(
   "faq/updateFaq",
-  async ({ faqId, data, token }: UpdateFaqPayload, { rejectWithValue }) => {
+  async ({ faqId, data }: UpdateFaqPayload, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       const response = await axiosInstance.patch(`/admin/faq/${faqId}`, data);
       return response.data.data;
     } catch (error) {
@@ -99,9 +97,8 @@ export const updateFaq = createAsyncThunk(
 // Delete a FAQ by ID
 export const deleteFaq = createAsyncThunk(
   "faq/deleteFaq",
-  async ({ faqId, token }: DeleteFaqPayload, { rejectWithValue }) => {
+  async ({ faqId }: DeleteFaqPayload, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       await axiosInstance.delete(`/admin/faq/${faqId}`);
       return faqId;
     } catch (error) {

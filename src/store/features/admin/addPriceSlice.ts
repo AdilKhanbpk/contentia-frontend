@@ -31,11 +31,9 @@ const initialState: AdditionalServiceState = {
 
 export const fetchAdditionalServices = createAsyncThunk(
   'additionalService/fetchAdditionalServices',
-  async (token: string, { rejectWithValue }) => {
+  async (string, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/admin/additionalServices', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.get('/admin/additionalServices');
       const serviceData = response.data.data;
       return serviceData;
     } catch (error) {
@@ -50,19 +48,13 @@ export const fetchAdditionalServices = createAsyncThunk(
 export const updateAdditionalService = createAsyncThunk(
   'additionalService/updateAdditionalService',
   async (
-    { id, data, token }: { id: string; data: AdditionalService; token: string },
+    { id, data }: { id: string; data: AdditionalService },
     { rejectWithValue }
   ) => {
     try {
       const response = await axiosInstance.patch(
         `/admin/additionalServices/${id}`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
+        data
       );
       return response.data.data;
     } catch (error) {
@@ -78,16 +70,11 @@ export const updateAdditionalService = createAsyncThunk(
 export const createAdditionalService = createAsyncThunk(
   'additionalService/createAdditionalService',
   async (
-    { data, token }: { data: AdditionalService; token: string },
+    { data, }: { data: AdditionalService },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.post('/admin/additionalServices', data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await axiosInstance.post('/admin/additionalServices', data);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -102,13 +89,11 @@ export const createAdditionalService = createAsyncThunk(
 export const fetchAdditionalServiceById = createAsyncThunk(
   'additionalService/fetchAdditionalServiceById',
   async (
-    { id, token }: { id: string; token: string },
+    { id }: { id: string; },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.get(`/admin/additionalServices/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.get(`/admin/additionalServices/${id}`);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -123,13 +108,11 @@ export const fetchAdditionalServiceById = createAsyncThunk(
 export const deleteAdditionalService = createAsyncThunk(
   'additionalService/deleteAdditionalService',
   async (
-    { id, token }: { id: string; token: string },
+    { id }: { id: string },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.delete(`/admin/additionalServices/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.delete(`/admin/additionalServices/${id}`);
       return id;
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -152,8 +135,8 @@ const additionalServiceSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-    
-    // Create Additional Service
+
+      // Create Additional Service
       .addCase(createAdditionalService.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -170,7 +153,7 @@ const additionalServiceSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      
+
       // Fetch Additional Services
       .addCase(fetchAdditionalServices.pending, (state) => {
         state.loading = true;
@@ -188,7 +171,7 @@ const additionalServiceSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      
+
       // Update Additional Service
       .addCase(updateAdditionalService.pending, (state) => {
         state.loading = true;
@@ -199,7 +182,7 @@ const additionalServiceSlice = createSlice({
         (state, action: PayloadAction<AdditionalService>) => {
           state.loading = false;
           state.data = action.payload;
-          
+
           // Update the item in the list
           const index = state.list.findIndex(item => item._id === action.payload._id);
           if (index !== -1) {
@@ -211,7 +194,7 @@ const additionalServiceSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      
+
       // Fetch Additional Service by ID
       .addCase(fetchAdditionalServiceById.pending, (state) => {
         state.loading = true;
@@ -228,7 +211,7 @@ const additionalServiceSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      
+
       // Delete Additional Service
       .addCase(deleteAdditionalService.pending, (state) => {
         state.loading = true;

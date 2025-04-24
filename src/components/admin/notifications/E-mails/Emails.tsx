@@ -29,7 +29,6 @@ import { exportCsvFile } from "@/utils/exportCsvFile";
 import CustomTable from "@/components/custom-table/CustomTable";
 import EditModal from "./sub-emails/EditModal";
 import ViewModal from "./sub-emails/ViewModal";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const Emails: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -39,9 +38,6 @@ const Emails: React.FC = () => {
         loading,
     } = useSelector((state: RootState) => state.emailNotification);
 
-    const { token } = useTokenContext();
-    if (!token) return null;
-
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
@@ -49,21 +45,21 @@ const Emails: React.FC = () => {
 
     const handleView = async (id: string) => {
         await dispatch(
-            fetchEmailNotificationById({ emailNotificationId: id, token })
+            fetchEmailNotificationById({ emailNotificationId: id })
         ).unwrap();
         setIsModalViewOpen(true);
     };
 
     const handleEdit = async (id: string) => {
         await dispatch(
-            fetchEmailNotificationById({ emailNotificationId: id, token })
+            fetchEmailNotificationById({ emailNotificationId: id })
         ).unwrap();
         setIsModalEditOpen(true);
     };
 
     const handleDelete = async (id: string) => {
         await dispatch(
-            deleteEmailNotification({ emailNotificationId: id, token })
+            deleteEmailNotification({ emailNotificationId: id })
         ).unwrap();
         setIsModalViewOpen(true);
     };
@@ -88,9 +84,7 @@ const Emails: React.FC = () => {
     }, [emailNotifications]);
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchEmailNotifications(token));
-        }
+        dispatch(fetchEmailNotifications());
     }, [dispatch]);
 
     const TableActions = memo(

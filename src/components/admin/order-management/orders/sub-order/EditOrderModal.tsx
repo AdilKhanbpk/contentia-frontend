@@ -11,7 +11,6 @@ import CustomModelAdmin from "@/components/modal/CustomModelAdmin";
 import { FaSpinner } from "react-icons/fa";
 import { updateOrder } from "@/store/features/admin/ordersSlice";
 import { toast } from "react-toastify";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface EditModalProps {
     order: OrderInterface | null;
@@ -40,8 +39,6 @@ export default function EditModal({ order }: EditModalProps) {
     const brandRecords = useSelector(
         (state: RootState) => state.brand.myBrands
     );
-    const { token } = useTokenContext();
-    if (!token) return null;
     const handleRemoveFile = (index: number) => {
         const updatedFiles = selectedFiles.filter((_, i) => i !== index);
         setSelectedFiles(updatedFiles);
@@ -105,9 +102,7 @@ export default function EditModal({ order }: EditModalProps) {
     }, [order, reset]);
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchMyBrands(token));
-        }
+        dispatch(fetchMyBrands());
     }, [dispatch]);
 
     const brands = brandRecords.map((record: any) => record.brandName);
@@ -213,7 +208,7 @@ export default function EditModal({ order }: EditModalProps) {
 
         try {
             const res = await dispatch(
-                updateOrder({ orderId: data._id, data: formData, token })
+                updateOrder({ orderId: data._id, data: formData })
             ).unwrap();
             if (res) {
                 toast.success("Order updated successfully");

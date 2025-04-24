@@ -8,7 +8,6 @@ import { AppDispatch } from "@/store/store"; // Adjust import path as needed
 import { createBlog } from "@/store/features/admin/blogSlice"; // Adjust import path as needed
 import { toast } from "react-toastify"; // Assuming you're using react-toastify for notifications
 import { BlogInterface } from "@/types/interfaces";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -19,8 +18,6 @@ export default function NewBlogs() {
     );
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const { token } = useTokenContext();
-    if (!token) return null;
     const {
         register,
         handleSubmit,
@@ -59,9 +56,7 @@ export default function NewBlogs() {
             }
 
             // Dispatch create blog action
-            const result = await dispatch(
-                createBlog({ blog: formData, token })
-            );
+            const result = await dispatch(createBlog({ blog: formData }));
 
             if (createBlog.fulfilled.match(result)) {
                 toast.success("Blog created successfully!");

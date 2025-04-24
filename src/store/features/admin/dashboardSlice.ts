@@ -83,9 +83,8 @@ const initialState: DashboardState = {
 // Fetch Total Creators
 export const fetchTotalCreators = createAsyncThunk(
     "dashboard/fetchTotalCreators",
-    async (token: string, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             const response = await axiosInstance.get("/admin/dashboard/total-creators");
             return response.data.data;
         } catch (error) {
@@ -100,9 +99,8 @@ export const fetchTotalCreators = createAsyncThunk(
 // Fetch Total Customers
 export const fetchTotalCustomers = createAsyncThunk(
     "dashboard/fetchTotalCustomers",
-    async (token: string, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             const response = await axiosInstance.get("/admin/dashboard/total-customers");
             return response.data.data;
         } catch (error) {
@@ -117,9 +115,8 @@ export const fetchTotalCustomers = createAsyncThunk(
 // Fetch Total Orders
 export const fetchTotalOrders = createAsyncThunk(
     "dashboard/fetchTotalOrders",
-    async (token: string, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             const response = await axiosInstance.get("/admin/dashboard/total-orders");
             return response.data.data;
         } catch (error) {
@@ -134,9 +131,8 @@ export const fetchTotalOrders = createAsyncThunk(
 // Fetch Recent Orders
 export const fetchRecentOrders = createAsyncThunk(
     "dashboard/fetchRecentOrders",
-    async (token: string, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             const response = await axiosInstance.get("/admin/dashboard/recent-orders");
             return response.data.data;
         } catch (error) {
@@ -151,9 +147,8 @@ export const fetchRecentOrders = createAsyncThunk(
 // Fetch Recent Orders
 export const fetchTotalUsersForCurrentMonth = createAsyncThunk(
     "dashboard/fetchTotalUsers",
-    async (token: string, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             const response = await axiosInstance.get("/admin/dashboard/total-users-for-current-month");
             return response.data.data;
         } catch (error) {
@@ -168,9 +163,8 @@ export const fetchTotalUsersForCurrentMonth = createAsyncThunk(
 // Fetch Recent Orders
 export const fetchTotalSalesByMonth = createAsyncThunk(
     "dashboard/fetchTotalSalesByMonth",
-    async (token: string, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             const response = await axiosInstance.get("/admin/dashboard/total-sales-by-month");
             return response.data.data;
         } catch (error) {
@@ -186,9 +180,8 @@ export const fetchTotalSalesByMonth = createAsyncThunk(
 // Fetch Recent Orders
 export const fetchTotalRevenueByMonth = createAsyncThunk(
     "dashboard/fetchTotalRevenueByMonth",
-    async (token: string, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             const response = await axiosInstance.get("/admin/dashboard/total-revenue-by-month");
             return response.data.data;
         } catch (error) {

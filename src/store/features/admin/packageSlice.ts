@@ -28,24 +28,19 @@ const initialState: PackageState = {
 export const createPackage = createAsyncThunk(
   'package/createPackage',
   async (
-    { data, token }: {
+    { data }: {
       data: {
         title: string;
         description: string;
         price: number
       };
-      token: string
+
     },
     { rejectWithValue }
   ) => {
     try {
 
-      const response = await axiosInstance.post('/admin/packages', data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-      });
+      const response = await axiosInstance.post('/admin/packages', data);
 
       return response.data.data;
     } catch (error) {
@@ -77,11 +72,9 @@ export const fetchPackages = createAsyncThunk(
 // Fetch Package by ID
 export const fetchPackageById = createAsyncThunk(
   'package/fetchPackageById',
-  async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
+  async ({ id }: { id: string; }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/admin/packages/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.get(`/admin/packages/${id}`);
 
       return response.data.data;
     } catch (error) {
@@ -100,7 +93,6 @@ export const updatePackage = createAsyncThunk(
     {
       id,
       data,
-      token
     }: {
       id: string;
       data: {
@@ -108,17 +100,12 @@ export const updatePackage = createAsyncThunk(
         description?: string;
         price?: number
       };
-      token: string
+
     },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.patch(`/admin/packages/${id}`, data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-      });
+      const response = await axiosInstance.patch(`/admin/packages/${id}`, data);
 
       return response.data.data;
     } catch (error) {
@@ -133,11 +120,9 @@ export const updatePackage = createAsyncThunk(
 // Delete Package
 export const deletePackage = createAsyncThunk(
   'package/deletePackage',
-  async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
+  async ({ id }: { id: string; }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.delete(`/admin/packages/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.delete(`/admin/packages/${id}`);
 
       return id;
     } catch (error) {

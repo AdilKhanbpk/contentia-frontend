@@ -19,7 +19,6 @@ import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import { toast } from "react-toastify";
 import { Customer } from "@/types/interfaces";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const SearchBar = memo(
     ({ onSearch }: { onSearch: (value: string) => void }) => (
@@ -76,8 +75,6 @@ const Customers: React.FC = () => {
     const { data: customers = [], loading } = useSelector(
         (state: RootState) => state.adminCustomers
     );
-    const { token } = useTokenContext();
-    if (!token) return null;
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
@@ -86,7 +83,7 @@ const Customers: React.FC = () => {
 
     const handleDelete = useCallback(
         (id: string) => {
-            dispatch(deleteAdminCustomer({ customerId: id, token }))
+            dispatch(deleteAdminCustomer({ customerId: id }))
                 .unwrap()
                 .then(() => {
                     toast.success("Customer deleted successfully!");
@@ -118,12 +115,11 @@ const Customers: React.FC = () => {
             const result = await dispatch(
                 createAdminCustomer({
                     data: customerData,
-                    token,
                 })
             ).unwrap();
 
             setIsModalOpen(false);
-            await dispatch(fetchAdminCustomers(token));
+            await dispatch(fetchAdminCustomers());
             toast.success("Customer created successfully!");
         } catch (error) {
             toast.error("Failed to create customer. Please try again.");
@@ -161,10 +157,9 @@ const Customers: React.FC = () => {
                     updateAdminCustomer({
                         customerId,
                         data: dataToUpdate,
-                        token,
                     })
                 ));
-            await dispatch(fetchAdminCustomers(token));
+            await dispatch(fetchAdminCustomers());
             toast.success("Customer updated successfully!");
         } catch (error) {
             toast.error("Failed to update customer. Please try again.");
@@ -199,9 +194,7 @@ const Customers: React.FC = () => {
     }, [customers]);
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchAdminCustomers(token));
-        }
+        dispatch(fetchAdminCustomers());
     }, [dispatch]);
 
     const columns = React.useMemo(

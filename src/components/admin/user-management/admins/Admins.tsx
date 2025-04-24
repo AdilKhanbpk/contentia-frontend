@@ -21,7 +21,6 @@ import { Customer } from "@/types/interfaces";
 import ModalNew from "./sub-admin/ModalNew";
 import ModalView from "./sub-admin/ModalView";
 import ModalEdit from "./sub-admin/ModalEdit";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const SearchBar = memo(
     ({ onSearch }: { onSearch: (value: string) => void }) => (
@@ -78,8 +77,6 @@ const Admins: React.FC = () => {
     const { adminData: customers = [], loading } = useSelector(
         (state: RootState) => state.adminCustomers
     );
-    const { token } = useTokenContext();
-    if (!token) return null;
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
@@ -88,7 +85,7 @@ const Admins: React.FC = () => {
 
     const handleDelete = useCallback(
         (id: string) => {
-            dispatch(deleteAdminCustomer({ customerId: id, token }))
+            dispatch(deleteAdminCustomer({ customerId: id }))
                 .unwrap()
                 .then(() => {
                     toast.success("Admin deleted successfully!");
@@ -119,12 +116,11 @@ const Admins: React.FC = () => {
         const result = await dispatch(
             createAdminCustomer({
                 data: customerData,
-                token,
             })
         ).unwrap();
 
         setIsModalOpen(false);
-        await dispatch(fetchAdmins(token));
+        await dispatch(fetchAdmins());
         toast.success("Admin created successfully!");
     };
 
@@ -159,10 +155,9 @@ const Admins: React.FC = () => {
                     updateAdminCustomer({
                         customerId,
                         data: dataToUpdate,
-                        token,
                     })
                 ));
-            await dispatch(fetchAdmins(token));
+            await dispatch(fetchAdmins());
             toast.success("Admin updated successfully!");
         } catch (error) {
             toast.error("Failed to update admin. Please try again.");
@@ -197,9 +192,7 @@ const Admins: React.FC = () => {
     }, [customers]);
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchAdmins(token));
-        }
+        dispatch(fetchAdmins());
     }, [dispatch]);
 
     const columns = React.useMemo(

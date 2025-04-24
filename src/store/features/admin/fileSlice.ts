@@ -23,11 +23,9 @@ const initialState: TermState = {
 // Fetch all terms
 export const fetchCreatorFiles = createAsyncThunk(
     'term/fetchTerms',
-    async (token: string, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get('/admin/files', {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const response = await axiosInstance.get('/admin/files');
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;

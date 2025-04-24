@@ -1,4 +1,3 @@
-import { useTokenContext } from "@/context/TokenCheckingContext";
 import { createPayment } from "@/store/features/admin/incomingPaymentSlice";
 import { AppDispatch, RootState } from "@/store/store";
 import { useForm } from "react-hook-form";
@@ -13,8 +12,6 @@ export default function CreatePayment({ onClose }: CreateInvoiceModalProps) {
     const { loading, error } = useSelector(
         (state: RootState) => state.incomingPayment
     );
-    const { token } = useTokenContext();
-    if (!token) return null;
     const {
         register,
         handleSubmit,
@@ -27,7 +24,7 @@ export default function CreatePayment({ onClose }: CreateInvoiceModalProps) {
         formData.append("invoiceImage", data.invoiceImage[0]);
 
         try {
-            await dispatch(createPayment({ formData, token }));
+            await dispatch(createPayment({ formData }));
             onClose();
         } catch (error) {
             console.log("🚀 ~ onSubmit ~ error:", error);

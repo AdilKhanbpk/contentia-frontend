@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store/store";
 import { fetchMyBrands } from "@/store/features/profile/brandSlice";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const BrandNames = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -11,10 +10,8 @@ const BrandNames = () => {
     );
     const [selectedBrand, setSelectedBrand] = useState("");
 
-    const { token } = useTokenContext();
-    if (!token) return null;
     useEffect(() => {
-        dispatch(fetchMyBrands(token));
+        dispatch(fetchMyBrands());
     }, [dispatch]);
 
     const brands = brandRecords.map((record) => record.brandName);

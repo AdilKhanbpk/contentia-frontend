@@ -23,16 +23,11 @@ const initialState: BlogState = {
 export const createBlog = createAsyncThunk(
   'blog/createBlog',
   async (
-    { blog, token }: { blog: FormData; token: string },
+    { blog }: { blog: FormData; },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.post('/admin/blogs', blog, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axiosInstance.post('/admin/blogs', blog);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -83,19 +78,13 @@ export const fetchBlogById = createAsyncThunk(
 export const updateBlog = createAsyncThunk(
   'blog/updateBlog',
   async (
-    { blogId, blogData, token }: { blogId: string; blogData: FormData; token: string },
+    { blogId, blogData, }: { blogId: string; blogData: FormData; },
     { rejectWithValue }
   ) => {
     try {
       const response = await axiosInstance.patch(
         `/admin/blogs/${blogId}`,
-        blogData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
-          },
-        }
+        blogData
       );
       return response.data.data;
     } catch (error) {
@@ -115,19 +104,13 @@ export const updateBlog = createAsyncThunk(
 export const updateBlogBannerImage = createAsyncThunk(
   'blog/updateBlogBannerImage',
   async (
-    { blogId, blogs, token }: { blogId: string; blogs: FormData; token: string },
+    { blogId, blogs, }: { blogId: string; blogs: FormData; },
     { rejectWithValue }
   ) => {
     try {
       const response = await axiosInstance.patch(
         `/admin/blogs/${blogId}/banner-image`,
-        blogs,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-blogs',
-          },
-        }
+        blogs
       );
       return response.data.data;
     } catch (error) {
@@ -143,13 +126,11 @@ export const updateBlogBannerImage = createAsyncThunk(
 export const deleteBlog = createAsyncThunk(
   'blog/deleteBlog',
   async (
-    { blogId, token }: { blogId: string; token: string },
+    { blogId, }: { blogId: string; },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.delete(`/admin/blogs/${blogId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.delete(`/admin/blogs/${blogId}`);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;

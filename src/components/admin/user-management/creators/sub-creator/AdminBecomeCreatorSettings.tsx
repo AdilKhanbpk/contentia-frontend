@@ -18,7 +18,6 @@ import {
     FormDescription,
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface FourthTabProps {
     editCreatorForm: CreatorInterface | null;
@@ -27,8 +26,6 @@ interface FourthTabProps {
 
 const FourthTab: React.FC<FourthTabProps> = ({ editCreatorForm }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const { token } = useTokenContext();
-    if (!token) return null;
     const form = useForm({
         defaultValues: {
             isNotificationOn:
@@ -63,13 +60,12 @@ const FourthTab: React.FC<FourthTabProps> = ({ editCreatorForm }) => {
                                 isNotificationOn: formData.isNotificationOn,
                             },
                         },
-                        token,
                     })
                 );
 
                 if (updateAdminCreator.fulfilled.match(response)) {
                     toast.success("Creator updated successfully.");
-                    await dispatch(fetchAdminCreators(token));
+                    await dispatch(fetchAdminCreators());
                 } else {
                     toast.error("Failed to update creator. Please try again.");
                 }

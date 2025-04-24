@@ -42,7 +42,7 @@ export default function Navbar() {
 
     useEffect(() => {
         if (token) {
-            dispatch(fetchProfile(token));
+            dispatch(fetchProfile());
         }
     }, [dispatch, token]);
 
@@ -55,11 +55,8 @@ export default function Navbar() {
     };
 
     const handleLogout = async () => {
-        if (!token) return;
-
         try {
-            await dispatch(logoutUser(token));
-
+            await dispatch(logoutUser());
             setToken(null);
 
             localStorage.removeItem("accessToken");

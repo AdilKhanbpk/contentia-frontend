@@ -30,23 +30,18 @@ const initialState: PricePlanState = {
 export const createPricePlan = createAsyncThunk(
   'pricePlan/createPricePlan',
   async (
-    { data, token }: {
+    { data }: {
       data: {
         videoCount: number;
         strikeThroughPrice?: number;
         finalPrice: number
       };
-      token: string
+
     },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.post('/admin/pricing', data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-      });
+      const response = await axiosInstance.post('/admin/pricing', data);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -76,11 +71,9 @@ export const fetchPricePlans = createAsyncThunk(
 // Fetch Price Plan by ID
 export const fetchPricePlanById = createAsyncThunk(
   'pricePlan/fetchPricePlanById',
-  async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
+  async ({ id }: { id: string; }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/admin/pricing/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.get(`/admin/pricing/${id}`);
 
       return response.data.data;
     } catch (error) {
@@ -99,7 +92,6 @@ export const updatePricePlan = createAsyncThunk(
     {
       id,
       data,
-      token
     }: {
       id: string;
       data: {
@@ -109,17 +101,12 @@ export const updatePricePlan = createAsyncThunk(
         strikeThroughPrice?: number;
         finalPrice?: number
       };
-      token: string
+
     },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.patch(`/admin/pricing/${id}`, data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-      });
+      const response = await axiosInstance.patch(`/admin/pricing/${id}`, data);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -133,11 +120,9 @@ export const updatePricePlan = createAsyncThunk(
 // Delete Price Plan
 export const deletePricePlan = createAsyncThunk(
   'pricePlan/deletePricePlan',
-  async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
+  async ({ id }: { id: string; }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.delete(`/admin/pricing/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.delete(`/admin/pricing/${id}`);
 
       return id;
     } catch (error) {

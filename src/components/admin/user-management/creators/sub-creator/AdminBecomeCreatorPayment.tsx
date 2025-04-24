@@ -8,7 +8,6 @@ import {
 import { AppDispatch } from "@/store/store";
 import { toast } from "react-toastify";
 import { CreatorInterface } from "@/types/interfaces";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface SecondTabProps {
     editCreatorForm: CreatorInterface | null;
@@ -17,8 +16,6 @@ interface SecondTabProps {
 
 export default function SecondTab({ editCreatorForm }: SecondTabProps) {
     const dispatch = useDispatch<AppDispatch>();
-    const { token } = useTokenContext();
-    if (!token) return null;
     const {
         register,
         handleSubmit,
@@ -72,13 +69,12 @@ export default function SecondTab({ editCreatorForm }: SecondTabProps) {
                 updateAdminCreator({
                     creatorId: editCreatorForm._id,
                     data: formData,
-                    token,
                 })
             );
 
             if (updateAdminCreator.fulfilled.match(resultAction)) {
                 toast.success("Update successful");
-                await dispatch(fetchAdminCreators(token));
+                await dispatch(fetchAdminCreators());
             } else {
                 toast.error("Update failed. Please try again later.");
             }

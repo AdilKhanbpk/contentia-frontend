@@ -7,7 +7,6 @@ import {
     updateAdminClaim,
 } from "@/store/features/admin/claimSlice";
 import { toast } from "react-toastify";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 import { ClaimInterface } from "@/types/interfaces";
 
 interface ModalTwoProps {
@@ -27,8 +26,6 @@ export default function ModalTwo({ claim }: ModalTwoProps) {
     } = useForm<Pick<ClaimInterface, "claimContent">>({
         defaultValues: { claimContent: claim?.claimContent || "" },
     });
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     const onSubmit: SubmitHandler<Pick<ClaimInterface, "claimContent">> = (
         data
@@ -39,14 +36,13 @@ export default function ModalTwo({ claim }: ModalTwoProps) {
                 updateAdminClaim({
                     claimId: claim._id,
                     data,
-                    token,
                 })
             )
                 .unwrap()
                 .then(() => {
                     toast.success("Claim content updated successfully!");
                     setLoading(false); // Reset loading state after success
-                    dispatch(fetchAdminClaims(token));
+                    dispatch(fetchAdminClaims());
                 })
                 .catch((error) => {
                     toast.error(

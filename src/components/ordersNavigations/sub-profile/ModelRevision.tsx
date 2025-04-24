@@ -7,7 +7,6 @@ import {
 } from "@/store/features/profile/orderSlice";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 import { OrderInterface } from "@/types/interfaces";
 
 interface RevisionFormData {
@@ -21,9 +20,6 @@ interface ModelRevisionProps {
 export default function ModelRevision({ orderData }: ModelRevisionProps) {
     const dispatch = useDispatch<AppDispatch>();
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     const {
         register,
@@ -46,13 +42,12 @@ export default function ModelRevision({ orderData }: ModelRevisionProps) {
                     data: {
                         revisionContent: data.revisionContent,
                     },
-                    token,
                 })
             );
 
             if (createRevision.fulfilled.match(resultAction)) {
                 reset();
-                await dispatch(fetchOrders(token));
+                await dispatch(fetchOrders());
                 toast.success("Revision created successfully");
             } else if (createRevision.rejected.match(resultAction)) {
                 throw new Error(resultAction.error.message);

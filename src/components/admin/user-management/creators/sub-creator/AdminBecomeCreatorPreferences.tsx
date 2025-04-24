@@ -15,7 +15,6 @@ import xIcon from "../../../../../../public/BecomeCreator/x_icon.png";
 import tiktokIcon from "../../../../../../public/BecomeCreator/tiktik_icon.png";
 import { toast } from "react-toastify";
 import { CreatorInterface } from "@/types/interfaces";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface ThirdTabProps {
     editCreatorForm: CreatorInterface | null;
@@ -30,8 +29,6 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
         reset,
         formState: { isSubmitting },
     } = useForm();
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     useEffect(() => {
         if (editCreatorForm) {
@@ -226,13 +223,12 @@ const ThirdTab: React.FC<ThirdTabProps> = ({ editCreatorForm }) => {
                 updateAdminCreator({
                     creatorId: editCreatorForm._id,
                     data: transformedData,
-                    token,
                 })
             );
 
             if (updateAdminCreator.fulfilled.match(resultAction)) {
                 toast.success("Creator updated successfully.");
-                await dispatch(fetchAdminCreators(token));
+                await dispatch(fetchAdminCreators());
             } else {
                 toast.error("Failed to update creator. Please try again.");
             }

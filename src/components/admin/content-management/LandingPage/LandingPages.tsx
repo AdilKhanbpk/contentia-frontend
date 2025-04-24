@@ -10,7 +10,6 @@ import {
 } from "@/store/features/admin/lanPageSlice";
 import "react-quill/dist/quill.snow.css";
 import { toast } from "react-toastify";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -42,8 +41,7 @@ export default function LandingPages() {
             videos: [],
         },
     });
-    const { token } = useTokenContext();
-    if (!token) return null;
+
     const fixedId = data?._id || "";
 
     useEffect(() => {
@@ -80,7 +78,7 @@ export default function LandingPages() {
     const onSubmit = async (formData: FormData) => {
         setIsSubmitting(true);
 
-        if (!fixedId || !token) return;
+        if (!fixedId) return;
 
         const payload = new FormData();
         payload.append("carouselHeroTitle", formData.carouselHeroTitle);
@@ -96,9 +94,7 @@ export default function LandingPages() {
         }
 
         try {
-            await dispatch(
-                updateLandingPage({ id: fixedId, data: payload, token })
-            );
+            await dispatch(updateLandingPage({ id: fixedId, data: payload }));
             toast.success("Landing page updated successfully!");
         } catch (error) {
             toast.error("Error updating landing page. Please try again.");

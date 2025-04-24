@@ -8,7 +8,6 @@ import {
 import { AppDispatch } from "@/store/store";
 import { toast } from "react-toastify";
 import { CreatorInterface } from "@/types/interfaces";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface FirstTabProps {
     editCreatorForm: CreatorInterface | null;
@@ -23,8 +22,6 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
         reset,
         formState: { errors, isSubmitting },
     } = useForm();
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     useEffect(() => {
         if (editCreatorForm) {
@@ -104,13 +101,12 @@ export default function FirstTab({ editCreatorForm }: FirstTabProps) {
                 updateAdminCreator({
                     creatorId: editCreatorForm._id.toString(),
                     data: updateData,
-                    token,
                 })
             );
 
             if (updateAdminCreator.fulfilled.match(resultAction)) {
                 toast.success("Creator updated successfully!");
-                await dispatch(fetchAdminCreators(token));
+                await dispatch(fetchAdminCreators());
             } else {
                 toast.error("Failed to update creator. Please try again!");
             }

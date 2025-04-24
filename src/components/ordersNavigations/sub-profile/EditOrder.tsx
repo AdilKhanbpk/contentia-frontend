@@ -1,4 +1,3 @@
-import { useTokenContext } from "@/context/TokenCheckingContext";
 import {
     selectOrderIsLoading,
     updateOrder,
@@ -17,8 +16,6 @@ export default function EditOrder({ orderData }: EditOrderProps) {
     const loading = useSelector(selectOrderIsLoading);
     const dispatch = useDispatch<AppDispatch>();
 
-    const { token } = useTokenContext();
-    if (!token) return null;
     const { register, handleSubmit } = useForm({
         defaultValues: {
             "briefContent.productServiceName":
@@ -43,7 +40,6 @@ export default function EditOrder({ orderData }: EditOrderProps) {
             updateOrder({
                 orderId: orderData._id,
                 data: updatedData,
-                token,
             })
         ).unwrap();
         toast.success(res.message);

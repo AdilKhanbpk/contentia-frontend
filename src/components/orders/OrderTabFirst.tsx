@@ -7,7 +7,6 @@ import { RootState } from "@/store/store";
 import { fetchAdditionalServices } from "@/store/features/admin/addPriceSlice";
 import { setOrderFormData } from "@/store/features/profile/orderSlice";
 import { fetchPricePlans } from "@/store/features/admin/pricingSlice";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 import Image from "next/image";
 
 export default function TabFirst({
@@ -16,8 +15,6 @@ export default function TabFirst({
     setActiveTab: (id: number) => void;
 }) {
     const dispatch = useDispatch();
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     // State
     const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
@@ -59,7 +56,7 @@ export default function TabFirst({
 
     useEffect(() => {
         dispatch(fetchPricePlans() as any);
-        if (token) dispatch(fetchAdditionalServices(token) as any);
+        dispatch(fetchAdditionalServices() as any);
     }, [dispatch]);
 
     useEffect(() => {

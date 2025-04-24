@@ -9,7 +9,6 @@ import {
 } from "@/store/features/admin/helpSlice";
 import "react-quill/dist/quill.snow.css";
 import { toast } from "react-toastify";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -29,8 +28,6 @@ export const ModalCenters: React.FC<ModalCentersProps> = ({ onClose }) => {
     const { currentHelpSupport } = useSelector(
         (state: RootState) => state.help
     );
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     const {
         register,
@@ -77,7 +74,6 @@ export const ModalCenters: React.FC<ModalCentersProps> = ({ onClose }) => {
                     updateHelpSupport({
                         helpSupportId: currentHelpSupport._id,
                         data: submitData,
-                        token,
                     })
                 ).unwrap();
                 toast.success("Help support updated successfully!");
@@ -85,7 +81,6 @@ export const ModalCenters: React.FC<ModalCentersProps> = ({ onClose }) => {
                 await dispatch(
                     createHelpSupport({
                         data: submitData,
-                        token,
                     })
                 ).unwrap();
                 toast.success("Help support created successfully!");

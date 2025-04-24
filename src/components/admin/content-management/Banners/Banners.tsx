@@ -219,12 +219,7 @@ const Banners: React.FC = () => {
     const [currentBanner, setCurrentBanner] = useState<Banner | null>(null);
 
     useEffect(() => {
-        const tokenFromStorage = localStorage.getItem("accessToken");
-        if (tokenFromStorage) {
-            dispatch(fetchBanners(tokenFromStorage));
-        } else {
-            toast.error("No token found in local storage!");
-        }
+        dispatch(fetchBanners());
     }, [dispatch]);
 
     const handleModalOpen = useCallback(
@@ -243,19 +238,12 @@ const Banners: React.FC = () => {
 
     const handleSubmit = useCallback(
         async (formData: FormData) => {
-            const tokenFromStorage = localStorage.getItem("accessToken");
-            if (!tokenFromStorage) {
-                toast.error("No token found in local storage!");
-                return;
-            }
-
             try {
                 if (modalMode === "edit" && currentBanner?._id) {
                     await dispatch(
                         updateBanner({
                             bannerId: currentBanner._id,
                             data: formData,
-                            token: tokenFromStorage,
                         })
                     ).unwrap();
                     toast.success("Banner updated successfully!");
@@ -263,7 +251,6 @@ const Banners: React.FC = () => {
                     await dispatch(
                         createBanner({
                             data: formData,
-                            token: tokenFromStorage,
                         })
                     ).unwrap();
                     toast.success("Banner created successfully!");

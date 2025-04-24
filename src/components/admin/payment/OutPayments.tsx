@@ -11,7 +11,6 @@ import ModalTwo from "./sub-in-payment/ViewInPaymentModal";
 import { OrderInterface } from "@/types/interfaces";
 import Image from "next/image";
 import CustomTable from "@/components/custom-table/CustomTable";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface TableActionsProps {
     onApprove: (id: string) => void;
@@ -24,8 +23,6 @@ const OutPayments: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const [searchTerm, setSearchTerm] = useState("");
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-    const { token } = useTokenContext();
-    if (!token) return null;
     const { data: orders, loading } = useSelector(
         (state: RootState) => state.orders
     );
@@ -193,26 +190,16 @@ const OutPayments: React.FC = () => {
 
     useEffect(() => {
         const fetchOrdersData = async () => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
             try {
-                await dispatch(getAssignedOrders(token)).unwrap();
+                await dispatch(getAssignedOrders()).unwrap();
             } catch (error: any) {
                 toast.error(error.message);
             }
         };
 
         const fetchBrands = async () => {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                toast.error("No token found. Please log in again.");
-                return;
-            }
             try {
-                await dispatch(fetchMyBrands(token)).unwrap();
+                await dispatch(fetchMyBrands()).unwrap();
             } catch (error: any) {
                 toast.error(error.message);
             }

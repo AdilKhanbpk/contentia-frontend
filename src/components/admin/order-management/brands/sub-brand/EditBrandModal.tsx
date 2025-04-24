@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { Brand, updateBrand } from "@/store/features/profile/brandSlice";
 import { toast } from "react-toastify";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 interface BrandFormInputs {
     brandName: string;
     brandCategory: string;
@@ -30,8 +29,7 @@ const EditBrand: React.FC<EditBrandProps> = ({ brand }) => {
         setValue,
         formState: { errors },
     } = useForm<BrandFormInputs>();
-    const { token } = useTokenContext();
-    if (!token) return null;
+
     useEffect(() => {
         if (brand) {
             setValue("brandName", brand.brandName);
@@ -58,7 +56,7 @@ const EditBrand: React.FC<EditBrandProps> = ({ brand }) => {
 
         try {
             await dispatch(
-                updateBrand({ brandId: brand._id, data: formData, token })
+                updateBrand({ brandId: brand._id, data: formData })
             ).unwrap();
             toast.success("Brand updated successfully!");
             reset();

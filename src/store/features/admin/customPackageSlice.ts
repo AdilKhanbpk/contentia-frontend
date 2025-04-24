@@ -24,11 +24,9 @@ const initialState: PackagesState = {
 
 export const createPackage = createAsyncThunk(
   'packages/createPackage',
-  async ({ data, token }: { data: Partial<PackageInterface>; token: string }, { rejectWithValue }) => {
+  async ({ data }: { data: Partial<PackageInterface> }, { rejectWithValue }) => {
     try {
-      if (!token) {
-        return rejectWithValue('Authentication token is missing');
-      }
+
 
       const transformedData = {
         customer: typeof data.packageCreator === 'object' ? data.packageCreator._id : data.packageCreator,
@@ -47,19 +45,10 @@ export const createPackage = createAsyncThunk(
       };
 
       // First create the package
-      const response = await axiosInstance.post('/admin/custom-packages', transformedData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        timeout: 10000,
-      });
+      const response = await axiosInstance.post('/admin/custom-packages', transformedData);
 
       // Then fetch the complete package details to get the full owner information
-      const fullPackageResponse = await axiosInstance.get(`/admin/custom-packages/${response.data.data._id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        timeout: 10000,
-      });
+      const fullPackageResponse = await axiosInstance.get(`/admin/custom-packages/${response.data.data._id}`);
 
       return fullPackageResponse.data.data;
     } catch (error) {
@@ -75,11 +64,9 @@ export const createPackage = createAsyncThunk(
 // Fetch All Packages
 export const fetchPackages = createAsyncThunk(
   'packages/fetchPackages',
-  async (token: string, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/admin/custom-packages', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.get('/admin/custom-packages');
 
       return response.data.data;
 
@@ -98,13 +85,10 @@ export const fetchPackages = createAsyncThunk(
 // Fetch Single Package
 export const fetchPackageById = createAsyncThunk(
   'packages/fetchPackageById',
-  async ({ packageId, token }: { packageId: string; token: string }, { rejectWithValue }) => {
+  async ({ packageId }: { packageId: string; }, { rejectWithValue }) => {
 
     try {
-      const response = await axiosInstance.get(`/admin/custom-packages/${packageId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        timeout: 10000,
-      });
+      const response = await axiosInstance.get(`/admin/custom-packages/${packageId}`);
 
       return response.data.data;
     } catch (error) {
@@ -122,18 +106,12 @@ export const fetchPackageById = createAsyncThunk(
 // Update Package
 export const updatePackage = createAsyncThunk(
   'packages/updatePackage',
-  async ({ packageId, data, token }: { packageId: string; data: FormData; token: string }, { rejectWithValue }) => {
+  async ({ packageId, data }: { packageId: string; data: FormData; }, { rejectWithValue }) => {
 
 
 
     try {
-      const response = await axiosInstance.patchForm(`/admin/custom-packages/${packageId}`, data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        timeout: 10000,
-      });
+      const response = await axiosInstance.patchForm(`/admin/custom-packages/${packageId}`, data);
 
       return response.data.data;
     } catch (error) {
@@ -151,13 +129,10 @@ export const updatePackage = createAsyncThunk(
 // Delete Package
 export const deletePackage = createAsyncThunk(
   'packages/deletePackage',
-  async ({ packageId, token }: { packageId: string; token: string }, { rejectWithValue }) => {
+  async ({ packageId }: { packageId: string; }, { rejectWithValue }) => {
 
     try {
-      const response = await axiosInstance.delete(`/admin/custom-packages/${packageId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        timeout: 10000,
-      });
+      const response = await axiosInstance.delete(`/admin/custom-packages/${packageId}`);
 
       return { packageId, data: response.data.data };
     } catch (error) {

@@ -31,11 +31,9 @@ const initialState: AdminCreatorsState = {
 // Fetch all creators
 export const fetchAdminCreators = createAsyncThunk(
   'adminCreators/fetchAdminCreators',
-  async (token: string) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/admin/creators', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.get('/admin/creators');
 
       if (response.data && response.data.data) {
         const creators = response.data.data.map((creator: CreatorInterface) => {
@@ -137,11 +135,9 @@ export const fetchAdminCreators = createAsyncThunk(
 // Fetch a single creator by ID
 export const fetchAdminCreatorById = createAsyncThunk(
   'adminCreators/fetchAdminCreatorById',
-  async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
+  async ({ id }: { id: string }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/admin/creators/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.get(`/admin/creators/${id}`);
       return response.data;
     } catch (error) {
       return rejectWithValue('Failed to fetch admin creator by ID');
@@ -151,11 +147,9 @@ export const fetchAdminCreatorById = createAsyncThunk(
 
 export const getCreatorStats = createAsyncThunk(
   'adminCreators/getCreatorStats',
-  async ({ token, creatorId }: { token: string; creatorId: string }, { rejectWithValue }) => {
+  async ({ creatorId }: { creatorId: string }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/creators/get-creator-stats/${creatorId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.get(`/creators/get-creator-stats/${creatorId}`);
       return response.data.data;
     } catch (error) {
       return rejectWithValue('Failed to fetch admin creator by ID');
@@ -166,26 +160,14 @@ export const getCreatorStats = createAsyncThunk(
 export const createAdminCreator = createAsyncThunk(
   'adminCreators/createAdminCreator',
   async (
-    { data, token }: { data: any; token: string },
+    { data }: { data: any; },
     { rejectWithValue }
   ) => {
 
     try {
-
-      // Validate token
-      if (!token) {
-        return rejectWithValue('Authentication token is missing');
-      }
-
       const response = await axiosInstance.post(
         '/admin/creators',
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-        }
+        data
       );
 
       return response.data;
@@ -202,15 +184,12 @@ export const createAdminCreator = createAsyncThunk(
 export const updateAdminCreator = createAsyncThunk(
   'adminCreators/updateAdminCreator',
   async (
-    { creatorId, data, token }: { creatorId: string; data: any; token: string },
+    { creatorId, data }: { creatorId: string; data: any },
     { rejectWithValue }
   ) => {
 
     try {
-      const response = await axiosInstance.patch(`/admin/creators/${creatorId}`, data, {
-        headers: { Authorization: `Bearer ${token}` },
-        timeout: 10000,
-      });
+      const response = await axiosInstance.patch(`/admin/creators/${creatorId}`, data);
 
       if (response.status >= 200 && response.status < 300) {
         return response.data;
@@ -235,12 +214,10 @@ export const updateAdminCreator = createAsyncThunk(
 
 export const deleteAdminCreator = createAsyncThunk(
   'adminCreators/deleteAdminCreator',
-  async ({ creatorId, token }: { creatorId: string; token: string }, { rejectWithValue }) => {
+  async ({ creatorId }: { creatorId: string }, { rejectWithValue }) => {
 
     try {
-      const response = await axiosInstance.delete(`/admin/creators/${creatorId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.delete(`/admin/creators/${creatorId}`);
       return response.data;
     } catch (error) {
       let errorMessage = 'Failed to delete admin creator';

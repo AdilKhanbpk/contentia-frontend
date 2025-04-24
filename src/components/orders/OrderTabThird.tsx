@@ -9,7 +9,6 @@ import { setOrderFormData } from "@/store/features/profile/orderSlice";
 import CustomModelAdmin from "../modal/CustomModelAdmin";
 import ModelBrand from "./sub-orders/ModelBrand";
 import { useFileContext } from "@/context/FileContext";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
     setActiveTab,
@@ -21,13 +20,9 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
     const [selectedBrand, setSelectedBrand] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { selectedFiles, setSelectedFiles } = useFileContext();
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchMyBrands(token));
-        }
+        dispatch(fetchMyBrands());
     }, [dispatch]);
 
     const brands = brandRecords.map((record) => record.brandName);

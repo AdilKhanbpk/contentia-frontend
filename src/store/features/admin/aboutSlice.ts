@@ -25,24 +25,24 @@ export interface AboutState {
 
 interface CreateAboutPayload {
     data: Omit<AboutData, "_id" | "createdAt" | "updatedAt">;
-    token: string;
+
 }
 
 interface UpdateAboutPayload {
     aboutId: string;
     data: Partial<AboutData>;
-    token: string;
+
 }
 
 interface DeleteAboutPayload {
     aboutId: string;
-    token: string;
+
 }
 
 interface UpdateAboutImagePayload {
     aboutId: string;
     imageFile: File;
-    token: string;
+
 }
 
 const initialState: AboutState = {
@@ -55,11 +55,10 @@ const initialState: AboutState = {
 // Thunks
 export const updateAboutImage = createAsyncThunk(
     "about/updateAboutImage",
-    async ({ aboutId, imageFile, token }: UpdateAboutImagePayload, { rejectWithValue }) => {
+    async ({ aboutId, imageFile }: UpdateAboutImagePayload, { rejectWithValue }) => {
         try {
             const formData = new FormData();
             formData.append('aboutImage', imageFile);
-            axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             const response = await axiosInstance.patch(
                 `/admin/about/${aboutId}/change-image`,
                 formData,
@@ -80,9 +79,8 @@ export const updateAboutImage = createAsyncThunk(
 
 export const createAbout = createAsyncThunk(
     "about/createAbout",
-    async ({ data, token }: CreateAboutPayload, { rejectWithValue }) => {
+    async ({ data }: CreateAboutPayload, { rejectWithValue }) => {
         try {
-            axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             const response = await axiosInstance.post("/admin/about", data);
             return response.data.data;
         } catch (error) {
@@ -109,9 +107,8 @@ export const fetchAbout = createAsyncThunk(
 
 export const updateAbout = createAsyncThunk(
     "about/updateAbout",
-    async ({ aboutId, data, token }: UpdateAboutPayload, { rejectWithValue }) => {
+    async ({ aboutId, data }: UpdateAboutPayload, { rejectWithValue }) => {
         try {
-            axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             const response = await axiosInstance.patch(
                 `/admin/about/${aboutId}`,
                 data
@@ -127,9 +124,8 @@ export const updateAbout = createAsyncThunk(
 
 export const deleteAbout = createAsyncThunk(
     "about/deleteAbout",
-    async ({ aboutId, token }: DeleteAboutPayload, { rejectWithValue }) => {
+    async ({ aboutId }: DeleteAboutPayload, { rejectWithValue }) => {
         try {
-            axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             await axiosInstance.delete(`/admin/about/${aboutId}`);
             return aboutId;
         } catch (error) {

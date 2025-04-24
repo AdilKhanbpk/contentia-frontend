@@ -17,16 +17,21 @@ const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
 
     const isCustomerRoute = pathname.startsWith("/orders");
     const isAdminRoute = pathname.startsWith("/admin");
+    const isAuthPage = ["/contentiaio/authentication"].includes(pathname);
 
     useEffect(() => {
         if (!isLoading) {
             if (isAdminRoute && user?.role !== "admin") {
+                router.replace("/");
                 toast.error("Admin access only");
-                router.replace("/contentiaio/authentication");
             }
             if (isCustomerRoute && user?.role !== "user") {
-                toast.error("Login is required");
                 router.replace("/contentiaio/authentication");
+                toast.error("Login is required");
+            }
+            if (user && isAuthPage) {
+                router.replace("/");
+                toast.info("You are already logged in");
             }
         }
     }, [user, isLoading, pathname, router]);

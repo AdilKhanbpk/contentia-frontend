@@ -13,7 +13,6 @@ import CustomModelAdmin from "../modal/CustomModelAdmin";
 import ModelBrand from "./sub-profile/ModelBrand";
 import EditableBrand from "./sub-profile/EditableBrand";
 import { toast } from "react-toastify";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 export default function MyBrands() {
     const dispatch = useDispatch<AppDispatch>();
@@ -21,13 +20,9 @@ export default function MyBrands() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingBrandId, setEditingBrandId] = useState<string | null>(null);
     const brands = useSelector((state: RootState) => state.brand.myBrands);
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchMyBrands(token));
-        }
+        dispatch(fetchMyBrands());
     }, [dispatch]);
 
     const openModal = () => setIsModalOpen(true);
@@ -42,13 +37,12 @@ export default function MyBrands() {
                 updateBrand({
                     brandId: editingBrandId,
                     data: brandData,
-                    token,
                 })
             ).unwrap();
 
             toast.success("Brand updated successfully!");
             setEditingBrandId(null);
-            dispatch(fetchMyBrands(token));
+            dispatch(fetchMyBrands());
         } catch (error) {
             toast.error("Failed to update brand. Please try again.");
         }

@@ -9,7 +9,6 @@ import { AppDispatch, RootState } from "@/store/store";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface EditInvoiceModalProps {
     currentInvoice: PaymentInterface | null;
@@ -27,8 +26,6 @@ const EditInvoiceModal: React.FC<EditInvoiceModalProps> = ({
         formState: { errors, isSubmitting },
     } = useForm();
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
-    const { token } = useTokenContext();
-    if (!token) return null;
     if (!currentInvoice) return null;
 
     const onSubmit = async (data: any) => {
@@ -45,11 +42,10 @@ const EditInvoiceModal: React.FC<EditInvoiceModalProps> = ({
                 updatePayment({
                     paymentId: currentInvoice._id,
                     data: formData,
-                    token,
                 })
             );
 
-            await dispatch(fetchPayments(token));
+            await dispatch(fetchPayments());
             toast.success("Payment updated successfully!");
             onClose();
         } catch (error) {

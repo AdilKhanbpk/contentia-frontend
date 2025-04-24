@@ -15,7 +15,6 @@ import {
 import { toast } from "react-toastify";
 import ModalNew from "./sub-push/ModalNew";
 import CustomTable from "@/components/custom-table/CustomTable";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface TableActionsProps {
     onView: (id: string) => void;
@@ -27,8 +26,7 @@ const PushNotifications: React.FC = () => {
     const notifications = useSelector(selectNotifications);
     const currentNotification = useSelector(selectCurrentNotification);
     const loading = useSelector(selectNotificationLoading);
-    const { token } = useTokenContext();
-    if (!token) return null;
+
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -39,7 +37,6 @@ const PushNotifications: React.FC = () => {
                 await dispatch(
                     fetchNotificationById({
                         notificationId: id,
-                        token,
                     })
                 ).unwrap();
                 toast.success("Order details fetched successfully!");
@@ -113,9 +110,7 @@ const PushNotifications: React.FC = () => {
     );
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchNotifications(token));
-        }
+        dispatch(fetchNotifications());
     }, [dispatch]);
 
     return (

@@ -27,7 +27,6 @@ import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import { toast } from "react-toastify";
 import { BlogInterface } from "@/types/interfaces";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const SearchBar = memo(
     ({ onSearch }: { onSearch: (value: string) => void }) => (
@@ -92,12 +91,9 @@ const ManageBlogs: React.FC = () => {
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
 
-    const { token } = useTokenContext();
-    if (!token) return null;
-
     const handleDelete = useCallback(
         (id: string) => {
-            dispatch(deleteBlog({ blogId: id, token }))
+            dispatch(deleteBlog({ blogId: id }))
                 .unwrap()
                 .then(() => {
                     toast.success("Blog deleted successfully");
@@ -140,7 +136,7 @@ const ManageBlogs: React.FC = () => {
 
         try {
             await dispatch(
-                updateBlog({ blogId: blogData._id, blogData: formData, token })
+                updateBlog({ blogId: blogData._id, blogData: formData })
             ).unwrap();
             toast.success("Blog updated successfully");
             await dispatch(fetchBlogs());
@@ -178,7 +174,7 @@ const ManageBlogs: React.FC = () => {
         });
 
         try {
-            await dispatch(createBlog({ blog: formData, token })).unwrap();
+            await dispatch(createBlog({ blog: formData })).unwrap();
             toast.success("Blog created successfully");
             setIsModalOpen(false);
             await dispatch(fetchBlogs());
@@ -220,9 +216,7 @@ const ManageBlogs: React.FC = () => {
     }, [blogs]);
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchBlogs());
-        }
+        dispatch(fetchBlogs());
     }, [dispatch]);
 
     const columns = React.useMemo(

@@ -32,7 +32,6 @@ import {
     selectTotalUsers,
 } from "@/store/features/admin/dashboardSlice";
 import { AppDispatch } from "@/store/store";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 import {
     fetchGoogleAnalytics,
     selectAnalytics,
@@ -52,21 +51,16 @@ const Analytics: React.FC = () => {
     const analytics = useSelector(selectAnalytics);
     console.log("🚀 ~ analytics:", analytics);
 
-    const { token } = useTokenContext();
-    if (!token) return null;
-
     useEffect(() => {
-        if (token) {
-            dispatch(fetchRecentOrders(token));
-            dispatch(fetchTotalSalesByMonth(token));
-            dispatch(fetchTotalCreators(token));
-            dispatch(fetchTotalCustomers(token));
-            dispatch(fetchTotalOrders(token));
-            dispatch(fetchTotalRevenueByMonth(token));
-            dispatch(fetchTotalUsersForCurrentMonth(token));
-            dispatch(fetchGoogleAnalytics(token));
-        }
-    }, [token]);
+        dispatch(fetchRecentOrders());
+        dispatch(fetchTotalSalesByMonth());
+        dispatch(fetchTotalCreators());
+        dispatch(fetchTotalCustomers());
+        dispatch(fetchTotalOrders());
+        dispatch(fetchTotalRevenueByMonth());
+        dispatch(fetchTotalUsersForCurrentMonth());
+        dispatch(fetchGoogleAnalytics());
+    }, []);
 
     const totalCustomerAndCreators =
         (creators?.totalCreatorsCount || 0) +

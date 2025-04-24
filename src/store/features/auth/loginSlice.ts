@@ -37,6 +37,8 @@ export const loginUser = createAsyncThunk(
       const response = await axiosInstance.post("/users/login", loginData);
       const user = response.data.data.userWithoutPassword;
       const token = response.data.data.accessToken;
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("accessToken", token);
 
       return { user, token };
     } catch (error: any) {
@@ -66,13 +68,9 @@ export const signupUser = createAsyncThunk(
 
 export const logoutUser = createAsyncThunk(
   'logout/logoutUser',
-  async (token: string, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      await axiosInstance.get('/users/logout', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axiosInstance.get('/users/logout');
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Logout failed');
     }

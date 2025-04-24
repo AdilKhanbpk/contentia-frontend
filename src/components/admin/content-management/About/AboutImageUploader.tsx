@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { updateAboutImage } from "@/store/features/admin/aboutSlice";
 import { toast } from "react-toastify";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface ImageUploaderProps {
     aboutId: string;
@@ -19,8 +18,6 @@ export default function ImageUploader({
         currentImage || null
     );
     const [imageFile, setImageFile] = useState<File | null>(null);
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     useEffect(() => {
         if (currentImage) {
@@ -53,7 +50,6 @@ export default function ImageUploader({
                 updateAboutImage({
                     aboutId,
                     imageFile,
-                    token,
                 }) as any
             );
 

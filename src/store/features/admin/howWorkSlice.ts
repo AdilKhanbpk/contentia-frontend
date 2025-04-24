@@ -25,18 +25,18 @@ export interface HowItWorksState {
 
 interface CreateHowItWorksPayload {
   data: Omit<HowItWorks, "_id" | "createdAt" | "updatedAt">;
-  token: string;
+
 }
 
 interface UpdateHowItWorksPayload {
   sectionId: string;
   data: Partial<HowItWorks>;
-  token: string;
+
 }
 
 interface DeleteHowItWorksPayload {
   sectionId: string;
-  token: string;
+
 }
 
 const initialState: HowItWorksState = {
@@ -49,9 +49,8 @@ const initialState: HowItWorksState = {
 // Thunks
 export const createHowItWorks = createAsyncThunk(
   "howItWorks/createHowItWorks",
-  async ({ data, token }: CreateHowItWorksPayload, { rejectWithValue }) => {
+  async ({ data }: CreateHowItWorksPayload, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       const response = await axiosInstance.post("/admin/howItWorks", data);
       return response.data.data;
     } catch (error) {
@@ -92,9 +91,8 @@ export const fetchHowItWorksById = createAsyncThunk(
 
 export const updateHowItWorks = createAsyncThunk(
   "howItWorks/updateHowItWorks",
-  async ({ sectionId, data, token }: UpdateHowItWorksPayload, { rejectWithValue }) => {
+  async ({ sectionId, data }: UpdateHowItWorksPayload, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       const response = await axiosInstance.patch(
         `/admin/howItWorks/${sectionId}`,
         data
@@ -110,9 +108,8 @@ export const updateHowItWorks = createAsyncThunk(
 
 export const deleteHowItWorks = createAsyncThunk(
   "howItWorks/deleteHowItWorks",
-  async ({ sectionId, token }: DeleteHowItWorksPayload, { rejectWithValue }) => {
+  async ({ sectionId }: DeleteHowItWorksPayload, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       await axiosInstance.delete(`/admin/howItWorks/${sectionId}`);
       return sectionId;
     } catch (error) {

@@ -31,26 +31,26 @@ interface CreateBrandPayload {
     brandCountry: string;
     brandImage?: File; // New field for image upload
   };
-  token: string;
+
 }
 
 interface UpdateBrandPayload {
   brandId: string;
   data: FormData; // ✅ Allow FormData explicitly
-  token: string;
+
 }
 
 
 
 interface DeleteBrandPayload {
   brandId: string;
-  token: string;
+
 }
 
 interface ChangeBrandPicPayload {
   brandId: string;
   data: FormData;
-  token: string;
+
 }
 
 const initialState: BrandState = {
@@ -63,9 +63,8 @@ const initialState: BrandState = {
 
 export const createBrand = createAsyncThunk(
   "brand/createBrand",
-  async ({ data, token }: CreateBrandPayload, { rejectWithValue }) => {
+  async ({ data }: CreateBrandPayload, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       const response = await axiosInstance.post("/brands", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -84,9 +83,8 @@ export const createBrand = createAsyncThunk(
 // Fetch All Brands
 export const fetchBrands = createAsyncThunk(
   "brand/fetchBrands",
-  async (token: string, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       const response = await axiosInstance.get("/brands");
       return response.data.data;
     } catch (error) {
@@ -102,9 +100,8 @@ export const fetchBrands = createAsyncThunk(
 // Fetch Single Brand
 export const fetchSingleBrand = createAsyncThunk(
   "brand/fetchSingleBrand",
-  async ({ brandId, token }: { brandId: string; token: string }, { rejectWithValue }) => {
+  async ({ brandId }: { brandId: string; }, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       const response = await axiosInstance.get(`/brands/${brandId}`);
       return response.data.data;
     } catch (error) {
@@ -119,9 +116,8 @@ export const fetchSingleBrand = createAsyncThunk(
 
 export const updateBrand = createAsyncThunk(
   "brand/updateBrand",
-  async ({ brandId, data, token }: UpdateBrandPayload, { rejectWithValue }) => {
+  async ({ brandId, data }: UpdateBrandPayload, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       const response = await axiosInstance.patch(`/brands/${brandId}`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -139,9 +135,8 @@ export const updateBrand = createAsyncThunk(
 // Delete Brand
 export const deleteBrand = createAsyncThunk(
   "brand/deleteBrand",
-  async ({ brandId, token }: DeleteBrandPayload, { rejectWithValue }) => {
+  async ({ brandId }: DeleteBrandPayload, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       await axiosInstance.delete(`/brands/${brandId}`);
       return brandId;
     } catch (error) {
@@ -157,9 +152,8 @@ export const deleteBrand = createAsyncThunk(
 // Fetch My Brands
 export const fetchMyBrands = createAsyncThunk(
   "brand/fetchMyBrands",
-  async (token: string, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       const response = await axiosInstance.get("/brands/my-brands");
       return response.data.data;
     } catch (error) {
@@ -175,9 +169,8 @@ export const fetchMyBrands = createAsyncThunk(
 // Change Brand Picture
 export const changeBrandPic = createAsyncThunk(
   "brand/changeBrandPic",
-  async ({ brandId, data, token }: ChangeBrandPicPayload, { rejectWithValue }) => {
+  async ({ brandId, data }: ChangeBrandPicPayload, { rejectWithValue }) => {
     try {
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       const response = await axiosInstance.patch(`/brands/change-brand-image/${brandId}`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });

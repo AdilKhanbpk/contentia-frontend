@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import { changeBrandPic } from "@/store/features/profile/brandSlice";
 import { toast } from "react-toastify";
 import { AppDispatch } from "@/store/store";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface LogoUploaderProps {
     brandId: string;
@@ -20,9 +19,6 @@ export default function LogoUploader({
         currentImage || null
     );
     const [imageFile, setImageFile] = useState<File | null>(null);
-
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     useEffect(() => {
         if (currentImage) {
@@ -52,7 +48,6 @@ export default function LogoUploader({
                 changeBrandPic({
                     brandId,
                     data: formData,
-                    token,
                 })
             ).unwrap();
             toast.success("Image uploaded successfully!");

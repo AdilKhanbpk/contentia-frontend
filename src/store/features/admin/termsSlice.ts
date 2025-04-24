@@ -23,15 +23,11 @@ const initialState: TermState = {
 export const createTerm = createAsyncThunk(
     'term/createTerm',
     async (
-        { term, token }: { term: Partial<TermsInterface>; token: string },
+        { term }: { term: Partial<TermsInterface>; },
         { rejectWithValue }
     ) => {
         try {
-            const response = await axiosInstance.post('/admin/terms', term, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axiosInstance.post('/admin/terms', term);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
@@ -46,11 +42,9 @@ export const createTerm = createAsyncThunk(
 // Fetch all terms
 export const fetchTerms = createAsyncThunk(
     'term/fetchTerms',
-    async (token: string, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get('/admin/terms', {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const response = await axiosInstance.get('/admin/terms');
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
@@ -65,13 +59,11 @@ export const fetchTerms = createAsyncThunk(
 export const fetchTermById = createAsyncThunk(
     'term/fetchTermById',
     async (
-        { termId, token }: { termId: string; token: string },
+        { termId }: { termId: string; },
         { rejectWithValue }
     ) => {
         try {
-            const response = await axiosInstance.get(`/admin/terms/id/${termId}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const response = await axiosInstance.get(`/admin/terms/id/${termId}`);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
@@ -105,18 +97,14 @@ export const fetchTermBySlug = createAsyncThunk(
 export const updateTerm = createAsyncThunk(
     'term/updateTerm',
     async (
-        { termId, termData, token }: { termId: string; termData: Partial<TermsInterface>; token: string },
+        { termId, termData }: { termId: string; termData: Partial<TermsInterface>; },
         { rejectWithValue }
     ) => {
         try {
             const response = await axiosInstance.patch(
                 `/admin/terms/${termId}`,
-                termData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
+                termData
+
             );
             return response.data.data;
         } catch (error) {
@@ -135,13 +123,11 @@ export const updateTerm = createAsyncThunk(
 export const deleteTerm = createAsyncThunk(
     'term/deleteTerm',
     async (
-        { termId, token }: { termId: string; token: string },
+        { termId }: { termId: string; },
         { rejectWithValue }
     ) => {
         try {
-            const response = await axiosInstance.delete(`/admin/terms/${termId}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const response = await axiosInstance.delete(`/admin/terms/${termId}`);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;

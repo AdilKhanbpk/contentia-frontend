@@ -1,4 +1,3 @@
-import { useTokenContext } from "@/context/TokenCheckingContext";
 import {
     markAllAsRead,
     markNotificationAsRead,
@@ -20,9 +19,6 @@ function NavbarNotification({ user, notifications }: NavbarNotificationProps) {
     const loading = useSelector(selectNotificationLoading);
     const dispatch = useDispatch<AppDispatch>();
 
-    const { token } = useTokenContext();
-    if (!token) return null;
-
     const filteredNotifications = useMemo(() => {
         if (tab === "unread") {
             return notifications.filter((n) => !n.readBy?.includes(user?._id));
@@ -37,14 +33,13 @@ function NavbarNotification({ user, notifications }: NavbarNotificationProps) {
             dispatch(
                 markNotificationAsRead({
                     notificationId: notification._id,
-                    token,
                 })
             );
         }
     };
 
     const handleMarkAllAsRead = () => {
-        dispatch(markAllAsRead(token));
+        dispatch(markAllAsRead());
     };
 
     return (

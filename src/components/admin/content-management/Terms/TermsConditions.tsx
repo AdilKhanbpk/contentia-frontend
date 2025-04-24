@@ -28,7 +28,6 @@ import {
 import { CreateTerms } from "./CreateTerms";
 import { EditTerms } from "./EditTerms";
 import { ViewTerms } from "./ViewTerms";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const SearchBar = memo(
     ({ onSearch }: { onSearch: (value: string) => void }) => (
@@ -92,16 +91,14 @@ const TermsConditions: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     const handleDelete = useCallback(
         (id: string) => {
-            dispatch(deleteTerm({ termId: id, token }))
+            dispatch(deleteTerm({ termId: id }))
                 .unwrap()
                 .then(() => {
                     toast.success("Term deleted successfully");
-                    dispatch(fetchTerms(token));
+                    dispatch(fetchTerms());
                 })
                 .catch((error: any) => {
                     toast.error("Delete failed");
@@ -112,7 +109,7 @@ const TermsConditions: React.FC = () => {
     );
 
     const handleView = async (id: string) => {
-        await dispatch(fetchTermById({ termId: id, token })).unwrap();
+        await dispatch(fetchTermById({ termId: id })).unwrap();
         setIsModalViewOpen(true);
     };
 
@@ -124,10 +121,10 @@ const TermsConditions: React.FC = () => {
 
         try {
             await dispatch(
-                updateTerm({ termId: termData._id, termData, token })
+                updateTerm({ termId: termData._id, termData })
             ).unwrap();
             toast.success("Term updated successfully");
-            await dispatch(fetchTerms(token));
+            await dispatch(fetchTerms());
             setIsModalEditOpen(false);
         } catch (error: any) {
             toast.error(
@@ -140,7 +137,7 @@ const TermsConditions: React.FC = () => {
     };
 
     const handleEdit = async (id: string) => {
-        await dispatch(fetchTermById({ termId: id, token })).unwrap();
+        await dispatch(fetchTermById({ termId: id })).unwrap();
         setIsModalEditOpen(true);
     };
 
@@ -165,7 +162,7 @@ const TermsConditions: React.FC = () => {
     }, [terms]);
 
     useEffect(() => {
-        dispatch(fetchTerms(token));
+        dispatch(fetchTerms());
     }, [dispatch]);
 
     const columns = React.useMemo(

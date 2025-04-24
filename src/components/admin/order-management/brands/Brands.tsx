@@ -20,7 +20,6 @@ import {
 } from "@/store/features/profile/brandSlice";
 import ViewBrand from "./sub-brand/ViewBrandModal";
 import EditBrand from "./sub-brand/EditBrandModal";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 interface SearchBarProps {
     onSearch: (value: string) => void;
@@ -82,12 +81,11 @@ const Brands: React.FC = () => {
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
     const [isModalViewOpen, setIsViewModalOpen] = useState(false);
     const [isModalRequestsOpen, setIsModalRequestsOpen] = useState(false);
-    const { token } = useTokenContext();
-    if (!token) return null;
+
     useEffect(() => {
         const fetchBrandsData = async () => {
             try {
-                const res = await dispatch(fetchBrands(token)).unwrap();
+                const res = await dispatch(fetchBrands()).unwrap();
                 toast.success(res.message);
             } catch (error: any) {
                 toast.error(error.message);
@@ -99,7 +97,7 @@ const Brands: React.FC = () => {
     const handleDelete = useCallback(
         async (id: string) => {
             try {
-                await dispatch(deleteBrand({ brandId: id, token })).unwrap();
+                await dispatch(deleteBrand({ brandId: id })).unwrap();
                 toast.success("Order deleted successfully!");
             } catch (error) {
                 toast.error("Error deleting order.");
@@ -111,9 +109,7 @@ const Brands: React.FC = () => {
     const handleView = useCallback(
         async (id: string) => {
             try {
-                await dispatch(
-                    fetchSingleBrand({ brandId: id, token })
-                ).unwrap();
+                await dispatch(fetchSingleBrand({ brandId: id })).unwrap();
                 toast.success("Order details fetched successfully!");
                 setIsViewModalOpen(true);
             } catch (error) {
@@ -126,9 +122,7 @@ const Brands: React.FC = () => {
     const handleEdit = useCallback(
         async (id: string) => {
             try {
-                await dispatch(
-                    fetchSingleBrand({ brandId: id, token })
-                ).unwrap();
+                await dispatch(fetchSingleBrand({ brandId: id })).unwrap();
                 setIsModalEditOpen(true);
                 toast.success("Order fetched successfully for editing.");
             } catch (error) {

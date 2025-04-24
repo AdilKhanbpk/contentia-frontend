@@ -4,7 +4,6 @@ import { AppDispatch } from "@/store/store";
 import { createClaim } from "@/store/features/profile/orderSlice";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 import { OrderInterface } from "@/types/interfaces";
 
 interface RevisionFormData {
@@ -18,9 +17,6 @@ interface ModelClaimProps {
 export default function ModelClaim({ orderData }: ModelClaimProps) {
     const dispatch = useDispatch<AppDispatch>();
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     const {
         register,
@@ -43,7 +39,6 @@ export default function ModelClaim({ orderData }: ModelClaimProps) {
                     data: {
                         claimContent: data.claimContent,
                     },
-                    token,
                 })
             );
 

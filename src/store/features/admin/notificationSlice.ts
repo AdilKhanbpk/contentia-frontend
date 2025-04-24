@@ -51,13 +51,9 @@ const initialState: NotificationState = {
 // Async Thunks
 export const fetchNotifications = createAsyncThunk(
   "notification/fetchNotifications",
-  async (token: string, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("/admin/notifications", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstance.get("/admin/notifications");
       return {
         notifications: response.data.data,
         totalCount: response.data.data.length
@@ -74,11 +70,9 @@ export const fetchNotifications = createAsyncThunk(
 
 export const fetchMyUnreadNotifications = createAsyncThunk(
   "notification/fetchUnreadNotifications",
-  async (token: string, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("/admin/my-unread-notifications", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.get("/admin/my-unread-notifications");
       return response.data.data;
     } catch (error) {
       console.error("Error fetching unread notifications:", error);
@@ -93,16 +87,12 @@ export const fetchMyUnreadNotifications = createAsyncThunk(
 export const markNotificationAsRead = createAsyncThunk(
   "notification/markNotificationAsRead",
   async (
-    { notificationId, token }: { notificationId: string; token: string },
+    { notificationId }: { notificationId: string; },
     { rejectWithValue }
   ) => {
     try {
       const response = await axiosInstance.patch(
-        `/admin/notifications/is-marked-read/${notificationId}`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        `/admin/notifications/is-marked-read/${notificationId}`, {}
       );
       return response.data.data;
     } catch (error) {
@@ -118,16 +108,14 @@ export const markNotificationAsRead = createAsyncThunk(
 export const markAllAsRead = createAsyncThunk(
   "notification/markAllAsRead",
   async (
-    token: string,
+    _,
     { rejectWithValue }
   ) => {
     try {
       const response = await axiosInstance.patch(
         `/admin/notifications/mark-all-as-read`,
         {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+
       );
       return response.data.data;
     } catch (error) {
@@ -143,15 +131,11 @@ export const markAllAsRead = createAsyncThunk(
 export const createNotification = createAsyncThunk(
   "notification/createNotification",
   async (
-    { data, token }: { data: CreateNotificationPayload; token: string },
+    { data }: { data: CreateNotificationPayload; },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.post("/admin/notifications", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstance.post("/admin/notifications", data);
       return response.data.data;
     } catch (error) {
       console.error("Error creating notification:", error);
@@ -166,15 +150,13 @@ export const createNotification = createAsyncThunk(
 export const fetchNotificationById = createAsyncThunk(
   "notification/fetchNotificationById",
   async (
-    { notificationId, token }: { notificationId: string; token: string },
+    { notificationId }: { notificationId: string; },
     { rejectWithValue }
   ) => {
     try {
       const response = await axiosInstance.get(
         `/admin/notifications/${notificationId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+
       );
       return response.data.data;
     } catch (error) {
@@ -189,11 +171,9 @@ export const fetchNotificationById = createAsyncThunk(
 
 export const fetchMyNotifications = createAsyncThunk(
   "notification/fetchMyNotifications",
-  async (token: string, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("/admin/notifications/my", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosInstance.get("/admin/notifications/my");
       return response.data.data;
     } catch (error) {
       console.error("Error fetching my notifications:", error);
@@ -211,11 +191,10 @@ export const updateNotification = createAsyncThunk(
     {
       notificationId,
       data,
-      token,
     }: {
       notificationId: string;
       data: { title?: string; details?: string };
-      token: string;
+
     },
     { rejectWithValue }
   ) => {
@@ -223,11 +202,7 @@ export const updateNotification = createAsyncThunk(
       const response = await axiosInstance.patch(
         `/admin/notifications/${notificationId}`,
         data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+
       );
       return response.data.data;
     } catch (error) {
@@ -243,15 +218,13 @@ export const updateNotification = createAsyncThunk(
 export const deleteNotification = createAsyncThunk(
   "notification/deleteNotification",
   async (
-    { notificationId, token }: { notificationId: string; token: string },
+    { notificationId }: { notificationId: string; },
     { rejectWithValue }
   ) => {
     try {
       const response = await axiosInstance.delete(
         `/admin/notifications/${notificationId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+
       );
       return response.data.data;
     } catch (error) {

@@ -22,7 +22,6 @@ import {
 } from "@heroicons/react/24/solid";
 import { IoLogOut } from "react-icons/io5";
 import clsx from "clsx";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 export default function Navbar() {
     const dispatch = useDispatch<AppDispatch>();
@@ -32,22 +31,16 @@ export default function Navbar() {
     const { t } = useTranslation();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const user = useSelector(selectProfileUser);
-    const { token, setToken } = useTokenContext();
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchProfile(token));
-        }
-    }, [dispatch, token]);
+        dispatch(fetchProfile());
+    }, [dispatch]);
 
     const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
     const handleLogout = async () => {
-        if (!token) return;
         try {
-            await dispatch(logoutUser(token));
-            setToken(null);
-            localStorage.removeItem("accessToken");
+            await dispatch(logoutUser());
             localStorage.removeItem("user");
             toast.success("Logout successful");
             router.push("/contentiaio/authentication");
@@ -65,8 +58,6 @@ export default function Navbar() {
         ],
         []
     );
-
-    if (!token) return null;
 
     const NavLinks = ({ onClick }: { onClick?: () => void }) => (
         <>

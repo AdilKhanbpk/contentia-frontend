@@ -12,7 +12,6 @@ import {
 } from "@/store/features/admin/aboutSlice";
 import ImageUploader from "./AboutImageUploader";
 import { toast } from "react-toastify";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 interface AboutFormData {
@@ -31,8 +30,7 @@ export default function Abouts() {
     const { sections, loading, error } = useSelector(
         (state: RootState) => state.about
     );
-    const { token } = useTokenContext();
-    if (!token) return null;
+
     const {
         register,
         handleSubmit,
@@ -95,7 +93,6 @@ export default function Abouts() {
                 updateAbout({
                     aboutId: sectionId!,
                     data,
-                    token,
                 }) as any
             )
                 .then(() => {
@@ -108,7 +105,6 @@ export default function Abouts() {
             dispatch(
                 createAbout({
                     data,
-                    token,
                 }) as any
             )
                 .then(() => {

@@ -9,7 +9,6 @@ import {
     fetchEmailNotifications,
 } from "@/store/features/admin/emailNotificationSlice";
 import { EmailNotificationInterface } from "@/types/interfaces";
-import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -39,8 +38,6 @@ export default function EditEmailNotification({
 
     const emailBody = watch("emailContent", emailNotification.emailContent);
     const userType = watch("userType", emailNotification.userType);
-    const { token } = useTokenContext();
-    if (!token) return null;
 
     useEffect(() => {
         if (emailNotification) {
@@ -70,10 +67,9 @@ export default function EditEmailNotification({
             updateEmailNotification({
                 emailNotificationId: emailNotification._id,
                 data: payload,
-                token,
             })
         );
-        await dispatch(fetchEmailNotifications(token));
+        await dispatch(fetchEmailNotifications());
         onClose();
     };
 
