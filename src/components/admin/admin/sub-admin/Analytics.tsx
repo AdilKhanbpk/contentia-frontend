@@ -153,14 +153,16 @@ const Analytics: React.FC = () => {
                     <div className='col-span-1'>
                         <AnalyticEcommerce
                             title='Total Page Views'
-                            count='4,42,236'
+                            count={(
+                                analytics?.overview?.pageViews ?? "0"
+                            ).toString()}
                         />
                     </div>
                     <div className='col-span-1'>
                         <AnalyticEcommerce
                             title='Total Users'
                             count={(
-                                users?.totalUsersForCurrentMonth ?? ""
+                                analytics?.overview?.totalUsers ?? "0"
                             ).toString()}
                         />
                     </div>

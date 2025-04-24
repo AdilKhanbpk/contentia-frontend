@@ -376,6 +376,22 @@ export interface ClaimInterface {
 }
 
 export interface AnalyticsInterface {
-    pageViews: string;
-    totalUsers: string;
+    overview: {
+        pageViews: string;
+        totalUsers: string;
+        newUsers: string;
+        engagementDuration: string;
+        engagedSessions: string;
+    };
+    byDevice: {
+        [key: string]: number;
+    };
+    byCountry: {
+        [key: string]: number;
+    };
+    trends: {
+        date: string;
+        pageViews: number;
+        users: number;
+    };
 }

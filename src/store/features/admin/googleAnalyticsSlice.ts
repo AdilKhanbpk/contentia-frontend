@@ -6,14 +6,14 @@ import { AnalyticsInterface } from '@/types/interfaces';
 
 
 export interface GoogleAnalyticsState {
-    analytics: AnalyticsInterface[];
+    analytics: AnalyticsInterface;
     currentFile: AnalyticsInterface | null;
     loading: boolean;
     error: string | null;
 }
 
 const initialState: GoogleAnalyticsState = {
-    analytics: [],
+    analytics: {} as AnalyticsInterface,
     currentFile: null,
     loading: false,
     error: null,
@@ -50,7 +50,7 @@ const termSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchGoogleAnalytics.fulfilled, (state, action: PayloadAction<AnalyticsInterface[]>) => {
+            .addCase(fetchGoogleAnalytics.fulfilled, (state, action: PayloadAction<AnalyticsInterface>) => {
                 state.loading = false;
                 state.analytics = action.payload;
             })
