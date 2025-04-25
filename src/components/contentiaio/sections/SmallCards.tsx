@@ -90,7 +90,7 @@ export default function SmallCards() {
                 <div className='flex justify-center items-center mt-8'>
                     <div>
                         <button className='Button text-white font-bold py-2 px-8 rounded focus:outline-none focus:shadow-outline'>
-                            Fi​yatlar{" "}
+                            <a href='#fiyatlandırma'>Fi​yatlar </a>
                         </button>
                     </div>
                 </div>

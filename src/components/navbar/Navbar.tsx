@@ -276,22 +276,30 @@ export default function Navbar() {
                                                     {user?.fullName ||
                                                         "John Doe"}
                                                 </li>
-                                                <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
-                                                    <UserIcon className='w-4 h-4' />
-                                                    Profil
-                                                </li>
-                                                <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
-                                                    <ShoppingCartIcon className='w-4 h-4' />
-                                                    Siparisler
-                                                </li>
-                                                <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
-                                                    <PaperClipIcon className='w-4 h-4' />
-                                                    Paketler
-                                                </li>
-                                                <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
-                                                    <BriefcaseIcon className='w-4 h-4' />
-                                                    Markalarim
-                                                </li>
+                                                <Link href='/profil'>
+                                                    <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                        <UserIcon className='w-4 h-4' />
+                                                        Profil
+                                                    </li>
+                                                </Link>
+                                                <Link href='/siparislerim'>
+                                                    <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                        <ShoppingCartIcon className='w-4 h-4' />
+                                                        Siparisler
+                                                    </li>
+                                                </Link>
+                                                <Link href='/paketler'>
+                                                    <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                        <PaperClipIcon className='w-4 h-4' />
+                                                        Paketler
+                                                    </li>
+                                                </Link>
+                                                <Link href='/markalarim'>
+                                                    <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                        <BriefcaseIcon className='w-4 h-4' />
+                                                        Markalarim
+                                                    </li>
+                                                </Link>
                                                 <li
                                                     className='p-2 BlueText hover:bg-red-100 cursor-pointer text-red-600 flex items-center gap-2'
                                                     onClick={handleLogout}
