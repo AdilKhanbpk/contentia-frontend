@@ -98,9 +98,7 @@ const Preferences: React.FC<PreferencesProps> = ({ setActiveTab }) => {
 
             if (res.status === 201) {
                 toast.success(res.message);
-                router.push(
-                    "/contentiaio/become-creator/submitted-successfully"
-                );
+                router.push("/icerik-uretici-ol/submitted-successfully");
             }
         } catch (error: any) {
             const errorMessage =

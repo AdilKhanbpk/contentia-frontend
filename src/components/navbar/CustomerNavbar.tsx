@@ -43,7 +43,7 @@ export default function Navbar() {
             await dispatch(logoutUser());
             localStorage.removeItem("user");
             toast.success("Logout successful");
-            router.push("/contentiaio/authentication");
+            router.push("/giris-yap");
         } catch (error) {
             toast.error("Logout failed");
         }

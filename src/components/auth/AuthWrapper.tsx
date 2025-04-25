@@ -15,9 +15,9 @@ const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
         (state: RootState) => state.login
     );
 
-    const isCustomerRoute = pathname.startsWith("/orders");
+    const isCustomerRoute = pathname.startsWith("/siparis-olustur");
     const isAdminRoute = pathname.startsWith("/admin");
-    const isAuthPage = ["/contentiaio/authentication"].includes(pathname);
+    const isAuthPage = ["/giris-yap"].includes(pathname);
 
     useEffect(() => {
         if (!isLoading) {
@@ -26,7 +26,7 @@ const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
                 toast.error("Admin access only");
             }
             if (isCustomerRoute && user?.role !== "user") {
-                router.replace("/contentiaio/authentication");
+                router.replace("/giris-yap");
                 toast.error("Login is required");
             }
             if (user && isAuthPage) {

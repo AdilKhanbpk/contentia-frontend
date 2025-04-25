@@ -184,7 +184,7 @@ export default function AdminNavbar() {
         dispatch(logoutUser())
             .then(() => {
                 toast.success("Logout successful");
-                router.push("/contentiaio/authentication");
+                router.push("/giris-yap");
             })
             .catch(() => {
                 toast.error("Logout failed");

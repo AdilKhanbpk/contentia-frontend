@@ -136,7 +136,7 @@ const HelpSupportPage: React.FC = () => {
                                             alt={helpSupport.title}
                                         />
                                         <Link
-                                            href={`/contentiaio/help-support/detail/${helpSupport._id}`}
+                                            href={`/destek-merkezi/detail/${helpSupport._id}`}
                                         >
                                             <span className='cursor-pointer hover:underline'>
                                                 {helpSupport.title}

@@ -345,7 +345,7 @@ export default function Navbar() {
                                 <ul className='ml-6 space-y-1 mt-1'>
                                     <li>
                                         <a
-                                            href='#'
+                                            href='/'
                                             className='block p-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded'
                                         >
                                             Markalar
@@ -353,7 +353,7 @@ export default function Navbar() {
                                     </li>
                                     <li>
                                         <a
-                                            href='#'
+                                            href='/'
                                             className='block p-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded'
                                         >
                                             Ajanslar
@@ -361,7 +361,7 @@ export default function Navbar() {
                                     </li>
                                     <li>
                                         <a
-                                            href='#'
+                                            href='/'
                                             className='block p-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded'
                                         >
                                             Girişimler
@@ -380,7 +380,7 @@ export default function Navbar() {
                         </li>
                         <li>
                             <a
-                                href='#'
+                                href='/hakkimizda'
                                 className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'
                             >
                                 <span className='ms-3'>Hakkımızda</span>
@@ -388,7 +388,7 @@ export default function Navbar() {
                         </li>
                         <li>
                             <Link
-                                href='/contentiaio/how-it-works'
+                                href='/nasil-calisir'
                                 className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'
                             >
                                 <span className='ms-3'>Nasıl Çalışır?</span>
@@ -396,7 +396,7 @@ export default function Navbar() {
                         </li>
                         <li>
                             <Link
-                                href='/contentiaio/become-creator'
+                                href='/icerik-uretici-ol'
                                 className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'
                             >
                                 <span className='ms-3'>
@@ -409,7 +409,7 @@ export default function Navbar() {
                             <>
                                 <li>
                                     <Link
-                                        href='/contentiaio/authentication'
+                                        href='/giris-yap'
                                         className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'
                                     >
                                         <span className='ms-3'>
@@ -419,9 +419,11 @@ export default function Navbar() {
                                 </li>
                                 <li>
                                     <div className='px-2'>
-                                        <button className='w-full Button text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>
-                                            {t("getStarted")}
-                                        </button>
+                                        <Link href='/'>
+                                            <button className='w-full Button text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>
+                                                {t("getStarted")}
+                                            </button>
+                                        </Link>
                                     </div>
                                 </li>
                             </>

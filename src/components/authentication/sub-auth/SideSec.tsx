@@ -9,7 +9,7 @@ export default function SideSec() {
     const router = useRouter();
 
     const creatorRouter = () => {
-        router.push("/contentiaio/become-creator");
+        router.push("/icerik-uretici-ol");
     };
 
     return (

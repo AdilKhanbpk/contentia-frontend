@@ -41,9 +41,9 @@ const LoginForm = () => {
             if (admin) {
                 router.push("/admin");
             } else if (customer) {
-                router.push("/orders");
+                router.push("/siparis-olustur");
             } else {
-                router.push("/contentiaio/authentication");
+                router.push("/giris-yap");
             }
         } catch (error: any) {
             toast.error(error?.message || "Login failed: An error occurred");

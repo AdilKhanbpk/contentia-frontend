@@ -162,7 +162,7 @@ const Footer = () => {
                             <li>
                                 <Link
                                     legacyBehavior
-                                    href='/blogs'
+                                    href='/blog'
                                 >
                                     <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
                                         Blog
