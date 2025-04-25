@@ -179,7 +179,7 @@ export default function Navbar() {
                                 </li>
                                 <li>
                                     <Link
-                                        href='#'
+                                        href='#fiyatlandırma'
                                         className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
                                     >
                                         Fiyatlandırma
@@ -372,7 +372,7 @@ export default function Navbar() {
                         </li>
                         <li>
                             <a
-                                href='#'
+                                href='#fiyatlandırma'
                                 className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'
                             >
                                 <span className='ms-3'>{t("pricing")}</span>

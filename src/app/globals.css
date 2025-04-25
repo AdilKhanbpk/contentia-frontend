@@ -21,6 +21,10 @@
 @import "~slick-carousel/slick/slick-theme.css";
 @import "~react-toastify/dist/ReactToastify.min.css";
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: "Shoika", sans-serif;
     font-weight: 400;

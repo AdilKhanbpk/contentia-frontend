@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
@@ -93,13 +93,15 @@ export function Contentiaio() {
 
                 <WhyContentia />
 
-                {packages && (
-                    <Packages
-                        packages={packages}
-                        packagesLoading={packagesLoading}
-                        packagesError={packagesError}
-                    />
-                )}
+                <div id={"fiyatlandırma"}>
+                    {packages && (
+                        <Packages
+                            packages={packages}
+                            packagesLoading={packagesLoading}
+                            packagesError={packagesError}
+                        />
+                    )}
+                </div>
 
                 <Special />
             </div>
