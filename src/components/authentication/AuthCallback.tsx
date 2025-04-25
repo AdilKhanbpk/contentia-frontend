@@ -1,26 +1,22 @@
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { useDispatch } from 'react-redux';
-import { toast } from 'react-toastify';
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 const AuthCallback = () => {
     const router = useRouter();
-    const dispatch = useDispatch();
 
     useEffect(() => {
         const token = router.query.token as string;
-        
+
         if (token) {
             // Store token in localStorage
-            localStorage.setItem('accessToken', token);
-            
-            // Update your TokenContext if needed
-            setToken(token);
-            
+            localStorage.setItem("accessToken", token);
+
             toast.success("Login successful");
-            
+
             // Redirect to appropriate page
-            router.push('/orders');
+            router.push("/orders");
         }
     }, [router.query]);
 
