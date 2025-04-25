@@ -12,11 +12,14 @@ import {
 } from "@/store/features/profile/orderSlice";
 import { useFileContext } from "@/context/FileContext";
 import CustomModalAdmin from "@/components/modal/CustomModelAdmin";
+import { useRouter } from "next/navigation";
 
 const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
     setActiveTab,
 }) => {
     const dispatch = useDispatch<AppDispatch>();
+    const router = useRouter();
+
     const [minAge, setMinAge] = useState(18);
     const [maxAge, setMaxAge] = useState(65);
     const orderLoading = useSelector(selectOrderIsLoading);
@@ -577,7 +580,10 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
             <CustomModalAdmin
                 title=''
                 isOpen={isOrderFailed}
-                closeModal={() => setIsOrderFailed(false)}
+                closeModal={() => {
+                    setIsOrderFailed(false);
+                    router.push("/sipareslerim");
+                }}
             >
                 <div className='flex flex-col items-center justify-center pt-4 pb-16 px-16 text-center'>
                     <Image
