@@ -1,21 +1,17 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { changeProfilePicture } from "@/store/features/profile/profileSlice";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { AppDispatch } from "@/store/store";
 
-interface ProfileChangerProps {
+interface LogoUploaderProps {
     currentImage?: string | null;
 }
 
-export default function ProfileChanger({ currentImage }: ProfileChangerProps) {
-    const dispatch = useDispatch<AppDispatch>();
+export default function LogoUploader({ currentImage }: LogoUploaderProps) {
+    const { register, setValue } = useForm();
     const [previewImage, setPreviewImage] = useState<string | null>(
         currentImage || null
     );
-
-    const [imageFile, setImageFile] = useState<File | null>(null);
 
     useEffect(() => {
         if (currentImage) {
@@ -23,35 +19,19 @@ export default function ProfileChanger({ currentImage }: ProfileChangerProps) {
         }
     }, [currentImage]);
 
-    const handleImageChange = async (
-        e: React.ChangeEvent<HTMLInputElement>
-    ) => {
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (!file) {
-            toast.error("No image selected. Please choose an image to upload.");
-            return;
-        }
-        setImageFile(file);
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setPreviewImage(reader.result as string);
-        };
-        reader.readAsDataURL(file);
+        e.target.value = ""; // reset the input value after file is selected
 
-        try {
-            const result = await dispatch(
-                changeProfilePicture({
-                    file,
-                })
-            ).unwrap();
-            toast.success("Profile picture updated successfully!");
-        } catch (error) {
-            const errorMessage =
-                typeof error === "string"
-                    ? error
-                    : "Error uploading the image. Please try again.";
-            console.error("Toast error message:", errorMessage);
-            toast.error(errorMessage);
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreviewImage(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+
+            // Optionally, if you want to set the file in the form:
+            setValue("profilePic", file); // set form field value for profilePic
         }
     };
 
@@ -61,23 +41,30 @@ export default function ProfileChanger({ currentImage }: ProfileChangerProps) {
                 className='relative rounded-md p-4 text-center'
                 style={{ width: "150px" }}
             >
-                <input
-                    type='file'
-                    className='absolute inset-0 w-full h-full opacity-0 cursor-pointer'
-                    accept='image/*'
-                    onChange={handleImageChange}
-                />
-                {previewImage ? (
-                    <img
-                        src={previewImage}
-                        alt='Preview'
-                        className='w-full h-full object-cover rounded-md'
+                <label
+                    htmlFor='profilePic'
+                    className='cursor-pointer block w-full h-full'
+                >
+                    <input
+                        id='profilePic'
+                        type='file'
+                        accept='image/*'
+                        className='hidden'
+                        {...register("profilePic")}
+                        onChange={handleImageChange}
                     />
-                ) : (
-                    <div className='w-28 h-28 Button text-white rounded-full flex items-center justify-center'>
-                        Profile
-                    </div>
-                )}
+                    {previewImage ? (
+                        <img
+                            src={previewImage}
+                            alt='Preview'
+                            className='w-full h-full object-cover rounded-md'
+                        />
+                    ) : (
+                        <div className='w-28 h-28 bg-gray-300 text-white rounded-full flex items-center justify-center mx-auto'>
+                            Profile
+                        </div>
+                    )}
+                </label>
             </div>
         </div>
     );
