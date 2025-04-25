@@ -52,9 +52,9 @@ export default function Navbar() {
     const navItems = useMemo(
         () => [
             { href: "/", label: "Ana Sayfa" },
-            { href: "/orders/profile", label: "Profil" },
-            { href: "/orders/orders", label: "Siparişler" },
-            { href: "/orders/my-brands", label: "Markalarım" },
+            { href: "/profil", label: "Profil" },
+            { href: "/siparislerim", label: "Siparişler" },
+            { href: "/markalarim", label: "Markalarım" },
         ],
         []
     );

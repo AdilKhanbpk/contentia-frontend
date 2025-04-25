@@ -3,6 +3,7 @@ import React from "react";
 import { LoadingSkeleton } from "../Contentiaio";
 import MyCarousel from "@/components/carousel/MyCarousel";
 import DOMPurify from "dompurify";
+import Link from "next/link";
 
 interface HeroSectionProps {
     landingPage: any;
@@ -48,9 +49,11 @@ export default function HeroSection({
 
                         {landingPage && (
                             <div>
-                                <button className='Button text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>
-                                    UGC Siparisini Olustur{" "}
-                                </button>
+                                <Link href='/siparis-olustur'>
+                                    <button className='Button text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>
+                                        UGC Siparişini Oluştur
+                                    </button>
+                                </Link>
                             </div>
                         )}
                     </div>

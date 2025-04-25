@@ -187,7 +187,7 @@ export default function Navbar() {
                                 </li>
                                 <li>
                                     <Link
-                                        href='#'
+                                        href='/hakkimizda'
                                         className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
                                     >
                                         Hakkımızda
@@ -195,7 +195,7 @@ export default function Navbar() {
                                 </li>
                                 <li>
                                     <Link
-                                        href='/contentiaio/how-it-works'
+                                        href='/nasil-calisir'
                                         className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
                                     >
                                         Nasıl Çalışır?
@@ -209,7 +209,7 @@ export default function Navbar() {
                                 <li>
                                     <Link
                                         legacyBehavior
-                                        href='/contentiaio/become-creator'
+                                        href='/icerik-uretici-ol'
                                     >
                                         <a className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'>
                                             İçerik Üretici Ol
@@ -219,7 +219,7 @@ export default function Navbar() {
 
                                 <li>
                                     <Link
-                                        href='/contentiaio/authentication'
+                                        href='/giris-yap'
                                         className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
                                     >
                                         Giriş Yap

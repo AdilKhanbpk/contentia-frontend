@@ -19,7 +19,7 @@ export default function Packages({
 }: PackagesProps) {
     const router = useRouter();
     const handleOrderClick = () => {
-        router.push("/orders");
+        router.push("/siparis-olustur");
     };
     return (
         <div className='w-full ml-2 mt-8 sm:mt-12 md:mt-16 lg:mt-20'>

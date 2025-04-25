@@ -3,6 +3,7 @@
 import Image from "next/image";
 import React from "react";
 import { SectionHeader } from "../Contentiaio";
+import Link from "next/link";
 
 export default function WhyContentia() {
     return (
@@ -177,9 +178,11 @@ export default function WhyContentia() {
                             <tr className='bg-white'>
                                 <td className='px-4 py-3'></td>
                                 <td className='xs:w[150px] sm:w-[300px] px-4 py-3 text-center border-x-2 border-b-2 rounded-bl-lg rounded-br-lg border-[#4d4ec9]'>
-                                    <button className='Button xs:text-xs sm:text-base text-white font-bold py-3 px-4 !rounded-full focus:outline-none focus:shadow-outline'>
-                                        UGC Siparişini Oluştur{" "}
-                                    </button>
+                                    <Link href='/siparis-olustur'>
+                                        <button className='Button xs:text-xs sm:text-base text-white font-bold py-3 px-4 !rounded-full focus:outline-none focus:shadow-outline'>
+                                            UGC Siparişini Oluştur{" "}
+                                        </button>
+                                    </Link>
                                 </td>
 
                                 <td className='px-4 py-3'></td>

@@ -95,7 +95,7 @@ const Footer = () => {
                             <li>
                                 <Link
                                     legacyBehavior
-                                    href='#'
+                                    href='/'
                                 >
                                     <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
                                         Markalar
@@ -105,7 +105,7 @@ const Footer = () => {
                             <li>
                                 <Link
                                     legacyBehavior
-                                    href='#'
+                                    href='/'
                                 >
                                     <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
                                         Ajanslar
@@ -115,7 +115,7 @@ const Footer = () => {
                             <li>
                                 <Link
                                     legacyBehavior
-                                    href='#'
+                                    href='/'
                                 >
                                     <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
                                         Girişimler
@@ -132,7 +132,7 @@ const Footer = () => {
                             <li>
                                 <Link
                                     legacyBehavior
-                                    href='#'
+                                    href='/hakkimizda'
                                 >
                                     <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
                                         Hakkımızda
@@ -142,7 +142,7 @@ const Footer = () => {
                             <li>
                                 <Link
                                     legacyBehavior
-                                    href='#'
+                                    href='/sozlesmeler/gizlilik-politikasi'
                                 >
                                     <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
                                         Gizlilik Politikası
@@ -152,7 +152,7 @@ const Footer = () => {
                             <li>
                                 <Link
                                     legacyBehavior
-                                    href='#'
+                                    href='/sozlesmeler/kullanim-sartlari'
                                 >
                                     <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
                                         Kullanım Koşulları
@@ -162,7 +162,7 @@ const Footer = () => {
                             <li>
                                 <Link
                                     legacyBehavior
-                                    href='#'
+                                    href='/blogs'
                                 >
                                     <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
                                         Blog
@@ -179,7 +179,7 @@ const Footer = () => {
                             <li>
                                 <Link
                                     legacyBehavior
-                                    href='#'
+                                    href='/destek-merkezi'
                                 >
                                     <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
                                         Destek Merkezi
@@ -189,7 +189,7 @@ const Footer = () => {
                             <li>
                                 <Link
                                     legacyBehavior
-                                    href='#'
+                                    href='/nasil-calisir'
                                 >
                                     <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
                                         Nasıl Çalışır?
@@ -199,7 +199,7 @@ const Footer = () => {
                             <li>
                                 <Link
                                     legacyBehavior
-                                    href='#'
+                                    href='/nasil-calisir'
                                 >
                                     <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
                                         Sıkça Sorulan Sorular
@@ -209,7 +209,7 @@ const Footer = () => {
                             <li>
                                 <Link
                                     legacyBehavior
-                                    href='#'
+                                    href='/hakkimizda'
                                 >
                                     <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
                                         İletişim
