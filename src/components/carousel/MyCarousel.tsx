@@ -76,7 +76,7 @@ const MyCarousel: React.FC<CarouselProps> = ({ videos }) => {
                         >
                             <video
                                 muted={true}
-                                className={`object-cover transition-all duration-500 ease-in-out ${
+                                className={`object-cover rounded-3xl transition-all duration-500 ease-in-out ${
                                     index === playingVideoIndex
                                         ? "w-[250px] h-[250px] sm:w-[350px] sm:h-[350px] md:w-[400px] md:h-[400px]"
                                         : "w-[200px] h-[200px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[350px]"

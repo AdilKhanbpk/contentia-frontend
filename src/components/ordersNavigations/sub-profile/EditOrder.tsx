@@ -133,8 +133,9 @@ export default function EditOrder({ orderData }: EditOrderProps) {
                                         className='text-center py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-sm lg:text-sm'
                                     >
                                         <p>
-                                            We Have Not assigned any creator to
-                                            your Order yet.
+                                            Henüz içerik üreticileri tarafından
+                                            yüklenmiş bir içerik bulunmamaktadır
+                                            .
                                         </p>
                                     </td>
                                 </tr>

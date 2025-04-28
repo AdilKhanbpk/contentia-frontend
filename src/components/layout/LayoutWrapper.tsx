@@ -12,20 +12,20 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname();
     const { loading } = useTokenContext();
 
-    const isCustomerRoute = pathname.startsWith("/orders");
+    const isRootRoute = pathname === "/";
     const isAdminRoute = pathname.startsWith("/admin");
 
     if (loading) return <LoadingSpinner />;
 
     return (
         <>
-            {!isCustomerRoute && !isAdminRoute && <Navbar />}
-            {isCustomerRoute && <CustomerNavbar />}
+            {isRootRoute && !isAdminRoute && <Navbar />}
+            {!isRootRoute && !isAdminRoute && <CustomerNavbar />}
             {isAdminRoute && <AdminNavbar />}
 
             <main>{children}</main>
 
-            {!isCustomerRoute && !isAdminRoute && <Footer />}
+            {!isAdminRoute && <Footer />}
         </>
     );
 };

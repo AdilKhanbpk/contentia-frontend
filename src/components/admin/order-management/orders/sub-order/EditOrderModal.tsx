@@ -1544,7 +1544,7 @@ export default function EditModal({ order }: EditModalProps) {
                                         className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4  border text-xs lg:text-sm text-center'
                                     >
                                         <p className='text-xs lg:text-sm'>
-                                            No Creators assigned yet
+                                            Henüz hiçbir Yaratıcı atanmadı{" "}
                                         </p>
                                     </td>
                                 </tr>

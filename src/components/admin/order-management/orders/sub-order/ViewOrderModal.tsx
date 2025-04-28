@@ -1,5 +1,8 @@
+import { fetchAdditionalServices } from "@/store/features/admin/addPriceSlice";
+import { RootState } from "@/store/store";
 import { CreatorInterface, OrderInterface } from "@/types/interfaces";
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 interface ViewModalProps {
     order: OrderInterface | null;
@@ -7,6 +10,34 @@ interface ViewModalProps {
 
 const ViewModal = ({ order }: ViewModalProps) => {
     if (!order) return null;
+
+    const { data: additionalService } = useSelector(
+        (state: RootState) => state.addPrice
+    );
+    const dispatch = useDispatch();
+    const quantity = order.noOfUgc;
+    const basePrice = order.basePrice;
+
+    const checkStatus = (status: string) => {
+        switch (status) {
+            case "pending":
+                return "Beklemede";
+            case "active":
+                return "Aktif";
+            case "completed":
+                return "Tamamlandı";
+            case "cancelled":
+                return "İptal Edildi";
+            case "revision":
+                return "Revizyon";
+            default:
+                return status;
+        }
+    };
+
+    useEffect(() => {
+        dispatch(fetchAdditionalServices() as any);
+    }, [dispatch]);
 
     return (
         <>
@@ -50,7 +81,7 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                     Order Status:
                                 </div>
                                 <div className='text-right font-bold BlueText'>
-                                    {order.orderStatus}
+                                    {checkStatus(order.orderStatus)}
                                 </div>
 
                                 <div className='text-gray-700 font-semibold'>
@@ -59,15 +90,235 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                 <div className='text-right font-bold BlueText'>
                                     {order.paymentStatus}
                                 </div>
+                            </div>
 
-                                <div className='text-gray-700 font-semibold'>
-                                    Total Price:
-                                </div>
-                                <div className='text-right font-bold BlueText'>
-                                    {order?.totalPriceForCustomer?.toLocaleString(
-                                        "tr-TR"
-                                    )}{" "}
-                                    TL
+                            {/* Order Summary */}
+                            <div className='flex -mt-0 lg:-mt-44'>
+                                <div className='bg-white rounded-md w-full lg:w-3/6'>
+                                    <h2 className='BlueText text-lg font-semibold mb-4'>
+                                        Sipariş Özeti:
+                                    </h2>
+                                    <div className='flex items-center justify-between'>
+                                        <div>
+                                            <p className='font-semibold'>
+                                                {quantity} Videos
+                                            </p>
+                                            <p className='text-sm text-gray-500'>
+                                                {basePrice
+                                                    ? (
+                                                          basePrice / quantity
+                                                      ).toLocaleString("tr-TR")
+                                                    : "0"}{" "}
+                                                TL / Video
+                                            </p>
+                                        </div>
+                                        <p className='font-semibold BlueText'>
+                                            {basePrice?.toLocaleString(
+                                                "tr-TR"
+                                            ) ?? "0"}{" "}
+                                            TL
+                                        </p>
+                                    </div>
+                                    {/* Additional Services */}
+                                    {order?.additionalServices?.duration &&
+                                        ["30s", "60s"].includes(
+                                            order.additionalServices.duration
+                                        ) && (
+                                            <div className='flex items-center justify-between'>
+                                                <div>
+                                                    <p className='font-semibold'>
+                                                        Süre
+                                                    </p>
+                                                    <p className='text-sm '>
+                                                        {order
+                                                            .additionalServices
+                                                            .duration === "30s"
+                                                            ? `${(
+                                                                  additionalService?.thirtySecondDurationPrice ??
+                                                                  0
+                                                              ).toLocaleString(
+                                                                  "tr-TR"
+                                                              )} TL / Video`
+                                                            : order
+                                                                  .additionalServices
+                                                                  .duration ===
+                                                              "60s"
+                                                            ? `${(
+                                                                  additionalService?.sixtySecondDurationPrice ??
+                                                                  0
+                                                              ).toLocaleString(
+                                                                  "tr-TR"
+                                                              )} TL / Video`
+                                                            : ""}
+                                                    </p>
+                                                </div>
+                                                <p className='font-semibold BlueText'>
+                                                    {order.additionalServices
+                                                        .duration === "30s"
+                                                        ? `${(
+                                                              (additionalService?.thirtySecondDurationPrice ??
+                                                                  0) * quantity
+                                                          ).toLocaleString(
+                                                              "tr-TR"
+                                                          )} TL`
+                                                        : order
+                                                              .additionalServices
+                                                              .duration ===
+                                                          "60s"
+                                                        ? `${(
+                                                              (additionalService?.sixtySecondDurationPrice ??
+                                                                  0) * quantity
+                                                          ).toLocaleString(
+                                                              "tr-TR"
+                                                          )} TL`
+                                                        : ""}
+                                                </p>
+                                            </div>
+                                        )}
+
+                                    {order?.additionalServices?.edit && (
+                                        <div className='flex items-center justify-between'>
+                                            <div>
+                                                <p className='font-semibold'>
+                                                    Düzenleme
+                                                </p>
+                                                <p className='text-sm text-gray-500'>
+                                                    {(
+                                                        additionalService?.editPrice ??
+                                                        0
+                                                    ).toLocaleString(
+                                                        "tr-TR"
+                                                    )}{" "}
+                                                    TL / Video
+                                                </p>
+                                            </div>
+                                            <p className='font-semibold BlueText'>
+                                                {(
+                                                    (additionalService?.editPrice ??
+                                                        0) * quantity
+                                                ).toLocaleString("tr-TR")}{" "}
+                                                TL
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {order?.additionalServices?.share && (
+                                        <div className='flex items-center justify-between'>
+                                            <div>
+                                                <p className='font-semibold'>
+                                                    Sosyal Medyada Paylaşım
+                                                </p>
+                                                <p className='text-sm text-gray-500'>
+                                                    {(
+                                                        additionalService?.sharePrice ??
+                                                        0
+                                                    ).toLocaleString(
+                                                        "tr-TR"
+                                                    )}{" "}
+                                                    TL / Video
+                                                </p>
+                                            </div>
+                                            <p className='font-semibold BlueText'>
+                                                {(
+                                                    (additionalService?.sharePrice ??
+                                                        0) * quantity
+                                                ).toLocaleString("tr-TR")}{" "}
+                                                TL
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {order?.additionalServices
+                                        ?.coverPicture && (
+                                        <div className='flex items-center justify-between'>
+                                            <div>
+                                                <p className='font-semibold'>
+                                                    Kapak Görseli
+                                                </p>
+                                                <p className='text-sm text-gray-500'>
+                                                    {(
+                                                        additionalService?.coverPicPrice ??
+                                                        0
+                                                    ).toLocaleString(
+                                                        "tr-TR"
+                                                    )}{" "}
+                                                    TL / Video
+                                                </p>
+                                            </div>
+                                            <p className='font-semibold BlueText'>
+                                                {(
+                                                    (additionalService?.coverPicPrice ??
+                                                        0) * quantity
+                                                ).toLocaleString("tr-TR")}{" "}
+                                                TL
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {order?.additionalServices?.creatorType && (
+                                        <div className='flex items-center justify-between'>
+                                            <div>
+                                                <p className='font-semibold'>
+                                                    Influencer Paketi
+                                                </p>
+                                                <p className='text-sm text-gray-500'>
+                                                    {(
+                                                        additionalService?.creatorTypePrice ??
+                                                        0
+                                                    ).toLocaleString(
+                                                        "tr-TR"
+                                                    )}{" "}
+                                                    TL / Video
+                                                </p>
+                                            </div>
+                                            <p className='font-semibold BlueText'>
+                                                {(
+                                                    (additionalService?.creatorTypePrice ??
+                                                        0) * quantity
+                                                ).toLocaleString("tr-TR")}{" "}
+                                                TL
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {order?.additionalServices
+                                        ?.productShipping && (
+                                        <div className='flex items-center justify-between'>
+                                            <div>
+                                                <p className='font-semibold'>
+                                                    Ürün Gönderimi
+                                                </p>
+                                                <p className='text-sm text-gray-500'>
+                                                    {(
+                                                        additionalService?.shippingPrice ??
+                                                        0
+                                                    ).toLocaleString(
+                                                        "tr-TR"
+                                                    )}{" "}
+                                                    TL / Video
+                                                </p>
+                                            </div>
+                                            <p className='font-semibold BlueText'>
+                                                {(
+                                                    (additionalService?.shippingPrice ??
+                                                        0) * quantity
+                                                ).toLocaleString("tr-TR")}{" "}
+                                                TL
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    <div className='flex items-center justify-between mt-5'>
+                                        <div className='text-gray-700 font-semibold'>
+                                            Total Price:
+                                        </div>
+                                        <div className='text-right font-bold BlueText'>
+                                            {order?.totalPriceForCustomer?.toLocaleString(
+                                                "tr-TR"
+                                            )}{" "}
+                                            TL
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -91,8 +342,8 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                 <div className='text-gray-700'>Editing:</div>
                                 <div className='text-right font-bold BlueText'>
                                     {order.additionalServices?.edit
-                                        ? "Yes"
-                                        : "No"}
+                                        ? "Evet"
+                                        : "Hayır"}
                                 </div>
 
                                 <div className='text-gray-700'>
@@ -106,8 +357,8 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                 <div className='text-gray-700'>Shareable:</div>
                                 <div className='text-right font-bold BlueText'>
                                     {order.additionalServices?.share
-                                        ? "Yes"
-                                        : "No"}
+                                        ? "Evet"
+                                        : "Hayır"}
                                 </div>
 
                                 <div className='text-gray-700'>
@@ -115,8 +366,8 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                 </div>
                                 <div className='text-right font-bold BlueText'>
                                     {order.additionalServices?.coverPicture
-                                        ? "Yes"
-                                        : "No"}
+                                        ? "Evet"
+                                        : "Hayır"}
                                 </div>
 
                                 <div className='text-gray-700'>
@@ -124,8 +375,8 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                 </div>
                                 <div className='text-right font-bold BlueText'>
                                     {order.additionalServices?.creatorType
-                                        ? "Yes"
-                                        : "No"}
+                                        ? "Evet"
+                                        : "Hayır"}
                                 </div>
 
                                 <div className='text-gray-700'>
@@ -133,8 +384,8 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                 </div>
                                 <div className='text-right font-bold BlueText'>
                                     {order.additionalServices?.productShipping
-                                        ? "Yes"
-                                        : "No"}
+                                        ? "Evet"
+                                        : "Hayır"}
                                 </div>
                             </div>
                         </div>
@@ -359,7 +610,7 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                     className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4  border text-xs lg:text-sm text-center'
                                 >
                                     <p className='text-xs lg:text-sm'>
-                                        No Creators assigned yet
+                                        Henüz hiçbir Yaratıcı atanmadı{" "}
                                     </p>
                                 </td>
                             </tr>

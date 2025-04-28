@@ -1,43 +1,35 @@
 import Image from "next/image";
 import Link from "next/link";
-import appStoreImage from "../../../public/BecomeCreator/AppStore1.png";
-import googlePlayImage from "../../../public/BecomeCreator/google3.png";
-import instIcon from "../../../public/BecomeCreator/Instagram_icon.png";
-import facebookIcon from "../../../public/BecomeCreator/facebook_icon..png";
-import youtubeIcon from "../../../public/BecomeCreator/youtube_iconpng.png";
-import linkdinIcon from "../../../public/BecomeCreator/linkedin_icon.png";
-import xIcon from "../../../public/BecomeCreator/x_icon.png";
-import tiktokIcon from "../../../public/BecomeCreator/tiktik_icon.png";
 
 const socialLinks = [
     {
         href: "https://www.instagram.com/contentia.io/",
-        icon: instIcon,
+        icon: "/BecomeCreator/Instagram_icon.png",
         alt: "Instagram",
     },
     {
         href: "https://www.tiktok.com/contentia.io",
-        icon: tiktokIcon,
+        icon: "/BecomeCreator/tiktik_icon.png",
         alt: "TikTok",
     },
     {
         href: "https://www.youtube.com/@contentiaio",
-        icon: youtubeIcon,
+        icon: "/youtube.svg",
         alt: "YouTube",
     },
     {
         href: "https://twitter.com/contentia_io",
-        icon: xIcon,
+        icon: "/BecomeCreator/x_icon.png",
         alt: "Twitter",
     },
     {
         href: "https://www.linkedin.com/company/contentiaio",
-        icon: linkdinIcon,
+        icon: "/BecomeCreator/linkedin_icon.png",
         alt: "LinkedIn",
     },
     {
         href: "https://www.facebook.com/contentia.io",
-        icon: facebookIcon,
+        icon: "/BecomeCreator/facebook_icon..png",
         alt: "Facebook",
     },
 ];
@@ -230,39 +222,50 @@ const Footer = () => {
                         <p className='font-semibold'>İçerik Üretici Ol</p>
                     </div>
                     {/* App Store Links */}
-                    <div className='flex space-x-4 mt-3'>
-                        <Link
-                            href='https://apps.apple.com/app/idXXXXXXXXX'
-                            passHref
-                            legacyBehavior
-                        >
-                            <a
-                                target='_blank'
-                                rel='noopener noreferrer'
+                    <div className='flex flex-wrap gap-4 mt-3'>
+                        <div className='w-[160px] h-[50px] flex items-center justify-center bg-white rounded-md shadow-md'>
+                            <Link
+                                href='https://apps.apple.com/app/idXXXXXXXXX'
+                                passHref
+                                legacyBehavior
                             >
-                                <Image
-                                    src={appStoreImage}
-                                    alt='Download on the App Store'
-                                    className='w-[150px]'
-                                />
-                            </a>
-                        </Link>
-                        <Link
-                            href='https://play.google.com/store/apps/details?id=XXXXXXXXX'
-                            passHref
-                            legacyBehavior
-                        >
-                            <a
-                                target='_blank'
-                                rel='noopener noreferrer'
+                                <a
+                                    target='_blank'
+                                    rel='noopener noreferrer'
+                                    className='flex items-center justify-center w-full h-full'
+                                >
+                                    <Image
+                                        src='/BecomeCreator/AppStore1.png'
+                                        alt='Download on the App Store'
+                                        width={140}
+                                        height={40}
+                                        className='object-contain'
+                                    />
+                                </a>
+                            </Link>
+                        </div>
+
+                        <div className='w-[160px] h-[50px] flex items-center justify-center bg-white rounded-md shadow-md'>
+                            <Link
+                                href='https://play.google.com/store/apps/details?id=XXXXXXXXX'
+                                passHref
+                                legacyBehavior
                             >
-                                <Image
-                                    src={googlePlayImage}
-                                    alt='Get it on Google Play'
-                                    className='w-[150px]'
-                                />
-                            </a>
-                        </Link>
+                                <a
+                                    target='_blank'
+                                    rel='noopener noreferrer'
+                                    className='flex items-center justify-center w-full h-full'
+                                >
+                                    <Image
+                                        src='/BecomeCreator/googleplay2.svg'
+                                        alt='Get it on Google Play'
+                                        width={140}
+                                        height={40}
+                                        className='object-contain'
+                                    />
+                                </a>
+                            </Link>
+                        </div>
                     </div>
 
                     {/* Copyright */}
