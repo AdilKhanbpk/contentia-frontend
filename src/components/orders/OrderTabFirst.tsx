@@ -233,7 +233,7 @@ export default function TabFirst({
                                     <h3 className='text-sm font-semibold mb-1 w-1/4'>
                                         Platform:
                                     </h3>
-                                    <div className='flex space-x-4'>
+                                    <div className='px-1 flex flex-wrap gap-2'>
                                         {[
                                             {
                                                 label: "Instagram",
@@ -263,10 +263,10 @@ export default function TabFirst({
                                             <button
                                                 key={platform.value}
                                                 type='button'
-                                                className={`px-1 py-1 min-w-16 max-w-20 border text-xs rounded-sm ${
+                                                className={`px-3 py-1 min-w-[70px] text-xs rounded-sm border ${
                                                     selectedPlatform ===
                                                     platform.value
-                                                        ? "Button text-white"
+                                                        ? "BlueBg text-white"
                                                         : "bg-gray-100"
                                                 }`}
                                                 onClick={() => {

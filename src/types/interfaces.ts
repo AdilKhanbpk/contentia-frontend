@@ -233,6 +233,7 @@ export interface Customer {
     billingInformation?: BillingInformation;
     refreshToken?: string;
     rememberMe?: boolean;
+    userAgreement?: boolean;
     termsAndConditionsApproved?: boolean;
     createdAt?: Date;
     updatedAt?: Date;

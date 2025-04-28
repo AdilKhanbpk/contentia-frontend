@@ -6,24 +6,20 @@ import type { AppDispatch, RootState } from "@/store/store";
 import { signupUser } from "@/store/features/auth/loginSlice";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Customer } from "@/types/interfaces";
 
-interface FormData {
-    email: string;
-    password: string;
-    rememberMe: boolean;
-}
-
-const LoginForm = () => {
+const SignupForm = () => {
     const router = useRouter();
     const dispatch: AppDispatch = useDispatch();
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<FormData>();
+    } = useForm<Customer>();
     const loginState = useSelector((state: RootState) => state.login);
 
-    const onSubmit = (data: FormData) => {
+    const onSubmit = (data: Customer) => {
         dispatch(signupUser(data))
             .then(() => {
                 toast.success("Signup successful");
@@ -103,33 +99,72 @@ const LoginForm = () => {
                 )}
             </div>
 
-            <div className='flex items-start mb-2'>
+            {/* First Checkbox */}
+            <div className='flex items-start my-4'>
                 <input
-                    id='rememberMe'
+                    id='sozlesme'
                     type='checkbox'
-                    className='mt-1 mr-2'
-                    {...register("rememberMe", {
-                        required: "Lütfen Beni Hatırla'yı işaretleyin",
+                    {...register("userAgreement", {
+                        required:
+                            "Kullanıcı Sözleşmesi'ni onaylamak zorunludur.",
                     })}
+                    className='mt-1 mr-2'
                 />
                 <label
-                    htmlFor='rememberMe'
+                    htmlFor='sozlesme'
                     className='text-sm text-gray-500'
                 >
-                    Beni Hatırla
+                    <span className='underline'>
+                        <Link href='/dummy-url'>Kullanıcı Sözleşmesi</Link>
+                    </span>
+                    'ni{" "}
+                    <span className='underline'>
+                        <Link href='/dummy-url'>Aydınlatma Metni</Link>
+                    </span>
+                    'ni{" "}
+                    <span className='underline'>
+                        <Link href='/dummy-url'>Açık Rıza Metni</Link>
+                    </span>
+                    'ni ve{" "}
+                    <span className='underline'>
+                        <Link href='/dummy-url'>
+                            Ödeme Platform Kullanım Sözleşmesi
+                        </Link>
+                    </span>
+                    'ni okudum, onaylıyorum.
                 </label>
             </div>
-            {errors.rememberMe && (
-                <span className='text-red-500'>
-                    Lütfen göndermeden önce Beni Hatırla kısmını doldurunuz.
+            {errors?.userAgreement && (
+                <span className='text-red-500 text-sm'>
+                    {errors?.userAgreement?.message}
                 </span>
             )}
+
+            <div className='flex items-start mb-4'>
+                <input
+                    id='iletisim'
+                    type='checkbox'
+                    {...register("termsAndConditionsApproved")}
+                    className='mt-1 mr-2'
+                />
+                <label
+                    htmlFor='iletisim'
+                    className='text-sm text-gray-500'
+                >
+                    <span className='underline'>
+                        <Link href='/dummy-url'>
+                            Ticari Elektronik İleti ve İletişim İzni
+                        </Link>
+                    </span>
+                    'ni onaylıyorum.
+                </label>
+            </div>
 
             <button
                 type='submit'
                 className='w-full Button text-white py-2 rounded-lg font-semibold'
             >
-                {loginState.loading ? "Logging in..." : "Giriş Yap"}
+                {loginState.loading ? " Yükleniyor..." : "Üye Ol"}
             </button>
 
             {loginState.error && (
@@ -139,4 +174,4 @@ const LoginForm = () => {
     );
 };
 
-export default LoginForm;
+export default SignupForm;

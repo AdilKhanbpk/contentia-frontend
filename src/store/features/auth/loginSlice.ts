@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { axiosInstance } from "@/store/axiosInstance";
+import { Customer } from "@/types/interfaces";
 
 interface LoginData {
   email: string;
@@ -51,7 +52,7 @@ export const loginUser = createAsyncThunk(
 // Async thunk to handle signup
 export const signupUser = createAsyncThunk(
   "login/signupUser",
-  async (signupData: SignupData, { rejectWithValue }) => {
+  async (signupData: Customer, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("/users/signup", signupData);
       const user = response.data.data.userWithoutPassword;
