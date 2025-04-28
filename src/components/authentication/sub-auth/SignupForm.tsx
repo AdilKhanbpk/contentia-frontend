@@ -29,6 +29,10 @@ const SignupForm = () => {
                 toast.error("Signup failed");
             });
     };
+    const handleGoogleLogin = () => {
+        // Using the backend's Google auth endpoint
+        window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/auth/google?userType=user`;
+    };
 
     return (
         <form
@@ -37,6 +41,7 @@ const SignupForm = () => {
         >
             <button
                 type='button'
+                onClick={handleGoogleLogin}
                 className='flex justify-center w-full text-gray-700 mb-4 border border-gray-300'
             >
                 <Image
