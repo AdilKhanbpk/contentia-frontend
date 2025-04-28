@@ -45,7 +45,17 @@ export default function TabFirst({
         );
     }, [selectedServices]);
 
-    const getTotalPrice = () => basePrice + totalAdditionalCharges;
+    const getTotalPrice = () => {
+        // Base price already includes the quantity multiplication from package selection
+        let total = basePrice;
+
+        // Add additional services multiplied by number of videos
+        Object.values(selectedServices).forEach((servicePrice) => {
+            total += servicePrice * selectedQuantity;
+        });
+
+        return total;
+    };
 
     const singleVideo = pricing?.find((option) => option.videoCount === 1);
     const singleVideoPrice = useMemo(() => {
@@ -54,9 +64,11 @@ export default function TabFirst({
 
     const getSingleVideoPrice = () => {
         const baseVideoPrice = singleVideoPrice;
-        const additionalServicesPerVideo =
-            totalAdditionalCharges / selectedQuantity;
-        return baseVideoPrice + additionalServicesPerVideo;
+        const additionalServicesTotal = Object.values(selectedServices).reduce(
+            (acc, price) => acc + price,
+            0
+        );
+        return baseVideoPrice + additionalServicesTotal;
     };
 
     useEffect(() => {
@@ -123,7 +135,7 @@ export default function TabFirst({
         e.preventDefault();
         const formData = {
             noOfUgc: selectedQuantity,
-            basePrice,
+            basePrice: selectedQuantity === 1 ? singleVideoPrice : basePrice,
             totalPrice: getTotalPrice(),
             additionalServices: {
                 platform: selectedPlatform,
@@ -654,16 +666,28 @@ export default function TabFirst({
                                     1 Video x{" "}
                                     {(isCustomMode
                                         ? getSingleVideoPrice()
-                                        : getTotalPrice() / selectedQuantity
+                                        : basePrice / selectedQuantity +
+                                          Object.values(
+                                              selectedServices
+                                          ).reduce(
+                                              (acc, price) => acc + price,
+                                              0
+                                          )
                                     ).toLocaleString("tr-TR")}{" "}
                                     TL
                                 </p>
                                 <p className='text-sm BlueText'>
                                     Toplam:{" "}
-                                    {(isCustomMode
-                                        ? getSingleVideoPrice() *
-                                          selectedQuantity
-                                        : getTotalPrice()
+                                    {(
+                                        (isCustomMode
+                                            ? getSingleVideoPrice()
+                                            : basePrice / selectedQuantity +
+                                              Object.values(
+                                                  selectedServices
+                                              ).reduce(
+                                                  (acc, price) => acc + price,
+                                                  0
+                                              )) * selectedQuantity
                                     ).toLocaleString("tr-TR")}{" "}
                                     TL
                                 </p>

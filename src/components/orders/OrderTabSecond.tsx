@@ -128,37 +128,70 @@ export default function TabSecond({
                                         {quantity} Videos
                                     </p>
                                     <p className='text-sm text-gray-500'>
-                                        {basePrice?.toLocaleString("tr-TR")} TL
-                                        / Video
+                                        {basePrice
+                                            ? (
+                                                  basePrice / quantity
+                                              ).toLocaleString("tr-TR")
+                                            : "0"}{" "}
+                                        TL / Video
                                     </p>
                                 </div>
                                 <p className='font-semibold'>
-                                    {basePrice?.toLocaleString("tr-TR")} TL
+                                    {basePrice?.toLocaleString("tr-TR") ?? "0"}{" "}
+                                    TL
                                 </p>
                             </div>
 
                             {/* Additional Services */}
-                            {orderFormData?.additionalServices?.share && (
-                                <div className='flex justify-between'>
-                                    <div>
+                            {orderFormData?.additionalServices?.duration &&
+                                ["30s", "60s"].includes(
+                                    orderFormData.additionalServices.duration
+                                ) && (
+                                    <div className='flex justify-between'>
+                                        <div>
+                                            <p className='font-semibold'>
+                                                Süre
+                                            </p>
+                                            <p className='text-sm text-gray-500'>
+                                                {orderFormData
+                                                    .additionalServices
+                                                    .duration === "30s"
+                                                    ? `${(
+                                                          additionalService?.thirtySecondDurationPrice ??
+                                                          0
+                                                      ).toLocaleString(
+                                                          "tr-TR"
+                                                      )} TL / Video`
+                                                    : orderFormData
+                                                          .additionalServices
+                                                          .duration === "60s"
+                                                    ? `${(
+                                                          additionalService?.sixtySecondDurationPrice ??
+                                                          0
+                                                      ).toLocaleString(
+                                                          "tr-TR"
+                                                      )} TL / Video`
+                                                    : ""}
+                                            </p>
+                                        </div>
                                         <p className='font-semibold'>
-                                            Sosyal Medya Paylaşım
-                                        </p>
-                                        <p className='text-sm text-gray-500'>
-                                            {additionalService?.sharePrice?.toLocaleString(
-                                                "tr-TR"
-                                            )}{" "}
-                                            TL / Video
+                                            {orderFormData.additionalServices
+                                                .duration === "30s"
+                                                ? `${(
+                                                      (additionalService?.thirtySecondDurationPrice ??
+                                                          0) * quantity
+                                                  ).toLocaleString("tr-TR")} TL`
+                                                : orderFormData
+                                                      .additionalServices
+                                                      .duration === "60s"
+                                                ? `${(
+                                                      (additionalService?.sixtySecondDurationPrice ??
+                                                          0) * quantity
+                                                  ).toLocaleString("tr-TR")} TL`
+                                                : ""}
                                         </p>
                                     </div>
-                                    <p className='font-semibold'>
-                                        {additionalService?.sharePrice?.toLocaleString(
-                                            "tr-TR"
-                                        )}{" "}
-                                        TL
-                                    </p>
-                                </div>
-                            )}
+                                )}
 
                             {orderFormData?.additionalServices?.edit && (
                                 <div className='flex justify-between'>
@@ -167,36 +200,42 @@ export default function TabSecond({
                                             Düzenleme
                                         </p>
                                         <p className='text-sm text-gray-500'>
-                                            {additionalService?.editPrice?.toLocaleString(
-                                                "tr-TR"
-                                            )}{" "}
+                                            {(
+                                                additionalService?.editPrice ??
+                                                0
+                                            ).toLocaleString("tr-TR")}{" "}
                                             TL / Video
                                         </p>
                                     </div>
                                     <p className='font-semibold'>
-                                        {additionalService?.editPrice?.toLocaleString(
-                                            "tr-TR"
-                                        )}{" "}
+                                        {(
+                                            (additionalService?.editPrice ??
+                                                0) * quantity
+                                        ).toLocaleString("tr-TR")}{" "}
                                         TL
                                     </p>
                                 </div>
                             )}
 
-                            {orderFormData?.additionalServices?.duration && (
+                            {orderFormData?.additionalServices?.share && (
                                 <div className='flex justify-between'>
                                     <div>
-                                        <p className='font-semibold'>Süre</p>
+                                        <p className='font-semibold'>
+                                            Sosyal Medyada Paylaşım
+                                        </p>
                                         <p className='text-sm text-gray-500'>
-                                            {additionalService?.thirtySecondDurationPrice?.toLocaleString(
-                                                "tr-TR"
-                                            )}{" "}
+                                            {(
+                                                additionalService?.sharePrice ??
+                                                0
+                                            ).toLocaleString("tr-TR")}{" "}
                                             TL / Video
                                         </p>
                                     </div>
                                     <p className='font-semibold'>
-                                        {additionalService?.thirtySecondDurationPrice?.toLocaleString(
-                                            "tr-TR"
-                                        )}{" "}
+                                        {(
+                                            (additionalService?.sharePrice ??
+                                                0) * quantity
+                                        ).toLocaleString("tr-TR")}{" "}
                                         TL
                                     </p>
                                 </div>
@@ -210,16 +249,18 @@ export default function TabSecond({
                                             Kapak Görseli
                                         </p>
                                         <p className='text-sm text-gray-500'>
-                                            {additionalService?.coverPicPrice?.toLocaleString(
-                                                "tr-TR"
-                                            )}{" "}
+                                            {(
+                                                additionalService?.coverPicPrice ??
+                                                0
+                                            ).toLocaleString("tr-TR")}{" "}
                                             TL / Video
                                         </p>
                                     </div>
                                     <p className='font-semibold'>
-                                        {additionalService?.coverPicPrice?.toLocaleString(
-                                            "tr-TR"
-                                        )}{" "}
+                                        {(
+                                            (additionalService?.coverPicPrice ??
+                                                0) * quantity
+                                        ).toLocaleString("tr-TR")}{" "}
                                         TL
                                     </p>
                                 </div>
@@ -232,16 +273,18 @@ export default function TabSecond({
                                             Influencer Paketi
                                         </p>
                                         <p className='text-sm text-gray-500'>
-                                            {additionalService?.creatorTypePrice?.toLocaleString(
-                                                "tr-TR"
-                                            )}{" "}
+                                            {(
+                                                additionalService?.creatorTypePrice ??
+                                                0
+                                            ).toLocaleString("tr-TR")}{" "}
                                             TL / Video
                                         </p>
                                     </div>
                                     <p className='font-semibold'>
-                                        {additionalService?.creatorTypePrice?.toLocaleString(
-                                            "tr-TR"
-                                        )}{" "}
+                                        {(
+                                            (additionalService?.creatorTypePrice ??
+                                                0) * quantity
+                                        ).toLocaleString("tr-TR")}{" "}
                                         TL
                                     </p>
                                 </div>
@@ -255,16 +298,18 @@ export default function TabSecond({
                                             Ürün Gönderimi
                                         </p>
                                         <p className='text-sm text-gray-500'>
-                                            {additionalService?.shippingPrice?.toLocaleString(
-                                                "tr-TR"
-                                            )}{" "}
+                                            {(
+                                                additionalService?.shippingPrice ??
+                                                0
+                                            ).toLocaleString("tr-TR")}{" "}
                                             TL / Video
                                         </p>
                                     </div>
                                     <p className='font-semibold'>
-                                        {additionalService?.shippingPrice?.toLocaleString(
-                                            "tr-TR"
-                                        )}{" "}
+                                        {(
+                                            (additionalService?.shippingPrice ??
+                                                0) * quantity
+                                        ).toLocaleString("tr-TR")}{" "}
                                         TL
                                     </p>
                                 </div>
