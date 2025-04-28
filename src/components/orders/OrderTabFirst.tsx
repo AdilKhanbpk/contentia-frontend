@@ -47,12 +47,17 @@ export default function TabFirst({
 
     const getTotalPrice = () => basePrice + totalAdditionalCharges;
 
-    const oneVideoPrice = useMemo(() => {
-        if (!isCustomMode) return 0;
-        return selectedQuantity > 0
-            ? (basePrice + totalAdditionalCharges) / selectedQuantity
-            : 0;
-    }, [basePrice, totalAdditionalCharges, selectedQuantity, isCustomMode]);
+    const singleVideo = pricing?.find((option) => option.videoCount === 1);
+    const singleVideoPrice = useMemo(() => {
+        return singleVideo?.finalPrice || 0;
+    }, [singleVideo]);
+
+    const getSingleVideoPrice = () => {
+        const baseVideoPrice = singleVideoPrice;
+        const additionalServicesPerVideo =
+            totalAdditionalCharges / selectedQuantity;
+        return baseVideoPrice + additionalServicesPerVideo;
+    };
 
     useEffect(() => {
         dispatch(fetchPricePlans() as any);
@@ -550,7 +555,9 @@ export default function TabFirst({
 
                                 <p className='mt-6 text-sm BlueText font-semibold'>
                                     {isCustomMode
-                                        ? oneVideoPrice.toLocaleString("tr-TR")
+                                        ? singleVideoPrice.toLocaleString(
+                                              "tr-TR"
+                                          )
                                         : "—"}{" "}
                                     TL
                                     <span className='text-xs text-black font-thin'>
@@ -645,14 +652,20 @@ export default function TabFirst({
                             <div className='mr-4'>
                                 <p className='text-lg font-semibold BlueText'>
                                     1 Video x{" "}
-                                    {(
-                                        getTotalPrice() / selectedQuantity
+                                    {(isCustomMode
+                                        ? getSingleVideoPrice()
+                                        : getTotalPrice() / selectedQuantity
                                     ).toLocaleString("tr-TR")}{" "}
                                     TL
                                 </p>
                                 <p className='text-sm BlueText'>
                                     Toplam:{" "}
-                                    {getTotalPrice().toLocaleString("tr-TR")} TL
+                                    {(isCustomMode
+                                        ? getSingleVideoPrice() *
+                                          selectedQuantity
+                                        : getTotalPrice()
+                                    ).toLocaleString("tr-TR")}{" "}
+                                    TL
                                 </p>
                             </div>
 
