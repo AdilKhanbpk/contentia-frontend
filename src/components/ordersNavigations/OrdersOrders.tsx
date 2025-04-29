@@ -13,6 +13,7 @@ import ViewOrderDetails from "./sub-profile/ModelDetails";
 import { OrderInterface } from "@/types/interfaces";
 import { CiPickerEmpty } from "react-icons/ci";
 import { FaBoxOpen } from "react-icons/fa";
+import { checkStatus } from "@/utils/CheckOrderStatus";
 
 export default function OrdersOrders() {
     const dispatch = useDispatch<AppDispatch>();
@@ -57,23 +58,6 @@ export default function OrdersOrders() {
         setIsEditModalOpen(false);
         setIsRevModalOpen(false);
         setIsClaimModalOpen(false);
-    };
-
-    const getOrderStatusText = (status: string) => {
-        switch (status) {
-            case "active":
-                return "Aktif";
-            case "completed":
-                return "Tamamlandı";
-            case "pending":
-                return "Onay Bekliyor";
-            case "cancelled":
-                return "İptal";
-            case "revision":
-                return "Revizyon";
-            default:
-                return status;
-        }
     };
 
     const getButtonClassByStatus = (status: string) => {
@@ -213,7 +197,7 @@ export default function OrdersOrders() {
                                                         Sipariş Durumu:
                                                     </p>
                                                     <p className='font-semibold'>
-                                                        {getOrderStatusText(
+                                                        {checkStatus(
                                                             order.orderStatus
                                                         )}
                                                     </p>

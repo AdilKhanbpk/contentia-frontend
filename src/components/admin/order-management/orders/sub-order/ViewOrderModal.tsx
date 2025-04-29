@@ -1,6 +1,7 @@
 import { fetchAdditionalServices } from "@/store/features/admin/addPriceSlice";
 import { RootState } from "@/store/store";
 import { CreatorInterface, OrderInterface } from "@/types/interfaces";
+import { checkStatus } from "@/utils/CheckOrderStatus";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -17,23 +18,6 @@ const ViewModal = ({ order }: ViewModalProps) => {
     const dispatch = useDispatch();
     const quantity = order.noOfUgc;
     const basePrice = order.basePrice;
-
-    const checkStatus = (status: string) => {
-        switch (status) {
-            case "pending":
-                return "Beklemede";
-            case "active":
-                return "Aktif";
-            case "completed":
-                return "Tamamlandı";
-            case "cancelled":
-                return "İptal Edildi";
-            case "revision":
-                return "Revizyon";
-            default:
-                return status;
-        }
-    };
 
     useEffect(() => {
         dispatch(fetchAdditionalServices() as any);

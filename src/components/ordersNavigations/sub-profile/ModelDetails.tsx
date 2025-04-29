@@ -1,11 +1,9 @@
 import { fetchAdditionalServices } from "@/store/features/admin/addPriceSlice";
-import {
-    fetchSingleOrderFiles,
-    selectCurrentOrderFiles,
-} from "@/store/features/admin/fileSlice";
 import { RootState } from "@/store/store";
 import { CreatorInterface, OrderInterface } from "@/types/interfaces";
+import { checkStatus } from "@/utils/CheckOrderStatus";
 import { useEffect } from "react";
+import { FaExternalLinkAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 
 interface ViewOrderDetailsProps {
@@ -16,42 +14,13 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
     const { data: additionalService } = useSelector(
         (state: RootState) => state.addPrice
     );
-
-    const files = useSelector(selectCurrentOrderFiles);
-    console.log("🚀 ~ ViewOrderDetails ~ files:", files);
     const dispatch = useDispatch();
     const quantity = orderData.noOfUgc;
     const basePrice = orderData.basePrice;
 
-    const checkStatus = (status: string) => {
-        switch (status) {
-            case "pending":
-                return "Beklemede";
-            case "active":
-                return "Aktif";
-            case "completed":
-                return "Tamamlandı";
-            case "cancelled":
-                return "İptal Edildi";
-            case "revision":
-                return "Revizyon";
-            default:
-                return status;
-        }
-    };
-
     useEffect(() => {
         dispatch(fetchAdditionalServices() as any);
     }, [dispatch]);
-
-    useEffect(() => {
-        dispatch(fetchSingleOrderFiles({ orderId: orderData._id }) as any).then(
-            (response: any) => {
-                console.log("Files Response:", response.payload);
-            }
-        );
-    }, [dispatch, orderData._id]);
-
     return (
         <div className='bg-white xs:p-8'>
             {/* Creator Content Info */}
@@ -118,21 +87,23 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                                                                 {/* Creator ID Column */}
                                                                 <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm'>
                                                                     {
-                                                                        (
-                                                                            creator as CreatorInterface
-                                                                        )?._id
+                                                                        file.uploadedBy
                                                                     }
                                                                 </td>
 
                                                                 {/* File URL Column */}
                                                                 <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border'>
                                                                     <a
-                                                                        className='text-xs lg:text-sm BlueText block whitespace-normal lg:whitespace-nowrap'
                                                                         href={f}
                                                                         target='_blank'
                                                                         rel='noopener noreferrer'
+                                                                        className='text-blue-500 hover:underline text-xs flex items-center gap-3'
                                                                     >
-                                                                        {f}
+                                                                        <span className='BlueText max-w-[180px]'>
+                                                                            Folder
+                                                                            Link
+                                                                        </span>
+                                                                        <FaExternalLinkAlt className='BlueText w-3.5 h-3.5' />
                                                                     </a>
                                                                 </td>
 
@@ -243,7 +214,7 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                             Sipariş Durumu:
                         </div>
                         <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData.orderStatus}
+                            {checkStatus(orderData.orderStatus)}
                         </div>
                         <div className='text-gray-700 text-sm lg:text-base'>
                             Ödeme No:
