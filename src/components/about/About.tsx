@@ -6,6 +6,7 @@ import { RootState } from "@/store/store";
 import { fetchAbout } from "@/store/features/admin/aboutSlice";
 import { toast } from "react-toastify";
 import DOMPurify from "dompurify";
+import Special from "../contentiaio/sections/Special";
 
 const About = () => {
     const dispatch = useDispatch();
@@ -111,38 +112,7 @@ const About = () => {
                     </div>
 
                     <div className='pt-24 sm:pt-24 md:pt-24 lg:pt-[100px]'>
-                        <div className='yellowGradient p-4 px-6 md:px-12 rounded-lg flex flex-col md:flex-row justify-between items-center gap-10 sm:gap-12 lg:gap-28  w-full  relative mb-6'>
-                            <div className='flex-shrink-0'>
-                                <Image
-                                    height={50}
-                                    width={200}
-                                    className='rounded-3xl'
-                                    src='/phonePic.png'
-                                    alt='phone'
-                                />
-                            </div>
-                            <div className='w-full '>
-                                <h1 className='text-xl font-bold mb-5'>
-                                    İhtiyacınızı Belirleyelim
-                                </h1>
-                                <div className='flex flex-col items-center'>
-                                    <p>
-                                        Sorularınız ve ihtiyaçlarınız için
-                                        yardıma mı ihtiyacınız var?
-                                        Hizmetlerimiz için bilgi almak adına
-                                        temsilcimizle görüşme gerçekleştirin!
-                                    </p>
-                                    <button className='Button text-white w-fit px-6 py-2 rounded-full font-bold mt-6'>
-                                        İletişime Geç
-                                    </button>
-                                </div>
-                            </div>
-                            <div className='absolute bottom-3 left-0 w-full md:w-[280px] bg-purple-700 md:block hidden text-white p-6'>
-                                <h1 className='text-center'>
-                                    Will be provided later
-                                </h1>
-                            </div>
-                        </div>
+                        <Special />
                     </div>
                 </div>
             </div>
