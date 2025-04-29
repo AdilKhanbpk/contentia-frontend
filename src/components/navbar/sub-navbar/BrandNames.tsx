@@ -26,7 +26,7 @@ const BrandNames = () => {
                 value=''
                 disabled
             >
-                Brand Names
+                Markalarım{" "}
             </option>
             {brands.map((brand, index) => (
                 <option

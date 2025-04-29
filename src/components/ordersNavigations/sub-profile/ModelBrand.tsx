@@ -149,6 +149,22 @@ const ModelBrand: React.FC = () => {
                         </p>
                     )}
                 </div>
+
+                {/* Marka Görseli (Opsiyonel) */}
+                <div className='flex flex-col mb-2'>
+                    <label
+                        htmlFor='brandImage'
+                        className='mb-1 whitespace-nowrap'
+                    >
+                        Marka Görseli: (Opsiyonel)
+                    </label>
+                    <input
+                        {...register("brandImage")}
+                        type='file'
+                        id='brandImage'
+                        className='p-2 border rounded focus:outline-none w-72 md:w-96'
+                    />
+                </div>
             </div>
 
             {/* Submit Button */}

@@ -712,7 +712,7 @@ export default function EditModal({ order }: EditModalProps) {
                                             value=''
                                             disabled
                                         >
-                                            Brand Names
+                                            Markalarım
                                         </option>
                                         {brands.map((brand, index) => (
                                             <option

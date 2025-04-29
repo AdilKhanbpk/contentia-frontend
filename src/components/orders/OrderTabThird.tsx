@@ -131,7 +131,7 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                     value=''
                                     disabled
                                 >
-                                    Brand Names
+                                    Markalarım
                                 </option>
                                 {brands.map((brand, index) => (
                                     <option

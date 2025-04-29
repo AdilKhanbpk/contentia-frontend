@@ -65,9 +65,7 @@ export const createBrand = createAsyncThunk(
   "brand/createBrand",
   async ({ data }: CreateBrandPayload, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post("/brands", data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await axiosInstance.postForm("/brands", data);
 
       return response.data.data;
     } catch (error) {
