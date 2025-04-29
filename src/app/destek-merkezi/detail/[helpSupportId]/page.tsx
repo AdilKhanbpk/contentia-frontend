@@ -1,12 +1,17 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
-import { fetchHelpSupportById } from "@/store/features/admin/helpSlice";
+import {
+    fetchHelpSupportById,
+    fetchHelpSupports,
+    HelpSupport,
+} from "@/store/features/admin/helpSlice";
 import { CiSearch } from "react-icons/ci";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
+import Link from "next/link";
 
 interface PageProps {
     params: {
@@ -16,11 +21,23 @@ interface PageProps {
 
 const DetailsPage: React.FC<PageProps> = ({ params }) => {
     const dispatch = useDispatch<AppDispatch>();
+    const { helpSupports: helpSupportData } = useSelector(
+        (state: any) => state.helpSupport
+    );
+
+    useEffect(() => {
+        dispatch(fetchHelpSupports());
+    }, [dispatch]);
+
     const { currentHelpSupport, loading, error } = useSelector(
         (state: RootState) => state.helpSupport
     );
     const router = useRouter();
-    console.log("🚀 ~ useEffect ~ helpSupportId:", params.helpSupportId);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(e.target.value);
+    };
 
     useEffect(() => {
         if (params.helpSupportId) {
@@ -52,6 +69,22 @@ const DetailsPage: React.FC<PageProps> = ({ params }) => {
         );
     }
 
+    // Filter help supports to show only those from the current category
+    const categoryHelpSupports = helpSupportData.filter(
+        (support: HelpSupport) =>
+            support.category === currentHelpSupport?.category
+    );
+
+    // Then apply search filter if there's a search query
+    const filteredHelpSupports = categoryHelpSupports.filter(
+        (support: HelpSupport) =>
+            searchQuery.trim() === ""
+                ? true
+                : support.title
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase())
+    );
+
     return (
         <div className='px-4 sm:px-6 md:px-8 lg:px-32 '>
             <div className=' py-24 sm:py-24 md:py-24 lg:py-[100px]'>
@@ -67,6 +100,8 @@ const DetailsPage: React.FC<PageProps> = ({ params }) => {
                             <CiSearch size={20} />
                             <input
                                 type='text'
+                                value={searchQuery}
+                                onChange={handleSearchChange}
                                 placeholder='Destek almak istediğiniz konu nedir?'
                                 className='outline-none w-full py-1 bg-gray-200'
                                 aria-label='Search'
@@ -76,26 +111,33 @@ const DetailsPage: React.FC<PageProps> = ({ params }) => {
 
                     <div className='flex text-sm mt-6 space-x-3 flex-wrap pb-2'>
                         <div className='flex items-center'>
-                            <span>All Collections</span>
+                            <Link href='/destek-merkezi'>
+                                <span className='cursor-pointer hover:underline'>
+                                    Destek Merkezi
+                                </span>
+                            </Link>
                             <span className='text-xl'>
                                 <MdOutlineKeyboardArrowRight />
                             </span>
                         </div>
                         <div className='flex items-center'>
-                            <span>Sipariş Oluşturma</span>
+                            <Link
+                                href={`/destek-merkezi?category=${currentHelpSupport?.category}`}
+                            >
+                                <span className='cursor-pointer hover:underline'>
+                                    {currentHelpSupport?.category}
+                                </span>
+                            </Link>{" "}
                             <span className='text-xl'>
                                 <MdOutlineKeyboardArrowRight />
                             </span>
                         </div>
                         <div className='flex items-center'>
-                            <span>Order A Video</span>
+                            <span>{currentHelpSupport?.title}</span>
                             <span className='text-xl'>
                                 <MdOutlineKeyboardArrowRight />
                             </span>
                         </div>
-                        <span className='text-gray-500'>
-                            Getting Started Guide for Brands
-                        </span>
                     </div>
 
                     <div className='flex md:flex-row flex-col items-start justify-start mt-6 '>
@@ -107,17 +149,25 @@ const DetailsPage: React.FC<PageProps> = ({ params }) => {
                         />
 
                         <div className='flex flex-col gap-6 border-l-2 pl-5 md:ml-9 mt-8 md:mt-0'>
-                            <p className='whitespace-nowrap'>UGC Siparişi</p>
-                            <p className='whitespace-nowrap'>Paket Seçimi</p>
-                            <p className='whitespace-nowrap'>Marka Ekleme</p>
-                            <p className='whitespace-nowrap'>İçerik Türleri</p>
-                            <p className='whitespace-nowrap'>
-                                İçerik Üreticileri Tercihi
-                            </p>
-                            <p className='whitespace-nowrap'>Ek Hizmetler</p>
-                            <p className='whitespace-nowrap'>
-                                Ödeme ve Faturalandırma
-                            </p>
+                            {filteredHelpSupports.map(
+                                (support: HelpSupport) => (
+                                    <Link
+                                        key={support._id}
+                                        href={`/destek-merkezi/detail/${support._id}`}
+                                    >
+                                        <p
+                                            className={`whitespace-nowrap cursor-pointer hover:text-blue-600 ${
+                                                currentHelpSupport?._id ===
+                                                support._id
+                                                    ? "text-blue-600 font-medium"
+                                                    : "text-gray-600"
+                                            }`}
+                                        >
+                                            {support.title}
+                                        </p>
+                                    </Link>
+                                )
+                            )}
                         </div>
                     </div>
                 </div>

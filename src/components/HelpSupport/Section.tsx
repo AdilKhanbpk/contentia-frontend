@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import img1 from "../../../public/helpcenter/img1.svg";
 import img2 from "../../../public/helpcenter/img2.svg";
 import img3 from "../../../public/helpcenter/img3.svg";
@@ -59,7 +60,9 @@ const helpCategories = [
 ];
 
 const HelpSupportPage: React.FC = () => {
+    const searchParams = useSearchParams();
     const [selectedCategory, setSelectedCategory] = useState<number>(0);
+    const [searchQuery, setSearchQuery] = useState<string>("");
     const { helpSupports: helpSupportData } = useSelector(
         (state: any) => state.helpSupport
     );
@@ -69,11 +72,37 @@ const HelpSupportPage: React.FC = () => {
         dispatch(fetchHelpSupports());
     }, [dispatch]);
 
+    useEffect(() => {
+        const categoryParam = searchParams.get("category");
+        if (categoryParam) {
+            const categoryIndex = helpCategories.findIndex(
+                (category) => category.value === categoryParam
+            );
+            if (categoryIndex !== -1) {
+                setSelectedCategory(categoryIndex);
+            }
+        }
+    }, [searchParams]);
+
     const selectedCategoryValue = helpCategories[selectedCategory].value;
 
     const filteredHelpSupports = helpSupportData.filter(
-        (support: HelpSupport) => support.category === selectedCategoryValue
+        (support: HelpSupport) => {
+            // If there's a search query, search across all categories
+            if (searchQuery.trim() !== "") {
+                return support.title
+                    .toLowerCase()
+                    .includes(searchQuery.toLowerCase());
+            }
+
+            // If no search query, show only items from selected category
+            return support.category === selectedCategoryValue;
+        }
     );
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(e.target.value);
+    };
 
     return (
         <div className='px-4 sm:px-6 md:px-8 lg:px-32'>
@@ -91,6 +120,8 @@ const HelpSupportPage: React.FC = () => {
                             <CiSearch size={20} />
                             <input
                                 type='text'
+                                value={searchQuery}
+                                onChange={handleSearchChange}
                                 placeholder='Destek almak istediğiniz konu nedir?'
                                 className='outline-none w-full bg-transparent py-1'
                             />
