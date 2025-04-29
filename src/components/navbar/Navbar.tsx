@@ -41,10 +41,8 @@ export default function Navbar() {
     }, [token, loading]);
 
     useEffect(() => {
-        if (token) {
-            dispatch(fetchProfile());
-        }
-    }, [dispatch, token]);
+        dispatch(fetchProfile());
+    }, [dispatch]);
 
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
@@ -61,10 +59,11 @@ export default function Navbar() {
 
             localStorage.removeItem("accessToken");
             localStorage.removeItem("user");
+            setToken(null);
 
             toast.success("Logout successful");
 
-            router.push("/");
+            router.push("/giris-yap");
         } catch (error) {
             toast.error("Logout failed");
         }

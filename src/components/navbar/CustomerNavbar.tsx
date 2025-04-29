@@ -22,6 +22,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { IoLogOut } from "react-icons/io5";
 import clsx from "clsx";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 export default function Navbar() {
     const dispatch = useDispatch<AppDispatch>();
@@ -31,6 +32,7 @@ export default function Navbar() {
     const { t } = useTranslation();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const user = useSelector(selectProfileUser);
+    const { setToken } = useTokenContext();
 
     useEffect(() => {
         dispatch(fetchProfile());
@@ -42,6 +44,9 @@ export default function Navbar() {
         try {
             await dispatch(logoutUser());
             localStorage.removeItem("user");
+            localStorage.removeItem("accessToken");
+            setToken(null);
+
             toast.success("Logout successful");
             router.push("/giris-yap");
         } catch (error) {

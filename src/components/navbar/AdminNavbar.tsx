@@ -21,6 +21,7 @@ import { toast } from "react-toastify";
 import { usePathname, useRouter } from "next/navigation";
 import { logoutUser } from "@/store/features/auth/loginSlice";
 import NavbarNotification from "../notifications/NavbarNotification";
+import { useTokenContext } from "@/context/TokenCheckingContext";
 
 const menuItems = [
     {
@@ -161,6 +162,8 @@ export default function AdminNavbar() {
     const [isEmailOpen, setIsEmailOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+    const { setToken } = useTokenContext();
+
     useEffect(() => {
         dispatch(fetchProfile());
         dispatch(fetchNotifications());
@@ -184,6 +187,9 @@ export default function AdminNavbar() {
         dispatch(logoutUser())
             .then(() => {
                 toast.success("Logout successful");
+                localStorage.removeItem("user");
+                localStorage.removeItem("accessToken");
+                setToken(null);
                 router.push("/giris-yap");
             })
             .catch(() => {
