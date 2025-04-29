@@ -128,13 +128,6 @@ export default function Navbar() {
 
                             <div className='flex items-center space-x-8 ms-1'>
                                 <div className='flex items-center space-x-2'>
-                                    <Image
-                                        src='/brand-logo.png'
-                                        alt='brand logo'
-                                        height={32}
-                                        width={32}
-                                        className='rounded-full hidden sm:block'
-                                    />
                                     <BrandNames />
                                 </div>
                                 <ul className='hidden lg:flex space-x-4 font-medium'>

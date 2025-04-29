@@ -148,3 +148,5 @@ export const { resetLoginState } = loginSlice.actions;
 export const selectUser = (state: any) => state.login.user;
 
 export default loginSlice.reducer;
+
+export const selectToken = (state: any) => state.login.token;

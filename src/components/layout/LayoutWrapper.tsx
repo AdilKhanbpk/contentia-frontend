@@ -10,7 +10,7 @@ import LoadingSpinner from "@/components/loaders/LoadingSpinner";
 
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname();
-    const { loading } = useTokenContext();
+    const { token, loading } = useTokenContext();
 
     const isRootRoute = pathname === "/";
     const isAdminRoute = pathname.startsWith("/admin");
@@ -19,8 +19,9 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
 
     return (
         <>
+            {!token && <Navbar />}
             {isRootRoute && !isAdminRoute && <Navbar />}
-            {!isRootRoute && !isAdminRoute && <CustomerNavbar />}
+            {!isRootRoute && !isAdminRoute && token && <CustomerNavbar />}
             {isAdminRoute && <AdminNavbar />}
 
             <main>{children}</main>
