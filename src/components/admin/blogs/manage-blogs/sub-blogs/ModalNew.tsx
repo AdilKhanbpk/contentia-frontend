@@ -51,13 +51,26 @@ export default function Modal({ onSubmit, onClose }: ModalProps) {
                         Category
                     </label>
                     <select
-                        {...register("category")}
+                        {...register("category", {
+                            required: "Category is required",
+                        })}
                         className='w-full py-2 border border-gray-400 rounded-md focus:outline-none'
                     >
                         <option value=''>Select a category</option>
-                        <option value='tech'>Tech</option>
-                        <option value='health'>Health</option>
-                        <option value='finance'>Finance</option>
+                        <option value='digital_marketing'>
+                            Dijital Pazarlama
+                        </option>
+                        <option value='contentia_masterclass'>
+                            Contentia Masterclass
+                        </option>
+                        <option value='ugc'>UGC</option>
+                        <option value='marketing_strategies'>
+                            Pazarlama Stratejileri
+                        </option>
+                        <option value='social_media_marketing'>
+                            Sosyal Medya Pazarlaması
+                        </option>
+                        {/* Add other categories as needed */}
                     </select>
                 </div>
 
