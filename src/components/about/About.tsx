@@ -24,7 +24,7 @@ const About = () => {
 
     return (
         <>
-            <div className='px-4 sm:px-6 md:px-8 lg:px-[38px] pt-24 sm:pt-24 md:pt-24 lg:pt-[100px]'>
+            <div className='px-4 sm:px-6 md:px-8 lg:px-[38px] pt-24 sm:pt-24 md:pt-24 lg:pt-[140px]'>
                 <div className='flex flex-col lg:flex-row gap-10 justify-between'>
                     {/* Display the Image */}
                     <div className='flex justify-center max-h-96'>
