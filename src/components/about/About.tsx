@@ -105,7 +105,7 @@ const About = () => {
                                 width={30}
                                 height={30}
                                 src='/locationIcon.png'
-                                alt='location icon'
+                                alt='location  icon'
                             />
                             <span>{sections?.contactAddress}</span>
                         </div>
