@@ -27,7 +27,7 @@ export const createBlog = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.post('/admin/blogs', blog);
+      const response = await axiosInstance.postForm('/admin/blogs', blog);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;

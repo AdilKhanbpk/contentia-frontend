@@ -1,12 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/store/store"; // Adjust import path as needed
-import { createBlog } from "@/store/features/admin/blogSlice"; // Adjust import path as needed
-import { toast } from "react-toastify"; // Assuming you're using react-toastify for notifications
+import { AppDispatch } from "@/store/store";
+import { createBlog } from "@/store/features/admin/blogSlice";
+import { toast } from "react-toastify";
 import { BlogInterface } from "@/types/interfaces";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -24,18 +24,35 @@ export default function NewBlogs() {
         control,
         formState: { errors },
         reset,
+        watch,
     } = useForm<BlogInterface>();
+
+    // Handle image preview
+    const handleImageChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            const file = e.target.files?.[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setBannerImagePreview(reader.result as string);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                setBannerImagePreview(null);
+            }
+        },
+        []
+    );
 
     const onSubmit = async (data: BlogInterface) => {
         try {
             setIsSubmitting(true);
 
-            // Create FormData for file upload
             const formData = new FormData();
-
-            // Explicitly append each field
             formData.append("title", data.title);
             formData.append("category", data.category);
+
+            // Handle keywords
             if (Array.isArray(data.metaKeywords)) {
                 formData.append(
                     "metaKeywords",
@@ -47,28 +64,28 @@ export default function NewBlogs() {
                     JSON.stringify([data.metaKeywords])
                 );
             }
+
             formData.append("content", data.content);
             formData.append("metaDescription", data.metaDescription);
 
-            // Handle banner image specifically
-            if (data.bannerImage && data.bannerImage.length > 0) {
+            // Handle banner image
+            if (
+                data.bannerImage instanceof FileList &&
+                data.bannerImage.length > 0
+            ) {
                 formData.append("bannerImage", data.bannerImage[0]);
             }
 
-            // Dispatch create blog action
-            const result = await dispatch(createBlog({ blog: formData }));
+            const result = await dispatch(
+                createBlog({ blog: formData })
+            ).unwrap();
 
-            if (createBlog.fulfilled.match(result)) {
-                toast.success("Blog created successfully!");
-                reset();
-                setBannerImagePreview(null);
-            } else {
-                console.error("createBlog rejected:", result);
-                toast.error("Failed to create blog");
-            }
+            toast.success("Blog created successfully!");
+            reset();
+            setBannerImagePreview(null);
         } catch (error) {
             console.error("Blog creation error:", error);
-            toast.error("An unexpected error occurred");
+            toast.error("Failed to create blog");
         } finally {
             setIsSubmitting(false);
         }
@@ -198,12 +215,7 @@ export default function NewBlogs() {
                             type='file'
                             {...register("bannerImage", {
                                 required: "Banner image is required",
-                                validate: (value) => {
-                                    if (!value || value.length === 0) {
-                                        return "Please select an image";
-                                    }
-                                    return true;
-                                },
+                                onChange: handleImageChange,
                             })}
                             className='absolute inset-0 w-full h-full opacity-0 cursor-pointer'
                             accept='image/*'
@@ -213,7 +225,7 @@ export default function NewBlogs() {
                                 <img
                                     src={bannerImagePreview}
                                     alt='Banner Preview'
-                                    className='max-h-full max-w-full object-cover'
+                                    className='max-h-full max-w-full object-contain'
                                 />
                             ) : (
                                 <span className='text-gray-500 font-medium text-lg'>
@@ -257,6 +269,7 @@ export default function NewBlogs() {
                 <div className='flex justify-end my-6'>
                     <button
                         type='submit'
+                        disabled={isSubmitting}
                         className='Button text-white px-8 py-1 rounded-lg font-semibold'
                     >
                         {isSubmitting ? "Saving..." : "Save"}
