@@ -38,16 +38,17 @@ export default function TabFirst({
 
     const isCustomMode = selectedCard === "";
 
-    const totalAdditionalCharges = useMemo(() => {
-        return Object.values(selectedServices).reduce(
-            (acc, charge) => acc + charge,
-            0
-        );
-    }, [selectedServices]);
+    const singleVideo = pricing?.find((option) => option.videoCount === 1);
+    const singleVideoPrice = useMemo(() => {
+        return singleVideo?.finalPrice || 0;
+    }, [singleVideo]);
 
     const getTotalPrice = () => {
         // Base price already includes the quantity multiplication from package selection
-        let total = basePrice;
+        let total = isCustomMode
+            ? singleVideoPrice * selectedQuantity
+            : basePrice;
+        console.log("🚀 ~ getTotalPrice ~ total:", total);
 
         // Add additional services multiplied by number of videos
         Object.values(selectedServices).forEach((servicePrice) => {
@@ -56,11 +57,6 @@ export default function TabFirst({
 
         return total;
     };
-
-    const singleVideo = pricing?.find((option) => option.videoCount === 1);
-    const singleVideoPrice = useMemo(() => {
-        return singleVideo?.finalPrice || 0;
-    }, [singleVideo]);
 
     const getSingleVideoPrice = () => {
         const baseVideoPrice = singleVideoPrice;
