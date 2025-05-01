@@ -65,7 +65,7 @@ const MyCarousel: React.FC<CarouselProps> = ({ videos }) => {
                 {videos.map((video, index) => (
                     <div
                         key={index}
-                        className='carousel-slide relative px-2 py-6 overflow-hidden'
+                        className='carousel-slide relative px-2 py-10 overflow-visible'
                     >
                         <div
                             className={`relative rounded-3xl overflow-hidden transition-all duration-500 ease-in-out ${
