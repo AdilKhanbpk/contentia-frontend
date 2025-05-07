@@ -214,7 +214,12 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                             Sipariş Durumu:
                         </div>
                         <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {checkStatus(orderData.orderStatus)}
+                            {orderData.orderStatus === "completed" ? "Tamamlandı" :
+                              orderData.orderStatus === "pending" ? "Beklemede" :
+                              orderData.orderStatus === "active" ? "Aktif" :
+                              orderData.orderStatus === "cancelled" || orderData.orderStatus === "rejected" ? "İptal Edildi" :
+                              orderData.orderStatus === "revision" ? "Revizyon" :
+                              orderData.orderStatus}
                         </div>
                         <div className='text-gray-700 text-sm lg:text-base'>
                             Ödeme No:
@@ -275,7 +280,7 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                             Edit:
                         </div>
                         <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData.additionalServices.edit ? "Yes" : "No"}
+                            {orderData.additionalServices.edit ? "Evet" : "Hayır"}
                         </div>
                         <div className='text-gray-700 text-sm lg:text-base'>
                             En Boy Oranı:
@@ -287,15 +292,13 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                             Sosyal Medya Paylaşım:
                         </div>
                         <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData.additionalServices.share ? "Yes" : "No"}
+                            {orderData.additionalServices.share ? "Evet" : "Hayır"}
                         </div>
                         <div className='text-gray-700 text-sm lg:text-base'>
                             Kapak Görseli:
                         </div>
                         <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData.additionalServices.coverPicture
-                                ? "Yes"
-                                : "No"}
+                            {orderData.additionalServices.coverPicture ? "Evet" : "Hayır"}
                         </div>
                         <div className='text-gray-700 text-sm lg:text-base'>
                             Influencer Seçimi:
@@ -309,9 +312,7 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                             Ürün Gönderimi:
                         </div>
                         <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData.additionalServices.productShipping
-                                ? "Yes"
-                                : "No"}
+                            {orderData.additionalServices.productShipping ? "Evet" : "Hayır"}
                         </div>
                         <div className='text-gray-700 text-sm lg:text-base'>
                             İçerik Türü:

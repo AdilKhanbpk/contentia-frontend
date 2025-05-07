@@ -107,13 +107,14 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                     </button>
                                     {showTooltipOne && (
                                         <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
-                                            İçerik üreticilerine ürün gönderimi
+                                           <i> İçerik üreticilerine ürün gönderimi
                                             sağlayacaksanız ya da üreticilerin
                                             bir fiziki lokasyona ulaşması
                                             gerekiyorsa, bu alanda içerik
                                             türünüzü belirterek lokasyona göre
                                             eşleştirme gerçekleştirme yapılması
                                             gerekir.
+                                            </i>
                                         </div>
                                     )}
                                 </div>
@@ -450,7 +451,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                                     </button>
                                                     {showTooltipThree && (
                                                         <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
-                                                            Adres bilgileri, tüm
+                                                           <i> Adres bilgileri, tüm
                                                             içerik üreticileri
                                                             tarafından İl, İlçe
                                                             ve Mahalle olarak
@@ -459,6 +460,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                                             üreticiler, işletme
                                                             adı ve açık adresi
                                                             görüntüleyebilecektir.
+                                                            </i>
                                                         </div>
                                                     )}
                                                 </div>

@@ -7,6 +7,7 @@ export const checkStatus = (status: string) => {
         case "completed":
             return "Tamamlandı";
         case "cancelled":
+        case "rejected":
             return "İptal Edildi";
         case "revision":
             return "Revizyon";

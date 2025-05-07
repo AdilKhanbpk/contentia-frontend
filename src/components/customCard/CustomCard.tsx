@@ -94,7 +94,7 @@ const CustomCard: React.FC<CardProps> = ({
                         <div className='cardColorChild rounded-3xl mb-3'>
                             <div className='flex flex-row justify-between px-4 py-2'>
                                 <p className='cardTextWhiteSmall text-white'>
-                                    duration{" "}
+                                    Süre{" "}
                                 </p>
                                 <TimeSelector>
                                     {durationOptions.map((option) => (

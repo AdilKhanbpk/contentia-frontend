@@ -80,7 +80,7 @@ const ViewModal = ({ order }: ViewModalProps) => {
                             <div className='flex -mt-0 lg:-mt-44'>
                                 <div className='bg-white rounded-md w-full lg:w-3/6'>
                                     <h2 className='BlueText text-lg font-semibold mb-4'>
-                                        Sipariş Özeti:
+                                    Markalarım Özeti:
                                     </h2>
                                     <div className='flex items-center justify-between'>
                                         <div>

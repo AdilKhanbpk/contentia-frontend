@@ -1,16 +1,32 @@
 "use client";
-import { memo, useCallback, useEffect, useState } from "react";
-import { FaCheck, FaTimes, FaEye, FaFileCsv } from "react-icons/fa";
+import { memo, useCallback, useEffect, useState, useMemo } from "react";
+import { FaCheck, FaTimes, FaEye, FaFileCsv, FaSync } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { fetchMyBrands } from "@/store/features/profile/brandSlice";
-import { getAssignedOrders } from "@/store/features/admin/ordersSlice";
+import { fetchOrders } from "@/store/features/admin/ordersSlice";
 import CustomModelAdmin from "../../modal/CustomModelAdmin";
 import ModalTwo from "./sub-in-payment/ViewInPaymentModal";
-import { OrderInterface } from "@/types/interfaces";
+import { OrderInterface, CreatorInterface } from "@/types/interfaces";
 import Image from "next/image";
 import CustomTable from "@/components/custom-table/CustomTable";
+
+// Interface for flattened order data with single creator
+interface SingleCreatorOrderData {
+    orderId: string;
+    orderStatus: string;
+    paymentStatus: string;
+    brandName?: string;
+    brandImage?: string;
+    ownerName?: string;
+    ownerEmail?: string;
+    creatorId: string;
+    creatorName: string;
+    creatorEmail?: string;
+    priceForSingleCreator: number;
+    originalOrder: OrderInterface;
+}
 
 interface TableActionsProps {
     onApprove: (id: string) => void;
@@ -23,27 +39,80 @@ const OutPayments: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const [searchTerm, setSearchTerm] = useState("");
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState<OrderInterface | null>(null);
     const { data: orders, loading } = useSelector(
         (state: RootState) => state.orders
     );
 
-    const filteredOrders = orders.filter(
-        (order: OrderInterface) =>
-            order.briefContent?.brandName
-                ?.toLowerCase()
-                .includes(searchTerm.toLowerCase()) ||
-            order.briefContent?.productServiceName
-                ?.toLowerCase()
-                .includes(searchTerm.toLowerCase())
-    );
+    // Transform orders data to create separate entries for each creator
+    const flattenedOrders = useMemo(() => {
+        const result: SingleCreatorOrderData[] = [];
+
+        // Only process Active and Completed orders
+        const filteredOrders = orders.filter(
+            (order: OrderInterface) =>
+                order.orderStatus === "active" ||
+                order.orderStatus === "completed"
+        );
+
+        filteredOrders.forEach((order: OrderInterface) => {
+            // Check if assignedCreators exists and is an array
+            if (Array.isArray(order.assignedCreators) && order.assignedCreators.length > 0) {
+                // Use totalPriceForCreator divided by noOfUgc
+                // This is the standard calculation method
+                const pricePerCreator = order.totalPriceForCreator
+                    ? order.totalPriceForCreator / order.noOfUgc
+                    : 0;
+
+                // Note: If you want to add a priceForSingleCreator field to the database,
+                // you would need to update the OrderInterface in src/types/interfaces.ts
+
+                // Create a separate entry for each creator
+                order.assignedCreators.forEach((creator: any) => {
+                    result.push({
+                        orderId: order._id,
+                        orderStatus: order.orderStatus,
+                        paymentStatus: order.paymentStatus,
+                        brandName: order.associatedBrands?.brandName,
+                        brandImage: order.associatedBrands?.brandImage,
+                        ownerName: order.orderOwner?.fullName,
+                        ownerEmail: order.orderOwner?.email,
+                        creatorId: typeof creator === 'string' ? creator : creator._id,
+                        creatorName: typeof creator === 'string' ? 'Unknown' : creator.fullName,
+                        creatorEmail: typeof creator === 'string' ? '' : creator.email,
+                        priceForSingleCreator: pricePerCreator,
+                        originalOrder: order
+                    });
+                });
+            }
+        });
+
+        return result;
+    }, [orders]);
+
+    // Filter flattened orders based on search term
+    const filteredFlattenedOrders = useMemo(() => {
+        return flattenedOrders.filter(
+            (item) =>
+                item.brandName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.creatorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.creatorId.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    }, [flattenedOrders, searchTerm]);
 
     const handleCloseModals = useCallback(() => {
         setIsViewModalOpen(false);
+        setSelectedOrder(null);
     }, []);
 
     const handleView = useCallback(async (id: string) => {
-        setIsViewModalOpen(true);
-    }, []);
+        // Find the original order from the flattened data
+        const item = flattenedOrders.find(item => item.orderId === id);
+        if (item) {
+            setSelectedOrder(item.originalOrder);
+            setIsViewModalOpen(true);
+        }
+    }, [flattenedOrders]);
 
     const handleApprove = useCallback(async (id: string) => {
         toast.success("Payment Sent successfully!");
@@ -81,21 +150,17 @@ const OutPayments: React.FC = () => {
     TableActions.displayName = "TableActions";
 
     const columns = [
-        { name: "Order ID", selector: (row: any) => row._id, sortable: true },
+        { name: "Order ID", selector: (row: SingleCreatorOrderData) => row.orderId, sortable: true },
         {
             name: "Order Title",
-            cell: (row: any) => {
-                const owner = row.orderOwner;
-                const isValidOwner =
-                    owner && typeof owner === "object" && owner !== null;
-
+            cell: (row: SingleCreatorOrderData) => {
                 return (
                     <div className='flex items-center space-x-2'>
                         <Image
                             width={100}
                             height={100}
                             src={
-                                row.associatedBrands?.brandImage ||
+                                row.brandImage ||
                                 "/icons/avatar.png"
                             }
                             alt='avatar'
@@ -103,15 +168,10 @@ const OutPayments: React.FC = () => {
                         />
                         <div>
                             <p className='font-semibold'>
-                                {row.associatedBrands &&
-                                row.associatedBrands.brandName
-                                    ? row.associatedBrands.brandName
-                                    : "No Title"}
+                                {row.brandName || "No Title"}
                             </p>
                             <p className='text-sm text-gray-500'>
-                                {isValidOwner && owner.email
-                                    ? owner.email
-                                    : "No Email"}
+                                {row.ownerEmail || "No Email"}
                             </p>
                         </div>
                     </div>
@@ -121,46 +181,41 @@ const OutPayments: React.FC = () => {
         },
         {
             name: "Creator Name",
-            cell: (row: any) => (
-                <div className='flex flex-col gap-4'>
-                    {row.assignedCreators.map((c: any) => (
-                        <span key={c._id}>{c.fullName}</span>
-                    ))}
-                </div>
-            ),
+            selector: (row: SingleCreatorOrderData) => row.creatorName,
             sortable: true,
         },
         {
             name: "Creator ID",
-            cell: (row: any) => (
-                <div className='flex flex-col'>
-                    {row.assignedCreators.map((c: any) => (
-                        <span key={c._id}>{c._id}</span>
-                    ))}
-                </div>
-            ),
+            selector: (row: SingleCreatorOrderData) => row.creatorId,
             sortable: true,
         },
-
         {
-            name: "Amount Paid",
-            selector: (row: any) =>
-                `${row.totalPriceForCreator.toLocaleString("tr-TR")} TL`,
+            name: "Order Status",
+            selector: (row: SingleCreatorOrderData) => row.orderStatus,
+            sortable: true,
+        },
+        {
+            name: "Price For Single Creator",
+            cell: (row: SingleCreatorOrderData) => (
+                <span className="font-semibold">
+                    {row.priceForSingleCreator.toLocaleString("tr-TR")} TL
+                </span>
+            ),
             sortable: true,
         },
         {
             name: "Payment Status",
-            selector: (row: any) => row.paymentStatus,
+            selector: (row: SingleCreatorOrderData) => row.paymentStatus,
             sortable: true,
         },
         {
             name: "Actions",
-            cell: (row: any) => (
+            cell: (row: SingleCreatorOrderData) => (
                 <TableActions
                     onApprove={handleApprove}
                     onReject={handleReject}
                     onView={handleView}
-                    id={row._id}
+                    id={row.orderId}
                 />
             ),
             width: "200px",
@@ -169,12 +224,14 @@ const OutPayments: React.FC = () => {
 
     const exportToCSV = () => {
         const csvRows = [
-            ["Order ID", "Creator Name", "Amount Paid", "Payment Status"],
-            ...filteredOrders.map((order: OrderInterface) => [
-                order._id,
-                order.assignedCreators.map((c: any) => c.fullName).join(", "),
-                order.totalPriceForCreator,
-                order.paymentStatus,
+            ["Order ID", "Creator Name", "Creator ID", "Order Status", "Price For Single Creator", "Payment Status"],
+            ...filteredFlattenedOrders.map((item: SingleCreatorOrderData) => [
+                item.orderId,
+                item.creatorName,
+                item.creatorId,
+                item.orderStatus,
+                item.priceForSingleCreator,
+                item.paymentStatus,
             ]),
         ];
         const csvContent =
@@ -182,32 +239,33 @@ const OutPayments: React.FC = () => {
             csvRows.map((e) => e.join(",")).join("\n");
         const link = document.createElement("a");
         link.setAttribute("href", encodeURI(csvContent));
-        link.setAttribute("download", "orders.csv");
+        link.setAttribute("download", "outgoing-payments-per-creator.csv");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     };
 
+    const fetchOrdersData = useCallback(async () => {
+        try {
+            await dispatch(fetchOrders()).unwrap();
+            toast.success("Orders data refreshed successfully");
+        } catch (error: any) {
+            toast.error(error.message || "Failed to fetch orders");
+        }
+    }, [dispatch]);
+
+    const fetchBrands = useCallback(async () => {
+        try {
+            await dispatch(fetchMyBrands()).unwrap();
+        } catch (error: any) {
+            toast.error(error.message || "Failed to fetch brands");
+        }
+    }, [dispatch]);
+
     useEffect(() => {
-        const fetchOrdersData = async () => {
-            try {
-                await dispatch(getAssignedOrders()).unwrap();
-            } catch (error: any) {
-                toast.error(error.message);
-            }
-        };
-
-        const fetchBrands = async () => {
-            try {
-                await dispatch(fetchMyBrands()).unwrap();
-            } catch (error: any) {
-                toast.error(error.message);
-            }
-        };
-
         fetchBrands();
         fetchOrdersData();
-    }, [dispatch]);
+    }, [fetchBrands, fetchOrdersData]);
 
     return (
         <div className='bg-white rounded-lg'>
@@ -222,6 +280,12 @@ const OutPayments: React.FC = () => {
                         className='p-2 border border-gray-300 rounded-lg'
                     />
                     <div className='flex flex-col md:flex-row lg:space-x-2'>
+                        <button
+                            className='px-1 md:px-4 py-0.5 md:py-2 bg-blue-500 text-white rounded-md'
+                            onClick={fetchOrdersData}
+                        >
+                            Refresh <FaSync className='inline ml-2' />
+                        </button>
                         <button className='px-1 md:px-4 py-0.5 md:py-2 Button text-white rounded-md'>
                             Add Out Payment
                         </button>
@@ -238,7 +302,7 @@ const OutPayments: React.FC = () => {
                 <div className='shadow-md'>
                     <CustomTable
                         columns={columns}
-                        data={filteredOrders}
+                        data={filteredFlattenedOrders}
                         noDataComponent='No Outgoing Payments Found'
                         loading={loading}
                     />
@@ -246,13 +310,68 @@ const OutPayments: React.FC = () => {
             </div>
 
             {/* Modal */}
-            {/* <CustomModelAdmin
+            <CustomModelAdmin
                 isOpen={isViewModalOpen}
                 closeModal={handleCloseModals}
-                title=''
+                title='Order Details'
             >
-                <ModalTwo />
-            </CustomModelAdmin> */}
+                {selectedOrder && (
+                    <div className="p-4">
+                        <h2 className="text-xl font-bold mb-4">Order Information</h2>
+                        <div className="grid grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <p className="font-semibold">Order ID:</p>
+                                <p>{selectedOrder._id}</p>
+                            </div>
+                            <div>
+                                <p className="font-semibold">Order Status:</p>
+                                <p>{selectedOrder.orderStatus}</p>
+                            </div>
+                            <div>
+                                <p className="font-semibold">Payment Status:</p>
+                                <p>{selectedOrder.paymentStatus}</p>
+                            </div>
+                            <div>
+                                <p className="font-semibold">Number of UGCs:</p>
+                                <p>{selectedOrder.noOfUgc}</p>
+                            </div>
+                            <div>
+                                <p className="font-semibold">Total Price for Creator:</p>
+                                <p>{selectedOrder.totalPriceForCreator?.toLocaleString("tr-TR")} TL</p>
+                            </div>
+                            <div>
+                                <p className="font-semibold">Price Per Creator:</p>
+                                <p>{selectedOrder.totalPriceForCreator && selectedOrder.noOfUgc
+                                    ? (selectedOrder.totalPriceForCreator / selectedOrder.noOfUgc).toLocaleString("tr-TR")
+                                    : 0} TL</p>
+                            </div>
+                        </div>
+
+                        <h3 className="text-lg font-bold mb-2">Assigned Creators</h3>
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full bg-white border">
+                                <thead>
+                                    <tr>
+                                        <th className="py-2 px-4 border">Creator ID</th>
+                                        <th className="py-2 px-4 border">Creator Name</th>
+                                        <th className="py-2 px-4 border">Creator Email</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {Array.isArray(selectedOrder.assignedCreators) &&
+                                     selectedOrder.assignedCreators.map((creator: any, index: number) => (
+                                        <tr key={index}>
+                                            <td className="py-2 px-4 border">{typeof creator === 'string' ? creator : creator._id}</td>
+                                            <td className="py-2 px-4 border">{typeof creator === 'string' ? 'Unknown' : creator.fullName}</td>
+                                            <td className="py-2 px-4 border">{typeof creator === 'string' ? '' : creator.email}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
+            </CustomModelAdmin>
         </div>
     );
 };

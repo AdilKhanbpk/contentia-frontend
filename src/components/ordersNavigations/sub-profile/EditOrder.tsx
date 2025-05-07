@@ -164,7 +164,12 @@ export default function EditOrder({ orderData }: EditOrderProps) {
                             </div>
                             <div className='text-gray-700'>Sipariş Durumu:</div>
                             <div className='text-right BlueText font-bold'>
-                                {orderData.orderStatus}
+                            {orderData.orderStatus === "completed" ? "Tamamlandı" :
+                              orderData.orderStatus === "pending" ? "Beklemede" :
+                              orderData.orderStatus === "active" ? "Aktif" :
+                              orderData.orderStatus === "cancelled" || orderData.orderStatus === "rejected" ? "İptal Edildi" :
+                              orderData.orderStatus === "revision" ? "Revizyon" :
+                              orderData.orderStatus}
                             </div>
                             <div className='text-gray-700'>Ödeme No:</div>
                             <div className='text-right BlueText font-bold'>
@@ -211,9 +216,8 @@ export default function EditOrder({ orderData }: EditOrderProps) {
                             </div>
                             <div className='text-gray-700'>Edit:</div>
                             <div className='text-right BlueText font-bold'>
-                                {orderData.additionalServices.edit === true
-                                    ? "Yes"
-                                    : "No"}
+                                
+                                    {orderData.additionalServices.edit ? "Evet" : "Hayır"}
                             </div>
                             <div className='text-gray-700'>En Boy Oranı:</div>
                             <div className='text-right BlueText font-bold'>
@@ -224,15 +228,15 @@ export default function EditOrder({ orderData }: EditOrderProps) {
                             </div>
                             <div className='text-right BlueText font-bold'>
                                 {orderData.additionalServices.share === true
-                                    ? "Yes"
-                                    : "No"}{" "}
+                                    ? "Evet"
+                                    : "Hayır"}{" "}
                             </div>
                             <div className='text-gray-700'>Kapak Görseli:</div>
                             <div className='text-right BlueText font-bold'>
                                 {orderData.additionalServices.coverPicture ===
                                 true
-                                    ? "Yes"
-                                    : "No"}
+                                    ? "Evet"
+                                    : "Hayır"}
                             </div>
                             <div className='text-gray-700'>
                                 Influencer Seçimi:
@@ -247,8 +251,8 @@ export default function EditOrder({ orderData }: EditOrderProps) {
                             <div className='text-right BlueText font-bold'>
                                 {orderData.additionalServices
                                     .productShipping === true
-                                    ? "Yes"
-                                    : "No"}
+                                    ? "Evet"
+                                    : "Hayır"}
                             </div>
                             <div className='text-gray-700'>İçerik Türü:</div>
                             <div className='text-right BlueText font-bold'>

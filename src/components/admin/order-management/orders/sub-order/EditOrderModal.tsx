@@ -984,12 +984,13 @@ export default function EditModal({ order }: EditModalProps) {
                                     </button>
                                     {showTooltipOne && (
                                         <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
-                                            İçerik Üreticileri için yapmış
+                                            <i>İçerik Üreticileri için yapmış
                                             olduğunuz tercihler, sizi doğru
                                             içerik üreticilerle eşleştirmemize
                                             yardımcı olacaktır. Tercihlerinizi,
                                             maksimum düzeyde karşılamaya
                                             çalışacağız.
+                                            </i>
                                         </div>
                                     )}
                                 </div>
@@ -1075,6 +1076,7 @@ export default function EditModal({ order }: EditModalProps) {
                                             </button>
                                             {showTooltipTwo && (
                                                 <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
+                                                    <i>
                                                     İçerik üreticilerine ürün
                                                     gönderimi sağlayacaksanız ya
                                                     da üreticilerin bir fiziki
@@ -1083,6 +1085,7 @@ export default function EditModal({ order }: EditModalProps) {
                                                     içerik türünüzü belirterek
                                                     lokasyona göre eşleştirme
                                                     gerçekleştirme yapılması ge
+                                                    </i>
                                                 </div>
                                             )}
                                         </div>
@@ -1305,7 +1308,7 @@ export default function EditModal({ order }: EditModalProps) {
                                                         </button>
                                                         {showTooltipThree && (
                                                             <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
-                                                                Adres bilgileri,
+                                                               <i> Adres bilgileri,
                                                                 tüm içerik
                                                                 üreticileri
                                                                 tarafından İl,
@@ -1317,6 +1320,7 @@ export default function EditModal({ order }: EditModalProps) {
                                                                 işletme adı ve
                                                                 açık adresi
                                                                 görüntüleyebilecektir.
+                                                                </i>
                                                             </div>
                                                         )}
                                                     </div>

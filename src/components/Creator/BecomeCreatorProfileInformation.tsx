@@ -179,7 +179,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                                     </div>
 
                                     <div>
-                                        <p className='text-base'>E-Posta:</p>
+                                        <p className='text-base'></p>
                                         <input
                                             {...register("email", {
                                                 required: "Email is required",

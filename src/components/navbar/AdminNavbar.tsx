@@ -23,6 +23,20 @@ import { logoutUser } from "@/store/features/auth/loginSlice";
 import NavbarNotification from "../notifications/NavbarNotification";
 import { useTokenContext } from "@/context/TokenCheckingContext";
 
+// Function to generate initials from user's name
+const generateInitials = (fullName: string | undefined): string => {
+    if (!fullName) return "";
+
+    const names = fullName.trim().split(" ");
+    if (names.length === 1) {
+        // If only one name, return the first letter
+        return names[0].charAt(0).toUpperCase();
+    } else {
+        // If multiple names, return first letter of first name and first letter of last name
+        return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
+    }
+};
+
 const menuItems = [
     {
         title: "Dashboard",
@@ -153,6 +167,9 @@ export default function AdminNavbar() {
         return notifications.filter((n) => !n.readBy?.includes(user?._id))
             .length;
     }, [notifications, user]);
+
+    // Generate user initials if name exists
+    const userInitials = useMemo(() => generateInitials(user?.fullName), [user?.fullName]);
 
     const router = useRouter();
     const pathname = usePathname();
@@ -306,16 +323,16 @@ export default function AdminNavbar() {
                             isOpen={isProfileOpen}
                             setIsOpen={setIsProfileOpen}
                             icon={
-                                <Image
-                                    className='w-8 h-8 rounded-full border-2 border-gray-600'
-                                    src={
-                                        user?.profilePic ||
-                                        "/defaultProfile.png"
-                                    }
-                                    alt='Profile'
-                                    width={100}
-                                    height={100}
-                                />
+                                user?.fullName ? (
+                                    <div className='w-8 h-8 rounded-full border-2 border-gray-600 flex items-center justify-center bg-blue-600 text-white font-semibold'>
+                                        {userInitials}
+                                    </div>
+                                ) : (
+                                    <div
+                                        className='w-8 h-8 rounded-full border-2 border-gray-600 bg-cover bg-center'
+                                        style={{ backgroundImage: 'url("/defaultProfile.png")' }}
+                                    ></div>
+                                )
                             }
                         >
                             <ul className='p-2 text-sm'>

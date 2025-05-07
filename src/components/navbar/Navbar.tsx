@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "@/store/store";
 import Image from "next/image";
@@ -22,6 +22,20 @@ import {
     selectProfileUser,
 } from "@/store/features/profile/profileSlice";
 
+// Function to generate initials from user's name
+const generateInitials = (fullName: string | undefined): string => {
+    if (!fullName) return "";
+
+    const names = fullName.trim().split(" ");
+    if (names.length === 1) {
+        // If only one name, return the first letter
+        return names[0].charAt(0).toUpperCase();
+    } else {
+        // If multiple names, return first letter of first name and first letter of last name
+        return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
+    }
+};
+
 export default function Navbar() {
     const dispatch: AppDispatch = useDispatch();
     const router = useRouter();
@@ -33,6 +47,9 @@ export default function Navbar() {
 
     const { isAuthenticated, setToken, token, loading } = useTokenContext();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    // Generate user initials if name exists
+    const userInitials = useMemo(() => generateInitials(user?.fullName), [user?.fullName]);
 
     useEffect(() => {
         if (!loading) {
@@ -68,6 +85,7 @@ export default function Navbar() {
             toast.error("Logout failed");
         }
     };
+
 
     return (
         <>
@@ -248,32 +266,31 @@ export default function Navbar() {
                                             isOpen={isProfileOpen}
                                             setIsOpen={setIsProfileOpen}
                                             icon={
-                                                <Image
-                                                    className='w-10 h-10 rounded-full border-2 border-gray-600'
-                                                    src={
-                                                        user?.profilePic ||
-                                                        "/defaultProfile.png"
-                                                    }
-                                                    alt='Profile'
-                                                    width={100}
-                                                    height={100}
-                                                />
+                                                user?.fullName ? (
+                                                    <div className='w-10 h-10 rounded-full border-2 border-gray-600 flex items-center justify-center bg-blue-600 text-white font-semibold'>
+                                                        {userInitials}
+                                                    </div>
+                                                ) : (
+                                                    <div
+                                                        className='w-10 h-10 rounded-full border-2 border-gray-600 bg-cover bg-center'
+                                                        style={{ backgroundImage: 'url("/defaultProfile.png")' }}
+                                                    ></div>
+                                                )
                                             }
                                         >
                                             <ul className='p-2 text-sm'>
                                                 <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
-                                                    <Image
-                                                        className='w-8 h-8 rounded-full border-2 border-gray-600'
-                                                        src={
-                                                            user?.profilePic ||
-                                                            "/defaultProfile.png"
-                                                        }
-                                                        alt='Profile'
-                                                        width={100}
-                                                        height={100}
-                                                    />
-                                                    {user?.fullName ||
-                                                        "John Doe"}
+                                                    {user?.fullName ? (
+                                                        <div className='w-8 h-8 rounded-full border-2 border-gray-600 flex items-center justify-center bg-blue-600 text-white font-semibold'>
+                                                            {userInitials}
+                                                        </div>
+                                                    ) : (
+                                                        <div
+                                                            className='w-8 h-8 rounded-full border-2 border-gray-600 bg-cover bg-center'
+                                                            style={{ backgroundImage: 'url("/defaultProfile.png")' }}
+                                                        ></div>
+                                                    )}
+                                                    {user?.fullName || "John Doe"}
                                                 </li>
                                                 <Link href='/profil'>
                                                     <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
@@ -284,7 +301,7 @@ export default function Navbar() {
                                                 <Link href='/siparislerim'>
                                                     <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
                                                         <ShoppingCartIcon className='w-4 h-4' />
-                                                        Siparisler
+                                                        Siparişler
                                                     </li>
                                                 </Link>
                                                 <Link href='/paketler'>
@@ -296,7 +313,7 @@ export default function Navbar() {
                                                 <Link href='/markalarim'>
                                                     <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
                                                         <BriefcaseIcon className='w-4 h-4' />
-                                                        Markalarim
+                                                        Markalarım
                                                     </li>
                                                 </Link>
                                                 <li

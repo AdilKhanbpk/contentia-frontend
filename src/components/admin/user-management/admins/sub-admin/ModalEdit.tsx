@@ -121,7 +121,7 @@ const ModalEdit: React.FC<ModalEditProps> = ({
                                                 defaultValue={
                                                     adminData?.password
                                                 }
-                                                className='font-medium border px-1 py-1 rounded-md focus:outline-none'
+                                className='font-medium border px-1 py-1 rounded-md focus:outline-none'
                                             />
                                         </div> */}
                                         <div className='flex flex-col mb-2 sm:mb-3 md:mb-4 lg:mb-4 w-full md:w-1/2'>
