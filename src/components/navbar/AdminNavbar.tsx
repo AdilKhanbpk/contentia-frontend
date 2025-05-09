@@ -19,7 +19,7 @@ import {
 } from "@/store/features/admin/notificationSlice";
 import { toast } from "react-toastify";
 import { usePathname, useRouter } from "next/navigation";
-import { logoutUser } from "@/store/features/auth/loginSlice";
+import { logoutUser, resetLoginState } from "@/store/features/auth/loginSlice";
 import NavbarNotification from "../notifications/NavbarNotification";
 import { useTokenContext } from "@/context/TokenCheckingContext";
 
@@ -200,18 +200,32 @@ export default function AdminNavbar() {
         return () => document.removeEventListener("click", handleClickOutside);
     }, []);
 
-    const handleLogout = () => {
-        dispatch(logoutUser())
-            .then(() => {
-                toast.success("Logout successful");
-                localStorage.removeItem("user");
-                localStorage.removeItem("accessToken");
-                setToken(null);
-                router.push("/giris-yap");
-            })
-            .catch(() => {
-                toast.error("Logout failed");
+    const handleLogout = async () => {
+        try {
+            await dispatch(logoutUser());
+
+            // Clear all auth data
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("user");
+            setToken(null);
+
+            // Clear Redux persist store
+            dispatch(resetLoginState());
+
+            // Clear any cookies (if your backend uses them)
+            document.cookie.split(";").forEach((c) => {
+                document.cookie = c
+                    .replace(/^ +/, "")
+                    .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
             });
+
+            toast.success("Logout successful");
+
+            // Force a page reload to clear any in-memory state
+            window.location.href = "/giris-yap";
+        } catch (error) {
+            toast.error("Logout failed");
+        }
     };
 
     return (

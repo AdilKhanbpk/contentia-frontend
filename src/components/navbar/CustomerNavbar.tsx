@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import BrandNames from "./sub-navbar/BrandNames";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutUser } from "@/store/features/auth/loginSlice";
+import { logoutUser, resetLoginState } from "@/store/features/auth/loginSlice";
 import {
     fetchProfile,
     selectProfileUser,
@@ -60,12 +60,26 @@ export default function Navbar() {
     const handleLogout = async () => {
         try {
             await dispatch(logoutUser());
-            localStorage.removeItem("user");
+
+            // Clear all auth data
             localStorage.removeItem("accessToken");
+            localStorage.removeItem("user");
             setToken(null);
 
+            // Clear Redux persist store
+            dispatch(resetLoginState());
+
+            // Clear any cookies (if your backend uses them)
+            document.cookie.split(";").forEach((c) => {
+                document.cookie = c
+                    .replace(/^ +/, "")
+                    .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+            });
+
             toast.success("Logout successful");
-            router.push("/giris-yap");
+
+            // Force a page reload to clear any in-memory state
+            window.location.href = "/giris-yap";
         } catch (error) {
             toast.error("Logout failed");
         }
