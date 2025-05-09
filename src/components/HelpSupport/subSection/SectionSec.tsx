@@ -38,7 +38,7 @@ const SectionSec = () => {
               <span className="text-xl">
                 <MdOutlineKeyboardArrowRight />
               </span>
-            </div>
+            </div> 
             <span className="text-gray-500">Getting Started Guide for Brands</span>
           </div>
 
