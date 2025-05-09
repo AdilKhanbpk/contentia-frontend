@@ -157,8 +157,8 @@ export interface OrderInterface {
     basePrice?: number;
     totalPriceForCustomer?: number;
     totalPriceForCreator?: number;
-    orderStatus: "pending" | "active" | "completed" | "cancelled" | "revision";
-    paymentStatus: "paid" | "pending" | "refunded" | "cancelled";
+    orderStatus: "pending" | "active" | "completed" | "cancelled" | "revision" | "rejected";
+    paymentStatus: "paid" | "pending" | "refunded" | "cancelled"  | "rejected";
     contentsDelivered?: number;
     additionalServices: {
         platform: string;
