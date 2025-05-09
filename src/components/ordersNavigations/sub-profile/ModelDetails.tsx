@@ -59,7 +59,7 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                                     Upload Date
                                 </th>
                                 <th className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border'>
-                                    Creator Notes
+                                    Sipariş Notu
                                 </th>
                             </tr>
                         </thead>
@@ -177,7 +177,7 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                                     Upload Date
                                 </th>
                                 <th className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border'>
-                                Creator Notes
+                                Sipariş Notu
                                 </th>
                             </tr>
                         </thead>
@@ -564,7 +564,7 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                 <div className='mt-8'>
                     <div>
                         <label className='block text-sm lg:text-base font-semibold mb-1'>
-                            Creator Note:
+                            Sipariş Notu:
                         </label>
                     </div>
                     <div className='border rounded-md p-2 bg-gray-50 text-sm lg:text-base'>
