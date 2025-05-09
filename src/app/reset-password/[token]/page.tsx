@@ -4,13 +4,15 @@ import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { resetPassword } from '@/store/features/auth/ResetPasswordToBAckend';
+import { AppDispatch } from '@/store/store';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeftIcon, LockClosedIcon } from '@heroicons/react/24/outline';
 
 const ResetPasswordPage = () => {
-  const { token } = useParams();
-  const dispatch = useDispatch();
+  const params = useParams();
+  const token = params?.token as string;
+  const dispatch = useDispatch<AppDispatch>();
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
