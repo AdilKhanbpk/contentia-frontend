@@ -1,18 +1,14 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { fetchTermBySlug } from "@/store/features/admin/termsSlice";
 
-interface PageProps {
-    params: {
-        pageSlug: string;
-    };
-}
-
-export default function Page({ params }: PageProps) {
+export default function Page() {
+    const params = useParams();
+    const pageSlug = params?.pageSlug as string;
     const dispatch = useDispatch<AppDispatch>();
     const { currentTerm, loading, error } = useSelector(
         (state: RootState) => state.terms
@@ -20,10 +16,10 @@ export default function Page({ params }: PageProps) {
     const router = useRouter();
 
     useEffect(() => {
-        dispatch(fetchTermBySlug({ pageSlug: params.pageSlug })).catch(
+        dispatch(fetchTermBySlug({ pageSlug })).catch(
             () => {}
         );
-    }, [params.pageSlug]);
+    }, [pageSlug]);
 
     if (loading)
         return (
