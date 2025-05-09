@@ -18,7 +18,7 @@ const SectionSec = () => {
                 aria-label="Search"
               />
             </div>
-          </div>
+          </div> 
 
           <div className="flex text-sm mt-6 space-x-3 flex-wrap pb-2">
             <div className="flex items-center">
