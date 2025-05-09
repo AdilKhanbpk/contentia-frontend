@@ -63,7 +63,7 @@ export const createOrder = createAsyncThunk(
 );
 
 // Fetch All Orders
-export const fetchOrders = createAsyncThunk(
+export const fetchOrders = createAsyncThunk( 
   'orders/fetchOrders',
   async (_, { rejectWithValue }) => {
     try {

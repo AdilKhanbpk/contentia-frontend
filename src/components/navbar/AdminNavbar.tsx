@@ -328,10 +328,9 @@ export default function AdminNavbar() {
                                         {userInitials}
                                     </div>
                                 ) : (
-                                    <div
-                                        className='w-8 h-8 rounded-full border-2 border-gray-600 bg-cover bg-center'
-                                        style={{ backgroundImage: 'url("/defaultProfile.png")' }}
-                                    ></div>
+                                    <div className='w-8 h-8 rounded-full border-2 border-gray-600 flex items-center justify-center bg-blue-600 text-white font-semibold'>
+                                        UN
+                                    </div>
                                 )
                             }
                         >

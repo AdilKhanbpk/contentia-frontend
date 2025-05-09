@@ -167,13 +167,13 @@ const ContentCreatorPreferences: React.FC<{
                                             </button>
                                             {showTooltipThree && (
                                                 <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
-                                                    Adres bilgileri, tüm içerik 
+                                                   <i> Adres bilgileri, tüm içerik 
                                                     üreticileri tarafından İl, 
                                                     İlçe ve Mahalle olarak 
                                                     gösterilecektir. Onaylanan 
                                                     içerik üreticiler, işletme 
                                                     adı ve açık adresi 
-                                                    görüntüleyebilecektir.
+                                                    görüntüleyebilecektir.</i>
                                                 </div>
                                             )}
                                         </div>

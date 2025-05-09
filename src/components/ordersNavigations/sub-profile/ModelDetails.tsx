@@ -58,6 +58,9 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                                 <th className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border'>
                                     Upload Date
                                 </th>
+                                <th className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border'>
+                                    Creator Notes
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -115,6 +118,10 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                                                                           ).toLocaleDateString()
                                                                         : "No Date Available"}
                                                                 </td>
+                                                                <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm text-gray-600'>
+                                                                    {orderData?.creatorNoteOnOrder?
+                                                                    orderData.creatorNoteOnOrder : "No Creator Notes Available"}
+                                                                </td>
                                                             </tr>
                                                         )
                                                     )
@@ -143,7 +150,7 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                                             {/* No Files Uploaded Column */}
                                             <td
                                                 className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm text-center'
-                                                colSpan={2}
+                                                colSpan={3}
                                             >
                                                 No Files Uploaded
                                             </td>
@@ -169,12 +176,15 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                                 <th className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border'>
                                     Upload Date
                                 </th>
+                                <th className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border'>
+                                Creator Notes
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td
-                                    colSpan={4}
+                                    colSpan={5}
                                     className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4  border text-xs lg:text-sm text-center'
                                 >
                                     <p className='text-xs lg:text-sm'>

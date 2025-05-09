@@ -4,6 +4,8 @@ import { persistReducer, persistStore } from "redux-persist";
 import becomeCreatorReducer from "./becomeCreator/becomeCreatorSlice";
 import signupReducer from "./features/auth/signupSlice";
 import loginReducer from "./features/auth/loginSlice";
+import forgotPasswordReducer from "./features/auth/ForgotPasswordSlice";
+import resetPasswordReducer from "./features/auth/ResetPasswordToBAckend";
 import profileReducer from "./features/profile/profileSlice";
 import brandReducer from "./features/profile/brandSlice";
 import orderReducer from "./features/profile/orderSlice";
@@ -46,6 +48,8 @@ const rootReducer = combineReducers({
   becomeCreator: becomeCreatorReducer,
   signup: signupReducer,
   login: loginReducer, // Persist this reducer
+  forgotPassword: forgotPasswordReducer,
+  resetPassword: resetPasswordReducer,
   profile: profileReducer,
   brand: brandReducer,
   order: orderReducer,
@@ -85,6 +89,7 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: false, // Required for redux-persist
     }),
+
 });
 
 // 🔹 Persistor

@@ -139,6 +139,10 @@ const LoginForm = () => {
                     Beni Hatırla
                 </label>
             </div>
+            <div className="flex w-full justify-center mb-2">
+                <span className="text-blue-500 cursor-pointer"
+                onClick={() => router.push("/forgot-password")}>Forgot Password?</span>
+                </div>
             {errors.rememberMe && (
                 <span className='text-red-500'>
                     Lütfen göndermeden önce Beni Hatırla kısmını doldurunuz.
