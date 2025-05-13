@@ -106,10 +106,12 @@ export const createOrder = createAsyncThunk(
         formData.append("uploadFiles", file);
       });
 
-      // Set Authorization header
+      // Set Authorization header 
 
       // Make API request
       const response = await axiosInstance.postForm("/orders", formData);
+      console.log("Order Data :" , formData);
+      
 
       return response.data.data;
     } catch (error) {

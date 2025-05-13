@@ -141,7 +141,7 @@ const LoginForm = () => {
             </div>
             <div className="flex w-full justify-center mb-2">
                 <span className="text-blue-500 cursor-pointer"
-                onClick={() => router.push("/forgot-password")}>Şifreni hatırlamıyor musun? </span>
+                onClick={() => router.push("/forgot-password")}>Şifreni hatırlamıyor musunn?</span>
                 </div>
             {errors.rememberMe && (
                 <span className='text-red-500'>

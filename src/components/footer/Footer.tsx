@@ -86,32 +86,26 @@ const Footer = () => {
                         <ul className='mt-4 space-y-2'>
                             <li>
                                 <Link
-                                    legacyBehavior
                                     href='/'
+                                    className='text-sm whitespace-nowrap text-gray-600 hover:underline'
                                 >
-                                    <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
-                                        Markalar
-                                    </a>
+                                    Markalar
                                 </Link>
                             </li>
                             <li>
                                 <Link
-                                    legacyBehavior
                                     href='/'
+                                    className='text-sm whitespace-nowrap text-gray-600 hover:underline'
                                 >
-                                    <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
-                                        Ajanslar
-                                    </a>
+                                    Ajanslar
                                 </Link>
                             </li>
                             <li>
                                 <Link
-                                    legacyBehavior
                                     href='/'
+                                    className='text-sm whitespace-nowrap text-gray-600 hover:underline'
                                 >
-                                    <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
-                                        Girişimler
-                                    </a>
+                                    Girişimler
                                 </Link>
                             </li>
                         </ul>
@@ -123,42 +117,34 @@ const Footer = () => {
                         <ul className='mt-4 space-y-2'>
                             <li>
                                 <Link
-                                    legacyBehavior
                                     href='/hakkimizda'
+                                    className='text-sm whitespace-nowrap text-gray-600 hover:underline'
                                 >
-                                    <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
-                                        Hakkımızda
-                                    </a>
+                                    Hakkımızda
                                 </Link>
                             </li>
                             <li>
                                 <Link
-                                    legacyBehavior
                                     href='/sozlesmeler/gizlilik-politikasi'
+                                    className='text-sm whitespace-nowrap text-gray-600 hover:underline'
                                 >
-                                    <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
-                                        Gizlilik Politikası
-                                    </a>
+                                    Gizlilik Politikası
                                 </Link>
                             </li>
                             <li>
                                 <Link
-                                    legacyBehavior
                                     href='/sozlesmeler/kullanim-sartlari'
+                                    className='text-sm whitespace-nowrap text-gray-600 hover:underline'
                                 >
-                                    <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
-                                        Kullanım Koşulları
-                                    </a>
+                                    Kullanım Koşulları
                                 </Link>
                             </li>
                             <li>
                                 <Link
-                                    legacyBehavior
                                     href='/blog'
+                                    className='text-sm whitespace-nowrap text-gray-600 hover:underline'
                                 >
-                                    <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
-                                        Blog
-                                    </a>
+                                    Blog
                                 </Link>
                             </li>
                         </ul>
@@ -170,42 +156,34 @@ const Footer = () => {
                         <ul className='mt-4 space-y-2'>
                             <li>
                                 <Link
-                                    legacyBehavior
                                     href='/destek-merkezi'
+                                    className='text-sm whitespace-nowrap text-gray-600 hover:underline'
                                 >
-                                    <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
-                                        Destek Merkezi
-                                    </a>
+                                    Destek Merkezi
                                 </Link>
                             </li>
                             <li>
                                 <Link
-                                    legacyBehavior
                                     href='/nasil-calisir'
+                                    className='text-sm whitespace-nowrap text-gray-600 hover:underline'
                                 >
-                                    <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
-                                        Nasıl Çalışır?
-                                    </a>
+                                    Nasıl Çalışır?
                                 </Link>
                             </li>
                             <li>
                                 <Link
-                                    legacyBehavior
                                     href='/nasil-calisir'
+                                    className='text-sm whitespace-nowrap text-gray-600 hover:underline'
                                 >
-                                    <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
-                                        Sıkça Sorulan Sorular
-                                    </a>
+                                    Sıkça Sorulan Sorular
                                 </Link>
                             </li>
                             <li>
                                 <Link
-                                    legacyBehavior
                                     href='/hakkimizda'
+                                    className='text-sm whitespace-nowrap text-gray-600 hover:underline'
                                 >
-                                    <a className='text-sm whitespace-nowrap text-gray-600 hover:underline'>
-                                        İletişim
-                                    </a>
+                                    İletişim
                                 </Link>
                             </li>
                         </ul>
@@ -226,44 +204,34 @@ const Footer = () => {
                         <div className='w-[160px] h-[50px] flex items-center justify-center bg-white rounded-md shadow-md'>
                             <Link
                                 href='https://apps.apple.com/app/idXXXXXXXXX'
-                                passHref
-                                legacyBehavior
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                className='flex items-center justify-center w-full h-full'
                             >
-                                <a
-                                    target='_blank'
-                                    rel='noopener noreferrer'
-                                    className='flex items-center justify-center w-full h-full'
-                                >
-                                    <Image
-                                        src='/BecomeCreator/AppStore1.png'
-                                        alt='Download on the App Store'
-                                        width={140}
-                                        height={40}
-                                        className='object-contain'
-                                    />
-                                </a>
+                                <Image
+                                    src='/BecomeCreator/AppStore1.png'
+                                    alt='Download on the App Store'
+                                    width={140}
+                                    height={40}
+                                    className='object-contain'
+                                />
                             </Link>
                         </div>
 
                         <div className='w-[160px] h-[50px] flex items-center justify-center bg-white rounded-md shadow-md'>
                             <Link
                                 href='https://play.google.com/store/apps/details?id=XXXXXXXXX'
-                                passHref
-                                legacyBehavior
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                className='flex items-center justify-center w-full h-full'
                             >
-                                <a
-                                    target='_blank'
-                                    rel='noopener noreferrer'
-                                    className='flex items-center justify-center w-full h-full'
-                                >
-                                    <Image
-                                        src='/BecomeCreator/googleplay2.svg'
-                                        alt='Get it on Google Play'
-                                        width={140}
-                                        height={40}
-                                        className='object-contain'
-                                    />
-                                </a>
+                                <Image
+                                    src='/BecomeCreator/googleplay2.svg'
+                                    alt='Get it on Google Play'
+                                    width={140}
+                                    height={40}
+                                    className='object-contain'
+                                />
                             </Link>
                         </div>
                     </div>
@@ -282,23 +250,19 @@ const Footer = () => {
                     <div className='flex flex-wrap gap-4 justify-center md:justify-end'>
                         {socialLinks.map((item, index) => (
                             <Link
-                                legacyBehavior
                                 href={item.href}
                                 key={index}
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                className='transition transform hover:scale-110 hover:opacity-80 duration-300'
                             >
-                                <a
-                                    target='_blank'
-                                    rel='noopener noreferrer'
-                                    className='transition transform hover:scale-110 hover:opacity-80 duration-300'
-                                >
-                                    <Image
-                                        src={item.icon}
-                                        alt={item.alt}
-                                        width={50}
-                                        height={50}
-                                        className='rounded-md shadow-sm'
-                                    />
-                                </a>
+                                <Image
+                                    src={item.icon}
+                                    alt={item.alt}
+                                    width={50}
+                                    height={50}
+                                    className='rounded-md shadow-sm'
+                                />
                             </Link>
                         ))}
                     </div>

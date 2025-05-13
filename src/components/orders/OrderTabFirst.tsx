@@ -113,11 +113,14 @@ export default function TabFirst({
     const handleAddService = (key: string, price: number) => {
         setSelectedServices((prev) => {
             const updated = { ...prev };
+            
             if (updated[key]) {
                 delete updated[key];
             } else {
                 updated[key] = price;
             }
+                        console.log("🚀 ~ handleAddService ~ updated:", updated);
+
             return updated;
         });
 

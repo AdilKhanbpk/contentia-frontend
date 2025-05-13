@@ -8,7 +8,7 @@ import Link from "next/link";
 interface HeroSectionProps {
     landingPage: any;
     landingPageLoading: boolean;
-    landingPageError: string | null;
+    landingPageError: any; // Changed from string | null to any to handle error objects
 }
 
 export default function HeroSection({
@@ -21,7 +21,11 @@ export default function HeroSection({
             {landingPageLoading ? (
                 <LoadingSkeleton />
             ) : landingPageError ? (
-                <p className='text-red-500'>Error: {landingPageError}</p>
+                <p className='text-red-500'>
+                    Error: {typeof landingPageError === 'object'
+                        ? (landingPageError.message || JSON.stringify(landingPageError))
+                        : landingPageError}
+                </p>
             ) : (
                 <>
                     <div className='flex flex-col'>

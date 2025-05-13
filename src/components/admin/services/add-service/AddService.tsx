@@ -6,6 +6,7 @@ import { RootState } from "@/store/store";
 import {
     fetchAdditionalServices,
     updateAdditionalService,
+    createAdditionalService,
 } from "@/store/features/admin/addPriceSlice";
 import { toast } from "react-toastify";
 
@@ -58,35 +59,104 @@ const AddService: React.FC = () => {
         }
     }, [additionalService, reset]);
 
-    const handleSaveService: SubmitHandler<FormData> = (data) => {
-        if (additionalService) {
-            const updatedService = {
-                editPrice: data.editPrice,
-                sharePrice: data.sharePrice,
-                coverPicPrice: data.coverPicPrice,
-                creatorTypePrice: data.creatorTypePrice,
-                shippingPrice: data.shippingPrice,
-                thirtySecondDurationPrice: data.thirtySecondDurationPrice,
-                sixtySecondDurationPrice: data.sixtySecondDurationPrice,
+    const handleSaveService: SubmitHandler<FormData> = async (data) => {
+        console.log("Form submitted with data:", data);
+
+        try {
+            // Create the service object from form data
+            const serviceData = {
+                editPrice: Number(data.editPrice),
+                sharePrice: Number(data.sharePrice),
+                coverPicPrice: Number(data.coverPicPrice),
+                creatorTypePrice: Number(data.creatorTypePrice),
+                shippingPrice: Number(data.shippingPrice),
+                thirtySecondDurationPrice: Number(data.thirtySecondDurationPrice),
+                sixtySecondDurationPrice: Number(data.sixtySecondDurationPrice),
             };
-            dispatch(
-                updateAdditionalService({
-                    id: additionalService._id || "",
-                    data: updatedService,
-                }) as any
-            )
-                .then(() => {
-                    toast.success("Service updated successfully!");
-                })
-                .catch((err: Error) => {
-                    toast.error(err.message || "Failed to update service.");
-                });
+
+            console.log("Service data:", serviceData);
+
+            // Check if we have a valid MongoDB ObjectId (24 hex characters)
+            const isValidMongoId = additionalService?._id &&
+                /^[0-9a-fA-F]{24}$/.test(additionalService._id);
+
+            if (isValidMongoId) {
+                // If we have a valid ID, update the existing service
+                console.log("Updating existing service with ID:", additionalService?._id);
+
+                const result = await dispatch(
+                    updateAdditionalService({
+                        id: additionalService!._id!,
+                        data: serviceData,
+                    }) as any
+                ).unwrap();
+
+                console.log("Update result:", result);
+                toast.success("Service updated successfully!");
+            } else {
+                // If we don't have a valid ID, create a new service
+                console.log("Creating new service");
+
+                const result = await dispatch(
+                    createAdditionalService({
+                        data: serviceData,
+                    }) as any
+                ).unwrap();
+
+                console.log("Create result:", result);
+                toast.success("Service created successfully!");
+            }
+
+            // Force a refresh of the data
+            dispatch(fetchAdditionalServices() as any);
+        } catch (err: any) {
+            console.error("Error saving service:", err);
+
+            // Check if the error is about an invalid ID
+            if (err.message && err.message.includes("Invalid Id")) {
+                toast.error("Invalid ID format. Creating a new service instead.");
+
+                try {
+                    // Try to create a new service instead
+                    const serviceData = {
+                        editPrice: Number(data.editPrice),
+                        sharePrice: Number(data.sharePrice),
+                        coverPicPrice: Number(data.coverPicPrice),
+                        creatorTypePrice: Number(data.creatorTypePrice),
+                        shippingPrice: Number(data.shippingPrice),
+                        thirtySecondDurationPrice: Number(data.thirtySecondDurationPrice),
+                        sixtySecondDurationPrice: Number(data.sixtySecondDurationPrice),
+                    };
+
+                    const result = await dispatch(
+                        createAdditionalService({
+                            data: serviceData,
+                        }) as any
+                    ).unwrap();
+
+                    console.log("Create result after ID error:", result);
+                    toast.success("Service created successfully!");
+
+                    // Force a refresh of the data
+                    dispatch(fetchAdditionalServices() as any);
+                } catch (createErr: any) {
+                    console.error("Error creating service after ID error:", createErr);
+                    toast.error(createErr.message || "Failed to create service.");
+                }
+            } else {
+                toast.error(err.message || "Failed to save service.");
+            }
         }
+    };
+
+    const onSubmit = (data: FormData) => {
+        console.log("Form onSubmit triggered with data:", data);
+        handleSaveService(data);
     };
 
     return (
         <form
-            onSubmit={handleSubmit(handleSaveService)}
+            onSubmit={handleSubmit(onSubmit)}
             className='space-y-6 p-4'
         >
             <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
@@ -205,6 +275,7 @@ const AddService: React.FC = () => {
                     <button
                         type='submit'
                         className='w-32 Button text-white px-3 py-2 rounded-md mt-4'
+                        onClick={() => console.log("Save button clicked")}
                     >
                         {isSubmitting ? "Saving..." : "Save"}
                     </button>

@@ -101,19 +101,15 @@ export default function Navbar() {
                 <li key={href}>
                     <Link
                         href={href}
-                        legacyBehavior
+                        onClick={onClick}
+                        className={clsx(
+                            "block p-2 rounded-lg transition-all",
+                            pathname === href
+                                ? "BlueBg dark:bg-gray-800 text-white font-semibold"
+                                : "text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                        )}
                     >
-                        <a
-                            onClick={onClick}
-                            className={clsx(
-                                "block p-2 rounded-lg transition-all",
-                                pathname === href
-                                    ? "BlueBg dark:bg-gray-800 text-white font-semibold"
-                                    : "text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-                            )}
-                        >
-                            {label}
-                        </a>
+                        {label}
                     </Link>
                 </li>
             ))}

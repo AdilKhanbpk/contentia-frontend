@@ -107,13 +107,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                     </button>
                                     {showTooltipOne && (
                                         <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
-                                           <i> İçerik üreticilerine ürün gönderimi
-                                            sağlayacaksanız ya da üreticilerin
-                                            bir fiziki lokasyona ulaşması
-                                            gerekiyorsa, bu alanda içerik
-                                            türünüzü belirterek lokasyona göre
-                                            eşleştirme gerçekleştirme yapılması
-                                            gerekir.
+                                           <i> İçerik Üreticileri için yapmış olduğunuz tercihler, sizi doğru içerik üreticilerle eşleştirmemize yardımcı olacaktır. Tercihlerinizi, maksimum düzeyde karşılamaya çalışacağız.
                                             </i>
                                         </div>
                                     )}
@@ -345,14 +339,8 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                             </button>
                                             {showTooltipTwo && (
                                                 <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
-                                                    İçerik üreticilerine ürün
-                                                    gönderimi sağlayacaksanız ya
-                                                    da üreticilerin bir fiziki
-                                                    lokasyona ulaşması
-                                                    gerekiyorsa, bu alanda
-                                                    içerik türünüzü belirterek
-                                                    lokasyona göre eşleştirme
-                                                    gerçekleştirme yapılması ge
+                                                   <i>İçerik üreticilerine ürün gönderimi sağlayacaksanız ya da üreticilerin bir fiziki lokasyona ulaşması gerekiyorsa, bu alanda içerik türünüzü belirterek lokasyona göre eşleştirme gerçekleştirme yapılması gerekir.
+                                                </i>
                                                 </div>
                                             )}
                                         </div>
@@ -584,7 +572,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                 isOpen={isOrderFailed}
                 closeModal={() => {
                     setIsOrderFailed(false);
-                    router.push("/sipareslerim");
+                    router.push("/siparislerim");
                 }}
             >
                 <div className='flex flex-col items-center justify-center pt-4 pb-16 px-16 text-center'>

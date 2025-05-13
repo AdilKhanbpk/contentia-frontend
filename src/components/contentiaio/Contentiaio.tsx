@@ -66,8 +66,26 @@ export function Contentiaio() {
     } = useSelector((state: RootState) => state.pricing);
 
     useEffect(() => {
-        dispatch(fetchLandingPage());
-        dispatch(fetchPricePlans());
+        // Try to fetch data, but handle potential API failures
+        console.log("Fetching landing page data...");
+        dispatch(fetchLandingPage())
+            .unwrap()
+            .then(data => {
+                console.log("Landing page data fetched successfully:", data);
+            })
+            .catch(error => {
+                console.error("Failed to fetch landing page data:", error);
+            });
+
+        console.log("Fetching pricing plans...");
+        dispatch(fetchPricePlans())
+            .unwrap()
+            .then(data => {
+                console.log("Pricing plans fetched successfully:", data);
+            })
+            .catch(error => {
+                console.error("Failed to fetch pricing plans:", error);
+            });
     }, [dispatch]);
 
     return (

@@ -132,20 +132,18 @@ export default function Navbar() {
                             <ul className=''>
                                 <li>
                                     <Link
-                                        legacyBehavior
                                         href='/'
+                                        className='flex ms-2 md:me-0'
                                     >
-                                        <a className='flex ms-2 md:me-0'>
-                                            <div className=''>
-                                                <Image
-                                                    src='/contentiaLogo.png'
-                                                    height={44}
-                                                    width={151}
-                                                    alt='logo'
-                                                    className='h-[33px] w-[173px]'
-                                                />
-                                            </div>
-                                        </a>
+                                        <div className=''>
+                                            <Image
+                                                src='/contentiaLogo.png'
+                                                height={44}
+                                                width={151}
+                                                alt='logo'
+                                                className='h-[33px] w-[173px]'
+                                            />
+                                        </div>
                                     </Link>
                                 </li>
                             </ul>
@@ -236,12 +234,10 @@ export default function Navbar() {
                             <ul className='hidden lg:flex lg:justify-center lg:items-center space-x-4 ms-10 font-medium'>
                                 <li>
                                     <Link
-                                        legacyBehavior
                                         href='/icerik-uretici-ol'
+                                        className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'
                                     >
-                                        <a className='text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg'>
-                                            İçerik Üretici Ol
-                                        </a>
+                                        İçerik Üretici Ol
                                     </Link>
                                 </li>
 

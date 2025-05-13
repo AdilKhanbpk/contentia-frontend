@@ -9,7 +9,7 @@ import { PricePlan } from "@/store/features/admin/pricingSlice";
 interface PackagesProps {
     packages: PricePlan[];
     packagesLoading: boolean;
-    packagesError: string | null;
+    packagesError: any; // Changed from string | null to any to handle error objects
 }
 
 export default function Packages({
@@ -32,6 +32,12 @@ export default function Packages({
                 <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6'>
                     {packagesLoading ? (
                         <p>Loading Packages...</p>
+                    ) : packagesError ? (
+                        <p className='text-red-500'>
+                            Error: {typeof packagesError === 'object'
+                                ? (packagesError.message || JSON.stringify(packagesError))
+                                : packagesError}
+                        </p>
                     ) : (
                         packages &&
                         packages.map((pkg: any, index: any) => (

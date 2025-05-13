@@ -55,7 +55,7 @@ export default function RootLayout({
                     href='/apple-touch-icon.png'
                 />
             </Head>
-            <body>
+            <body suppressHydrationWarning={true}>
                 <FileProvider>
                     <Provider store={store}>
                         <PersistGate

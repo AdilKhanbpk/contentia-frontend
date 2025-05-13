@@ -984,12 +984,7 @@ export default function EditModal({ order }: EditModalProps) {
                                     </button>
                                     {showTooltipOne && (
                                         <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
-                                            <i>İçerik Üreticileri için yapmış
-                                            olduğunuz tercihler, sizi doğru
-                                            içerik üreticilerle eşleştirmemize
-                                            yardımcı olacaktır. Tercihlerinizi,
-                                            maksimum düzeyde karşılamaya
-                                            çalışacağız.
+                                            <i>İçerik Üreticileri için yapmış olduğunuz tercihler, sizi doğru içerik üreticilerle eşleştirmemize yardımcı olacaktır. Tercihlerinizi, maksimum düzeyde karşılamaya çalışacağız.
                                             </i>
                                         </div>
                                     )}

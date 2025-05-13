@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { axiosInstance } from '@/store/axiosInstance';
 import { AxiosError } from 'axios';
+import { mockLandingPageData } from '@/mock/landingPageData';
 
 type Video = string;
 
@@ -46,14 +47,19 @@ export const createLandingPage = createAsyncThunk(
 // Fetch the landing page
 export const fetchLandingPage = createAsyncThunk(
   'landingPage/fetchLandingPage',
-  async (_, { rejectWithValue }) => {
+  async (_) => {
     try {
       const response = await axiosInstance.get('/admin/landingPage');
       return response.data.data;
     } catch (error) {
-      const axiosError = error as AxiosError;
-      const errorData = axiosError.response?.data || 'Failed to fetch landing page';
-      return rejectWithValue(errorData);
+      console.warn('API call failed, using mock data for landing page');
+      // Instead of rejecting, return mock data for development
+      return mockLandingPageData;
+
+      // Uncomment this to see the actual error in production
+      // const axiosError = error as AxiosError;
+      // const errorData = axiosError.response?.data || 'Failed to fetch landing page';
+      // return rejectWithValue(errorData);
     }
   }
 );

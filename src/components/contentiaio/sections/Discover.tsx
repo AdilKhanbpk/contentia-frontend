@@ -5,7 +5,7 @@ import MyCarousel from "@/components/carousel/MyCarousel";
 
 interface DiscoverProps {
     landingPageLoading: boolean;
-    landingPageError: string | null;
+    landingPageError: any; // Changed from string | null to any to handle error objects
     landingPage: any;
 }
 
@@ -31,7 +31,9 @@ export default function Discover({
                         </div>
                     ) : landingPageError ? (
                         <p className='text-red-500'>
-                            Error: {landingPageError}
+                            Error: {typeof landingPageError === 'object'
+                                ? (landingPageError.message || JSON.stringify(landingPageError))
+                                : landingPageError}
                         </p>
                     ) : (
                         <MyCarousel videos={landingPage?.videos || []} />

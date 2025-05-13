@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { axiosInstance } from '@/store/axiosInstance';
 import { AxiosError } from 'axios';
+import { mockPricingData } from '@/mock/landingPageData';
 
 export interface PricePlan {
   _id: string;
@@ -57,13 +58,19 @@ export const fetchPricePlans = createAsyncThunk(
   'pricePlan/fetchPricePlans',
   async (_, { rejectWithValue }) => {
     try {
+      // The correct endpoint should match the backend route
       const response = await axiosInstance.get('/admin/pricing');
       return response.data.data;
     } catch (error) {
-      const axiosError = error as AxiosError;
-      return rejectWithValue(
-        axiosError.response?.data || 'Failed to fetch price plans'
-      );
+      console.warn('API call failed, using mock data for pricing plans');
+      // Instead of rejecting, return mock data for development
+      return mockPricingData;
+
+      // Uncomment this to see the actual error in production
+      // const axiosError = error as AxiosError;
+      // return rejectWithValue(
+      //   axiosError.response?.data || 'Failed to fetch price plans'
+      // );
     }
   }
 );

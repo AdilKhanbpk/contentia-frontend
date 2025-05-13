@@ -1,10 +1,10 @@
 import React from 'react';
-import Pricing from "@/components/admin/services/pricing/Pricing"
+import EnhancedPricing from "@/components/admin/services/pricing/EnhancedPricing"
 
 export default function Pricings() {
   return (
     <>
-      <Pricing></Pricing>
+      <EnhancedPricing />
     </>
   );
 }
