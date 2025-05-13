@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { axiosInstance } from '@/store/axiosInstance';
+import { axiosInstance, postForm } from '@/store/axiosInstance';
 import { AxiosError } from 'axios';
 import { BlogInterface } from '@/types/interfaces';
 
@@ -27,7 +27,7 @@ export const createBlog = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.postForm('/admin/blogs', blog);
+      const response = await postForm('/admin/blogs', blog);
       return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { axiosInstance } from "@/store/axiosInstance";
+import { axiosInstance, patchForm, postForm } from "@/store/axiosInstance";
 import { AxiosError } from "axios";
 
 export interface PaymentInterface {
@@ -57,7 +57,7 @@ export const uploadInvoiceImage = createAsyncThunk(
     async ({ orderId, formData }: uploadInvoiceImagePayload, { rejectWithValue }) => {
         try {
             formData.append("orderId", orderId);
-            const response = await axiosInstance.postForm("/admin/incomingPayment", formData);
+            const response = await postForm("/admin/incomingPayment", formData);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
@@ -69,7 +69,7 @@ export const createPayment = createAsyncThunk(
     "payment/createPayment",
     async ({ formData }: CreatePaymentPayload, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.postForm("/admin/incomingPayment", formData);
+            const response = await postForm("/admin/incomingPayment", formData);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
@@ -95,7 +95,7 @@ export const updatePayment = createAsyncThunk(
     "payment/updatePayment",
     async ({ paymentId, data }: UpdatePaymentPayload, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.patchForm(`/admin/incomingPayment/${paymentId}`, data);
+            const response = await patchForm(`/admin/incomingPayment/${paymentId}`, data);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { axiosInstance } from '@/store/axiosInstance';
+import { axiosInstance, patchForm } from '@/store/axiosInstance';
 import { AxiosError } from 'axios';
 import { mockLandingPageData } from '@/mock/landingPageData';
 
@@ -73,9 +73,9 @@ export const updateLandingPage = createAsyncThunk(
   ) => {
     try {
 
-      const response = await axiosInstance.patchForm(
+      const response = await patchForm(
         `/admin/landingPage/${id}`,
-        data,
+        data
       );
       return response.data.data;
     } catch (error) {

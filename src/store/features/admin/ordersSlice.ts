@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { axiosInstance } from '@/store/axiosInstance';
+import { axiosInstance, patchForm } from '@/store/axiosInstance';
 import { AxiosError } from 'axios';
 import { OrderInterface } from '@/types/interfaces';
 
@@ -63,7 +63,7 @@ export const createOrder = createAsyncThunk(
 );
 
 // Fetch All Orders
-export const fetchOrders = createAsyncThunk( 
+export const fetchOrders = createAsyncThunk(
   'orders/fetchOrders',
   async (_, { rejectWithValue }) => {
     try {
@@ -111,7 +111,7 @@ export const updateOrder = createAsyncThunk(
 
 
     try {
-      const response = await axiosInstance.patchForm(`/admin/orders/${orderId}`, data);
+      const response = await patchForm(`/admin/orders/${orderId}`, data);
 
       return response.data.data;
     } catch (error) {

@@ -111,7 +111,7 @@ export const updatePackage = createAsyncThunk(
 
 
     try {
-      const response = await axiosInstance.patchForm(`/admin/custom-packages/${packageId}`, data);
+      const response = await patchForm(`/admin/custom-packages/${packageId}`, data);
 
       return response.data.data;
     } catch (error) {

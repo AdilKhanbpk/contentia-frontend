@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { axiosInstance } from "@/store/axiosInstance";
+import { axiosInstance, patchForm } from "@/store/axiosInstance";
 import { AxiosError } from "axios";
 
 export interface HelpSupport {
@@ -99,10 +99,9 @@ export const updateHelpSupport = createAsyncThunk(
         { rejectWithValue }
     ) => {
         try {
-            const response = await axiosInstance.patchForm(
+            const response = await patchForm(
                 `/admin/helpSupport/${helpSupportId}`,
-                data,
-                { headers: { "Content-Type": "multipart/form-data" } }
+                data
             );
             return response.data.data;
         } catch (error) {
@@ -119,9 +118,7 @@ export const updateHelpSupportIcon = createAsyncThunk(
     "helpSupport/updateHelpSupportIcon",
     async ({ helpSupportId, data }: UpdateHelpSupportPayload, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.patchForm(`/admin/helpSupport/icon/${helpSupportId}`, data, {
-                headers: { "Content-Type": "multipart/form-data" },
-            });
+            const response = await patchForm(`/admin/helpSupport/icon/${helpSupportId}`, data);
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;

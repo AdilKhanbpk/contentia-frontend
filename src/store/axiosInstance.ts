@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from "axios";
+import axios from "axios";
 
 // This should be http://localhost:8000/api/v1
 const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -31,9 +31,17 @@ axiosInstance.interceptors.request.use(
     }
 );
 
-// Add a function to handle form data (instead of extending the axios instance)
+// Add functions to handle form data (instead of extending the axios instance)
 export const patchForm = async (url: string, data: FormData) => {
     return axiosInstance.patch(url, data, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+};
+
+export const postForm = async (url: string, data: FormData) => {
+    return axiosInstance.post(url, data, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },
