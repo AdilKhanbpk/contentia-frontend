@@ -1,5 +1,4 @@
-import axios from "axios";
-import { toast } from "react-toastify";
+import axios, { AxiosInstance } from "axios";
 
 // This should be http://localhost:8000/api/v1
 const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -23,7 +22,7 @@ axiosInstance.interceptors.request.use(
         }
 
         // Log the full URL for debugging
-        console.log("API Request URL:", config.baseURL + config.url);
+        console.log("API Request URL:", (config.baseURL || '') + (config.url || ''));
 
         return config;
     },
@@ -32,8 +31,8 @@ axiosInstance.interceptors.request.use(
     }
 );
 
-// Add a method to handle form data
-axiosInstance.patchForm = async (url: string, data: FormData) => {
+// Add a function to handle form data (instead of extending the axios instance)
+export const patchForm = async (url: string, data: FormData) => {
     return axiosInstance.patch(url, data, {
         headers: {
             'Content-Type': 'multipart/form-data',
