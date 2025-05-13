@@ -33,11 +33,12 @@ export const createPricePlan = createAsyncThunk(
   async (
     { data }: {
       data: {
+        title?: string;
+        description?: string;
         videoCount: number;
         strikeThroughPrice?: number;
         finalPrice: number
       };
-
     },
     { rejectWithValue }
   ) => {
@@ -56,7 +57,7 @@ export const createPricePlan = createAsyncThunk(
 // Fetch All Price Plans
 export const fetchPricePlans = createAsyncThunk(
   'pricePlan/fetchPricePlans',
-  async (_, { rejectWithValue }) => {
+  async (_) => {
     try {
       // The correct endpoint should match the backend route
       const response = await axiosInstance.get('/admin/pricing');
@@ -129,8 +130,7 @@ export const deletePricePlan = createAsyncThunk(
   'pricePlan/deletePricePlan',
   async ({ id }: { id: string; }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.delete(`/admin/pricing/${id}`);
-
+      await axiosInstance.delete(`/admin/pricing/${id}`);
       return id;
     } catch (error) {
       const axiosError = error as AxiosError;
