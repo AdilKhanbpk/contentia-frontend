@@ -1,10 +1,12 @@
 import axios from "axios";
 
-// This should be http://localhost:8000/api/v1
+// This should be the backend API URL
 const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-// For debugging
-console.log("API Base URL:", baseURL);
+// Enhanced debugging
+console.log("Environment NEXT_PUBLIC_BACKEND_URL:", process.env.NEXT_PUBLIC_BACKEND_URL);
+console.log("Actual baseURL being used:", baseURL);
+console.log("Build timestamp:", process.env.NEXT_PUBLIC_BUILD_TIMESTAMP || "Not set");
 
 export const axiosInstance = axios.create({
     baseURL,
