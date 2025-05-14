@@ -26,7 +26,7 @@ const BrandNames = () => {
     return (
         <div className='flex items-center space-x-2'>
             <Image
-                src={selectedBrand?.brandImage || "/brand-logo.png"}
+                src={selectedBrand?.brandImage || ""}
                 alt='brand logo'
                 height={32}
                 width={32}

@@ -53,29 +53,29 @@ const ForgotPasswordPage = () => {
             </div>
 
             <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
-              {submitted ? 'Check Your Email' : 'Forgot Your Password?'}
+              {submitted ? 'E-postanızı Kontrol Edin!' : 'Şifrenizi mi unuttunuz?'}
             </h2>
 
             <p className="text-center text-gray-600 mb-8">
               {submitted
-                ? 'We have sent a password reset link to your email address.'
-                : 'Enter your email address and we\'ll send you a link to reset your password.'}
+                ? 'E-posta adresinize şifre sıfırlama bağlantısı gönderdik.'
+                : 'Kayıtlı e-posta adresini girin, şifre yenileme adımlarını takip edin.'}
             </p>
 
             {submitted ? (
               <div className="space-y-6">
                 <div className="bg-blue-50 border border-blue-200 rounded-md p-4 text-sm text-blue-700">
-                  <p>A password reset link has been sent to: <strong>{email}</strong></p>
-                  <p className="mt-2">Please check your inbox and follow the instructions to reset your password.</p>
+                  <p>Şifre sıfırlama bağlantısı şu adrese gönderildi: <strong>{email}</strong></p>
+                  <p className="mt-2">Lütfen gelen kutunuzu kontrol edin ve şifrenizi sıfırlamak için talimatları izleyin.</p>
                 </div>
 
                 <div className="text-center">
-                  <p className="text-sm text-gray-600 mb-4">Didn't receive the email?</p>
+                  <p className="text-sm text-gray-600 mb-4">E-postayı almadınız mı?</p>
                   <button
                     onClick={() => setSubmitted(false)}
                     className="text-blue-600 hover:text-blue-800 font-medium"
                   >
-                    Try again with a different email
+                 Farklı bir e-posta ile tekrar deneyin
                   </button>
                 </div>
               </div>
@@ -83,14 +83,14 @@ const ForgotPasswordPage = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                    Email Address
+                    E-Posta Adresi
                   </label>
                   <input
                     id="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
+                    placeholder="E-Posta Adresini Girin"
                     required
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
@@ -107,9 +107,9 @@ const ForgotPasswordPage = () => {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      Sending...
+                      Gönderiliyor...
                     </span>
-                  ) : 'Send Reset Link'}
+                  ) : ' Şifre Yenileme'}
                 </button>
               </form>
             )}
@@ -120,14 +120,14 @@ const ForgotPasswordPage = () => {
                 className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 font-medium"
               >
                 <ArrowLeftIcon className="w-4 h-4 mr-1" />
-                Back to Login
+                Giriş Sayfasına Dön
               </Link>
             </div>
           </div>
         </div>
 
         <div className="text-center mt-6 text-sm text-gray-600">
-          <p>Need help? <a href="mailto:info@contentia.io" className="text-blue-600 hover:text-blue-800">Contact Support</a></p>
+          <p>Yardıma mı İhtiyacın Var? <a href="mailto:info@contentia.io" className="text-blue-600 hover:text-blue-800"> İletişime Geç</a></p>
         </div>
       </div>
     </div>
