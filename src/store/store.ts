@@ -17,7 +17,7 @@ import bannerSlice from "./features/admin/bannerSlice";
 import howWorkSlice from "./features/admin/howWorkSlice";
 import aboutSlice from "./features/admin/aboutSlice";
 import helpSlice from "./features/admin/helpSlice";
-import blogSlice from "./features/admin/blogSlice";
+import blogSlice from "./features/admin/blogSlice"; 
 import couponSlice from "./features/admin/couponSlice";
 import ordersSlice from "./features/admin/ordersSlice";
 import pricingSlice from "./features/admin/pricingSlice";
