@@ -9,12 +9,16 @@ const RouteChangeTracker: React.FC = () => {
     const startTimeRef = useRef<number>(Date.now());
 
     useEffect(() => {
-        const duration = Date.now() - startTimeRef.current;
-        logTimeOnPage(pathname, duration);
-
-        logPageView(pathname);
-
-        startTimeRef.current = Date.now();
+        try {
+            const duration = Date.now() - startTimeRef.current;
+            logTimeOnPage(pathname, duration);
+            logPageView(pathname);
+            startTimeRef.current = Date.now();
+        } catch (error) {
+            console.error("Error in RouteChangeTracker:", error);
+            // Continue execution even if analytics fails
+            startTimeRef.current = Date.now();
+        }
     }, [pathname]);
 
     return null;

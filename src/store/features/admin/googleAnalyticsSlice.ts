@@ -64,3 +64,4 @@ export const { } = termSlice.actions;
 export default termSlice.reducer;
 
 export const selectAnalytics = (state: { gAnalytics: GoogleAnalyticsState }) => state.gAnalytics.analytics;
+export const selectAnalyticsError = (state: { gAnalytics: GoogleAnalyticsState }) => state.gAnalytics.error;

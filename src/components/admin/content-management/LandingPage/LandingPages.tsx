@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
@@ -8,10 +7,8 @@ import {
     fetchLandingPage,
     updateLandingPage,
 } from "@/store/features/admin/lanPageSlice";
-import "react-quill/dist/quill.snow.css";
 import { toast } from "react-toastify";
-
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import RichTextEditor from "@/components/common/RichTextEditor";
 
 interface FormData {
     carouselHeroTitle: string;
@@ -141,7 +138,7 @@ export default function LandingPages() {
                         name='heroSubTitle'
                         control={control}
                         render={({ field: { onChange, value } }) => (
-                            <ReactQuill
+                            <RichTextEditor
                                 value={value}
                                 onChange={(content) => {
                                     onChange(content);
@@ -150,7 +147,6 @@ export default function LandingPages() {
                                     });
                                 }}
                                 placeholder='Write something...'
-                                theme='snow'
                                 className='w-full border border-gray-400 rounded-lg focus:outline-none'
                                 modules={{
                                     toolbar: [

@@ -27,8 +27,12 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     useEffect(() => {
-        initGA();
-        console.log("Google Analytics initialized");
+        try {
+            initGA();
+        } catch (error) {
+            console.error("Failed to initialize Google Analytics:", error);
+            // Continue app execution even if analytics fails
+        }
     }, []);
 
     return (

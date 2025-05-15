@@ -35,7 +35,9 @@ import { AppDispatch } from "@/store/store";
 import {
     fetchGoogleAnalytics,
     selectAnalytics,
+    selectAnalyticsError,
 } from "@/store/features/admin/googleAnalyticsSlice";
+import AnalyticsErrorHandler from "./AnalyticsErrorHandler";
 
 const Analytics: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -49,7 +51,7 @@ const Analytics: React.FC = () => {
     const revenue = useSelector(selectTotalRevenue);
     const users = useSelector(selectTotalUsers);
     const analytics = useSelector(selectAnalytics);
-    console.log("🚀 ~ analytics:", analytics);
+    const analyticsError = useSelector(selectAnalyticsError);
 
     useEffect(() => {
         dispatch(fetchRecentOrders());
@@ -68,6 +70,7 @@ const Analytics: React.FC = () => {
 
     return (
         <>
+            <AnalyticsErrorHandler error={analyticsError} />
             <div>
                 {/* FOUR CARDS */}
                 <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'>
@@ -151,6 +154,11 @@ const Analytics: React.FC = () => {
                                 analytics?.overview?.pageViews ?? "0"
                             ).toString()}
                         />
+                        {analyticsError && (
+                            <div className="text-xs text-gray-500 mt-1">
+                                * Data may not be accurate due to analytics configuration issues
+                            </div>
+                        )}
                     </div>
                     <div className='col-span-1'>
                         <AnalyticEcommerce
@@ -159,6 +167,11 @@ const Analytics: React.FC = () => {
                                 analytics?.overview?.totalUsers ?? "0"
                             ).toString()}
                         />
+                        {analyticsError && (
+                            <div className="text-xs text-gray-500 mt-1">
+                                * Data may not be accurate due to analytics configuration issues
+                            </div>
+                        )}
                     </div>
                     <div className='col-span-1'>
                         <AnalyticEcommerce
