@@ -1,5 +1,7 @@
 import { useState } from "react";
-import RichTextEditor from "@/components/common/RichTextEditor";
+import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css";
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 export default function ModalFAQs() {
     const [description, setDescription] = useState("");
@@ -27,10 +29,11 @@ export default function ModalFAQs() {
             {/* Description */}
             <div className='mt-4'>
                 <label className='block text-sm font-semibold'>Answer</label>
-                <RichTextEditor
+                <ReactQuill
                     value={description}
                     onChange={handleDescriptionChange}
                     placeholder='Write something...'
+                    theme='snow'
                     className='w-full border border-gray-400 rounded-lg focus:outline-none'
                 />
             </div>

@@ -2,6 +2,8 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
+import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css";
 import { RootState } from "@/store/store";
 import {
     createAbout,
@@ -10,7 +12,7 @@ import {
 } from "@/store/features/admin/aboutSlice";
 import ImageUploader from "./AboutImageUploader";
 import { toast } from "react-toastify";
-import RichTextEditor from "@/components/common/RichTextEditor";
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 interface AboutFormData {
     title: string;
@@ -149,10 +151,11 @@ export default function Abouts() {
                         control={control}
                         rules={{ required: "Content is required" }}
                         render={({ field: { onChange, value } }) => (
-                            <RichTextEditor
+                            <ReactQuill
                                 value={value}
                                 onChange={onChange}
                                 placeholder='Write something...'
+                                theme='snow'
                                 className='w-full border border-gray-400 rounded-lg focus:outline-none'
                             />
                         )}

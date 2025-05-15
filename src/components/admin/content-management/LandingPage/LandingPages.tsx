@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
@@ -7,8 +8,10 @@ import {
     fetchLandingPage,
     updateLandingPage,
 } from "@/store/features/admin/lanPageSlice";
+import "react-quill/dist/quill.snow.css";
 import { toast } from "react-toastify";
-import RichTextEditor from "@/components/common/RichTextEditor";
+
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 interface FormData {
     carouselHeroTitle: string;
@@ -29,7 +32,7 @@ export default function LandingPages() {
         reset,
         setValue,
         watch,
-        formState: { /* errors */ },
+        formState: { errors },
     } = useForm<FormData>({
         defaultValues: {
             carouselHeroTitle: "",
@@ -44,7 +47,7 @@ export default function LandingPages() {
     useEffect(() => {
         dispatch(fetchLandingPage())
             .unwrap()
-            .catch((_error) => {
+            .catch((error) => {
                 toast.error("Failed to fetch landing page data.");
             });
     }, [dispatch]);
@@ -138,13 +141,35 @@ export default function LandingPages() {
                         name='heroSubTitle'
                         control={control}
                         render={({ field: { onChange, value } }) => (
-                            <RichTextEditor
+                            <ReactQuill
                                 value={value}
                                 onChange={(content) => {
                                     onChange(content);
                                     setValue("heroSubTitle", content, {
                                         shouldDirty: true,
                                     });
+                                }}
+                                placeholder='Write something...'
+                                theme='snow'
+                                className='w-full border border-gray-400 rounded-lg focus:outline-none'
+                                modules={{
+                                    toolbar: [
+                                        [{ header: [1, 2, false] }],
+                                        [
+                                            "bold",
+                                            "italic",
+                                            "underline",
+                                            "strike",
+                                        ],
+                                        [
+                                            { list: "ordered" },
+                                            { list: "bullet" },
+                                        ],
+                                        ["link", "image"],
+                                        [{ align: [] }],
+                                        [{ color: [] }, { background: [] }],
+                                        ["clean"],
+                                    ],
                                 }}
                             />
                         )}

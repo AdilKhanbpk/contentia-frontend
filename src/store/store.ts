@@ -41,19 +41,6 @@ const persistConfig = {
   storage,
   whitelist: ["login"], // Persist only login state
 };
-// const createNoopStorage = () => {
-//   return {
-//     getItem() {
-//       return Promise.resolve(null);
-//     },
-//     setItem() {
-//       return Promise.resolve();
-//     },
-//     removeItem() {
-//       return Promise.resolve();
-//     }
-//   };
-// };
 
 // 🔹 Combine reducers
 const rootReducer = combineReducers({

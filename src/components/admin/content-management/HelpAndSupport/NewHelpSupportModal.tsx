@@ -1,13 +1,16 @@
 import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import dynamic from "next/dynamic";
 import { RootState, AppDispatch } from "@/store/store";
 import {
     createHelpSupport,
     updateHelpSupport,
 } from "@/store/features/admin/helpSlice";
+import "react-quill/dist/quill.snow.css";
 import { toast } from "react-toastify";
-import RichTextEditor from "@/components/common/RichTextEditor";
+
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 interface HelpSupportFormData {
     title: string;
@@ -156,9 +159,10 @@ export const ModalCenters: React.FC<ModalCentersProps> = ({ onClose }) => {
                         control={control}
                         rules={{ required: "Content is required" }}
                         render={({ field: { onChange, value } }) => (
-                            <RichTextEditor
+                            <ReactQuill
                                 value={value || ""}
                                 onChange={onChange}
+                                theme='snow'
                                 className='w-full border border-gray-400 rounded-lg mt-2'
                             />
                         )}

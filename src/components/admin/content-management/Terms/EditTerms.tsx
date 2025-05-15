@@ -1,7 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css";
 import { TermsInterface } from "@/types/interfaces";
 import { useForm, Controller } from "react-hook-form";
-import RichTextEditor from "@/components/common/RichTextEditor";
+
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 interface TermEditModelProps {
     termData: TermsInterface;
@@ -72,10 +75,11 @@ export function EditTerms({ termData, onClose, onSubmit }: TermEditModelProps) {
                         control={control}
                         name='pageContent'
                         render={({ field }) => (
-                            <RichTextEditor
-                                value={field.value}
+                            <ReactQuill
+                                {...field}
                                 onChange={handleDescriptionChange}
                                 placeholder='Write something...'
+                                theme='snow'
                                 className='w-full border border-gray-400 rounded-lg focus:outline-none'
                             />
                         )}
