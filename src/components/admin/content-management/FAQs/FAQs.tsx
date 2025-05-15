@@ -13,10 +13,8 @@ import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
 import CustomModelAdmin from "../../../modal/CustomModelAdmin";
 import CustomTable from "@/components/custom-table/CustomTable";
 import { exportCsvFile } from "@/utils/exportCsvFile";
-import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css";
 import { toast } from "react-toastify";
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import RichTextEditor from "@/components/common/RichTextEditor";
 
 export interface FAQ {
     _id?: string;
@@ -137,11 +135,10 @@ const ModalFAQs = memo(
                                 dangerouslySetInnerHTML={{ __html: answer }}
                             />
                         ) : (
-                            <ReactQuill
+                            <RichTextEditor
                                 value={answer}
                                 onChange={setAnswer}
                                 placeholder='Write answer...'
-                                theme='snow'
                                 className='w-full border border-gray-400 rounded-lg focus:outline-none'
                             />
                         )}

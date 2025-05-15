@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  // reactStrictMode: true,
   // Generate a unique build ID to prevent caching issues
   generateBuildId: () => 'build-' + Date.now(),
   // Add build timestamp as an environment variable
@@ -24,6 +24,19 @@ const nextConfig = {
       },
     ]
   },
+  // // Add this webpack configuration to fix redux-persist issues
+  // webpack: (config, { isServer }) => {
+  //   if (!isServer) {
+  //     // Don't resolve 'fs' module on the client to prevent errors
+  //     config.resolve.fallback = {
+  //       ...config.resolve.fallback,
+  //       fs: false,
+  //       net: false,
+  //       tls: false,
+  //     };
+  //   }
+  //   return config;
+  // },
 }
 
 module.exports = nextConfig

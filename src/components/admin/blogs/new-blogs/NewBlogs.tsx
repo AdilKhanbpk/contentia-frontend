@@ -1,15 +1,12 @@
 "use client";
 import React, { useState, useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
-import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import { createBlog } from "@/store/features/admin/blogSlice";
 import { toast } from "react-toastify";
 import { BlogInterface } from "@/types/interfaces";
-
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import RichTextEditor from "@/components/common/RichTextEditor";
 
 export default function NewBlogs() {
     const dispatch = useDispatch<AppDispatch>();
@@ -182,11 +179,10 @@ export default function NewBlogs() {
                         control={control}
                         rules={{ required: "Content is required" }}
                         render={({ field: { onChange, value } }) => (
-                            <ReactQuill
+                            <RichTextEditor
                                 value={value}
                                 onChange={onChange}
                                 placeholder='Write something...'
-                                theme='snow'
                                 className='w-full border border-gray-400 rounded-lg focus:outline-none'
                             />
                         )}

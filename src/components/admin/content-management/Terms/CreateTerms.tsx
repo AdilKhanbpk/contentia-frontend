@@ -1,15 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import { toast } from "react-toastify";
 import { TermsInterface } from "@/types/interfaces";
 import { createTerm } from "@/store/features/admin/termsSlice";
-
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import RichTextEditor from "@/components/common/RichTextEditor";
 
 export function CreateTerms({ onClose }: { onClose: () => void }) {
     const dispatch = useDispatch<AppDispatch>();
@@ -104,11 +101,10 @@ export function CreateTerms({ onClose }: { onClose: () => void }) {
                         control={control}
                         rules={{ required: "Content is required" }}
                         render={({ field: { onChange, value } }) => (
-                            <ReactQuill
+                            <RichTextEditor
                                 value={value}
                                 onChange={onChange}
                                 placeholder='Write something...'
-                                theme='snow'
                                 className='w-full border border-gray-400 rounded-lg focus:outline-none'
                             />
                         )}

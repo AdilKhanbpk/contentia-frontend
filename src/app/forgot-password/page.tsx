@@ -57,7 +57,7 @@ const ForgotPasswordPage = () => {
             </h2>
 
             <p className="text-center text-gray-600 mb-8">
-              {submitted
+              {submitted 
                 ? 'E-posta adresinize şifre sıfırlama bağlantısı gönderdik.'
                 : 'Kayıtlı e-posta adresini girin, şifre yenileme adımlarını takip edin.'}
             </p>
