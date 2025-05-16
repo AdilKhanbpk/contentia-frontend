@@ -24,6 +24,19 @@ const nextConfig = {
       },
     ]
   },
+  // Add this to suppress findDOMNode warnings in production
+  // Note: This is a temporary solution while you fix the underlying issue
+  webpack: (config, { dev, isServer }) => {
+    if (!dev && !isServer) {
+      // Replace React DOM in production to suppress findDOMNode warnings
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'react-dom$': 'react-dom/profiling',
+        'scheduler/tracing': 'scheduler/tracing-profiling',
+      }
+    }
+    return config
+  },
 }
 
 module.exports = nextConfig

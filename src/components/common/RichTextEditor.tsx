@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useEditor, EditorContent, Editor } from '@tiptap/react';
+import { useEffect, useState } from "react";
+import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import Link from '@tiptap/extension-link';
@@ -12,6 +12,7 @@ import TextStyle from '@tiptap/extension-text-style';
 import Underline from '@tiptap/extension-underline';
 import './RichTextEditor.css';
 
+
 // Define props interface
 interface RichTextEditorProps {
   value: string;
@@ -19,8 +20,6 @@ interface RichTextEditorProps {
   placeholder?: string;
   className?: string;
   readOnly?: boolean;
-  // For backward compatibility with ReactQuill
-  modules?: any;
 }
 
 // Create a placeholder component for server-side rendering
@@ -198,12 +197,9 @@ const RichTextEditor = ({
   placeholder = "Write something...",
   className = "w-full border border-gray-400 rounded-lg focus:outline-none",
   readOnly = false,
-  modules // Ignored in TipTap, but kept for backward compatibility
 }: RichTextEditorProps) => {
   const [isClient, setIsClient] = useState(false);
   const [initialContent] = useState(value);
-
-  // Note: The 'modules' prop is ignored in TipTap, but kept for backward compatibility with ReactQuill
 
   // Initialize TipTap editor
   const editor = useEditor({
@@ -268,3 +264,6 @@ const RichTextEditor = ({
 // Export as both default and named export for flexibility
 export { RichTextEditor };
 export default RichTextEditor;
+
+
+
