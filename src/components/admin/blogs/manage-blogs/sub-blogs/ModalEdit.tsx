@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css";
 import { BlogInterface } from "@/types/interfaces";
 import { useForm, Controller } from "react-hook-form";
-
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import RichTextEditor from "@/components/common/RichTextEditor";
 
 interface BlogEditModelProps {
     blogData: BlogInterface;
@@ -111,11 +108,10 @@ export function ModalEdit({ blogData, onClose, onSubmit }: BlogEditModelProps) {
                         control={control}
                         name='content'
                         render={({ field }) => (
-                            <ReactQuill
-                                {...field}
+                            <RichTextEditor
+                                value={field.value}
                                 onChange={handleDescriptionChange}
                                 placeholder='Write something...'
-                                theme='snow'
                                 className='w-full border border-gray-400 rounded-lg focus:outline-none'
                             />
                         )}

@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import {
     createEmailNotification,
     fetchEmailNotifications,
 } from "@/store/features/admin/emailNotificationSlice";
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import RichTextEditor from "@/components/common/RichTextEditor";
 
 interface CreateModalProps {
     onClose: () => void;
@@ -93,11 +91,10 @@ export default function Modal({ onClose }: CreateModalProps) {
 
             <div className='mt-4'>
                 <h2 className='text-base font-semibold mb-1'>E-Mail Body</h2>
-                <ReactQuill
+                <RichTextEditor
                     value={emailBody}
                     onChange={(value) => setValue("emailContent", value)}
                     placeholder='Write something...'
-                    theme='snow'
                     className='w-full border border-gray-400 rounded-lg'
                 />
             </div>

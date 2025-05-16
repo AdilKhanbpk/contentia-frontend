@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import "react-quill/dist/quill.snow.css";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import {
