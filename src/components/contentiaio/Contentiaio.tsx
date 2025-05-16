@@ -67,25 +67,40 @@ export function Contentiaio() {
 
     useEffect(() => {
         // Try to fetch data, but handle potential API failures
-        console.log("Fetching landing page data...");
-        dispatch(fetchLandingPage())
-            .unwrap()
-            .then(data => {
-                console.log("Landing page data fetched successfully:", data);
-            })
-            .catch(error => {
-                console.error("Failed to fetch landing page data:", error);
-            });
+        const fetchData = async () => {
+            try {
+                // Only log in development
+                if (process.env.NODE_ENV !== 'production') {
+                    console.log("Fetching landing page data...");
+                }
 
-        console.log("Fetching pricing plans...");
-        dispatch(fetchPricePlans())
-            .unwrap()
-            .then(data => {
-                console.log("Pricing plans fetched successfully:", data);
-            })
-            .catch(error => {
+                const landingPageData = await dispatch(fetchLandingPage()).unwrap();
+
+                if (process.env.NODE_ENV !== 'production') {
+                    console.log("Landing page data fetched successfully:", landingPageData);
+                }
+            } catch (error) {
+                // In production, we'll still have mock data, so just log the error
+                console.error("Failed to fetch landing page data:", error);
+            }
+
+            try {
+                if (process.env.NODE_ENV !== 'production') {
+                    console.log("Fetching pricing plans...");
+                }
+
+                const pricingData = await dispatch(fetchPricePlans()).unwrap();
+
+                if (process.env.NODE_ENV !== 'production') {
+                    console.log("Pricing plans fetched successfully:", pricingData);
+                }
+            } catch (error) {
+                // In production, we'll still have mock data, so just log the error
                 console.error("Failed to fetch pricing plans:", error);
-            });
+            }
+        };
+
+        fetchData();
     }, [dispatch]);
 
     return (

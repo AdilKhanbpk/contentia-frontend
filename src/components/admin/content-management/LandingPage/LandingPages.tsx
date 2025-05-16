@@ -6,6 +6,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import {
     fetchLandingPage,
     updateLandingPage,
+    createLandingPage,
 } from "@/store/features/admin/lanPageSlice";
 import { toast } from "react-toastify";
 import RichTextEditor from "@/components/common/RichTextEditor";
@@ -29,7 +30,7 @@ export default function LandingPages() {
         reset,
         setValue,
         watch,
-        formState: { errors },
+        formState: { /* errors */ },
     } = useForm<FormData>({
         defaultValues: {
             carouselHeroTitle: "",
@@ -44,7 +45,7 @@ export default function LandingPages() {
     useEffect(() => {
         dispatch(fetchLandingPage())
             .unwrap()
-            .catch((error) => {
+            .catch((_error) => {
                 toast.error("Failed to fetch landing page data.");
             });
     }, [dispatch]);
@@ -75,8 +76,6 @@ export default function LandingPages() {
     const onSubmit = async (formData: FormData) => {
         setIsSubmitting(true);
 
-        if (!fixedId) return;
-
         const payload = new FormData();
         payload.append("carouselHeroTitle", formData.carouselHeroTitle);
         payload.append("staticHeroTitle", formData.staticHeroTitle);
@@ -91,10 +90,49 @@ export default function LandingPages() {
         }
 
         try {
-            await dispatch(updateLandingPage({ id: fixedId, data: payload }));
-            toast.success("Landing page updated successfully!");
+            // Check if we're creating or updating
+            if (fixedId) {
+                // Update existing landing page
+                const resultAction = await dispatch(updateLandingPage({ id: fixedId, data: payload }));
+
+                if (updateLandingPage.fulfilled.match(resultAction)) {
+                    toast.success("Landing page updated successfully!");
+                } else if (updateLandingPage.rejected.match(resultAction)) {
+                    // Get the error message from the payload
+                    const errorData = resultAction.payload as any;
+                    const errorMessage = typeof errorData === 'object' && errorData !== null
+                        ? errorData.message || "Failed to update landing page"
+                        : typeof errorData === 'string'
+                            ? errorData
+                            : "Failed to update landing page";
+
+                    console.error("Update error:", errorData);
+                    toast.error(`Error: ${errorMessage}`);
+                }
+            } else {
+                // Create new landing page
+                const resultAction = await dispatch(createLandingPage({ data: payload }));
+
+                if (createLandingPage.fulfilled.match(resultAction)) {
+                    toast.success("Landing page created successfully!");
+                    // Refresh data
+                    dispatch(fetchLandingPage());
+                } else if (createLandingPage.rejected.match(resultAction)) {
+                    // Get the error message from the payload
+                    const errorData = resultAction.payload as any;
+                    const errorMessage = typeof errorData === 'object' && errorData !== null
+                        ? errorData.message || "Failed to create landing page"
+                        : typeof errorData === 'string'
+                            ? errorData
+                            : "Failed to create landing page";
+
+                    console.error("Create error:", errorData);
+                    toast.error(`Error: ${errorMessage}`);
+                }
+            }
         } catch (error) {
-            toast.error("Error updating landing page. Please try again.");
+            console.error("Error in form submission:", error);
+            toast.error("An unexpected error occurred. Please try again.");
         } finally {
             setIsSubmitting(false);
         }
@@ -103,6 +141,14 @@ export default function LandingPages() {
     return (
         <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
             <h1 className='text-lg font-semibold'>Landing Page</h1>
+
+            {!fixedId && (
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 my-4 rounded-md">
+                    <p className="text-blue-700">
+                        <strong>Note:</strong> You are creating a new landing page. Fill in the form and click Save to create it.
+                    </p>
+                </div>
+            )}
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className='flex flex-col md:flex-row md:space-x-8'>
                     <div className='mt-4 w-full md:w-1/2'>

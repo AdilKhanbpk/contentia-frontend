@@ -43,19 +43,37 @@ export const fetchAdditionalServices = createAsyncThunk(
   'additionalService/fetchAdditionalServices',
   async (_, { rejectWithValue }) => {
     try {
-      console.log("Fetching additional services from API");
+      // Only log in development
+      if (process.env.NODE_ENV !== 'production') {
+        console.log("Fetching additional services from API");
+      }
+
       const response = await axiosInstance.get('/admin/additionalServices');
       const serviceData = response.data.data;
-      console.log("Fetched service data:", serviceData);
+
+      if (process.env.NODE_ENV !== 'production') {
+        console.log("Fetched service data:", serviceData);
+      }
+
       return serviceData;
     } catch (error) {
       console.warn('API call failed, using mock data for additional services');
+
+      // In production, log the error but still use mock data
+      if (process.env.NODE_ENV === 'production') {
+        console.error('Production additional services fetch error:', error);
+      }
+
       // Add ID to mock data to ensure it's consistent
       const mockData = {
         ...mockAdditionalServicesData,
         _id: "mock-additional-services-id"
       };
-      console.log("Using mock data:", mockData);
+
+      if (process.env.NODE_ENV !== 'production') {
+        console.log("Using mock data:", mockData);
+      }
+
       return mockData;
     }
   }

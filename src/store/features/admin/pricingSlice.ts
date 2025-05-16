@@ -57,21 +57,24 @@ export const createPricePlan = createAsyncThunk(
 // Fetch All Price Plans
 export const fetchPricePlans = createAsyncThunk(
   'pricePlan/fetchPricePlans',
-  async (_) => {
+  async (_, { rejectWithValue }) => {
     try {
       // The correct endpoint should match the backend route
       const response = await axiosInstance.get('/admin/pricing');
       return response.data.data;
     } catch (error) {
-      console.warn('API call failed, using mock data for pricing plans');
-      // Instead of rejecting, return mock data for development
-      return mockPricingData;
+      console.warn('API call failed, attempting to use fallback data for pricing plans');
 
-      // Uncomment this to see the actual error in production
-      // const axiosError = error as AxiosError;
-      // return rejectWithValue(
-      //   axiosError.response?.data || 'Failed to fetch price plans'
-      // );
+      // In production, try to use the mock data but also log the error
+      if (process.env.NODE_ENV === 'production') {
+        console.error('Production pricing plans fetch error:', error);
+
+        // Return mock data in production too, to prevent app from breaking
+        return mockPricingData;
+      }
+
+      // In development, just use the mock data
+      return mockPricingData;
     }
   }
 );
