@@ -1,15 +1,12 @@
 import React from "react";
-import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css";
 import { useForm, Controller } from "react-hook-form";
 import { BlogInterface } from "@/types/interfaces";
+import RichTextEditor from "@/components/common/RichTextEditor";
 
 interface ModalProps {
     onSubmit?: (blogData: BlogInterface) => void;
     onClose: () => void;
 }
-
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 export default function Modal({ onSubmit, onClose }: ModalProps) {
     const { register, handleSubmit, control, setValue } =
@@ -94,10 +91,10 @@ export default function Modal({ onSubmit, onClose }: ModalProps) {
                         name='content'
                         control={control}
                         render={({ field }) => (
-                            <ReactQuill
-                                {...field}
+                            <RichTextEditor
+                                value={field.value}
+                                onChange={field.onChange}
                                 placeholder='Write something...'
-                                theme='snow'
                                 className='w-full border border-gray-400 rounded-lg focus:outline-none'
                             />
                         )}

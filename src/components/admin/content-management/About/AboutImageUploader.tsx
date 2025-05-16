@@ -39,22 +39,37 @@ export default function ImageUploader({
         }
     };
 
-    const handleImageUpload = () => {
+    const handleImageUpload = async () => {
         if (!imageFile) {
             toast.error("No image selected. Please choose an image to upload.");
             return;
         }
 
+        toast.info("Uploading image... Please wait.");
+
         try {
-            dispatch(
+            const result = await dispatch(
                 updateAboutImage({
                     aboutId,
                     imageFile,
                 }) as any
             );
 
-            toast.success("Image upload started successfully!");
+            if (updateAboutImage.fulfilled.match(result)) {
+                toast.success("Image uploaded successfully!");
+                // Clear the file input after successful upload
+                setImageFile(null);
+            } else if (updateAboutImage.rejected.match(result)) {
+                console.error("Upload error:", result.payload);
+                const errorMessage = typeof result.payload === 'object' && result.payload !== null
+                    ? (result.payload as any).message || "Unknown error"
+                    : typeof result.payload === 'string'
+                        ? result.payload
+                        : "Error uploading the image. Please try again.";
+                toast.error(errorMessage);
+            }
         } catch (error) {
+            console.error("Image upload error:", error);
             toast.error("Error uploading the image. Please try again.");
         }
     };

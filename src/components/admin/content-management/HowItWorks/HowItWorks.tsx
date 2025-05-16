@@ -1,10 +1,11 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import {
     fetchHowItWorks,
     updateHowItWorks,
+    createHowItWorks,
 } from "@/store/features/admin/howWorkSlice";
 import { RootState } from "@/store/store";
 import { toast } from "react-toastify";
@@ -23,6 +24,7 @@ export default function HowItWorks() {
     const { sections, loading, error } = useSelector(
         (state: RootState) => state.howWork
     );
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const {
         register,
@@ -59,6 +61,12 @@ export default function HowItWorks() {
     }, [sections, reset]);
 
     const onSubmit = (data: FormData) => {
+        console.log("Form Data:", data);
+        console.log("Sections:", sections);
+
+        // Set submitting state to show loading indicator
+        setIsSubmitting(true);
+
         const formattedData = {
             sectionTitle: data.howItWorksTitle1,
             sectionDescription: data.howItWorksSubtitle1,
@@ -67,14 +75,54 @@ export default function HowItWorks() {
 
         if (sections?.length > 0) {
             const sectionId = sections[0]._id;
+            console.log("Updating section with ID:", sectionId);
+
             dispatch(
                 updateHowItWorks({
                     sectionId,
                     data: formattedData,
                 }) as any
-            );
+            )
+            .then((result: any) => {
+                console.log("Update result:", result);
+                if (result.error) {
+                    toast.error(`Update failed: ${result.error.message || 'Unknown error'}`);
+                } else {
+                    toast.success("How It Works section updated successfully!");
+                    // Refresh data
+                    dispatch(fetchHowItWorks() as any);
+                }
+                setIsSubmitting(false);
+            })
+            .catch((error: any) => {
+                console.error("Update error:", error);
+                toast.error(`Update failed: ${error.message || 'Unknown error'}`);
+                setIsSubmitting(false);
+            });
         } else {
-            toast.error("Update failed: No sections available."); // Show error toast if no sections are found
+            // If no sections exist, create a new one
+            console.log("No sections found, creating a new one");
+            dispatch(
+                createHowItWorks({
+                    data: formattedData,
+                }) as any
+            )
+            .then((result: any) => {
+                console.log("Create result:", result);
+                if (result.error) {
+                    toast.error(`Create failed: ${result.error.message || 'Unknown error'}`);
+                } else {
+                    toast.success("How It Works section created successfully!");
+                    // Refresh data
+                    dispatch(fetchHowItWorks() as any);
+                }
+                setIsSubmitting(false);
+            })
+            .catch((error: any) => {
+                console.error("Create error:", error);
+                toast.error(`Create failed: ${error.message || 'Unknown error'}`);
+                setIsSubmitting(false);
+            });
         }
     };
 
@@ -173,10 +221,10 @@ export default function HowItWorks() {
                 <div className='flex justify-end my-6'>
                     <button
                         type='submit'
-                        disabled={loading}
+                        disabled={isSubmitting || loading}
                         className='Button text-white px-8 py-1 rounded-lg font-semibold'
                     >
-                        {loading ? "Saving..." : "Save"}
+                        {isSubmitting || loading ? "Saving..." : "Save"}
                     </button>
                 </div>
             </form>

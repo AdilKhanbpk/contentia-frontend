@@ -1,9 +1,6 @@
 import React from "react";
-import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css";
 import { EmailNotificationInterface } from "@/types/interfaces";
-
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import RichTextEditor from "@/components/common/RichTextEditor";
 
 interface ViewModalProps {
     emailNotification: EmailNotificationInterface | null;
@@ -62,10 +59,9 @@ export default function ViewModal({
                 <label className='block text-sm font-semibold'>
                     Email Content
                 </label>
-                <ReactQuill
+                <RichTextEditor
                     value={emailNotification.emailContent}
-                    readOnly
-                    theme='snow'
+                    onChange={() => {}} // No-op since it's read-only
                     className='w-full border border-gray-400 rounded-lg bg-gray-100'
                 />
             </div>
