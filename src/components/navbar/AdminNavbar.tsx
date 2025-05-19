@@ -78,7 +78,7 @@ const menuItems = [
         title: "Payment",
         links: [
             { name: "Incoming Payment", href: "/admin/payments/in-payments" },
-            { name: "Outgoing Payment", href: "/admin/payments/out-payments" },
+            { name: "Outgoing Payments", href: "/admin/payments/out-payments" },
         ],
     },
     {
