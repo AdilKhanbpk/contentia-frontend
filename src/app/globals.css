@@ -2,9 +2,27 @@
 @import "~slick-carousel/slick/slick.css";
 @import "~slick-carousel/slick/slick-theme.css";
 @import "~react-toastify/dist/ReactToastify.min.css";
+@import "~react-quill/dist/quill.snow.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* React Quill custom styles */
+.react-quill-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.react-quill-wrapper .quill {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.react-quill-wrapper .ql-container {
+  flex: 1;
+  overflow: auto;
+}
 
 @font-face {
     font-family: "Shoika";

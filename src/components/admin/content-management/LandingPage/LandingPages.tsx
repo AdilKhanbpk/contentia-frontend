@@ -10,6 +10,7 @@ import {
 } from "@/store/features/admin/lanPageSlice";
 import { toast } from "react-toastify";
 import RichTextEditor from "@/components/common/RichTextEditor";
+import QuillEditorExample from "@/components/examples/QuillEditorExample";
 
 interface FormData {
     carouselHeroTitle: string;
@@ -184,7 +185,7 @@ export default function LandingPages() {
                         name='heroSubTitle'
                         control={control}
                         render={({ field: { onChange, value } }) => (
-                            <RichTextEditor
+                            <QuillEditorExample
                                 value={value}
                                 onChange={(content) => {
                                     onChange(content);

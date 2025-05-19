@@ -1,286 +1,7 @@
-// "use client";
-
-// import { useEffect, useState } from "react";
-// import { useEditor, EditorContent, Editor } from '@tiptap/react';
-// import StarterKit from '@tiptap/starter-kit';
-// import Placeholder from '@tiptap/extension-placeholder';
-// import Link from '@tiptap/extension-link';
-// import TextAlign from '@tiptap/extension-text-align';
-// import Image from '@tiptap/extension-image';
-// import Color from '@tiptap/extension-color';
-// import TextStyle from '@tiptap/extension-text-style';
-// import Underline from '@tiptap/extension-underline';
-// import './RichTextEditor.css';
-
-
-// // Define props interface
-// interface RichTextEditorProps {
-//   value: string;
-//   onChange: (content: string) => void;
-//   placeholder?: string;
-//   className?: string;
-//   readOnly?: boolean;
-//   modules?: any; // Add modules prop to support legacy Quill configuration
-// }
-
-// // Create a placeholder component for server-side rendering
-// const EditorPlaceholder = () => (
-//   <div className="h-64 w-full bg-gray-100 animate-pulse rounded-md flex items-center justify-center text-gray-500">
-//     Loading editor...
-//   </div>
-// );
-
-// // Toolbar button component
-// const ToolbarButton = ({
-//   onClick,
-//   active = false,
-//   disabled = false,
-//   children
-// }: {
-//   onClick: () => void;
-//   active?: boolean;
-//   disabled?: boolean;
-//   children: React.ReactNode;
-// }) => (
-//   <button
-//     type="button"
-//     onClick={onClick}
-//     disabled={disabled}
-//     className={`p-2 rounded-md ${
-//       active
-//         ? 'bg-gray-200 text-blue-600'
-//         : 'text-gray-600 hover:bg-gray-100'
-//     } ${
-//       disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-//     }`}
-//   >
-//     {children}
-//   </button>
-// );
-
-// // Toolbar component
-// const Toolbar = ({ editor }: { editor: Editor | null }) => {
-//   if (!editor) return null;
-
-//   return (
-//     <div className="flex flex-wrap gap-1 p-2 border-b border-gray-300 bg-white rounded-t-lg">
-//       <ToolbarButton
-//         onClick={() => editor.chain().focus().toggleBold().run()}
-//         active={editor.isActive('bold')}
-//       >
-//         <span className="font-bold">B</span>
-//       </ToolbarButton>
-
-//       <ToolbarButton
-//         onClick={() => editor.chain().focus().toggleItalic().run()}
-//         active={editor.isActive('italic')}
-//       >
-//         <span className="italic">I</span>
-//       </ToolbarButton>
-
-//       <ToolbarButton
-//         onClick={() => editor.chain().focus().toggleUnderline().run()}
-//         active={editor.isActive('underline')}
-//       >
-//         <span className="underline">U</span>
-//       </ToolbarButton>
-
-//       <ToolbarButton
-//         onClick={() => editor.chain().focus().toggleStrike().run()}
-//         active={editor.isActive('strike')}
-//       >
-//         <span className="line-through">S</span>
-//       </ToolbarButton>
-
-//       <div className="mx-1 border-r border-gray-300"></div>
-
-//       <ToolbarButton
-//         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-//         active={editor.isActive('heading', { level: 1 })}
-//       >
-//         <span className="font-bold text-lg">H1</span>
-//       </ToolbarButton>
-
-//       <ToolbarButton
-//         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-//         active={editor.isActive('heading', { level: 2 })}
-//       >
-//         <span className="font-bold">H2</span>
-//       </ToolbarButton>
-
-//       <div className="mx-1 border-r border-gray-300"></div>
-
-//       <ToolbarButton
-//         onClick={() => editor.chain().focus().toggleBulletList().run()}
-//         active={editor.isActive('bulletList')}
-//       >
-//         • List
-//       </ToolbarButton>
-
-//       <ToolbarButton
-//         onClick={() => editor.chain().focus().toggleOrderedList().run()}
-//         active={editor.isActive('orderedList')}
-//       >
-//         1. List
-//       </ToolbarButton>
-
-//       <div className="mx-1 border-r border-gray-300"></div>
-
-//       <ToolbarButton
-//         onClick={() => editor.chain().focus().setTextAlign('left').run()}
-//         active={editor.isActive({ textAlign: 'left' })}
-//       >
-//         ←
-//       </ToolbarButton>
-
-//       <ToolbarButton
-//         onClick={() => editor.chain().focus().setTextAlign('center').run()}
-//         active={editor.isActive({ textAlign: 'center' })}
-//       >
-//         ↔
-//       </ToolbarButton>
-
-//       <ToolbarButton
-//         onClick={() => editor.chain().focus().setTextAlign('right').run()}
-//         active={editor.isActive({ textAlign: 'right' })}
-//       >
-//         →
-//       </ToolbarButton>
-
-//       <div className="mx-1 border-r border-gray-300"></div>
-
-//       <ToolbarButton
-//         onClick={() => {
-//           const url = window.prompt('URL');
-//           if (url) {
-//             editor.chain().focus().setLink({ href: url }).run();
-//           }
-//         }}
-//         active={editor.isActive('link')}
-//       >
-//         Link
-//       </ToolbarButton>
-
-//       <ToolbarButton
-//         onClick={() => {
-//           const url = window.prompt('Image URL');
-//           if (url) {
-//             editor.chain().focus().setImage({ src: url }).run();
-//           }
-//         }}
-//       >
-//         Image
-//       </ToolbarButton>
-
-//       <div className="mx-1 border-r border-gray-300"></div>
-
-//       <ToolbarButton
-//         onClick={() => editor.chain().focus().undo().run()}
-//         disabled={!editor.can().undo()}
-//       >
-//         Undo
-//       </ToolbarButton>
-
-//       <ToolbarButton
-//         onClick={() => editor.chain().focus().redo().run()}
-//         disabled={!editor.can().redo()}
-//       >
-//         Redo
-//       </ToolbarButton>
-//     </div>
-//   );
-// };
-
-// // The main editor component
-// const RichTextEditor = ({
-//   value,
-//   onChange,
-//   placeholder = "Write something...",
-//   className = "w-full border border-gray-400 rounded-lg focus:outline-none",
-//   readOnly = false,
-// }: RichTextEditorProps) => {
-//   const [isClient, setIsClient] = useState(false);
-//   const [initialContent] = useState(value);
-
-//   // Initialize TipTap editor
-//   const editor = useEditor({
-//     extensions: [
-//       StarterKit,
-//       Placeholder.configure({
-//         placeholder,
-//       }),
-//       Link.configure({
-//         openOnClick: false,
-//       }),
-//       TextAlign.configure({
-//         types: ['heading', 'paragraph'],
-//       }),
-//       Image,
-//       TextStyle,
-//       Color,
-//       Underline,
-//     ],
-//     content: initialContent,
-//     editable: !readOnly,
-//     onUpdate: ({ editor }) => {
-//       onChange(editor.getHTML());
-//     },
-//     immediatelyRender: false,
-//   });
-
-//   // Set content when value prop changes
-//   useEffect(() => {
-//     if (editor && value !== editor.getHTML()) {
-//       editor.commands.setContent(value);
-//     }
-//   }, [editor, value]);
-
-//   // Update editable state when readOnly changes
-//   useEffect(() => {
-//     if (editor) {
-//       editor.setEditable(!readOnly);
-//     }
-//   }, [editor, readOnly]);
-
-//   // Set client-side rendering flag
-//   useEffect(() => {
-//     setIsClient(true);
-//   }, []);
-
-//   // Show placeholder during SSR
-//   if (!isClient) {
-//     return <EditorPlaceholder />;
-//   }
-
-//   return (
-//     <div className={className}>
-//       {!readOnly && editor && <Toolbar editor={editor} />}
-//       <EditorContent
-//         editor={editor}
-//         className="prose max-w-none p-4 min-h-[200px] focus:outline-none"
-//       />
-//     </div>
-//   );
-// };
-
-// // Export as both default and named export for flexibility
-// export { RichTextEditor };
-// export default RichTextEditor;
-
-
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { useEditor, EditorContent, Editor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Placeholder from '@tiptap/extension-placeholder';
-import Link from '@tiptap/extension-link';
-import TextAlign from '@tiptap/extension-text-align';
-import Image from '@tiptap/extension-image';
-import Color from '@tiptap/extension-color';
-import TextStyle from '@tiptap/extension-text-style';
-import Underline from '@tiptap/extension-underline';
-import './RichTextEditor.css';
+import "react-quill/dist/quill.snow.css";
 
 // Define props interface
 interface RichTextEditorProps {
@@ -289,233 +10,115 @@ interface RichTextEditorProps {
   placeholder?: string;
   className?: string;
   readOnly?: boolean;
-  modules?: any; // Add modules prop to support legacy Quill configuration
+  modules?: any;
 }
 
-// Create a placeholder component for server-side rendering
+// Placeholder for server-side rendering
 const EditorPlaceholder = () => (
   <div className="h-64 w-full bg-gray-100 animate-pulse rounded-md flex items-center justify-center text-gray-500">
     Loading editor...
   </div>
 );
 
-// Toolbar button component
-const ToolbarButton = ({
-  onClick,
-  active = false,
-  disabled = false,
-  children
-}: {
-  onClick: () => void;
-  active?: boolean;
-  disabled?: boolean;
-  children: React.ReactNode;
-}) => (
-  <button
-    type="button"
-    onClick={onClick}
-    disabled={disabled}
-    className={`p-2 rounded-md ${
-      active
-        ? 'bg-gray-200 text-blue-600'
-        : 'text-gray-600 hover:bg-gray-100'
-    } ${
-      disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-    }`}
-  >
-    {children}
-  </button>
-);
-
-// Toolbar component
-const Toolbar = ({ editor }: { editor: Editor | null }) => {
-  if (!editor) return null;
-
-  return (
-    <div className="flex flex-wrap gap-1 p-2 border-b border-gray-300 bg-white rounded-t-lg">
-      <ToolbarButton
-        onClick={() => editor.chain().focus().toggleBold().run()}
-        active={editor.isActive('bold')}
-      >
-        <span className="font-bold">B</span>
-      </ToolbarButton>
-
-      <ToolbarButton
-        onClick={() => editor.chain().focus().toggleItalic().run()}
-        active={editor.isActive('italic')}
-      >
-        <span className="italic">I</span>
-      </ToolbarButton>
-
-      <ToolbarButton
-        onClick={() => editor.chain().focus().toggleUnderline().run()}
-        active={editor.isActive('underline')}
-      >
-        <span className="underline">U</span>
-      </ToolbarButton>
-
-      <ToolbarButton
-        onClick={() => editor.chain().focus().toggleStrike().run()}
-        active={editor.isActive('strike')}
-      >
-        <span className="line-through">S</span>
-      </ToolbarButton>
-
-      <div className="mx-1 border-r border-gray-300"></div>
-
-      <ToolbarButton
-        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        active={editor.isActive('heading', { level: 1 })}
-      >
-        <span className="font-bold text-lg">H1</span>
-      </ToolbarButton>
-
-      <ToolbarButton
-        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        active={editor.isActive('heading', { level: 2 })}
-      >
-        <span className="font-bold">H2</span>
-      </ToolbarButton>
-
-      <div className="mx-1 border-r border-gray-300"></div>
-
-      <ToolbarButton
-        onClick={() => editor.chain().focus().toggleBulletList().run()}
-        active={editor.isActive('bulletList')}
-      >
-        • List
-      </ToolbarButton>
-
-      <ToolbarButton
-        onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        active={editor.isActive('orderedList')}
-      >
-        1. List
-      </ToolbarButton>
-
-      <div className="mx-1 border-r border-gray-300"></div>
-
-      <ToolbarButton
-        onClick={() => editor.chain().focus().setTextAlign('left').run()}
-        active={editor.isActive({ textAlign: 'left' })}
-      >
-        ←
-      </ToolbarButton>
-
-      <ToolbarButton
-        onClick={() => editor.chain().focus().setTextAlign('center').run()}
-        active={editor.isActive({ textAlign: 'center' })}
-      >
-        ↔
-      </ToolbarButton>
-
-      <ToolbarButton
-        onClick={() => editor.chain().focus().setTextAlign('right').run()}
-        active={editor.isActive({ textAlign: 'right' })}
-      >
-        →
-      </ToolbarButton>
-
-      <div className="mx-1 border-r border-gray-300"></div>
-
-      <ToolbarButton
-        onClick={() => {
-          const url = window.prompt('URL');
-          if (url) {
-            editor.chain().focus().setLink({ href: url }).run();
-          }
-        }}
-        active={editor.isActive('link')}
-      >
-        Link
-      </ToolbarButton>
-
-      <ToolbarButton
-        onClick={() => {
-          const url = window.prompt('Image URL');
-          if (url) {
-            editor.chain().focus().setImage({ src: url }).run();
-          }
-        }}
-      >
-        Image
-      </ToolbarButton>
-
-      <div className="mx-1 border-r border-gray-300"></div>
-
-      <ToolbarButton
-        onClick={() => editor.chain().focus().undo().run()}
-        disabled={!editor.can().undo()}
-      >
-        Undo
-      </ToolbarButton>
-
-      <ToolbarButton
-        onClick={() => editor.chain().focus().redo().run()}
-        disabled={!editor.can().redo()}
-      >
-        Redo
-      </ToolbarButton>
-    </div>
-  );
+// Default modules configuration
+const defaultModules = {
+  toolbar: [
+    [{ header: "1" }, { header: "2" }, { font: [] }],
+    [{ size: [] }],
+    ["bold", "italic", "underline", "strike", "blockquote"],
+    [
+      { list: "ordered" },
+      { list: "bullet" },
+      { indent: "-1" },
+      { indent: "+1" },
+    ],
+    ["link", "image", "video"],
+    ["clean"],
+  ],
+  clipboard: {
+    matchVisual: false,
+  },
 };
 
-// The main editor component
 const RichTextEditor = ({
   value,
   onChange,
-  placeholder = "Write something...",
+  placeholder = "Type here",
   className = "w-full border border-gray-400 rounded-lg focus:outline-none",
   readOnly = false,
+  modules = defaultModules,
 }: RichTextEditorProps) => {
   const [isClient, setIsClient] = useState(false);
-  const [initialContent] = useState(value);
+  const [quillInstance, setQuillInstance] = useState<any>(null);
   const editorRef = useRef<HTMLDivElement>(null);
 
-  // Initialize TipTap editor
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Placeholder.configure({
-        placeholder,
-      }),
-      Link.configure({
-        openOnClick: false,
-      }),
-      TextAlign.configure({
-        types: ['heading', 'paragraph'],
-      }),
-      Image,
-      TextStyle,
-      Color,
-      Underline,
-    ],
-    content: initialContent,
-    editable: !readOnly,
-    onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
-    },
-    immediatelyRender: false,
-  });
-
-  // Set content when value prop changes
-  useEffect(() => {
-    if (editor && value !== editor.getHTML()) {
-      editor.commands.setContent(value);
-    }
-  }, [editor, value]);
-
-  // Update editable state when readOnly changes
-  useEffect(() => {
-    if (editor) {
-      editor.setEditable(!readOnly);
-    }
-  }, [editor, readOnly]);
-
-  // Set client-side rendering flag
+  // Initialize Quill on the client side
   useEffect(() => {
     setIsClient(true);
-  }, []);
+
+    // Only initialize Quill if it hasn't been initialized yet
+    if (typeof window !== 'undefined' && !quillInstance) {
+      // Import Quill dynamically to avoid SSR issues
+      import('quill').then((Quill) => {
+        // Make sure the ref is still valid and component is still mounted
+        if (!editorRef.current) return;
+
+        // Create a new Quill instance
+        const quill = new Quill.default(editorRef.current, {
+          theme: 'snow',
+          placeholder: placeholder,
+          modules: modules,
+          readOnly: readOnly,
+        });
+
+        // Set initial content
+        if (value) {
+          quill.clipboard.dangerouslyPasteHTML(value);
+        }
+
+        // Handle content changes
+        quill.on('text-change', () => {
+          const html = editorRef.current?.querySelector('.ql-editor')?.innerHTML || '';
+          onChange(html);
+        });
+
+        setQuillInstance(quill);
+      }).catch(error => {
+        console.error('Error loading Quill:', error);
+      });
+    }
+
+    // Cleanup function
+    return () => {
+      if (quillInstance) {
+        // Clean up Quill instance if needed
+        setQuillInstance(null);
+      }
+    };
+  }, [placeholder, modules, readOnly, value, onChange]);
+
+  // Update content when value prop changes from outside
+  useEffect(() => {
+    if (quillInstance && value !== undefined) {
+      const currentContent = editorRef.current?.querySelector('.ql-editor')?.innerHTML;
+      // Only update if the content is different to avoid infinite loops
+      if (currentContent !== value && currentContent !== '<p><br></p>' && value !== '') {
+        // Temporarily remove the text-change handler to avoid triggering onChange
+        const textChangeHandler = quillInstance.listeners['text-change'];
+        quillInstance.off('text-change');
+
+        // Update the content
+        quillInstance.clipboard.dangerouslyPasteHTML(value);
+
+        // Re-attach the text-change handler
+        setTimeout(() => {
+          if (textChangeHandler) {
+            quillInstance.on('text-change', textChangeHandler[0]);
+          }
+        }, 0);
+      }
+    }
+  }, [value, quillInstance]);
 
   // Show placeholder during SSR
   if (!isClient) {
@@ -524,15 +127,11 @@ const RichTextEditor = ({
 
   return (
     <div className={className}>
-      {!readOnly && editor && <Toolbar editor={editor} />}
       <div
         ref={editorRef}
-        className="prose max-w-none p-4 min-h-[200px] focus:outline-none"
-      >
-        <EditorContent editor={editor} />
-      </div>
+        className="prose max-w-none min-h-[200px]"
+      />
     </div>
-    
   );
 };
 

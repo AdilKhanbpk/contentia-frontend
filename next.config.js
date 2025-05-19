@@ -24,9 +24,20 @@ const nextConfig = {
       },
     ]
   },
-  // Add this to suppress findDOMNode warnings in production
-  // Note: This is a temporary solution while you fix the underlying issue
+  // Configuration to handle React 18 compatibility issues
   webpack: (config, { dev, isServer }) => {
+    // Add a rule to handle React Quill
+    config.module.rules.push({
+      test: /react-quill/,
+      resolve: {
+        alias: {
+          'react-dom': 'react-dom/profiling',
+          'scheduler/tracing': 'scheduler/tracing-profiling',
+        },
+      },
+    });
+
+    // General React 18 compatibility fixes
     if (!dev && !isServer) {
       // Replace React DOM in production to suppress findDOMNode warnings
       config.resolve.alias = {
@@ -35,6 +46,7 @@ const nextConfig = {
         'scheduler/tracing': 'scheduler/tracing-profiling',
       }
     }
+
     return config
   },
 }
