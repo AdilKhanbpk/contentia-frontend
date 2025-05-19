@@ -1,174 +1,224 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import "react-quill/dist/quill.snow.css";
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Link from '@tiptap/extension-link';
+import Placeholder from '@tiptap/extension-placeholder';
+import { forwardRef, useEffect, useState, useRef } from 'react';
+import './RichTextEditor.css';
 
-// Define props interface
 interface RichTextEditorProps {
   value: string;
   onChange: (content: string) => void;
   placeholder?: string;
   className?: string;
   readOnly?: boolean;
-  modules?: any;
 }
 
-// Placeholder for server-side rendering
-const EditorPlaceholder = () => (
-  <div className="h-64 w-full bg-gray-100 animate-pulse rounded-md flex items-center justify-center text-gray-500">
-    Loading editor...
-  </div>
-);
-
-// Default modules configuration
-const defaultModules = {
-  toolbar: [
-    [{ header: "1" }, { header: "2" }, { font: [] }],
-    [{ size: [] }],
-    ["bold", "italic", "underline", "strike", "blockquote"],
-    [
-      { list: "ordered" },
-      { list: "bullet" },
-      { indent: "-1" },
-      { indent: "+1" },
-    ],
-    ["link", "image", "video"],
-    ["clean"],
-  ],
-  clipboard: {
-    matchVisual: false,
-  },
-};
-
-const RichTextEditor = ({
-  value,
-  onChange,
-  placeholder = "Type here",
-  className = "w-full border border-gray-400 rounded-lg focus:outline-none",
-  readOnly = false,
-  modules = defaultModules,
-}: RichTextEditorProps) => {
-  // State to track client-side rendering
-  const [mounted, setMounted] = useState(false);
-
-  // Refs for DOM elements and Quill instance
-  const containerRef = useRef<HTMLDivElement>(null);
-  const editorRef = useRef<HTMLDivElement>(null);
-  const quillRef = useRef<any>(null);
-
-  // Flag to prevent onChange loops
-  const isUpdatingRef = useRef(false);
-
-  // Initialize Quill on the client side only
-  useEffect(() => {
-    // Mark as mounted on client
-    setMounted(true);
-
-    // Only run on client side
-    if (typeof window === 'undefined') return;
-
-    // Dynamically import Quill
-    const initQuill = async () => {
-      try {
-        // Import Quill dynamically
-        const QuillModule = await import('quill');
-        const Quill = QuillModule.default;
-
-        // Make sure we have a DOM element to attach to
-        if (!editorRef.current) return;
-
-        // Create Quill instance
-        const quillInstance = new Quill(editorRef.current, {
-          theme: 'snow',
-          placeholder: placeholder,
-          modules: modules || defaultModules,
-          readOnly: readOnly,
-        });
-
-        // Store the instance in ref
-        quillRef.current = quillInstance;
-
-        // Set initial content if provided
-        if (value) {
-          isUpdatingRef.current = true;
-          quillInstance.clipboard.dangerouslyPasteHTML(value);
-          isUpdatingRef.current = false;
-        }
-
-        // Handle content changes
-        quillInstance.on('text-change', () => {
-          if (isUpdatingRef.current) return;
-
-          const html = editorRef.current?.querySelector('.ql-editor')?.innerHTML || '';
-          onChange(html);
-        });
-      } catch (error) {
-        console.error('Error initializing Quill:', error);
-      }
-    };
-
-    // Initialize Quill
-    initQuill();
-
-    // Cleanup function
-    return () => {
-      if (quillRef.current) {
-        // Remove all event listeners
-        quillRef.current.off('text-change');
-        quillRef.current = null;
-      }
-    };
-  }, []); // Empty dependency array - only run once on mount
-
-  // Update content when value prop changes
-  useEffect(() => {
-    // Skip if not mounted or no Quill instance
-    if (!mounted || !quillRef.current) return;
-
-    const quill = quillRef.current;
-    const currentContent = editorRef.current?.querySelector('.ql-editor')?.innerHTML || '';
-
-    // Only update if content is different to avoid loops
-    if (value !== currentContent && value !== undefined) {
-      isUpdatingRef.current = true;
-      quill.clipboard.dangerouslyPasteHTML(value || '');
-
-      // Reset the flag after a short delay
-      setTimeout(() => {
-        isUpdatingRef.current = false;
-      }, 10);
-    }
-  }, [value, mounted]);
-
-  // Update Quill options when they change
-  useEffect(() => {
-    if (!mounted || !quillRef.current) return;
-
-    // Update placeholder
-    if (quillRef.current.root) {
-      quillRef.current.root.dataset.placeholder = placeholder;
-    }
-
-    // Update readOnly state
-    quillRef.current.enable(!readOnly);
-
-  }, [placeholder, readOnly, mounted]);
-
-  // Show placeholder during SSR
-  if (!mounted) {
-    return <EditorPlaceholder />;
+const MenuBar = ({ editor }: { editor: any }) => {
+  if (!editor) {
+    return null;
   }
 
+  // Image functionality removed as per requirements
+
+  const setLink = () => {
+    const previousUrl = editor.getAttributes('link').href;
+    const url = window.prompt('Enter the URL', previousUrl);
+
+    // cancelled
+    if (url === null) {
+      return;
+    }
+
+    // empty
+    if (url === '') {
+      editor.chain().focus().unsetLink().run();
+      return;
+    }
+
+    // update link
+    editor.chain().focus().setLink({ href: url }).run();
+  };
+
   return (
-    <div ref={containerRef} className={className}>
-      <div
-        ref={editorRef}
-        className="prose max-w-none min-h-[200px]"
-      />
+    <div className="border-b border-gray-200 p-2 flex flex-wrap gap-1">
+      {/* Text formatting */}
+      <button
+        onClick={() => editor.chain().focus().toggleBold().run()}
+        className={`px-2 py-1 rounded ${editor.isActive('bold') ? 'bg-gray-200' : ''}`}
+        type="button"
+        title="Bold"
+      >
+        <strong>B</strong>
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleItalic().run()}
+        className={`px-2 py-1 rounded ${editor.isActive('italic') ? 'bg-gray-200' : ''}`}
+        type="button"
+        title="Italic"
+      >
+        <em>I</em>
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleStrike().run()}
+        className={`px-2 py-1 rounded ${editor.isActive('strike') ? 'bg-gray-200' : ''}`}
+        type="button"
+        title="Strike"
+      >
+        <s>S</s>
+      </button>
+
+      {/* Headings */}
+      <button
+        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+        className={`px-2 py-1 rounded ${editor.isActive('heading', { level: 1 }) ? 'bg-gray-200' : ''}`}
+        type="button"
+        title="Heading 1"
+      >
+        H1
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+        className={`px-2 py-1 rounded ${editor.isActive('heading', { level: 2 }) ? 'bg-gray-200' : ''}`}
+        type="button"
+        title="Heading 2"
+      >
+        H2
+      </button>
+
+      {/* Lists */}
+      <button
+        onClick={() => editor.chain().focus().toggleBulletList().run()}
+        className={`px-2 py-1 rounded ${editor.isActive('bulletList') ? 'bg-gray-200' : ''}`}
+        type="button"
+        title="Bullet List"
+      >
+        • List
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        className={`px-2 py-1 rounded ${editor.isActive('orderedList') ? 'bg-gray-200' : ''}`}
+        type="button"
+        title="Ordered List"
+      >
+        1. List
+      </button>
+
+      {/* Block elements */}
+      <button
+        onClick={() => editor.chain().focus().toggleBlockquote().run()}
+        className={`px-2 py-1 rounded ${editor.isActive('blockquote') ? 'bg-gray-200' : ''}`}
+        type="button"
+        title="Quote"
+      >
+        Quote
+      </button>
+      <button
+        onClick={() => editor.chain().focus().setHorizontalRule().run()}
+        className="px-2 py-1 rounded"
+        type="button"
+        title="Horizontal Rule"
+      >
+        Line
+      </button>
+
+      {/* Media */}
+      <button
+        onClick={setLink}
+        className={`px-2 py-1 rounded ${editor.isActive('link') ? 'bg-gray-200' : ''}`}
+        type="button"
+        title="Add Link"
+      >
+        Link
+      </button>
+
+      {/* Undo/Redo */}
+      <button
+        onClick={() => editor.chain().focus().undo().run()}
+        disabled={!editor.can().undo()}
+        className="px-2 py-1 rounded"
+        type="button"
+        title="Undo"
+      >
+        Undo
+      </button>
+      <button
+        onClick={() => editor.chain().focus().redo().run()}
+        disabled={!editor.can().redo()}
+        className="px-2 py-1 rounded"
+        type="button"
+        title="Redo"
+      >
+        Redo
+      </button>
     </div>
   );
 };
 
-// Export as both default and named export for flexibility
-export { RichTextEditor };
+const RichTextEditor = forwardRef<HTMLDivElement, RichTextEditorProps>(({
+  value,
+  onChange,
+  placeholder = 'Start writing...',
+  className = 'w-full border border-gray-400 rounded-lg focus:outline-none overflow-hidden',
+  readOnly = false,
+}, ref) => {
+  // Track if content is being updated programmatically
+  const isUpdatingRef = useRef(false);
+  // Track if editor is initialized
+  const [isEditorReady, setIsEditorReady] = useState(false);
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Link,
+      Placeholder.configure({
+        placeholder,
+      }),
+    ],
+    content: value || '',
+    editable: !readOnly,
+    onUpdate: ({ editor }) => {
+      // Only trigger onChange if not updating programmatically
+      if (!isUpdatingRef.current) {
+        onChange(editor.getHTML());
+      }
+    },
+  });
+
+  // Set editor ready state when editor is initialized
+  useEffect(() => {
+    if (editor) {
+      setIsEditorReady(true);
+    }
+  }, [editor]);
+
+  // Update content when value prop changes
+  useEffect(() => {
+    // Only update if editor is ready and value is different
+    if (editor && isEditorReady && value !== editor.getHTML()) {
+      // Set flag to prevent onChange from being triggered
+      isUpdatingRef.current = true;
+
+      // Update content
+      editor.commands.setContent(value || '');
+
+      // Reset flag after a short delay
+      setTimeout(() => {
+        isUpdatingRef.current = false;
+      }, 10);
+    }
+  }, [value, editor, isEditorReady]);
+
+  return (
+    <div className={className} ref={ref}>
+      {!readOnly && <MenuBar editor={editor} />}
+      <div className="p-4 min-h-[200px] prose max-w-none">
+        <EditorContent editor={editor} />
+      </div>
+    </div>
+  );
+});
+
+RichTextEditor.displayName = 'RichTextEditor';
 export default RichTextEditor;

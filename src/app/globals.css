@@ -2,7 +2,7 @@
 @import "~slick-carousel/slick/slick.css";
 @import "~slick-carousel/slick/slick-theme.css";
 @import "~react-toastify/dist/ReactToastify.min.css";
-@import "~react-quill/dist/quill.snow.css";
+/* @import "~react-quill/dist/quill.snow.css"; */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -23,6 +23,21 @@
   flex: 1;
   overflow: auto;
 }
+
+/* Add to your globals.css or equivalent */
+.ProseMirror {
+  outline: none;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+
 
 @font-face {
     font-family: "Shoika";

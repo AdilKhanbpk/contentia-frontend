@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import "../i18n";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../i18n";
-import "./globals.css";
+import "../app/globals.css"; 
 
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";

@@ -9,8 +9,7 @@ import {
     createLandingPage,
 } from "@/store/features/admin/lanPageSlice";
 import { toast } from "react-toastify";
-import RichTextEditor from "@/components/common/RichTextEditor";
-import QuillEditorExample from "@/components/examples/QuillEditorExample";
+import TipTapEditor from "@/components/examples/TipTapEditor";
 
 interface FormData {
     carouselHeroTitle: string;
@@ -182,10 +181,11 @@ export default function LandingPages() {
                         Hero Subtitle
                     </label>
                     <Controller
-                        name='heroSubTitle'
+                        name="heroSubTitle"
                         control={control}
+                        rules={{ required: "Hero subtitle is required" }}
                         render={({ field: { onChange, value } }) => (
-                            <QuillEditorExample
+                            <TipTapEditor
                                 value={value || ""}
                                 onChange={(content) => {
                                     onChange(content);
@@ -193,9 +193,8 @@ export default function LandingPages() {
                                         shouldDirty: true,
                                     });
                                 }}
-                                placeholder='Write something...'
-                                className='w-full border border-gray-400 rounded-lg focus:outline-none'
-                                
+                                placeholder="Write something..."
+                                className="w-full border border-gray-400 rounded-lg focus:outline-none"
                             />
                         )}
                     />

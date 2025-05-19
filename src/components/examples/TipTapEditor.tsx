@@ -20,8 +20,9 @@ interface TipTapEditorProps {
  *
  * Features:
  * - Properly handles content fetched from the database
- * - Supports rich text formatting including headings, lists, links, and images
+ * - Supports rich text formatting including headings, lists, and links
  * - Provides a clean, user-friendly interface
+ * - Images are intentionally disabled as per requirements
  */
 export default function TipTapEditor({
   value,
