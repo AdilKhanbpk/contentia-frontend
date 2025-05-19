@@ -532,6 +532,7 @@ const RichTextEditor = ({
         <EditorContent editor={editor} />
       </div>
     </div>
+    
   );
 };
 
