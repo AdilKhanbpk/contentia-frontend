@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  // reactStrictMode: true,
   // Generate a unique build ID to prevent caching issues
   generateBuildId: () => 'build-' + Date.now(),
   // Add build timestamp as an environment variable
