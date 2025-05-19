@@ -144,9 +144,9 @@ export default function LandingPages() {
 
             {!fixedId && (
                 <div className="bg-blue-50 border-l-4 border-blue-500 p-4 my-4 rounded-md">
-                    <p className="text-blue-700">
+                    {/* <p className="text-blue-700">
                         <strong>Note:</strong> You are creating a new landing page. Fill in the form and click Save to create it.
-                    </p>
+                    </p> */}
                 </div>
             )}
             <form onSubmit={handleSubmit(onSubmit)}>
