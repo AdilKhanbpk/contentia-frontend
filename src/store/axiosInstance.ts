@@ -83,9 +83,9 @@ axiosInstance.interceptors.response.use(
                     const refreshToken = localStorage.getItem("refreshToken");
 
                     if (!refreshToken) {
-                        // No refresh token, redirect to login
+                        // No refresh token, redirect to login page (giris-yap)
                         localStorage.clear();
-                        window.location.href = "/login";
+                        window.location.href = "/giris-yap";
                         return Promise.reject(error);
                     }
 
@@ -121,14 +121,14 @@ axiosInstance.interceptors.response.use(
                         // No new token received
                         processQueue(error, null);
                         localStorage.clear();
-                        window.location.href = "/login";
+                        window.location.href = "/giris-yap";
                         return Promise.reject(error);
                     }
                 } catch (refreshError) {
                     // Token refresh failed
                     processQueue(refreshError, null);
                     localStorage.clear();
-                    window.location.href = "/login";
+                    window.location.href = "/giris-yap";
                     return Promise.reject(refreshError);
                 } finally {
                     isRefreshing = false;
@@ -156,7 +156,6 @@ axiosInstance.interceptors.response.use(
         } else if (error.response?.status === 500) {
             // Server error
             console.error("Server error:", error);
-            toast.error("An unexpected server error occurred. Please try again later.");
         }
 
         return Promise.reject(error);

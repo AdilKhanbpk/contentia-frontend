@@ -9,33 +9,33 @@ import { AxiosError } from 'axios';
  * @returns The error message
  */
 export const handleApiError = (
-  error: unknown, 
-  fallbackMessage = 'An unexpected error occurred', 
+  error: unknown,
+  fallbackMessage = 'An unexpected error occurred',
   showToast = true
 ): string => {
   let errorMessage = fallbackMessage;
-  
+
   // Log the error in development
   if (process.env.NODE_ENV !== 'production') {
     console.error('API Error:', error);
   }
-  
+
   // Handle Axios errors
   if (error && typeof error === 'object' && 'isAxiosError' in error) {
     const axiosError = error as AxiosError;
-    
+
     // Get the status code
     const status = axiosError.response?.status;
-    
+
     // Handle different status codes
     if (status === 401) {
       errorMessage = 'Your session has expired. Please log in again.';
-      
+
       // Clear local storage and redirect to login if not already there
-      if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+      if (typeof window !== 'undefined' && !window.location.pathname.includes('/giris-yap')) {
         localStorage.clear();
         setTimeout(() => {
-          window.location.href = '/login';
+          window.location.href = '/giris-yap';
         }, 2000);
       }
     } else if (status === 403) {
@@ -45,7 +45,7 @@ export const handleApiError = (
     } else if (status === 500) {
       errorMessage = 'A server error occurred. Please try again later.';
     }
-    
+
     // Try to get a more specific error message from the response
     if (axiosError.response?.data) {
       const data = axiosError.response.data as any;
@@ -58,12 +58,12 @@ export const handleApiError = (
   } else if (error instanceof Error) {
     errorMessage = error.message;
   }
-  
+
   // Show toast if requested
   if (showToast) {
     toast.error(errorMessage);
   }
-  
+
   return errorMessage;
 };
 
@@ -79,7 +79,7 @@ export const handleApiSuccess = (
   if (showToast) {
     toast.success(message);
   }
-  
+
   // Log the success in development
   if (process.env.NODE_ENV !== 'production') {
     console.log('API Success:', message);
