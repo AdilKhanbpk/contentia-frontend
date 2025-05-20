@@ -4,8 +4,8 @@ import { toast } from "react-toastify";
 // This should be the backend API URL
 const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-// Fallback to localhost if not defined (for development)
-const apiBaseURL = baseURL || "http://localhost:8000";
+// Use environment variable with fallback to production URL if not defined
+const apiBaseURL = baseURL || 'https://contentia-backend-s4pw.onrender.com/api/v1';
 
 // Only log in development
 if (process.env.NODE_ENV !== 'production') {
@@ -91,7 +91,7 @@ axiosInstance.interceptors.response.use(
 
                     // Call your refresh token endpoint
                     const response = await axios.post(
-                        `${apiBaseURL}/api/v1/auth/refresh-token`,
+                        `${apiBaseURL}/auth/refresh-token`,
                         { refreshToken },
                         { headers: { "Content-Type": "application/json" } }
                     );
