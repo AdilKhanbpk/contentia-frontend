@@ -2,9 +2,10 @@ import { fetchAdditionalServices } from "@/store/features/admin/addPriceSlice";
 import { RootState } from "@/store/store";
 import { CreatorInterface, OrderInterface } from "@/types/interfaces";
 import { checkStatus } from "@/utils/CheckOrderStatus";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
+import { axiosInstance } from "@/store/axiosInstance";
 
 interface ViewOrderDetailsProps {
     orderData: OrderInterface;
@@ -17,10 +18,34 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
     const dispatch = useDispatch();
     const quantity = orderData.noOfUgc;
     const basePrice = orderData.basePrice;
+    const [revisionContent, setRevisionContent] = useState<string | null>(null);
+    const [loadingRevision, setLoadingRevision] = useState(false);
 
     useEffect(() => {
         dispatch(fetchAdditionalServices() as any);
     }, [dispatch]);
+
+    // Fetch revision content if order is in revision status
+    useEffect(() => {
+        if (orderData.orderStatus === "revision" && orderData._id) {
+            const fetchRevisionContent = async () => {
+                setLoadingRevision(true);
+                try {
+                    // Replace with the actual API endpoint to fetch revision content
+                    const response = await axiosInstance.get(`/revisions/${orderData._id}`);
+                    if (response.data && response.data.data) {
+                        setRevisionContent(response.data.data.revisionContent);
+                    }
+                } catch (error) {
+                    console.error("Error fetching revision content:", error);
+                } finally {
+                    setLoadingRevision(false);
+                }
+            };
+
+            fetchRevisionContent();
+        }
+    }, [orderData._id, orderData.orderStatus]);
     return (
         <div className='bg-white xs:p-8'>
             {/* Creator Content Info */}
@@ -198,61 +223,74 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
             </div>
 
             {/* Order and Brief Info */}
-            <div className='flex flex-col lg:flex-row lg:space-x-28'>
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
                 <div className='bg-white rounded-md mb-8'>
                     <h3 className='text-lg font-bold mb-4 BlueText'>
                         Sipariş Bilgileri:
                     </h3>
-                    <div className='grid grid-cols-2 gap-4'>
-                        <div className='text-gray-700 text-sm lg:text-base'>
-                            Sipariş No:
+                    <div className='grid grid-cols-1 gap-2'>
+                        {/* Using flex for each row to ensure proper alignment */}
+                        <div className='flex flex-row items-start'>
+                            <div className='w-1/2 text-gray-700 text-sm lg:text-base'>
+                                Sipariş No:
+                            </div>
+                            <div className='w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words'>
+                                {orderData._id}
+                            </div>
                         </div>
-                        <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData._id}
+                        <div className='flex flex-row items-start'>
+                            <div className='w-1/2 text-gray-700 text-sm lg:text-base'>
+                                Sipariş Tarihi:
+                            </div>
+                            <div className='w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words'>
+                                {orderData.createdAt
+                                    ? new Date(
+                                          orderData.createdAt
+                                      ).toLocaleDateString()
+                                    : "N/A"}
+                            </div>
                         </div>
-                        <div className='text-gray-700 text-sm lg:text-base'>
-                            Sipariş Tarihi:
+                        <div className='flex flex-row items-start'>
+                            <div className='w-1/2 text-gray-700 text-sm lg:text-base'>
+                                Sipariş Durumu:
+                            </div>
+                            <div className='w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words'>
+                                {orderData.orderStatus === "completed" ? "Tamamlandı" :
+                                  orderData.orderStatus === "pending" ? "Beklemede" :
+                                  orderData.orderStatus === "active" ? "Aktif" :
+                                  orderData.orderStatus === "cancelled" || orderData.orderStatus === "rejected" ? "İptal Edildi" :
+                                  orderData.orderStatus === "revision" ? "Revizyon" :
+                                  orderData.orderStatus}
+                            </div>
                         </div>
-                        <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData.createdAt
-                                ? new Date(
-                                      orderData.createdAt
-                                  ).toLocaleDateString()
-                                : "N/A"}
-                        </div>
-                        <div className='text-gray-700 text-sm lg:text-base'>
-                            Sipariş Durumu:
-                        </div>
-                        <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData.orderStatus === "completed" ? "Tamamlandı" :
-                              orderData.orderStatus === "pending" ? "Beklemede" :
-                              orderData.orderStatus === "active" ? "Aktif" :
-                              orderData.orderStatus === "cancelled" || orderData.orderStatus === "rejected" ? "İptal Edildi" :
-                              orderData.orderStatus === "revision" ? "Revizyon" :
-                              orderData.orderStatus}
-                        </div>
-                        <div className='text-gray-700 text-sm lg:text-base'>
-                            Ödeme No:
-                        </div>
-                        <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            Nil
-                        </div>
-                        <div className='text-gray-700 text-sm lg:text-base'>
-                            Ödeme Tarihi:
-                        </div>
-                        <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            Nil
-                        </div>
-                        <div className='text-gray-700 text-sm lg:text-base'>
-                            Fatura:
-                        </div>
-                        <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            <a
-                                href='https://we.tl/send/5323'
-                                className='underline'
-                            >
+                        <div className='flex flex-row items-start'>
+                            <div className='w-1/2 text-gray-700 text-sm lg:text-base'>
+                                Ödeme No:
+                            </div>
+                            <div className='w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words'>
                                 Nil
-                            </a>
+                            </div>
+                        </div>
+                        <div className='flex flex-row items-start'>
+                            <div className='w-1/2 text-gray-700 text-sm lg:text-base'>
+                                Ödeme Tarihi:
+                            </div>
+                            <div className='w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words'>
+                                Nil
+                            </div>
+                        </div>
+                        <div className='flex flex-row items-start'>
+                            <div className='w-1/2 text-gray-700 text-sm lg:text-base'>
+                                Fatura:
+                            </div>
+                            <div className='w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words'>
+                                <a
+                                    href='https://we.tl/send/5323'
+                                    className='underline'
+                                >
+                                    Nil
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -261,82 +299,105 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                     <h3 className='text-lg font-bold mb-4 BlueText'>
                         İçerik Detayı:
                     </h3>
-                    <div className='grid grid-cols-2 gap-4'>
-                        <div className='text-gray-700 text-sm lg:text-base'>
-                            Ürün / Hizmet Adı:
+                    <div className='grid grid-cols-1 gap-2'>
+                        {/* Using flex for each row to ensure proper alignment */}
+                        <div className='flex flex-row items-start'>
+                            <div className='w-1/2 text-gray-700 text-sm lg:text-base'>
+                                Ürün / Hizmet Adı:
+                            </div>
+                            <div className='w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words'>
+                                {orderData.briefContent?.productServiceName}
+                            </div>
                         </div>
-                        <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData.briefContent?.productServiceName}
+                        <div className='flex flex-row items-start'>
+                            <div className='w-1/2 text-gray-700 text-sm lg:text-base'>
+                                Marka:
+                            </div>
+                            <div className='w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words'>
+                                {orderData.briefContent?.brandName}
+                            </div>
                         </div>
-                        <div className='text-gray-700 text-sm lg:text-base'>
-                            Marka:
+                        <div className='flex flex-row items-start'>
+                            <div className='w-1/2 text-gray-700 text-sm lg:text-base'>
+                                Platform:
+                            </div>
+                            <div className='w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words'>
+                                {orderData.additionalServices.platform}
+                            </div>
                         </div>
-                        <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData.briefContent?.brandName}
+                        <div className='flex flex-row items-start'>
+                            <div className='w-1/2 text-gray-700 text-sm lg:text-base'>
+                                Süre:
+                            </div>
+                            <div className='w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words'>
+                                {orderData.additionalServices.duration}
+                            </div>
                         </div>
-                        <div className='text-gray-700 text-sm lg:text-base'>
-                            Platform:
+                        <div className='flex flex-row items-start'>
+                            <div className='w-1/2 text-gray-700 text-sm lg:text-base'>
+                                Edit:
+                            </div>
+                            <div className='w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words'>
+                                {orderData.additionalServices.edit ? "Evet" : "Hayır"}
+                            </div>
                         </div>
-                        <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData.additionalServices.platform}
+                        <div className='flex flex-row items-start'>
+                            <div className='w-1/2 text-gray-700 text-sm lg:text-base'>
+                                En Boy Oranı:
+                            </div>
+                            <div className='w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words'>
+                                {orderData.additionalServices.aspectRatio}
+                            </div>
                         </div>
-                        <div className='text-gray-700 text-sm lg:text-base'>
-                            Süre:
+                        <div className='flex flex-row items-start'>
+                            <div className='w-1/2 text-gray-700 text-sm lg:text-base'>
+                                Sosyal Medya Paylaşım:
+                            </div>
+                            <div className='w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words'>
+                                {orderData.additionalServices.share ? "Evet" : "Hayır"}
+                            </div>
                         </div>
-                        <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData.additionalServices.duration}
+                        <div className='flex flex-row items-start'>
+                            <div className='w-1/2 text-gray-700 text-sm lg:text-base'>
+                                Kapak Görseli:
+                            </div>
+                            <div className='w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words'>
+                                {orderData.additionalServices.coverPicture ? "Evet" : "Hayır"}
+                            </div>
                         </div>
-                        <div className='text-gray-700 text-sm lg:text-base'>
-                            Edit:
+                        <div className='flex flex-row items-start'>
+                            <div className='w-1/2 text-gray-700 text-sm lg:text-base'>
+                                Influencer Seçimi:
+                            </div>
+                            <div className='w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words'>
+                                {orderData.additionalServices.creatorType
+                                    ? "Micro"
+                                    : "Nano"}
+                            </div>
                         </div>
-                        <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData.additionalServices.edit ? "Evet" : "Hayır"}
+                        <div className='flex flex-row items-start'>
+                            <div className='w-1/2 text-gray-700 text-sm lg:text-base'>
+                                Ürün Gönderimi:
+                            </div>
+                            <div className='w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words'>
+                                {orderData.additionalServices.productShipping ? "Evet" : "Hayır"}
+                            </div>
                         </div>
-                        <div className='text-gray-700 text-sm lg:text-base'>
-                            En Boy Oranı:
-                        </div>
-                        <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData.additionalServices.aspectRatio}
-                        </div>
-                        <div className='text-gray-700 text-sm lg:text-base'>
-                            Sosyal Medya Paylaşım:
-                        </div>
-                        <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData.additionalServices.share ? "Evet" : "Hayır"}
-                        </div>
-                        <div className='text-gray-700 text-sm lg:text-base'>
-                            Kapak Görseli:
-                        </div>
-                        <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData.additionalServices.coverPicture ? "Evet" : "Hayır"}
-                        </div>
-                        <div className='text-gray-700 text-sm lg:text-base'>
-                            Influencer Seçimi:
-                        </div>
-                        <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData.additionalServices.creatorType
-                                ? "Micro"
-                                : "Nano"}
-                        </div>
-                        <div className='text-gray-700 text-sm lg:text-base'>
-                            Ürün Gönderimi:
-                        </div>
-                        <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            {orderData.additionalServices.productShipping ? "Evet" : "Hayır"}
-                        </div>
-                        <div className='text-gray-700 text-sm lg:text-base'>
-                            İçerik Türü:
-                        </div>
-                        <div className='text-right BlueText font-bold text-sm lg:text-base'>
-                            Hizmet
+                        <div className='flex flex-row items-start'>
+                            <div className='w-1/2 text-gray-700 text-sm lg:text-base'>
+                                İçerik Türü:
+                            </div>
+                            <div className='w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words'>
+                                Hizmet
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Order Summary */}
-            <div className='flex -mt-0 lg:-mt-44'>
-                <div className='bg-white rounded-md w-full lg:w-3/6'>
+            <div className='flex mt-4 lg:mt-8'>
+                <div className='bg-white rounded-md w-full lg:w-1/2'>
                     <h2 className='BlueText text-lg font-semibold mb-4'>
                         Sipariş Özeti:
                     </h2>
@@ -531,33 +592,33 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                     <label className='block text-sm lg:text-base font-semibold mb-1'>
                         Ürün / Hizmet Adı:
                     </label>
-                    <p className='border rounded-md p-2 bg-gray-50 text-sm lg:text-base'>
+                    <div className='border rounded-md p-2 bg-gray-50 text-sm lg:text-base overflow-auto break-words'>
                         {orderData.briefContent?.productServiceName}
-                    </p>
+                    </div>
                 </div>
                 <div>
                     <label className='block text-sm lg:text-base font-semibold mb-1'>
                         Senaryo (Opsiyonel):
                     </label>
-                    <p className='border rounded-md p-2 bg-gray-50 text-sm lg:text-base'>
+                    <div className='border rounded-md p-2 bg-gray-50 text-sm lg:text-base overflow-auto break-words min-h-[60px] max-h-[200px]'>
                         {orderData.briefContent?.scenario}
-                    </p>
+                    </div>
                 </div>
                 <div>
                     <label className='block text-sm lg:text-base font-semibold mb-1'>
                         Brief:
                     </label>
-                    <p className='border rounded-md p-2 bg-gray-50 text-sm lg:text-base'>
+                    <div className='border rounded-md p-2 bg-gray-50 text-sm lg:text-base overflow-auto break-words min-h-[60px] max-h-[200px]'>
                         {orderData.briefContent?.productServiceDesc}
-                    </p>
+                    </div>
                 </div>
                 <div>
                     <label className='block text-sm lg:text-base font-semibold mb-1'>
                         Örnek Çalışma (Opsiyonel):
                     </label>
-                    <p className='border rounded-md p-2 bg-gray-50 text-sm lg:text-base'>
+                    <div className='border rounded-md p-2 bg-gray-50 text-sm lg:text-base overflow-auto break-words min-h-[60px] max-h-[200px]'>
                         {orderData.briefContent?.caseStudy}
-                    </p>
+                    </div>
                 </div>
             </div>
             {orderData.creatorNoteOnOrder && (
@@ -567,8 +628,32 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                             Sipariş Notu:
                         </label>
                     </div>
-                    <div className='border rounded-md p-2 bg-gray-50 text-sm lg:text-base'>
+                    <div className='border rounded-md p-2 bg-gray-50 text-sm lg:text-base overflow-auto break-words min-h-[60px] max-h-[200px]'>
                         {orderData.creatorNoteOnOrder}
+                    </div>
+                </div>
+            )}
+
+            {/* Revision Notes Section - Only show if order is in revision status */}
+            {orderData.orderStatus === "revision" && (
+                <div className='mt-8'>
+                    <div>
+                        <label className='block text-sm lg:text-base font-semibold mb-1'>
+                            Revizyon Notu:
+                        </label>
+                    </div>
+                    <div className='border rounded-md p-2 bg-gray-50 text-sm lg:text-base overflow-auto break-words min-h-[60px] max-h-[200px]'>
+                        {loadingRevision ? (
+                            <div className="flex justify-center items-center h-full">
+                                <p className="text-gray-500">Revizyon detayları yükleniyor...</p>
+                            </div>
+                        ) : revisionContent ? (
+                            revisionContent
+                        ) : (
+                            <div className="flex justify-center items-center h-full">
+                                <p className="text-gray-500">Revizyon detayları bulunamadı.</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
