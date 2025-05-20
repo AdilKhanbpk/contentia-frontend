@@ -19,9 +19,13 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
 
     return (
         <>
+            {/* Show Navbar for non-authenticated users */}
             {!token && <Navbar />}
-            {isRootRoute && !isAdminRoute && <Navbar />}
-            {!isRootRoute && !isAdminRoute && token && <CustomerNavbar />}
+
+            {/* Show CustomerNavbar for authenticated users on any non-admin route */}
+            {token && !isAdminRoute && <CustomerNavbar />}
+
+            {/* Show AdminNavbar for admin routes */}
             {isAdminRoute && <AdminNavbar />}
 
             <main>{children}</main>
