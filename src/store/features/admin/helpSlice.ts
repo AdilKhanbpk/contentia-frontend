@@ -65,7 +65,7 @@ export const fetchHelpSupports = createAsyncThunk(
     "helpSupport/fetchHelpSupports",
     async (_, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get("/admin/helpSupport");
+            const response = await axiosInstance.get("/admin/helpSupport");            
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;

@@ -19,7 +19,7 @@ import {
 const helpCategories = [
     {
         title: "Sipariş Oluşturma",
-        value: "orders",
+        value: "Sipariş Oluşturma", // Match exact category from API
         icon: (
             <Image
                 src={img1}
@@ -29,7 +29,7 @@ const helpCategories = [
     },
     {
         title: "Contentia Nasıl Çalışır?",
-        value: "contents",
+        value: "Contentia Nasıl Çalışır",
         icon: (
             <Image
                 src={img2}
@@ -39,7 +39,7 @@ const helpCategories = [
     },
     {
         title: "Kullanım Koşulları",
-        value: "terms",
+        value: "Kullanım Koşulları", // Match exact category from API
         icon: (
             <Image
                 src={img3}
@@ -49,7 +49,7 @@ const helpCategories = [
     },
     {
         title: "İçerik Üreticileri",
-        value: "creators",
+        value: "İçerik Üreticileri", // Match exact category from API
         icon: (
             <Image
                 src={img4}
@@ -84,24 +84,32 @@ const HelpSupportPage: React.FC = () => {
         }
     }, [searchParams]);
 
-    const selectedCategoryValue = helpCategories[selectedCategory].value;
-
     const filteredHelpSupports = helpSupportData.filter(
         (support: HelpSupport) => {
-            // If there's a search query, search across all categories
+            // If there's a search query, search across all categories and content
             if (searchQuery.trim() !== "") {
-                return support.title
-                    .toLowerCase()
-                    .includes(searchQuery.toLowerCase());
+                return (
+                    support.title
+                        .toLowerCase()
+                        .includes(searchQuery.toLowerCase()) ||
+                    support.content
+                        .toLowerCase()
+                        .includes(searchQuery.toLowerCase())
+                );
             }
 
             // If no search query, show only items from selected category
-            return support.category === selectedCategoryValue;
+            return support.category === helpCategories[selectedCategory].value;
         }
     );
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
+    };
+
+    const handleCategoryClick = (index: number) => {
+        setSelectedCategory(index);
+        setSearchQuery(""); // Clear search when changing category
     };
 
     return (
@@ -133,13 +141,16 @@ const HelpSupportPage: React.FC = () => {
                         {helpCategories.map((category, index) => (
                             <div
                                 key={index}
-                                className={`px-1 py-0.5 sm:px-2 sm:py-1 md:px-3 md:py-1.5 lg:px-8 lg:py-4 rounded-md text-white flex flex-col items-center cursor-pointer transition-all ${
-                                    selectedCategory === index
-                                        ? "ring-2 ring-offset-2 ring-blue-500"
-                                        : ""
-                                }`}
+                                className={`px-1 py-0.5 sm:px-2 sm:py-1 md:px-3 md:py-1.5 lg:px-8 lg:py-4 
+                                    rounded-md text-white flex flex-col items-center cursor-pointer 
+                                    transition-all hover:ring-2 hover:ring-offset-2 hover:ring-blue-400
+                                    ${
+                                        selectedCategory === index
+                                            ? "ring-2 ring-offset-2 ring-blue-500"
+                                            : ""
+                                    }`}
                                 style={{ backgroundColor: "#4D4EC9" }}
-                                onClick={() => setSelectedCategory(index)}
+                                onClick={() => handleCategoryClick(index)}
                             >
                                 <div className='flex flex-col items-center'>
                                     {category.icon}
@@ -157,7 +168,8 @@ const HelpSupportPage: React.FC = () => {
                             filteredHelpSupports.map(
                                 (helpSupport: HelpSupport) => (
                                     <div
-                                        className='flex gap-3 items-center'
+                                        className='flex gap-3 items-center p-4 hover:bg-gray-50 
+                                            rounded-lg transition-colors duration-200'
                                         key={helpSupport._id}
                                     >
                                         <Image
@@ -177,7 +189,7 @@ const HelpSupportPage: React.FC = () => {
                                 )
                             )
                         ) : (
-                            <p className='text-gray-500'>
+                            <p className='text-gray-500 text-center py-4'>
                                 Bu kategoride içerik bulunamadı.
                             </p>
                         )}
