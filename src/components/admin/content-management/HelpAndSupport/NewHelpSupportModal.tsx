@@ -132,12 +132,12 @@ export const ModalCenters: React.FC<ModalCentersProps> = ({ onClose }) => {
                         className='w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none'
                     >
                         <option value=''>Select a category</option>
-                        <option value='orders'>Sipariş Oluşturma</option>
-                        <option value='contents'>
+                        <option value='Sipariş Oluşturma'>Sipariş Oluşturma</option>
+                        <option value='Contentia Nasıl Çalışır'>
                             Contentia Nasıl Çalışır?
                         </option>
-                        <option value='terms'>Kullanım Koşulları</option>
-                        <option value='creators'>İçerik Üreticileri</option>
+                        <option value='Kullanım Koşulları'>Kullanım Koşulları</option>
+                        <option value='İçerik Üreticileri'>İçerik Üreticileri</option>
                     </select>
                     {errors.category && (
                         <span className='text-red-500 text-sm'>
