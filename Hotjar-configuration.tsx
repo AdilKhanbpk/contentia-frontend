@@ -1,7 +1,10 @@
 declare global {
-  interface Window {
-    hj: any;
-    _hjSettings: any;
+    namespace NodeJS {
+    interface ProcessEnv {
+      NEXT_PUBLIC_HOTJAR_ID: string;
+      NEXT_PUBLIC_HOTJAR_VERSION: string;
+      // ...other env variables
+    }
   }
 }
 

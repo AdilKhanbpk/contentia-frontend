@@ -41,6 +41,8 @@ export default function RootLayout({
     const hjid = process.env.NEXT_PUBLIC_HOTJAR_ID || '6390584';
     const hjsv = process.env.NEXT_PUBLIC_HOTJAR_VERSION || '6';
     hotjar.initialize(hjid, hjsv);
+    console.log("Hotjar Initialized :::-----------------------------------------------------------");
+    
   }, []);
 
     return (
