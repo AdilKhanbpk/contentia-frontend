@@ -16,6 +16,8 @@ import { FileProvider } from "@/context/FileContext";
 import { TokenProvider } from "@/context/TokenCheckingContext";
 import { initGA } from "@/utils/googleAnalytics/Analytics";
 import RouteChangeTracker from "@/utils/googleAnalytics/RouteChangeTracker";
+import Hotjar from '@hotjar/browser';
+
 
 import Head from "next/head";
 import Script from "next/script"; // ✅ Import next/script
@@ -29,14 +31,18 @@ export default function RootLayout({
 }) {
     useEffect(() => {
         try {
+            const siteId = 6390584;
+            const hotjarVersion = 6;
+
+            Hotjar.init(siteId, hotjarVersion);
             initGA();
         } catch (error) {
             console.error("Failed to initialize Google Analytics:", error);
         }
     }, []);
 
-    const hotjarId = process.env.NEXT_PUBLIC_HOTJAR_ID || "6390584";
-    const hotjarVersion = process.env.NEXT_PUBLIC_HOTJAR_VERSION || "6";
+
+
 
     return (
         <html lang='en'>
@@ -49,7 +55,7 @@ export default function RootLayout({
             </Head>
 
             {/* ✅ Inject Hotjar Official Script */}
-            <Script
+            {/* <Script
                 id="hotjar"
                 strategy="afterInteractive"
                 dangerouslySetInnerHTML={{
@@ -64,7 +70,7 @@ export default function RootLayout({
                         })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
                     `,
                 }}
-            />
+            /> */}
 
             <body suppressHydrationWarning={true}>
                 <FileProvider>
