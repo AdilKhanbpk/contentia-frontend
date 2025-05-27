@@ -15,7 +15,11 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
     const isRootRoute = pathname === "/";
     const isAdminRoute = pathname.startsWith("/admin");
 
-    if (loading) return <LoadingSpinner />;
+
+    if (loading) {
+        console.log("🎯 LayoutWrapper: Still loading, showing LoadingSpinner");
+        return <LoadingSpinner />;
+    }
 
     return (
         <>

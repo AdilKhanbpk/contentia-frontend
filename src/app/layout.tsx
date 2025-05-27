@@ -30,13 +30,46 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     useEffect(() => {
+        // Initialize Hotjar
         try {
-            const siteId = 6390584;
-            const hotjarVersion = 6;
-          
-            Hotjar.init(siteId, hotjarVersion);
-            console.log("hotjar Initialized:--------------------------");
-            
+            const hotjarId = process.env.NEXT_PUBLIC_HOTJAR_ID;
+            const hotjarVersion = process.env.NEXT_PUBLIC_HOTJAR_VERSION;
+
+            console.log("🔥 Starting Hotjar initialization...");
+            console.log("Hotjar ID:", hotjarId);
+            console.log("Hotjar Version:", hotjarVersion);
+
+            if (!hotjarId || !hotjarVersion) {
+                console.warn("⚠️ Hotjar environment variables are missing!");
+                console.log("NEXT_PUBLIC_HOTJAR_ID:", hotjarId);
+                console.log("NEXT_PUBLIC_HOTJAR_VERSION:", hotjarVersion);
+                return;
+            }
+
+            // Convert to numbers
+            const siteId = parseInt(hotjarId);
+            const version = parseInt(hotjarVersion);
+
+            console.log("🔥 Initializing Hotjar with ID:", siteId, "Version:", version);
+
+            Hotjar.init(siteId, version);
+
+            // Check if Hotjar was successfully initialized
+            setTimeout(() => {
+                if (typeof window !== 'undefined' && (window as any).hj) {
+                    console.log("✅ Hotjar successfully initialized!");
+                    console.log("Hotjar object:", (window as any).hj);
+                } else {
+                    console.error("❌ Hotjar failed to initialize - hj object not found on window");
+                }
+            }, 1000);
+
+        } catch (error) {
+            console.error("❌ Failed to initialize Hotjar:", error);
+        }
+
+        // Initialize Google Analytics
+        try {
             initGA();
         } catch (error) {
             console.error("Failed to initialize Google Analytics:", error);
@@ -77,7 +110,13 @@ export default function RootLayout({
             <body suppressHydrationWarning={true}>
                 <FileProvider>
                     <Provider store={store}>
-                        <PersistGate loading={<LoadingSpinner />} persistor={persistor}>
+                        <PersistGate
+                            loading={<LoadingSpinner />}
+                            persistor={persistor}
+                            onBeforeLift={() => {
+                                console.log("🔄 PersistGate: Store hydration completed successfully");
+                            }}
+                        >
                             <TokenProvider>
                                 <I18nextProvider i18n={i18n}>
                                     <RouteChangeTracker />

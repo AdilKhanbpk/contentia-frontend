@@ -37,9 +37,16 @@ const nextConfig = {
           {
             key: 'Content-Security-Policy',
             value: `
-              connect-src 'self' https://*.hotjar.com https://*.hotjar.io;
-              script-src 'self' https://*.hotjar.com;
+              default-src 'self';
+              script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.hotjar.com https://*.hotjar.io;
+              style-src 'self' 'unsafe-inline';
+              img-src 'self' data: https: blob:;
+              font-src 'self' data: https:;
+              connect-src 'self' https://*.hotjar.com https://*.hotjar.io wss://*.hotjar.com ${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'};
               frame-src 'self' https://*.hotjar.com;
+              object-src 'none';
+              base-uri 'self';
+              form-action 'self';
             `.replace(/\s{2,}/g, ' ').trim(),
           },
         ],

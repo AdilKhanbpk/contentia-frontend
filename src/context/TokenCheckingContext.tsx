@@ -20,20 +20,30 @@ export const TokenProvider: React.FC<{ children: React.ReactNode }> = ({
     const tokenFromRedux = useSelector(selectToken);
 
     useEffect(() => {
+
+
         const tokenFromParams = new URLSearchParams(window.location.search).get(
             "accessToken"
         );
         const storedToken = localStorage.getItem("accessToken");
 
+
         // Priority: 1) URL param token 2) Redux token 3) LocalStorage token
         if (tokenFromParams) {
+            console.log("🔍 TokenProvider: Using token from URL params");
             setToken(tokenFromParams);
         } else if (tokenFromRedux) {
+            console.log("🔍 TokenProvider: Using token from Redux");
             setToken(tokenFromRedux);
         } else if (storedToken) {
+            console.log("🔍 TokenProvider: Using token from localStorage");
             setToken(storedToken);
+        } else {
+            console.log("🔍 TokenProvider: No token found");
+            setToken(null);
         }
 
+        console.log("🔍 TokenProvider: Setting loading to false");
         setLoading(false);
     }, [tokenFromRedux]); // notice we depend on tokenFromRedux here
 
