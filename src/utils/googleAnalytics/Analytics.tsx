@@ -9,6 +9,8 @@ export const initGA = (): void => {
                 return;
             }
 
+            
+
             ReactGA.initialize(measurementId);
             console.log("Google Analytics initialized successfully");
         } catch (error) {
