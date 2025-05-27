@@ -33,8 +33,10 @@ export default function RootLayout({
         try {
             const siteId = 6390584;
             const hotjarVersion = 6;
-
+          
             Hotjar.init(siteId, hotjarVersion);
+            console.log("hotjar Initialized:--------------------------");
+            
             initGA();
         } catch (error) {
             console.error("Failed to initialize Google Analytics:", error);
