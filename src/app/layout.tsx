@@ -5,6 +5,7 @@ import "../i18n";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../i18n";
 import "../app/globals.css"; 
+import { hotjar } from "../../Hotjar-configuration";
 
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
@@ -34,6 +35,13 @@ export default function RootLayout({
             // Continue app execution even if analytics fails
         }
     }, []);
+
+    useEffect(() => {
+    // Initialize Hotjar
+    const hjid = process.env.NEXT_PUBLIC_HOTJAR_ID || '6390584';
+    const hjsv = process.env.NEXT_PUBLIC_HOTJAR_VERSION || '6';
+    hotjar.initialize(hjid, hjsv);
+  }, []);
 
     return (
         <html lang='en'>

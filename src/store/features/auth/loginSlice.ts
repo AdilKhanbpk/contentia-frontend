@@ -58,11 +58,12 @@ export const signupUser = createAsyncThunk(
       const response = await axiosInstance.post("/users/signup", signupData);
       const user = response.data.data.userWithoutPassword;
       const token = response.data.data.accessToken;
-
+      
       localStorage.setItem("user", JSON.stringify(user));
 
       return { user, token };
     } catch (error: any) {
+            // console.log("Signup Response :" , error.response.data.message);
       return rejectWithValue(error.response?.data?.message || "Signup failed");
     }
   }

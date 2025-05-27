@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Customer } from "@/types/interfaces";
+import { error, log } from "console";
 
 const SignupForm = () => {
     const router = useRouter();
@@ -21,12 +22,19 @@ const SignupForm = () => {
 
     const onSubmit = (data: Customer) => {
         dispatch(signupUser(data))
-            .then(() => {
+            .then((res) => {
+                if (signupUser.rejected.match(res)) {
+                    // This means the asyncThunk was rejected
+                    const errorMessage = res.payload as string || "Signup failed";
+                    toast.error(errorMessage);
+                    return;
+                }
                 toast.success("Signup successful");
                 router.push("/");
             })
-            .catch(() => {
-                toast.error("Signup failed");
+            .catch((error: Error) => {
+                // Fallback error handling
+                toast.error(error.message || 'An unexpected error occurred');
             });
     };
     const handleGoogleLogin = () => {
@@ -89,6 +97,31 @@ const SignupForm = () => {
                         />
                     </div>
                     <input
+                        type='Number'
+                        {...register("phoneNumber", {
+                            required: "Telefon Numarası",
+                        })}
+                        className='w-full px-4 py-2 focus:outline-none'
+                        placeholder='Telefon Numarası'
+                    />
+                </div>
+                {errors.password && (
+                    <span className='text-red-500'>
+                        {errors.password.message}
+                    </span>
+                )}
+            </div>
+
+            <div className='mb-4'>
+                <div className='flex items-center border border-gray-300'>
+                    <div className='bg-gray-100 p-2 rounded-l border-r border-gray-300'>
+                        <img
+                            src='/lockIcon.png'
+                            alt='Password Icon'
+                            className='h-7 w-7'
+                        />
+                    </div>
+                    <input
                         type='password'
                         {...register("password", {
                             required: "Şifre zorunludur",
@@ -103,6 +136,8 @@ const SignupForm = () => {
                     </span>
                 )}
             </div>
+
+
 
             {/* First Checkbox */}
             <div className='flex items-start my-4'>
