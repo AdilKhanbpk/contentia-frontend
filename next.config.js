@@ -33,23 +33,24 @@ const nextConfig = {
     return [
       {
         source: '/:path*',
-        headers: [
-          {
-            key: 'Content-Security-Policy',
-            value: `
-              default-src 'self';
-              script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.hotjar.com https://*.hotjar.io;
-              style-src 'self' 'unsafe-inline';
-              img-src 'self' data: https: blob:;
-              font-src 'self' data: https:;
-              connect-src 'self' https://*.hotjar.com https://*.hotjar.io wss://*.hotjar.com ${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'};
-              frame-src 'self' https://*.hotjar.com;
-              object-src 'none';
-              base-uri 'self';
-              form-action 'self';
-            `.replace(/\s{2,}/g, ' ').trim(),
-          },
-        ],
+       headers: [
+  {
+    key: 'Content-Security-Policy',
+    value: [
+      "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:",
+      "script-src * 'unsafe-inline' 'unsafe-eval' data: blob:",
+      "style-src * 'unsafe-inline' data:",
+      "img-src * data: blob:",
+      "connect-src *",
+      "font-src * data:",
+      "frame-src *",
+      "object-src *",
+      "media-src *",
+      "base-uri *",
+      "form-action *"
+    ].join('; '),
+  },
+],
       },
     ];
   },
