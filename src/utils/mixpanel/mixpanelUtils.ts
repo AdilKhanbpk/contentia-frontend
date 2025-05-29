@@ -1,6 +1,4 @@
-import mixpanel from "mixpanel-browser";
-
-// Types for better type safety
+import mixpanel from "mixpanel-browser";// Types for better type safety
 export interface MixpanelEventProperties {
   [key: string]: any;
 }

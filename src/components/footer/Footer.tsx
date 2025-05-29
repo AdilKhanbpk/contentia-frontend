@@ -155,6 +155,17 @@ const Footer = () => {
                         <h3 className='text-sm font-semibold '>Destek</h3>
                         <ul className='mt-4 space-y-2'>
                             <li>
+                                <a
+                                    href="https://calendly.com/contentia-info"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-sm whitespace-nowrap text-gray-600 hover:underline"
+                                >
+                                    İletişime Geç
+                                </a>
+                            </li>
+
+                            <li>
                                 <Link
                                     href='/destek-merkezi'
                                     className='text-sm whitespace-nowrap text-gray-600 hover:underline'
