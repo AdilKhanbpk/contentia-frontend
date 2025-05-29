@@ -78,27 +78,28 @@ class MixpanelService {
   /**
    * Enable automatic tracking for links and forms
    */
-  private enableAutoTracking(): void {
-    try {
-      // Track all link clicks
-      mixpanel.track_links("a", "Link Clicked", (element) => ({
-        link_text: element.innerText?.trim() || '',
-        link_url: element.href || '',
-        link_target: element.target || '_self'
-      }));
+private enableAutoTracking(): void {
+  try {
+    // Track all link clicks
+    mixpanel.track_links("a", "Link Clicked", (element: HTMLAnchorElement) => ({
+      link_text: element.innerText?.trim() || '',
+      link_url: element.href || '',
+      link_target: element.target || '_self'
+    }));
 
-      // Track all form submissions
-      mixpanel.track_forms("form", "Form Submitted", (form) => ({
-        form_id: form.id || '',
-        form_action: form.action || '',
-        form_method: form.method || 'GET'
-      }));
+    // Track all form submissions
+    mixpanel.track_forms("form", "Form Submitted", (form: HTMLFormElement) => ({
+      form_id: form.id || '',
+      form_action: form.action || '',
+      form_method: form.method || 'GET'
+    }));
 
-      console.log("✅ Mixpanel: Auto-tracking enabled");
-    } catch (error) {
-      console.error("❌ Mixpanel: Failed to enable auto-tracking", error);
-    }
+    console.log("✅ Mixpanel: Auto-tracking enabled");
+  } catch (error) {
+    console.error("❌ Mixpanel: Failed to enable auto-tracking", error);
   }
+}
+
 
   /**
    * Track an event with properties
