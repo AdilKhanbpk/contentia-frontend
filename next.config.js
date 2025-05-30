@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',  // Added this line for plesk
+  trailingSlash: true,  // Added this line for plesk
   reactStrictMode: true,
 
   // Generate a unique build ID to prevent caching issues
@@ -11,6 +13,7 @@ const nextConfig = {
   },
 
   images: {
+    unoptimized: true, //added this for plesk
     remotePatterns: [
       {
         protocol: 'https',
