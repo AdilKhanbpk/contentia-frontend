@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',  // Added this line for plesk
+  output: 'standalone',  // Added this line for plesk
   trailingSlash: true,  // Added this line for plesk
   reactStrictMode: true,
 
