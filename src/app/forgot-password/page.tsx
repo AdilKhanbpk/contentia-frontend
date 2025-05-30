@@ -10,12 +10,13 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 const ForgotPasswordPage = () => {
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
+  
   const [submitted, setSubmitted] = useState(false);
 
   // Get state from Redux
   const loading = useAppSelector((state) => state.forgotPassword?.loading);
   const success = useAppSelector((state) => state.forgotPassword?.success);
-  
+
   const error = useAppSelector((state) => state.forgotPassword?.error);
   const message = useAppSelector((state) => state.forgotPassword?.message);
 
