@@ -150,7 +150,6 @@ export interface OrderInterface {
         brandName: string;
         brandImage: string;
     };
-    creatorNoteOnOrder?: string;
     profilePic?: string;
     noOfUgc: number;
     totalPrice: number;
@@ -204,6 +203,14 @@ export interface OrderInterface {
     }>;
     createdAt?: Date;
     updatedAt?: Date;
+    creatorNoteOnOrder?: string;
+    revisions?: Array<{
+        revisionType: 'minor' | 'major';
+        revisionContent: string;
+        createdAt: string;
+        updatedAt?: string;
+        status?: 'pending' | 'approved' | 'rejected';
+    }>;
 }
 
 interface BillingInformation {

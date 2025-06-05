@@ -48,6 +48,7 @@ interface UploadFile {
   uploadedBy: string;
   fileUrls: string[];
   uploadedDate: Date;
+  creatorNoteOnOrder?: string;
 }
 
 

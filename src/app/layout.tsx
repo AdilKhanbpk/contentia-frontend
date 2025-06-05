@@ -18,7 +18,6 @@ import { initGA } from "@/utils/googleAnalytics/Analytics";
 import RouteChangeTracker from "@/utils/googleAnalytics/RouteChangeTracker";
 import Hotjar from '@hotjar/browser';
 import { initMixpanel } from "@/utils/mixpanel/mixpanelUtils";
-
 import Head from "next/head";
 import AuthWrapper from "@/components/auth/AuthWrapper";
 import LayoutWrapper from "@/components/layout/LayoutWrapper";
@@ -82,6 +81,8 @@ export default function RootLayout({
             console.error("Failed to initialize Mixpanel:", error);
         }
     }, []);
+
+
 
 
 

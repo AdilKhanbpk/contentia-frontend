@@ -1,14 +1,67 @@
 import { fetchAdditionalServices } from "@/store/features/admin/addPriceSlice";
 import { RootState } from "@/store/store";
-import { CreatorInterface, OrderInterface } from "@/types/interfaces";
+// import { CreatorInterface, OrderInterface } from "@/types/interfaces";
 import { checkStatus } from "@/utils/CheckOrderStatus";
 import { useEffect, useState } from "react";
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { axiosInstance } from "@/store/axiosInstance";
 
+interface FileInfo {
+  fileUrls: string[];
+  uploadedBy: string;
+  uploadedDate: string;
+  creatorNoteOnOrder?: string;
+}
+
+interface UploadFile {
+  fileUrls: string[];
+  uploadedBy: string;
+  uploadedDate: string;
+  creatorNoteOnOrder?: string;
+}
+
+interface AdditionalServices {
+  platform: string;
+  duration: string;
+  edit: boolean;
+  aspectRatio: string;
+  share: boolean;
+  coverPicture: boolean;
+  creatorType: boolean;
+  productShipping: boolean;
+}
+
+interface BriefContent {
+  productServiceName: string;
+  brandName: string;
+  scenario?: string;
+  productServiceDesc: string;
+  caseStudy?: string;
+}
+
+interface OrderInterface {
+  _id: string;
+  orderStatus: string;
+  createdAt: string;
+  assignedCreators: CreatorInterface[];
+  uploadFiles: UploadFile[];
+  additionalServices: AdditionalServices;
+  briefContent: BriefContent;
+  creatorNoteOnOrder?: string;
+  noOfUgc: number;
+  basePrice: number;
+  totalPriceForCustomer: number;
+}
+
 interface ViewOrderDetailsProps {
-    orderData: OrderInterface;
+  orderData: OrderInterface;
+}
+
+// Update your existing interface
+interface CreatorInterface {
+  _id: string;
+  // add other creator properties as needed
 }
 
 export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
@@ -26,6 +79,27 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
     }, [dispatch]);
 
     // Fetch revision content if order is in revision status
+    // useEffect(() => {
+    //     if (orderData.orderStatus === "revision" && orderData._id) {
+    //         const fetchRevisionContent = async () => {
+    //             setLoadingRevision(true);
+    //             try {
+    //                 // Replace with the actual API endpoint to fetch revision content
+    //                 const response = await axiosInstance.get(`/revisions/${orderData._id}`);
+    //                 if (response.data && response.data.data) {
+    //                     setRevisionContent(response.data.data.revisionContent);
+    //                 }
+    //             } catch (error) {
+    //                 console.error("Error fetching revision content:", error);
+    //             } finally {
+    //                 setLoadingRevision(false);
+    //             }
+    //         };
+
+    //         fetchRevisionContent();
+    //     }
+    // }, [orderData._id, orderData.orderStatus]);
+
     useEffect(() => {
         if (orderData.orderStatus === "revision" && orderData._id) {
             const fetchRevisionContent = async () => {
@@ -33,8 +107,9 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                 try {
                     // Replace with the actual API endpoint to fetch revision content
                     const response = await axiosInstance.get(`/revisions/${orderData._id}`);
+                       console.log("Revision content:", response.data.data[0].revisionContent);
                     if (response.data && response.data.data) {
-                        setRevisionContent(response.data.data.revisionContent);
+                        setRevisionContent( response.data.data[0].revisionContent);
                     }
                 } catch (error) {
                     console.error("Error fetching revision content:", error);
@@ -144,8 +219,8 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                                                                         : "No Date Available"}
                                                                 </td>
                                                                 <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm text-gray-600'>
-                                                                    {orderData?.creatorNoteOnOrder?
-                                                                    orderData.creatorNoteOnOrder : "No Creator Notes Available"}
+                                                                    {file.creatorNoteOnOrder?
+                                                                    file.creatorNoteOnOrder : "No Creator Notes Available"}
                                                                 </td>
                                                             </tr>
                                                         )

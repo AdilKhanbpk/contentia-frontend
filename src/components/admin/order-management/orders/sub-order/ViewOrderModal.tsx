@@ -6,7 +6,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 interface ViewModalProps {
-    order: OrderInterface | null;
+    order: OrderInterface | null; 
 }
 
 const ViewModal = ({ order }: ViewModalProps) => {
@@ -371,6 +371,15 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                         ? "Evet"
                                         : "Hayır"}
                                 </div>
+
+
+                                <div className='text-gray-700'>
+                                    Revision Note:
+                                </div>
+                                <div className='text-right font-bold BlueText'>
+                                    {(order.revisions ?? [])[0]?.revisionContent || "Hayır"}
+                                </div>
+
                             </div>
                         </div>
 
