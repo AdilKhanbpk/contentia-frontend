@@ -76,6 +76,7 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
       fetchRevisionContent();
     }
   }, [orderData._id, orderData.orderStatus]);
+  
 
   return (
     <div className="bg-white xs:p-8">
@@ -102,41 +103,55 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                 <th className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border">No</th>
                 <th className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border">Creator ID</th>
                 <th className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border">File URL</th>
-                <th className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border">Upload Date</th>
                 <th className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border">Sipariş Notu</th>
               </tr>
             </thead>
             <tbody>
-              {orderData?.assignedCreators.map((creator, index) => {
-                const hasFiles = orderData.uploadFiles && orderData.uploadFiles.length > 0;
-                return hasFiles ? (
-                  orderData.uploadFiles
-                    .filter(file => file.uploadedBy === creator._id) // Match files to creator
-                    .map((file, i) =>
-                      file.fileUrls.map((f, j) => (
-                        <tr key={`${creator._id}-${i}-${j}`}>
-                          <td className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm">{index + 1}</td>
-                          <td className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm">{creator._id}</td>
-                          <td className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border">
-                            <a href={f} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline text-xs flex items-center gap-3">
-                              <span className="BlueText max-w-[180px]">Folder Link</span>
-                              <FaExternalLinkAlt className="BlueText w-3.5 h-3.5" />
-                            </a>
-                          </td>
-                          <td className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm text-gray-600">
-                            {file?.uploadedDate ? new Date(file.uploadedDate).toLocaleDateString() : "No Date Available"}
-                          </td>
-                          <td className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm text-gray-600">
-                            {file.creatorNoteOnOrder ? file.creatorNoteOnOrder : "No Creator Notes Available"}
-                          </td>
-                        </tr>
-                      ))
-                    )
+              {orderData.assignedCreators.map((creatorId, index) => {
+                const creatorFiles = orderData.uploadFiles?.filter(file => 
+                  file.uploadedBy === creatorId
+                );
+
+                return creatorFiles && creatorFiles.length > 0 ? (                  
+                  creatorFiles.map((file, fileIndex) => 
+                    file.fileUrls.map((url, urlIndex) => (
+                      <tr key={`${creatorId}-${fileIndex}-${urlIndex}`}>
+                        <td className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border">
+                          {index + 1}
+                        </td>
+                        <td className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border">
+                          {creatorId}
+                        </td>
+                        <td className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border">
+                          <a 
+                            href={url} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="text-blue-500 hover:underline flex items-center gap-3"
+                          >
+                            <span className="BlueText max-w-[180px] truncate">
+                              {url}
+                            </span>
+                            <FaExternalLinkAlt className="BlueText w-3.5 h-3.5" />
+                          </a>
+                        </td>
+                        <td className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border">
+                          {file.creatorNoteOnOrder || "No Notes"}
+                        </td>
+                      </tr>
+                    ))
+                  )
                 ) : (
-                  <tr key={creator._id}>
-                    <td className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm">{index + 1}</td>
-                    <td className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm">{creator._id}</td>
-                    <td colSpan={3} className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm text-center">No Files Uploaded</td>
+                  <tr key={`${creatorId}-no-files`}>
+                    <td className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border">
+                      {index + 1}
+                    </td>
+                    <td className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border">
+                      {creatorId}
+                    </td>
+                    <td colSpan={2} className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-center">
+                      No Files Uploaded
+                    </td>
                   </tr>
                 );
               })}
@@ -149,7 +164,7 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
                 <th className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border">No</th>
                 <th className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border">Creator ID</th>
                 <th className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border">File URL</th>
-                <th className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border">Upload Date</th>
+                {/* <th className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border">Upload Date</th> */}
                 <th className="py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border">Sipariş Notu</th>
               </tr>
             </thead>
