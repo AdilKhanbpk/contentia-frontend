@@ -145,7 +145,7 @@ export interface OrderInterface {
         fullName: string;
         email: string;
     };
-    assignedCreators: CreatorInterface[]; // Standardized to CreatorInterface[]
+    assignedCreators: any[]; // Standardized to CreatorInterface[]
     appliedCreators: string[] | CreatorInterface[];
     associatedBrands?: {
         brandName: string;
