@@ -536,6 +536,7 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                                         <a
                                                             className='text-xs lg:text-sm BlueText block whitespace-normal lg:whitespace-nowrap'
                                                             href={f}
+                                                            
                                                             target='_blank'
                                                             rel='noopener noreferrer'
                                                         >
