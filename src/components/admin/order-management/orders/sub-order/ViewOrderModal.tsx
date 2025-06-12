@@ -523,12 +523,22 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                                 </td>
                                                 <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border'>
                                                     <a
-                                                        className='text-xs lg:text-sm BlueText block whitespace-normal lg:whitespace-nowrap'
+                                                        className='text-xs lg:text-sm BlueText flex items-center gap-2'
                                                         href={f}
                                                         target='_blank'
                                                         rel='noopener noreferrer'
                                                     >
-                                                        {f}
+                                                        <span className="max-w-[200px] truncate">
+                                                            {f.split('/').pop() || f}
+                                                        </span>
+                                                        <svg 
+                                                            className="w-3 h-3 flex-shrink-0" 
+                                                            fill="currentColor" 
+                                                            viewBox="0 0 20 20"
+                                                        >
+                                                            <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                                                            <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+                                                        </svg>
                                                     </a>
                                                 </td>
                                                 <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm text-gray-600'>
