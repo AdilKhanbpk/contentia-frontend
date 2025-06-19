@@ -37,7 +37,7 @@ const OrderDetails = () => {
                 <TabFirst setActiveTab={setActiveTab}></TabFirst>
             )}
             {activeTab === 1 && (
-                <TabSecond setActiveTab={setActiveTab}></TabSecond>
+                <TabSecond />
             )}
             {activeTab === 2 && (
                 <TabThird setActiveTab={setActiveTab}></TabThird>
