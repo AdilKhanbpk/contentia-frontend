@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 const initializePayment = async (paymentData: any) => {
-    const response = await fetch('http://localhost:8000/api/paytr/init', {
+    const response = await fetch('https://d1e7-39-32-100-74.ngrok-free.app/api/paytr/init', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(paymentData)
