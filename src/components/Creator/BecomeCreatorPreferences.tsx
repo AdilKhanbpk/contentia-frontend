@@ -13,9 +13,10 @@ import { useEffect } from "react";
 
 interface PreferencesProps {
     setActiveTab: (id: number) => void;
+    onSuccess: () => void;
 }
 
-const Preferences: React.FC<PreferencesProps> = ({ setActiveTab }) => {
+const Preferences: React.FC<PreferencesProps> = ({ setActiveTab, onSuccess }) => {
     const {
         register,
         watch,
@@ -98,7 +99,7 @@ const Preferences: React.FC<PreferencesProps> = ({ setActiveTab }) => {
 
             if (res.status === 201) {
                 toast.success(res.message);
-                router.push("/icerik-uretici-ol/submitted-successfully");
+                onSuccess(); // This will trigger the modal
             }
         } catch (error: any) {
             const errorMessage =

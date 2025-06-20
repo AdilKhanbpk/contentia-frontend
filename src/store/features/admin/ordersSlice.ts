@@ -69,7 +69,15 @@ export const fetchOrders = createAsyncThunk(
     try {
       const response = await axiosInstance.get('/admin/orders');
 
-      return response.data.data;
+      // Sort orders by createdAt before returning
+      const sortedOrders = response.data.data.sort((a: OrderInterface, b: OrderInterface) => {
+        // Add type safety for createdAt field
+        const dateA = new Date(a.createdAt || Date.now()).getTime();
+        const dateB = new Date(b.createdAt || Date.now()).getTime();
+        return dateB - dateA; // Newest first
+      });
+
+      return sortedOrders;
 
     } catch (error) {
 
@@ -337,6 +345,7 @@ const ordersSlice = createSlice({
       })
       .addCase(createOrder.fulfilled, (state, action: PayloadAction<OrderInterface>) => {
         state.loading = false;
+        // Add new order at the beginning since it's the newest
         state.data.unshift(action.payload);
       })
       .addCase(createOrder.rejected, (state, action) => {
@@ -351,7 +360,7 @@ const ordersSlice = createSlice({
       })
       .addCase(fetchOrders.fulfilled, (state, action: PayloadAction<OrderInterface[]>) => {
         state.loading = false;
-        state.data = action.payload;
+        state.data = action.payload; // Data is already sorted
       })
       .addCase(fetchOrders.rejected, (state, action) => {
         state.loading = false;

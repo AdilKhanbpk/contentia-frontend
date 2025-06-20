@@ -396,7 +396,9 @@ const Orders: React.FC = () => {
 
     const filteredOrders = React.useMemo(() => {
         const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
-        return orders?.filter((order) => {
+        
+        // First filter the orders
+        const filtered = orders?.filter((order) => {
             const owner = order.orderOwner;
             const fullNameMatch =
                 owner &&
@@ -407,6 +409,13 @@ const Orders: React.FC = () => {
                 ?.toLowerCase()
                 .includes(lowerCaseSearchTerm);
             return fullNameMatch || idMatch;
+        });
+
+        // Then sort by creation date, newest first
+        return filtered?.sort((a, b) => {
+            const dateA = new Date(a.createdAt).getTime();
+            const dateB = new Date(b.createdAt).getTime();
+            return dateB - dateA;
         });
     }, [orders, searchTerm]);
 
