@@ -9,6 +9,15 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Customer } from "@/types/interfaces";
 import { error, log } from "console";
+import { useState } from "react";
+
+interface SignupFormData {
+    phoneNumber: string;
+    password: string;
+    email: string;
+    userAgreement: boolean;
+    termsAndConditionsApproved: boolean;
+}
 
 const SignupForm = () => {
     const router = useRouter();
@@ -20,6 +29,22 @@ const SignupForm = () => {
     } = useForm<Customer>();
     const loginState = useSelector((state: RootState) => state.login);
 
+    const [form, setForm] = useState<SignupFormData>({
+        phoneNumber: "",
+        password: "",
+        email: "",
+        userAgreement: false,
+        termsAndConditionsApproved: false,
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value, type, checked } = e.target;
+        setForm((prev) => ({
+            ...prev,
+            [name]: type === "checkbox" ? checked : value,
+        }));
+    };
+
     const onSubmit = (data: Customer) => {
         dispatch(signupUser(data))
             .then((res) => {
@@ -30,11 +55,15 @@ const SignupForm = () => {
                     return;
                 }
                 toast.success("Signup successful");
-                router.push("/");
+                router.push(
+                    `/verify-otp?phoneNumber=${encodeURIComponent(
+                        form.phoneNumber
+                    )}`
+                );
             })
             .catch((error: Error) => {
                 // Fallback error handling
-                toast.error(error.message || 'An unexpected error occurred');
+                toast.error(error.message || "An unexpected error occurred");
             });
     };
     const handleGoogleLogin = () => {
@@ -80,6 +109,9 @@ const SignupForm = () => {
                         })}
                         className='w-full px-4 py-2 focus:outline-none'
                         placeholder='eposta@gmail.com'
+                        name='email'
+                        value={form.email}
+                        onChange={handleChange}
                     />
                 </div>
                 {errors.email && (
@@ -103,6 +135,9 @@ const SignupForm = () => {
                         })}
                         className='w-full px-4 py-2 focus:outline-none'
                         placeholder='Telefon Numarası'
+                        name='phoneNumber'
+                        value={form.phoneNumber}
+                        onChange={handleChange}
                     />
                 </div>
                 {errors.password && (
@@ -128,6 +163,9 @@ const SignupForm = () => {
                         })}
                         className='w-full px-4 py-2 focus:outline-none'
                         placeholder='şifrenizi girin'
+                        name='password'
+                        value={form.password}
+                        onChange={handleChange}
                     />
                 </div>
                 {errors.password && (
@@ -136,8 +174,6 @@ const SignupForm = () => {
                     </span>
                 )}
             </div>
-
-
 
             {/* First Checkbox */}
             <div className='flex items-start my-4'>
