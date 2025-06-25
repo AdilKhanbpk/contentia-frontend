@@ -6,6 +6,7 @@ export interface CreatorInterface {
     password: string;
     tckn: string;
     email: string;
+    createdAt: string | Date; // Add this line
     dateOfBirth: string;
     gender: "male" | "female" | "other";
     phoneNumber: string;
@@ -139,6 +140,7 @@ export interface UploadFile {
 
 export interface OrderInterface {
     _id: string;
+    createdAt: string; // Should be string since it comes from API
     coupon?: string;
     orderOwner: {
         _id: string;
@@ -197,9 +199,20 @@ export interface OrderInterface {
     numberOfRequests?: number;
     orderQuota?: number;
     quotaLeft?: number;
+<<<<<<< HEAD
     uploadFiles: UploadFile[];
     createdAt: string;
     updatedAt?: string;
+=======
+    uploadFiles?: Array<{
+        uploadedBy: string;
+        fileUrls: string[];
+        uploadedDate: Date;
+        creatorNoteOnOrder?: string;
+    }>;
+    // createdAt?: Date;
+    updatedAt?: Date;
+>>>>>>> 1576400245ecbe44b6a381960355ebbc40ee4886
     creatorNoteOnOrder?: string;
     revisions?: Array<{
         revisionType: 'minor' | 'major';

@@ -73,12 +73,10 @@ const ResetPasswordPage = () => {
                 <LockClosedIcon className="h-8 w-8 text-blue-600" />
               </div>
               <h1 className="text-2xl font-bold text-gray-800">
-                {success ? 'Password Reset Complete' : 'Create New Password'}
+                {success ? 'Şifre Sıfırlama Tamamlandı' : 'Yeni Şifre Oluştur'}
               </h1>
               <p className="text-gray-600 mt-2">
-                {success
-                  ? 'Your password has been successfully reset.'
-                  : ''}
+                {success ? 'Şifreniz başarıyla sıfırlandı.' : ''}
               </p>
             </div>
 
@@ -88,11 +86,11 @@ const ResetPasswordPage = () => {
                 <div className="flex">
                   <div className="ml-3">
                     <p className="text-sm text-yellow-700">
-                      No reset token found in URL. Please make sure you're using the correct link.
+                      URL&apos;de sıfırlama belirteci bulunamadı. Lütfen doğru bağlantıyı kullandığınızdan emin olun.
                     </p>
                     <p className="mt-2 text-sm">
                       <Link href="/forgot-password" className="text-yellow-700 font-medium hover:text-yellow-600">
-                        Request a new reset link →
+                        Yeni sıfırlama bağlantısı talep et →
                       </Link>
                     </p>
                   </div>
@@ -105,10 +103,10 @@ const ResetPasswordPage = () => {
               <div className="text-center">
                 <div className="bg-green-50 border border-green-100 rounded-md p-4 mb-6">
                   <p className="text-green-800">
-                    Your password has been reset successfully!
+                    Şifreniz başarıyla sıfırlandı!
                   </p>
                   <p className="text-green-700 mt-2">
-                    You can now log in with your new password.
+                    Artık yeni şifrenizle giriş yapabilirsiniz.
                   </p>
                 </div>
 
@@ -116,7 +114,7 @@ const ResetPasswordPage = () => {
                   href="/giris-yap"
                   className="inline-flex items-center justify-center px-5 py-2 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
-                  Go to Login
+                  Giriş Yap'a Git
                 </Link>
               </div>
             ) : (
@@ -125,13 +123,13 @@ const ResetPasswordPage = () => {
                 {/* Password field */}
                 <div className="space-y-1">
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                    New Password
+                    Yeni Şifre
                   </label>
                   <div className="relative">
                     <input
                       id="password"
                       type="password"
-                      placeholder="Enter your new password"
+                      placeholder="Yeni şifrenizi girin"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -143,13 +141,13 @@ const ResetPasswordPage = () => {
                 {/* Confirm password field */}
                 <div className="space-y-1">
                   <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                    Confirm Password
+                    Şifre Tekrar
                   </label>
                   <div className="relative">
                     <input
                       id="confirmPassword"
                       type="password"
-                      placeholder="Confirm your new password"
+                      placeholder="Yeni şifrenizi tekrar girin"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -160,30 +158,19 @@ const ResetPasswordPage = () => {
 
                 {/* Password requirements */}
                 <div className="text-xs text-gray-500">
-                  <p>Your password must:</p>
+                  <p>Şifreniz:</p>
                   <ul className="list-disc pl-5 mt-1 space-y-1">
-                    <li>Be at least 6 characters long</li>
-                    <li>Match in both fields</li>
+                    <li>En az 6 karakter uzunluğunda olmalı</li>
+                    <li>Her iki alanda aynı olmalı</li>
                   </ul>
                 </div>
 
                 {/* Password error message */}
                 {passwordError && (
                   <div className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-md">
-                    {passwordError}
-                  </div>
-                )}
-
-                {/* API error message */}
-                {error && (
-                  <div className="bg-red-50 border-l-4 border-red-400 p-4">
-                    <div className="flex">
-                      <div className="ml-3">
-                        <p className="text-sm text-red-700">
-                          {error}
-                        </p>
-                      </div>
-                    </div>
+                    {passwordError === 'Passwords do not match' ? 'Şifreler eşleşmiyor' : 
+                     passwordError === 'Password must be at least 6 characters long' ? 'Şifre en az 6 karakter uzunluğunda olmalı' : 
+                     passwordError}
                   </div>
                 )}
 
@@ -199,9 +186,9 @@ const ResetPasswordPage = () => {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      Resetting Password...
+                      Şifre Sıfırlanıyor...
                     </span>
-                  ) : 'Reset Password'}
+                  ) : 'Şifreyi Sıfırla'}
                 </button>
               </form>
             )}
@@ -213,7 +200,7 @@ const ResetPasswordPage = () => {
                 className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 font-medium"
               >
                 <ArrowLeftIcon className="w-4 h-4 mr-1" />
-                Back to Login
+                Giriş Sayfasına Dön
               </Link>
             </div>
           </div>
@@ -221,7 +208,7 @@ const ResetPasswordPage = () => {
 
         {/* Footer */}
         <div className="text-center mt-6 text-sm text-gray-600">
-          <p>Need help? <a href="mailto:info@contentia.io" className="text-blue-600 hover:text-blue-800">Contact Support</a></p>
+          <p>Yardıma mı ihtiyacınız var? <a href="mailto:info@contentia.io" className="text-blue-600 hover:text-blue-800">Destek Ekibi</a></p>
         </div>
       </div>
     </div>

@@ -7,6 +7,7 @@ import { OrderInterface } from "@/types/interfaces";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { FaExternalLinkAlt , FaRecycle } from "react-icons/fa";
 
 interface EditOrderProps {
     orderData: OrderInterface;
@@ -49,7 +50,7 @@ export default function EditOrder({ orderData }: EditOrderProps) {
         <>
             {/* model */}
             <div className='bg-white my-4 p-4 sm:my-6 sm:p-5 md:my-8 md:p-6 lg:my-8 lg:p-6'>
-                {/* First Box: Fields and Profile Section */}
+                {/* Creator Content Info */}
                 <div className='bg-white rounded-md mb-4 sm:mb-6 md:mb-8 lg:mb-8'>
                     <div className='grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4 lg:gap-4'>
                         <div className='col-span-2'>
@@ -57,18 +58,18 @@ export default function EditOrder({ orderData }: EditOrderProps) {
                                 <label className='block text-gray-700 font-semibold'>
                                     İçerikleriniz
                                 </label>
-                                <span className='text-gray-900'>
-                                    İçerik üreticiler içeriklerinizi
-                                    hazırladığında bu sayfada görünecektir.
+                                <span className='text-gray-900 xs:text-sm lg:text-base'>
+                                    İçerik üreticiler içeriklerinizi hazırladığında bu
+                                    sayfada görünecektir.
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Table */}
+                {/* Content Table */}
                 <div className='bg-white rounded-md mb-6 sm:mb-7 md:mb-8 lg:mb-8'>
-                    {orderData.assignedCreators.length > 0 ? (
+                    {orderData?.assignedCreators?.length > 0 ? (
                         <table className='text-xs lg:text-sm w-auto lg:min-w-full bg-white'>
                             <thead>
                                 <tr>
@@ -76,36 +77,62 @@ export default function EditOrder({ orderData }: EditOrderProps) {
                                         No
                                     </th>
                                     <th className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border'>
-                                        İçerik Üretici No
+                                        Creator ID
                                     </th>
                                     <th className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border'>
-                                        Bağlantı
+                                        File URL
                                     </th>
                                     <th className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border'>
-                                        Yükleme Tarihi
+                                        Upload Date
+                                    </th>
+                                    <th className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border'>
+                                        Sipariş Notu
+                                    </th>
+                                    <th className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border'>
+                                        Revision
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4  border text-xs lg:text-sm'>
-                                        1
-                                    </td>
-                                    <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm'>
-                                        128510
-                                    </td>
-                                    <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border'>
-                                        <a
-                                            className='text-xs lg:text-sm BlueText whitespace-normal lg:whitespace-nowrap'
-                                            href='#'
-                                        >
-                                            http://we.tl/send/
-                                        </a>
-                                    </td>
-                                    <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-sm lg:text-sm'>
-                                        23/09/2024
-                                    </td>
-                                </tr>
+                                {orderData?.uploadFiles?.map((file, index) => (
+                                    <tr key={index}>
+                                        <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm'>
+                                            {index + 1}
+                                        </td>
+                                        <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm'>
+                                            {file.uploadedBy}
+                                        </td>
+                                        <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border'>
+                                            {file.fileUrls.map((url, idx) => (
+                                                <a
+                                                    key={idx}
+                                                    href={url}
+                                                    target='_blank'
+                                                    rel='noopener noreferrer'
+                                                    className='text-blue-500 hover:underline text-xs flex items-center gap-3'
+                                                >
+                                                    <span className='BlueText max-w-[180px]'>
+                                                        Folder Link
+                                                    </span>
+                                                    <FaExternalLinkAlt className='BlueText w-3.5 h-3.5' />
+                                                </a>
+                                            ))}
+                                        </td>
+                                        <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm'>
+                                            {file.uploadedDate
+                                                ? new Date(
+                                                      file.uploadedDate
+                                                  ).toLocaleDateString()
+                                                : "N/A"}
+                                        </td>
+                                        <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm'>
+                                            {file.creatorNoteOnOrder || "No notes"}
+                                        </td>
+                                        <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm'>
+                                            <FaRecycle/>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     ) : (
@@ -144,235 +171,165 @@ export default function EditOrder({ orderData }: EditOrderProps) {
                     )}
                 </div>
 
-                <div className='flex flex-col lg:flex-row lg:space-x-28'>
-                    <div className='bg-white rounded-md mb-4 sm:mb-6 md:mb-8 lg:mb-8'>
-                        <h3 className='text-lg font-bold mb-2 sm:mb-3 md:mb-4 lg:mb-4 BlueText'>
-                            Sipariş Bilgileri:
-                        </h3>
-                        <div className='grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:gap-4'>
-                            <div className='text-gray-700'>Sipariş No:</div>
-                            <div className='text-right BlueText font-bold'>
-                                {orderData._id}
-                            </div>
-                            <div className='text-gray-700'>Sipariş Tarihi:</div>
-                            <div className='text-right BlueText font-bold'>
-                                {orderData.createdAt
-                                    ? new Date(
-                                          orderData.createdAt
-                                      ).toLocaleDateString()
-                                    : "N/A"}
-                            </div>
-                            <div className='text-gray-700'>Sipariş Durumu:</div>
-                            <div className='text-right BlueText font-bold'>
-                            {orderData.orderStatus === "completed" ? "Tamamlandı" :
-                              orderData.orderStatus === "pending" ? "Beklemede" :
-                              orderData.orderStatus === "active" ? "Aktif" :
-                              orderData.orderStatus === "cancelled" || orderData.orderStatus === "rejected" ? "İptal Edildi" :
-                              orderData.orderStatus === "revision" ? "Revizyon" :
-                              orderData.orderStatus}
-                            </div>
-                            <div className='text-gray-700'>Ödeme No:</div>
-                            <div className='text-right BlueText font-bold'>
-                                Nil
-                            </div>
-                            <div className='text-gray-700'>Ödeme Tarihi:</div>
-                            <div className='text-right BlueText font-bold'>
-                                Nil
-                            </div>
-                            <div className='text-gray-700'>Fatura:</div>
-                            <div className='text-right BlueText font-bold'>
-                                <a
-                                    href='https://we.tl/send/5323'
-                                    className='underline'
-                                >
-                                    Nil
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='bg-white rounded-md mb-4 sm:mb-6 md:mb-8 lg:mb-8'>
-                        <h3 className='text-lg font-bold mb-2 sm:mb-3 md:mb-4 lg:mb-4 BlueText'>
-                            İçerik Detayı:
-                        </h3>
-                        <div className='grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:gap-4'>
-                            <div className='text-gray-700'>
-                                Ürün / Hizmet Adı:
-                            </div>
-                            <div className='text-right BlueText font-bold'>
-                                {orderData.briefContent?.productServiceName}
-                            </div>
-                            <div className='text-gray-700'>Marka:</div>
-                            <div className='text-right BlueText font-bold'>
-                                {orderData.briefContent?.brandName}{" "}
-                            </div>
-                            <div className='text-gray-700'>Platform:</div>
-                            <div className='text-right BlueText font-bold'>
-                                {orderData.additionalServices.platform}
-                            </div>
-                            <div className='text-gray-700'>Süre:</div>
-                            <div className='text-right BlueText font-bold'>
-                                {orderData.additionalServices.duration}
-                            </div>
-                            <div className='text-gray-700'>Edit:</div>
-                            <div className='text-right BlueText font-bold'>
-                                
-                                    {orderData.additionalServices.edit ? "Evet" : "Hayır"}
-                            </div>
-                            <div className='text-gray-700'>En Boy Oranı:</div>
-                            <div className='text-right BlueText font-bold'>
-                                {orderData.additionalServices.aspectRatio}
-                            </div>
-                            <div className='text-gray-700'>
-                                Sosyal Medya Paylaşım:
-                            </div>
-                            <div className='text-right BlueText font-bold'>
-                                {orderData.additionalServices.share === true
-                                    ? "Evet"
-                                    : "Hayır"}{" "}
-                            </div>
-                            <div className='text-gray-700'>Kapak Görseli:</div>
-                            <div className='text-right BlueText font-bold'>
-                                {orderData.additionalServices.coverPicture ===
-                                true
-                                    ? "Evet"
-                                    : "Hayır"}
-                            </div>
-                            <div className='text-gray-700'>
-                                Influencer Seçimi:
-                            </div>
-                            <div className='text-right BlueText font-bold'>
-                                {orderData.additionalServices.creatorType ===
-                                true
-                                    ? "Micro"
-                                    : "Nano"}
-                            </div>
-                            <div className='text-gray-700'>Ürün Gönderimi:</div>
-                            <div className='text-right BlueText font-bold'>
-                                {orderData.additionalServices
-                                    .productShipping === true
-                                    ? "Evet"
-                                    : "Hayır"}
-                            </div>
-                            <div className='text-gray-700'>İçerik Türü:</div>
-                            <div className='text-right BlueText font-bold'>
-                                Hizmet
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* video sections */}
-                <div className='flex -mt-0 lg:-mt-44'>
-                    <div className='bg-white rounded-md w-full lg:w-1/3'>
-                        <h2 className='BlueText text-lg font-semibold mb-2 sm:mb-3 md:mb-4 lg:mb-4'>
-                            Sipariş Özeti:
-                        </h2>
-                        <div className='flex justify-between text-sm mb-2 sm:mb-3 md:mb-3 lg:mb-3'>
-                            <div>
-                                <p className='font-semibold'>
-                                    {orderData.noOfUgc} Video
-                                </p>
-                                <p className='text-gray-500'>
-                                    3.000 TL / Video
-                                </p>
-                            </div>
-                            <p className='BlueText font-semibold'>
-                                {orderData.noOfUgc * 3.0} TL
-                            </p>
-                        </div>
-                        {/* <div className='flex justify-between text-sm mb-2 sm:mb-3 md:mb-3 lg:mb-3'>
-                            <div>
-                                <p className='font-semibold'>1 Edit</p>
-                                <p className='text-gray-500'>500 TL / Video</p>
-                            </div>
-                            <p className='BlueText font-semibold'>
-                                500 TL
-                            </p>
-                        </div>
-                        <div className='flex justify-between text-sm mb-2 sm:mb-3 md:mb-3 lg:mb-4'>
-                            <div>
-                                <p className='font-semibold'>1 Kapak Görsel</p>
-                                <p className='text-gray-500'>250 TL / Video</p>
-                            </div>
-                            <p className='BlueText font-semibold'>
-                                250 TL
-                            </p>
-                        </div> */}
-                        <div className='flex justify-between text-lg font-bold mt-2 sm:mt-3 md:mt-4 lg:mt-4'>
-                            <p>Toplam</p>
-                            <p className='BlueText'>
-                                {orderData.totalPriceForCustomer?.toLocaleString(
-                                    "tr-TR"
-                                )}{" "}
-                                TL
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    {/* Four InputFields */}
-                    <div className='mt-4 sm:mt-6 md:mt-8 lg:mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6 lg:gap-6'>
-                        {/* Product/Service Name */}
+                    <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+                        {/* Order Information */}
+                        <div className='bg-white rounded-md mb-8'>
+                            <h3 className='text-lg font-bold mb-4 BlueText'>
+                                Sipariş Bilgileri:
+                            </h3>
+                            <div className='grid grid-cols-2 gap-4'>
+                                {/* Order details */}
+                                <div className='text-gray-700'>Sipariş No:</div>
+                                <div className='text-right BlueText font-bold'>
+                                    {orderData._id}
+                                </div>
+
+                                <div className='text-gray-700'>Sipariş Tarihi:</div>
+                                <div className='text-right BlueText font-bold'>
+                                    {orderData.createdAt
+                                        ? new Date(
+                                              orderData.createdAt
+                                          ).toLocaleDateString()
+                                        : "N/A"}
+                                </div>
+
+                                <div className='text-gray-700'>Sipariş Durumu:</div>
+                                <div className='text-right BlueText font-bold'>
+                                    {orderData.orderStatus === "completed"
+                                        ? "Tamamlandı"
+                                        : orderData.orderStatus === "pending"
+                                        ? "Beklemede"
+                                        : orderData.orderStatus === "active"
+                                        ? "Aktif"
+                                        : orderData.orderStatus === "cancelled" ||
+                                          orderData.orderStatus === "rejected"
+                                        ? "İptal Edildi"
+                                        : orderData.orderStatus === "revision"
+                                        ? "Revizyon"
+                                        : orderData.orderStatus}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Content Details */}
+                        <div className='bg-white rounded-md mb-8'>
+                            <h3 className='text-lg font-bold mb-4 BlueText'>
+                                İçerik Detayı:
+                            </h3>
+                            <div className='grid grid-cols-2 gap-4'>
+                                {/* Content details */}
+                                <div className='text-gray-700'>Platform:</div>
+                                <div className='text-right BlueText font-bold'>
+                                    {orderData.additionalServices.platform}
+                                </div>
+
+                                <div className='text-gray-700'>Süre:</div>
+                                <div className='text-right BlueText font-bold'>
+                                    {orderData.additionalServices.duration}
+                                </div>
+
+                                <div className='text-gray-700'>Edit:</div>
+                                <div className='text-right BlueText font-bold'>
+                                    {orderData.additionalServices.edit
+                                        ? "Evet"
+                                        : "Hayır"}
+                                </div>
+
+                                <div className='text-gray-700'>En Boy Oranı:</div>
+                                <div className='text-right BlueText font-bold'>
+                                    {orderData.additionalServices.aspectRatio}
+                                </div>
+                                <div className='text-gray-700'>
+                                    Sosyal Medya Paylaşım:
+                                </div>
+                                <div className='text-right BlueText font-bold'>
+                                    {orderData.additionalServices.share === true
+                                        ? "Evet"
+                                        : "Hayır"}{" "}
+                                </div>
+                                <div className='text-gray-700'>Kapak Görseli:</div>
+                                <div className='text-right BlueText font-bold'>
+                                    {orderData.additionalServices.coverPicture ===
+                                    true
+                                        ? "Evet"
+                                        : "Hayır"}
+                                </div>
+                                <div className='text-gray-700'>
+                                    Influencer Seçimi:
+                                </div>
+                                <div className='text-right BlueText font-bold'>
+                                    {orderData.additionalServices.creatorType ===
+                                    true
+                                        ? "Micro"
+                                        : "Nano"}
+                                </div>
+                                <div className='text-gray-700'>Ürün Gönderimi:</div>
+                                <div className='text-right BlueText font-bold'>
+                                    {orderData.additionalServices
+                                        .productShipping === true
+                                        ? "Evet"
+                                        : "Hayır"}
+                                </div>
+                                <div className='text-gray-700'>İçerik Türü:</div>
+                                <div className='text-right BlueText font-bold'>
+                                    Hizmet
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Brief Content Form */}
+                    <div className='mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6'>
                         <div>
-                            <label className='block text-sm font-semibold mt-2 sm:mt-3 md:mt-4 lg:mt-4'>
+                            <label className='block text-sm font-semibold mb-2'>
                                 Ürün / Hizmet Adı:
                             </label>
                             <input
                                 type='text'
-                                placeholder='Ürün / Hizmet Adı'
                                 {...register("briefContent.productServiceName")}
-                                className='w-full px-3 py-2 border rounded-md focus:outline-none overflow-auto'
+                                className='w-full px-3 py-2 border rounded-md focus:outline-none'
                             />
                         </div>
 
-                        {/* Scenario */}
                         <div>
-                            <label className='block text-sm font-semibold mt-2 sm:mt-3 md:mt-4 lg:mt-4'>
+                            <label className='block text-sm font-semibold mb-2'>
                                 Senaryo (Opsiyonel):
                             </label>
                             <input
                                 type='text'
-                                placeholder='Aklınızda bir video kurgusu varsa, çalışılmasını istediğiniz senaryoyu belirtin.'
                                 {...register("briefContent.scenario")}
-                                className='w-full px-3 py-2 border rounded-md focus:outline-none overflow-auto'
+                                className='w-full px-3 py-2 border rounded-md focus:outline-none'
                             />
                         </div>
-                    </div>
 
-                    {/* Third Row - Product/Service Description and Sample Work */}
-                    <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6 lg:gap-6'>
-                        {/* Product/Service Description */}
                         <div>
-                            <label className='block text-sm font-semibold mt-2 sm:mt-3 md:mt-4 lg:mt-4'>
+                            <label className='block text-sm font-semibold mb-2'>
                                 Brief:
                             </label>
                             <input
                                 type='text'
-                                placeholder='İçeriğinizde öne çıkarmak istediğiniz özellik, yenilik, kampanya vb. detaylar gibi markayı, ürünü veya hizmeti belirtin.'
                                 {...register("briefContent.productServiceDesc")}
-                                className='w-full px-3 py-2 border rounded-md focus:outline-none overflow-auto'
+                                className='w-full px-3 py-2 border rounded-md focus:outline-none'
                             />
                         </div>
 
-                        {/* Sample Work */}
                         <div>
-                            <label className='block text-sm font-semibold mt-2 sm:mt-3 md:mt-4 lg:mt-4'>
+                            <label className='block text-sm font-semibold mb-2'>
                                 Örnek Çalışma (Opsiyonel):
                             </label>
                             <input
                                 type='text'
-                                placeholder='Beğendiğiniz örnek bir çalışmayı veya beğendiğiniz video linkini buraya ekleyin (Örn: https://www.youtube.com/watch?v=5CODGzTDFX8)'
                                 {...register("briefContent.caseStudy")}
-                                className='w-full px-3 py-2 border rounded-md focus:outline-none overflow-auto'
+                                className='w-full px-3 py-2 border rounded-md focus:outline-none'
                             />
                         </div>
                     </div>
-                    <div className='flex justify-end mt-5'>
+
+                    <div className='flex justify-end mt-6'>
                         <button
                             type='submit'
-                            className='px-4 py-1 sm:px-6 sm:py-2 md:px-8 md:py-1 lg:px-8 lg:py-1 text-sm font-semibold Button text-white rounded-lg'
+                            className='px-6 py-2 text-sm font-semibold text-white rounded-lg Button'
                         >
                             {loading ? "Güncelleniyor..." : "Güncelleme"}
                         </button>

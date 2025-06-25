@@ -20,10 +20,18 @@ function NavbarNotification({ user, notifications }: NavbarNotificationProps) {
     const dispatch = useDispatch<AppDispatch>();
 
     const filteredNotifications = useMemo(() => {
-        if (tab === "unread") {
-            return notifications.filter((n) => !n.readBy?.includes(user?._id));
-        }
-        return notifications;
+        // First filter notifications based on tab
+        const filtered =
+            tab === "unread"
+                ? notifications.filter((n) => !n.readBy?.includes(user?._id))
+                : notifications;
+
+        // Then sort by date, newest first
+        return [...filtered].sort((a, b) => {
+            const dateA = new Date(a.createdAt).getTime();
+            const dateB = new Date(b.createdAt).getTime();
+            return dateB - dateA;
+        });
     }, [tab, notifications, user?._id]);
 
     const handleMarkAsRead = async (notification: NotificationInterface) => {

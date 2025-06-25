@@ -413,7 +413,9 @@ const Creators: React.FC = () => {
 
     const filteredCreators = React.useMemo(() => {
         const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
-        return creators.filter(
+        
+        // First filter the creators
+        const filtered = creators.filter(
             (creator) =>
                 creator.fullName?.toLowerCase().includes(lowerCaseSearchTerm) ||
                 creator.email?.toLowerCase().includes(lowerCaseSearchTerm) ||
@@ -422,6 +424,13 @@ const Creators: React.FC = () => {
                     ?.toLowerCase()
                     .includes(lowerCaseSearchTerm)
         );
+
+        // Then sort by creation date, newest first
+        return filtered.sort((a, b) => {
+            const dateA = new Date(a.createdAt || 0).getTime();
+            const dateB = new Date(b.createdAt || 0).getTime();
+            return dateB - dateA; // Sort in descending order (newest first)
+        });
     }, [creators, searchTerm]);
 
     const handleCloseEdit = () => {
