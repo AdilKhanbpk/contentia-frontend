@@ -76,6 +76,7 @@ const MyCarousel: React.FC<CarouselProps> = ({ videos }) => {
                         >
                             <video
                                 muted={true}
+                                playsInline // Added to prevent iOS fullscreen flash
                                 className={`object-cover rounded-3xl transition-all duration-500 ease-in-out ${
                                     index === playingVideoIndex
                                         ? "w-[250px] h-[250px] sm:w-[350px] sm:h-[350px] md:w-[400px] md:h-[400px]"
