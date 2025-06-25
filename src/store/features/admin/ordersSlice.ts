@@ -317,6 +317,16 @@ const ordersSlice = createSlice({
     clearOrdersError: (state) => {
       state.error = null;
     },
+    updateOrderPaymentStatusLocally: (state, action: PayloadAction<{ orderId: string; paymentStatus: OrderInterface['paymentStatus'] }>) => {
+      const { orderId, paymentStatus } = action.payload;
+      const index = state.data.findIndex(order => order._id === orderId);
+      if (index !== -1) {
+        state.data[index].paymentStatus = paymentStatus;
+        if (state.currentOrder?._id === orderId) {
+          state.currentOrder.paymentStatus = paymentStatus;
+        }
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -534,6 +544,6 @@ const ordersSlice = createSlice({
   },
 });
 
-export const { setCurrentOrder, clearCurrentOrder, clearOrdersError } = ordersSlice.actions;
+export const { setCurrentOrder, clearCurrentOrder, clearOrdersError, updateOrderPaymentStatusLocally } = ordersSlice.actions;
 
 export default ordersSlice.reducer;

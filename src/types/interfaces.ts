@@ -160,7 +160,7 @@ export interface OrderInterface {
     totalPriceForCustomer?: number;
     totalPriceForCreator?: number;
     orderStatus: "pending" | "active" | "completed" | "cancelled" | "revision" | "rejected";
-    paymentStatus: "paid" | "pending" | "refunded" | "cancelled" | "rejected";
+    paymentStatus: "pending" | "approved" | "paid" | "refunded" | "cancelled" | "rejected";
     contentsDelivered?: number;
     additionalServices: {
         platform: string;

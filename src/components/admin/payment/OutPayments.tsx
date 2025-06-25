@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { fetchMyBrands } from "@/store/features/profile/brandSlice";
-import { fetchOrders, updatePaymentStatus } from "@/store/features/admin/ordersSlice";
+import { fetchOrders, updatePaymentStatus, updateOrderPaymentStatusLocally } from "@/store/features/admin/ordersSlice";
 import CustomModelAdmin from "../../modal/CustomModelAdmin";
 import ModalTwo from "./sub-in-payment/ViewInPaymentModal";
 import { OrderInterface, CreatorInterface } from "@/types/interfaces";
@@ -40,6 +40,10 @@ const OutPayments: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState<OrderInterface | null>(null);
+    const [isInitialLoading, setIsInitialLoading] = useState(true);
+
+
+
     const { data: orders, loading } = useSelector(
         (state: RootState) => state.orders
     );
@@ -63,9 +67,6 @@ const OutPayments: React.FC = () => {
                 const pricePerCreator = order.totalPriceForCreator
                     ? order.totalPriceForCreator / order.noOfUgc
                     : 0;
-
-                // Note: If you want to add a priceForSingleCreator field to the database,
-                // you would need to update the OrderInterface in src/types/interfaces.ts
 
                 // Create a separate entry for each creator
                 order.assignedCreators.forEach((creator: any) => {
@@ -118,24 +119,38 @@ const OutPayments: React.FC = () => {
         }
     }, [flattenedOrders]);
 
+    const silentRefresh = useCallback(async () => {
+        try {
+            await dispatch(fetchOrders()).unwrap();
+        } catch (error: any) {
+            console.error("Silent refresh failed:", error);
+        }
+    }, [dispatch]);
+
+    // Modified handleApprove with optimistic UI update
     const handleApprove = useCallback(async (id: string) => {
         try {
-            const result = await dispatch(updatePaymentStatus({
+            dispatch(updateOrderPaymentStatusLocally({ orderId: id, paymentStatus: "approved" }));
+            await dispatch(updatePaymentStatus({
                 orderid: id,
                 paymentstatus: "approved"
             })).unwrap();
+            await dispatch(fetchOrders()).unwrap();
             toast.success("Payment Sent successfully!");
         } catch (error: any) {
             toast.error(error || "Failed to approve payment");
         }
     }, [dispatch]);
 
+    // Modified handleReject with optimistic UI update
     const handleReject = useCallback(async (id: string) => {
         try {
-            const result = await dispatch(updatePaymentStatus({
+            dispatch(updateOrderPaymentStatusLocally({ orderId: id, paymentStatus: "rejected" }));
+            await dispatch(updatePaymentStatus({
                 orderid: id,
                 paymentstatus: "rejected"
             })).unwrap();
+            await dispatch(fetchOrders()).unwrap();
             toast.dark("Payment rejected for the Order!");
         } catch (error: any) {
             toast.error(error || "Failed to reject payment");
@@ -272,8 +287,10 @@ const OutPayments: React.FC = () => {
     const fetchOrdersData = useCallback(async () => {
         try {
             await dispatch(fetchOrders()).unwrap();
+            setIsInitialLoading(false);
             toast.success("Orders data refreshed successfully");
         } catch (error: any) {
+            setIsInitialLoading(false);
             toast.error(error.message || "Failed to fetch orders");
         }
     }, [dispatch]);
@@ -290,6 +307,9 @@ const OutPayments: React.FC = () => {
         fetchBrands();
         fetchOrdersData();
     }, [fetchBrands, fetchOrdersData]);
+
+    // Use initial loading state only for first load, not for payment updates
+    const tableLoading = isInitialLoading && loading;
 
     return (
         <div className='bg-white rounded-lg'>
@@ -328,7 +348,7 @@ const OutPayments: React.FC = () => {
                         columns={columns}
                         data={filteredFlattenedOrders}
                         noDataComponent='No Outgoing Payments Found'
-                        loading={loading}
+                        loading={tableLoading}
                     />
                 </div>
             </div>
