@@ -5,8 +5,6 @@ import {
     FaEdit,
     FaTrashAlt,
     FaEye,
-    FaGrav,
-    FaFan,
     FaCheck,
     FaTimes,
 } from "react-icons/fa";
@@ -325,7 +323,7 @@ const Orders: React.FC = () => {
                             <div>
                                 <p className='font-semibold'>
                                     {row.associatedBrands &&
-                                    row.associatedBrands.brandName
+                                        row.associatedBrands.brandName
                                         ? row.associatedBrands.brandName
                                         : "No Title"}
                                 </p>
@@ -361,13 +359,12 @@ const Orders: React.FC = () => {
                 name: "Order Status",
                 cell: (row: OrderInterface) => (
                     <span
-                        className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                            row.orderStatus === "completed"
+                        className={`px-3 py-1 rounded-full text-sm font-semibold ${row.orderStatus === "completed"
                                 ? "text-green-700 bg-green-100"
                                 : row.orderStatus === "pending"
-                                ? "text-yellow-700 bg-yellow-100"
-                                : "text-red-700 bg-red-100"
-                        }`}
+                                    ? "text-yellow-700 bg-yellow-100"
+                                    : "text-red-700 bg-red-100"
+                            }`}
                     >
                         {row.orderStatus.charAt(0).toUpperCase() +
                             row.orderStatus.slice(1)}
@@ -396,7 +393,7 @@ const Orders: React.FC = () => {
 
     const filteredOrders = React.useMemo(() => {
         const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
-        
+
         // First filter the orders
         const filtered = orders?.filter((order) => {
             const owner = order.orderOwner;

@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { fetchMyBrands } from "@/store/features/profile/brandSlice";
-import { fetchOrders } from "@/store/features/admin/ordersSlice";
+import { fetchOrders, updatePaymentStatus } from "@/store/features/admin/ordersSlice";
 import CustomModelAdmin from "../../modal/CustomModelAdmin";
 import ModalTwo from "./sub-in-payment/ViewInPaymentModal";
 import { OrderInterface, CreatorInterface } from "@/types/interfaces";
@@ -87,7 +87,11 @@ const OutPayments: React.FC = () => {
             }
         });
 
-        return result;
+        return result.sort((a, b) => {
+            const dateA = new Date(a.originalOrder.createdAt).getTime();
+            const dateB = new Date(b.originalOrder.createdAt).getTime();
+            return dateB - dateA; // Newest first
+        });
     }, [orders]);
 
     // Filter flattened orders based on search term
@@ -115,12 +119,28 @@ const OutPayments: React.FC = () => {
     }, [flattenedOrders]);
 
     const handleApprove = useCallback(async (id: string) => {
-        toast.success("Payment Sent successfully!");
-    }, []);
+        try {
+            const result = await dispatch(updatePaymentStatus({
+                orderid: id,
+                paymentstatus: "approved"
+            })).unwrap();
+            toast.success("Payment Sent successfully!");
+        } catch (error: any) {
+            toast.error(error || "Failed to approve payment");
+        }
+    }, [dispatch]);
 
     const handleReject = useCallback(async (id: string) => {
-        toast.dark("Payment rejected for the Order!");
-    }, []);
+        try {
+            const result = await dispatch(updatePaymentStatus({
+                orderid: id,
+                paymentstatus: "rejected"
+            })).unwrap();
+            toast.dark("Payment rejected for the Order!");
+        } catch (error: any) {
+            toast.error(error || "Failed to reject payment");
+        }
+    }, [dispatch]);
 
     const TableActions = memo(
         ({ onApprove, onReject, onView, id }: TableActionsProps) => (
@@ -207,6 +227,10 @@ const OutPayments: React.FC = () => {
             name: "Payment Status",
             selector: (row: SingleCreatorOrderData) => row.paymentStatus,
             sortable: true,
+            sortFunction: (a: SingleCreatorOrderData, b: SingleCreatorOrderData) => {
+                const statusOrder = { pending: 0, approved: 1, rejected: 2 };
+                return statusOrder[a.paymentStatus as keyof typeof statusOrder] - statusOrder[b.paymentStatus as keyof typeof statusOrder];
+            },
         },
         {
             name: "Actions",
@@ -359,13 +383,13 @@ const OutPayments: React.FC = () => {
                                 </thead>
                                 <tbody>
                                     {Array.isArray(selectedOrder.assignedCreators) &&
-                                     selectedOrder.assignedCreators.map((creator: any, index: number) => (
-                                        <tr key={index}>
-                                            <td className="py-2 px-4 border">{typeof creator === 'string' ? creator : creator._id}</td>
-                                            <td className="py-2 px-4 border">{typeof creator === 'string' ? 'Unknown' : creator.fullName}</td>
-                                            <td className="py-2 px-4 border">{typeof creator === 'string' ? '' : creator.email}</td>
-                                        </tr>
-                                    ))}
+                                        selectedOrder.assignedCreators.map((creator: any, index: number) => (
+                                            <tr key={index}>
+                                                <td className="py-2 px-4 border">{typeof creator === 'string' ? creator : creator._id}</td>
+                                                <td className="py-2 px-4 border">{typeof creator === 'string' ? 'Unknown' : creator.fullName}</td>
+                                                <td className="py-2 px-4 border">{typeof creator === 'string' ? '' : creator.email}</td>
+                                            </tr>
+                                        ))}
                                 </tbody>
                             </table>
                         </div>

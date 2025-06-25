@@ -166,7 +166,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
 
                                     <div>
                                         <label className='block text-sm font-medium'>
-                                            Password
+                                            Şifre
                                         </label>
                                         <input
                                             type='password'
@@ -179,7 +179,9 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                                     </div>
 
                                     <div>
-                                        <p className='text-base'></p>
+                                        <label className='block text-sm font-medium'>
+                                            E-Posta
+                                        </label>
                                         <input
                                             {...register("email", {
                                                 required: "Email is required",
@@ -333,11 +335,10 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                         </button>
                         <p
                             onClick={handleResend}
-                            className={`mt-3 ${
-                                countdown === 0
-                                    ? "cursor-pointer text-blue-500"
-                                    : "text-gray-400"
-                            }`}
+                            className={`mt-3 ${countdown === 0
+                                ? "cursor-pointer text-blue-500"
+                                : "text-gray-400"
+                                }`}
                         >
                             {countdown === 0
                                 ? "Tekrar Gönder"

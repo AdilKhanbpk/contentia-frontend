@@ -199,11 +199,6 @@ export interface OrderInterface {
     numberOfRequests?: number;
     orderQuota?: number;
     quotaLeft?: number;
-<<<<<<< HEAD
-    uploadFiles: UploadFile[];
-    createdAt: string;
-    updatedAt?: string;
-=======
     uploadFiles?: Array<{
         uploadedBy: string;
         fileUrls: string[];
@@ -212,7 +207,6 @@ export interface OrderInterface {
     }>;
     // createdAt?: Date;
     updatedAt?: Date;
->>>>>>> 1576400245ecbe44b6a381960355ebbc40ee4886
     creatorNoteOnOrder?: string;
     revisions?: Array<{
         revisionType: 'minor' | 'major';
