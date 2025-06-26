@@ -109,7 +109,7 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
                 closeModal={closeModal}
                 title=""
               >
-                <ModelBrand />
+                <ModelBrand onClose={closeModal} />
               </CustomModelAdmin>
 
               <select

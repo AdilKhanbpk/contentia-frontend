@@ -206,22 +206,30 @@ export default function Navbar() {
                                                 )}
                                                 {user?.fullName || "John Doe"}
                                             </li>
-                                            <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
-                                                <UserIcon className='w-4 h-4' />
-                                                Profil
-                                            </li>
-                                            <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
-                                                <ShoppingCartIcon className='w-4 h-4' />
-                                                Siparişler
-                                            </li>
-                                            <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
-                                                <PaperClipIcon className='w-4 h-4' />
-                                                Paketler
-                                            </li>
-                                            <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
-                                                <BriefcaseIcon className='w-4 h-4' />
-                                                Markalarım
-                                            </li>
+                                            <Link href='/profil'>
+                                                <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                    <UserIcon className='w-4 h-4' />
+                                                    Profil
+                                                </li>
+                                            </Link>
+                                            <Link href='/siparislerim' >
+                                                <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                    <ShoppingCartIcon className='w-4 h-4' />
+                                                    Siparişler
+                                                </li>
+                                            </Link>
+                                            <Link href='/paketler'>
+                                                <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                    <PaperClipIcon className='w-4 h-4' />
+                                                    Paketler
+                                                </li>
+                                            </Link>
+                                            <Link href='/markalarim'>
+                                                <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                    <BriefcaseIcon className='w-4 h-4' />
+                                                    Markalarım
+                                                </li>
+                                            </Link>
                                             <li
                                                 className='p-2 BlueText hover:bg-red-100 cursor-pointer text-red-600 flex items-center gap-2'
                                                 onClick={handleLogout}
@@ -241,9 +249,8 @@ export default function Navbar() {
             {/* Sidebar for small screens */}
             <aside
                 id='sidebar'
-                className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${
-                    isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-                } bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700 lg:hidden`}
+                className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+                    } bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700 lg:hidden`}
                 aria-label='Sidebar'
             >
                 <div className='h-full px-3 pb-4 overflow-y-auto'>
