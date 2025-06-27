@@ -261,13 +261,12 @@ const Packages: React.FC = () => {
                 name: "Package Status",
                 cell: (row: PackageInterface) => (
                     <span
-                        className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                            row.packageStatus === "completed"
+                        className={`px-3 py-1 rounded-full text-sm font-semibold ${row.packageStatus === "completed"
                                 ? "text-green-700 bg-green-100"
                                 : row.packageStatus === "pending"
-                                ? "text-yellow-700 bg-yellow-100"
-                                : "text-red-700 bg-red-100"
-                        }`}
+                                    ? "text-yellow-700 bg-yellow-100"
+                                    : "text-red-700 bg-red-100"
+                            }`}
                     >
                         {row.packageStatus.charAt(0).toUpperCase() +
                             row.packageStatus.slice(1)}
@@ -309,21 +308,20 @@ const Packages: React.FC = () => {
     return (
         <div className='bg-white rounded-lg'>
             <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
-                <div className='flex flex-row justify-between items-center mb-4 space-x-2'>
-                    <div className='flex justify-center items-center'>
+                <div className='flex flex-col sm:flex-row justify-between items-stretch sm:items-center mb-4 space-y-2 sm:space-y-0 sm:space-x-2'>
+                    <div className='flex justify-center items-center w-full sm:w-auto'>
                         <SearchBar onSearch={handleSearch} />
                     </div>
-
-                    <div className='flex flex-row space-x-2'>
+                    <div className='flex flex-col xs:flex-row justify-center space-y-2 xs:space-y-0 xs:space-x-2 w-full sm:w-auto'>
                         <button
                             onClick={() => setIsModalOpen(true)}
-                            className='px-4 py-2 Button text-white rounded-md'
+                            className='px-4 py-2 Button text-white rounded-md w-full xs:w-auto'
                         >
                             Add Package
                         </button>
                         <button
                             onClick={handleExport}
-                            className='px-4 py-2 bg-green-500 text-white rounded-md'
+                            className='px-4 py-2 bg-green-500 text-white rounded-md w-full xs:w-auto'
                         >
                             Export CSV
                         </button>
@@ -333,11 +331,10 @@ const Packages: React.FC = () => {
                     <ul className='flex space-x-4'>
                         <li>
                             <button
-                                className={`px-1 md:px-4 py-0.5 md:py-2 ${
-                                    activeTab === "All"
+                                className={`px-1 md:px-4 py-0.5 md:py-2 ${activeTab === "All"
                                         ? "bg-gray-500 rounded  text-white"
                                         : "text-gray-500 hover:text-gray-700"
-                                }`}
+                                    }`}
                                 onClick={() => setActiveTab("All")}
                             >
                                 All
@@ -345,11 +342,10 @@ const Packages: React.FC = () => {
                         </li>
                         <li>
                             <button
-                                className={`px-1 md:px-4 py-0.5 md:py-2 ${
-                                    activeTab === "Active"
+                                className={`px-1 md:px-4 py-0.5 md:py-2 ${activeTab === "Active"
                                         ? "bg-gray-500 rounded  text-white"
                                         : "text-gray-500 hover:text-gray-700"
-                                }`}
+                                    }`}
                                 onClick={() => setActiveTab("Active")}
                             >
                                 Active
@@ -357,11 +353,10 @@ const Packages: React.FC = () => {
                         </li>
                         <li>
                             <button
-                                className={`px-1 md:px-4 py-0.5 md:py-2 ${
-                                    activeTab === "Completed"
+                                className={`px-1 md:px-4 py-0.5 md:py-2 ${activeTab === "Completed"
                                         ? "bg-gray-500 rounded  text-white"
                                         : "text-gray-500 hover:text-gray-700"
-                                }`}
+                                    }`}
                                 onClick={() => setActiveTab("Completed")}
                             >
                                 Completed
@@ -369,11 +364,10 @@ const Packages: React.FC = () => {
                         </li>
                         <li>
                             <button
-                                className={`px-1 md:px-4 py-0.5 md:py-2 ${
-                                    activeTab === "Cancelled"
+                                className={`px-1 md:px-4 py-0.5 md:py-2 ${activeTab === "Cancelled"
                                         ? "bg-gray-500 rounded  text-white"
                                         : "text-gray-500 hover:text-gray-700"
-                                }`}
+                                    }`}
                                 onClick={() => setActiveTab("Cancelled")}
                             >
                                 Cancelled

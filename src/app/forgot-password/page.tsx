@@ -10,7 +10,7 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 const ForgotPasswordPage = () => {
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
-  
+
   const [submitted, setSubmitted] = useState(false);
 
   // Get state from Redux
@@ -23,7 +23,8 @@ const ForgotPasswordPage = () => {
   useEffect(() => {
     if (success) {
       setSubmitted(true);
-      toast.success(message || 'Password reset link sent successfully');
+      toast.success(message || "Parola sıfırlama bağlantısı başarıyla gönderildi.");
+
     }
 
     if (error) {
@@ -77,7 +78,7 @@ const ForgotPasswordPage = () => {
                     onClick={() => setSubmitted(false)}
                     className="text-blue-600 hover:text-blue-800 font-medium"
                   >
-                 Farklı bir e-posta ile tekrar deneyin
+                    Farklı bir e-posta ile tekrar deneyin
                   </button>
                 </div>
               </div>

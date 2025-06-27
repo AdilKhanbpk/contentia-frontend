@@ -143,8 +143,7 @@ const ManageBlogs: React.FC = () => {
             setIsModalEditOpen(false);
         } catch (error: any) {
             toast.error(
-                `Blog update failed: ${
-                    error?.message || "Something went wrong"
+                `Blog update failed: ${error?.message || "Something went wrong"
                 }`
             );
             console.error("Blog update failed:", error);
@@ -180,8 +179,7 @@ const ManageBlogs: React.FC = () => {
             await dispatch(fetchBlogs());
         } catch (error: any) {
             toast.error(
-                `Blog creation failed: ${
-                    error?.message || "Something went wrong"
+                `Blog creation failed: ${error?.message || "Something went wrong"
                 }`
             );
             console.error("Blog creation error:", error);
@@ -265,13 +263,12 @@ const ManageBlogs: React.FC = () => {
                 name: "Status",
                 cell: (row: BlogInterface) => (
                     <span
-                        className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                            row.status === "Published"
+                        className={`px-3 py-1 rounded-full text-sm font-semibold ${row.status === "Published"
                                 ? "text-green-700 bg-green-100"
                                 : row.status === "Draft"
-                                ? "text-yellow-700 bg-yellow-100"
-                                : "text-red-700 bg-red-100"
-                        }`}
+                                    ? "text-yellow-700 bg-yellow-100"
+                                    : "text-red-700 bg-red-100"
+                            }`}
                     >
                         {row.status}
                     </span>
@@ -313,21 +310,21 @@ const ManageBlogs: React.FC = () => {
     return (
         <div className='bg-white rounded-lg'>
             <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
-                <div className='flex flex-row justify-between items-center mb-4 space-x-2'>
-                    <div className='flex justify-center items-center'>
+                <div className='flex flex-col sm:flex-row justify-between items-center mb-4 gap-4'>
+                    <div className='flex justify-center items-center w-full sm:w-auto'>
                         <SearchBar onSearch={handleSearch} />
                     </div>
 
-                    <div className='flex flex-row space-x-2'>
+                    <div className='flex flex-row gap-2 justify-center'>
                         <button
                             onClick={() => setIsModalOpen(true)}
-                            className='px-4 py-2 Button text-white rounded-md'
+                            className='px-4 py-2 Button text-white rounded-md whitespace-nowrap'
                         >
                             Add Blog
                         </button>
                         <button
                             onClick={handleExport}
-                            className='px-4 py-2 bg-green-500 text-white rounded-md'
+                            className='px-4 py-2 bg-green-500 text-white rounded-md whitespace-nowrap'
                         >
                             Export CSV
                         </button>

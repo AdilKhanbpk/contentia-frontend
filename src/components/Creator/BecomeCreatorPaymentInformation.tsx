@@ -60,13 +60,13 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
         try {
             const res = await dispatch(setCreatorFormData(data));
             if (res) {
-                toast.success("Payment information saved successfully");
+                toast.success("Ödeme bilgileri başarıyla kaydedildi");
                 setActiveTab(3);
             } else {
-                toast.error("Failed to save payment information");
+                toast.error("Ödeme bilgileri kaydedilemedi");
             }
         } catch (error) {
-            toast.error("An error occurred while saving payment information");
+            toast.error("Ödeme bilgileri kaydedilirken bir hata oluştu");
         }
     };
     useEffect(() => {

@@ -56,12 +56,12 @@ const ModelBrand: React.FC<ModelBrandProps> = ({ onClose }) => {
             .unwrap()
             .then(() => {
                 reset();
-                toast.success("Brand created successfully!");
+                toast.success("Marka başarıyla oluşturuldu!");
                 setLoading(false);
             })
             .catch((error) => {
                 toast.error(
-                    `Failed to create brand: ${error.message || "Unknown error"
+                    `Marka oluşturulamadı: ${error.message || "Bilinmeyen hata"
                     }`
                 );
                 setLoading(false);

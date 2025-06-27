@@ -69,7 +69,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
             setIsOrderSuccessFullyPlaced(true);
         } catch (error: any) {
             setIsOrderFailed(true);
-            toast.error(error.message || "Something went wrong.");
+            toast.error(error.message || "Bir şeyler ters gitti.");
             setSelectedFiles([]);
             console.error("Error submitting form:", error.message);
         }

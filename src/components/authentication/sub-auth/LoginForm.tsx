@@ -36,7 +36,7 @@ const LoginForm = () => {
             const admin = response.user.role === "admin";
             const customer = response.user.role === "user";
 
-            toast.success("Login successful");
+            toast.success("Giriş başarılı");
 
             if (admin) {
                 router.push("/admin");
@@ -46,7 +46,7 @@ const LoginForm = () => {
                 router.push("/giris-yap");
             }
         } catch (error: any) {
-            toast.error(error?.message || "Login failed: An error occurred");
+            toast.error(error?.message || "Giriş başarısız: Bir hata oluştu");
         }
     };
 
@@ -141,8 +141,8 @@ const LoginForm = () => {
             </div>
             <div className="flex w-full justify-center mb-2">
                 <span className="text-blue-500 cursor-pointer"
-                onClick={() => router.push("/forgot-password")}>Şifreni hatırlamıyor musunn?</span>
-                </div>
+                    onClick={() => router.push("/forgot-password")}>Şifreni hatırlamıyor musunn?</span>
+            </div>
             {errors.rememberMe && (
                 <span className='text-red-500'>
                     Lütfen göndermeden önce Beni Hatırla kısmını doldurunuz.

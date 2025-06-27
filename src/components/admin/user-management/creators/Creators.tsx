@@ -92,8 +92,7 @@ const Creators: React.FC = () => {
                 })
                 .catch((error: any) => {
                     toast.error(
-                        `Error deleting creator: ${
-                            error?.message || "Unknown error"
+                        `Error deleting creator: ${error?.message || "Unknown error"
                         }`
                     );
                 });
@@ -382,13 +381,12 @@ const Creators: React.FC = () => {
                     let status = row.isVerified || "pending";
                     return (
                         <span
-                            className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                                status === "approved"
+                            className={`px-3 py-1 rounded-full text-sm font-semibold ${status === "approved"
                                     ? "text-green-700 bg-green-100"
                                     : status === "Pending"
-                                    ? "text-yellow-700 bg-yellow-100"
-                                    : "text-red-700 bg-red-100"
-                            }`}
+                                        ? "text-yellow-700 bg-yellow-100"
+                                        : "text-red-700 bg-red-100"
+                                }`}
                         >
                             {status}
                         </span>
@@ -413,7 +411,7 @@ const Creators: React.FC = () => {
 
     const filteredCreators = React.useMemo(() => {
         const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
-        
+
         // First filter the creators
         const filtered = creators.filter(
             (creator) =>
@@ -440,21 +438,21 @@ const Creators: React.FC = () => {
     return (
         <div className='bg-white rounded-lg'>
             <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
-                <div className='flex flex-row justify-between items-center mb-4 space-x-2'>
-                    <div className='flex justify-center items-center'>
+                <div className='flex flex-col sm:flex-row justify-between items-center mb-4 gap-3'>
+                    <div className='flex justify-center items-center w-full sm:w-auto'>
                         <SearchBar onSearch={handleSearch} />
                     </div>
 
-                    <div className='flex flex-row space-x-2'>
+                    <div className='flex flex-col xs:flex-row gap-2 items-center justify-center'>
                         <button
                             onClick={() => setIsModalOpen(true)}
-                            className='px-4 py-2 Button text-white rounded-md'
+                            className='px-3 py-2 sm:px-4 Button text-white rounded-md text-sm sm:text-base whitespace-nowrap w-full xs:w-auto max-w-[200px] xs:max-w-none'
                         >
                             Add Creator
                         </button>
                         <button
                             onClick={handleExport}
-                            className='px-4 py-2 bg-green-500 text-white rounded-md'
+                            className='px-3 py-2 sm:px-4 bg-green-500 text-white rounded-md text-sm sm:text-base whitespace-nowrap w-full xs:w-auto max-w-[200px] xs:max-w-none'
                         >
                             Export CSV
                         </button>

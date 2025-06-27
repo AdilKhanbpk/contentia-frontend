@@ -31,7 +31,7 @@ export default function LogoUploader({
     ) => {
         const file = e.target.files?.[0];
         if (!file) {
-            toast.error("No image selected. Please choose an image to upload.");
+            toast.error("Görüntü seçilmedi. Lütfen yüklemek için bir görüntü seçin.");
             return;
         }
         setImageFile(file);
@@ -50,7 +50,7 @@ export default function LogoUploader({
                     data: formData,
                 })
             ).unwrap();
-            toast.success("Image uploaded successfully!");
+            toast.success("Görüntü başarıyla yüklendi!");
         } catch (error) {
             const errorMessage =
                 typeof error === "string"

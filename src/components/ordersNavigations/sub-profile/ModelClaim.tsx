@@ -44,13 +44,13 @@ export default function ModelClaim({ orderData }: ModelClaimProps) {
 
             if (createClaim.fulfilled.match(resultAction)) {
                 reset();
-                toast.success("Claim created successfully");
+                toast.success("Talep başarıyla oluşturuldu");
             } else if (createClaim.rejected.match(resultAction)) {
                 throw new Error(resultAction.error.message);
             }
         } catch (error) {
             console.error("Failed to submit revision request:", error);
-            toast.error("Claim creation failed");
+            toast.error("Talep oluşturma başarısız oldu");
         } finally {
             setIsSubmitting(false);
         }

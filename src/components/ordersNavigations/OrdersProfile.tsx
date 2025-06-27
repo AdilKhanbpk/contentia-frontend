@@ -31,9 +31,9 @@ const OrdersProfile: React.FC = () => {
         try {
             await dispatch(updateProfile({ data }));
             dispatch(fetchProfile());
-            toast.success("Profile updated successfully!");
+            toast.success("Profil başarıyla güncellendi!");
         } catch (error) {
-            toast.error("Failed to update profile. Please try again.");
+            toast.error("Profil güncellenemedi. Lütfen tekrar deneyin.");
         }
     };
 
@@ -66,12 +66,12 @@ const OrdersProfile: React.FC = () => {
             );
 
             if (result.meta.requestStatus === "fulfilled") {
-                toast.success("Password change successful!");
+                toast.success("Şifre değiştirme başarılı!");
             } else {
-                toast.error(`Password change failed: ${result.payload}`);
+                toast.error(`Şifre değiştirme başarısız: ${result.payload}`);
             }
         } catch (error) {
-            toast.error(`An error occurred during password change: ${error}`);
+            toast.error(`Şifre değiştirme sırasında bir hata oluştu:${error}`);
         }
     };
 

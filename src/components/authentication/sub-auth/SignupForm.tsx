@@ -29,12 +29,12 @@ const SignupForm = () => {
                     toast.error(errorMessage);
                     return;
                 }
-                toast.success("Signup successful");
+                toast.success("Kayıt başarılı");
                 router.push("/");
             })
             .catch((error: Error) => {
                 // Fallback error handling
-                toast.error(error.message || 'An unexpected error occurred');
+                toast.error(error.message || 'Beklenmeyen bir hata oluştu');
             });
     };
     const handleGoogleLogin = () => {
