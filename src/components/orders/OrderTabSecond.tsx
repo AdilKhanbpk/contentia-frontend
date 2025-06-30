@@ -195,7 +195,7 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
         phoneNumber: formData.phoneNumber,
       };
 
-      const response = await fetch('http://localhost:8000/api/paytr/direct-payment', {
+      const response = await fetch('https://contentia-backend-s4pw.onrender.com/api/paytr/direct-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(paymentData),
