@@ -1,11 +1,22 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function PaymentSuccess() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const merchant_oid = searchParams.get('merchant_oid');
+
+  // ✅ Notify the parent iframe (if embedded)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.parent !== window) {
+      console.log('✅ [iframe] Payment success page loaded, sending postMessage to parent');
+      window.parent.postMessage({ paymentStatus: 'success', merchant_oid }, '*');
+    } else {
+      console.log('ℹ️ [iframe] Not in iframe or window undefined');
+    }
+  }, [merchant_oid]);
 
   return (
     <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-md text-center">
