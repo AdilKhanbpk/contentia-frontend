@@ -303,6 +303,8 @@ useEffect(() => {
     if (iframe && iframe.contentWindow?.location.href.includes('/payment/success')) {
       console.log("window")
       alert("✅ Payment successful");
+        setActiveTab(3);
+
       setShow3DModal(false);
       clearInterval(interval);
     }
