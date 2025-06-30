@@ -29,9 +29,11 @@ interface PaymentFormData {
   // Options
   saveCard?: boolean;
   agreement?: boolean;
+
 }
 
 // Interface for API payload (with split expiry date)
+// interface PaymentApiData extends Omit<PaymentFormData, 'expiryDate' | 'agreement' | 'saveCard'> {
 interface PaymentApiData extends Omit<PaymentFormData, 'expiryDate'> {
   expiryMonth: string;
   expiryYear: string;
@@ -41,6 +43,7 @@ interface PaymentApiData extends Omit<PaymentFormData, 'expiryDate'> {
   userEmail: string;
   userPhone: string;
   nameOnCard: string;
+
 }
 
 interface PaymentResult {
@@ -65,10 +68,9 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<PaymentResult | null>(null);
   const [show3DModal, setShow3DModal] = useState(false);
-  const [iframeUrl, setIframeUrl] = useState('');
+  const [iframeHtml, setIframeHtml] = useState('');
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [paymentStatus, setPaymentStatus] = useState<"pending" | "success" | "fail">("pending");
-  
+ const [paymentStatus, setPaymentStatus] = useState<"pending" | "success" | "fail">("pending");
   // Coupon states
   const [couponCode, setCouponCode] = useState("");
   const [couponError, setCouponError] = useState("");
@@ -160,7 +162,7 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
     }
   };
 
-  // UPDATED: Enhanced Payment processing
+  // Payment processing
   const processPayment = async (formData: PaymentFormData) => {
     setLoading(true);
     setResult(null);
@@ -193,6 +195,7 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
         address: formData.address,
         email: formData.email,
         phoneNumber: formData.phoneNumber,
+
       };
 
       const response = await fetch('https://contentia-backend-s4pw.onrender.com/api/paytr/direct-payment', {
@@ -200,30 +203,51 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(paymentData),
       });
-      
       const contentType = response.headers.get('content-type');
 
-      if (contentType?.includes('application/json')) {
-        const json = await response.json();
-        if (json.paytrIframeUrl) {
-          setIframeUrl(json.paytrIframeUrl);
-          setShow3DModal(true);
-          return;
-        }
-        setResult(json);
-        if (json.success) {
-          alert('Ödeme başarılı!');
-          setActiveTab(2);
-        } else {
-          alert('Ödeme başarısız: ' + json.message);
-        }
+      // 3D Secure Response
+      if (contentType?.includes('text/html')) {
+        let html = await response.text();
+
+        // Add Cancel Script
+        html = html.replace('</body>', `
+        <script>
+          document.querySelector('input[type="button"][value="Cancel"]')?.addEventListener('click', function(e) {
+            window.parent.postMessage({ type: 'CANCEL_3D' }, '*');
+            e.preventDefault();
+          });
+        </script>
+      </body>`);
+
+        html = html.replace(/target=("|')?_top("|')?/gi, 'target="_self"');
+
+        setIframeHtml(html);
+        setShow3DModal(true);
+
+        // Auto-close iframe after 3 minutes (optional)
+        setTimeout(() => {
+          setShow3DModal(false);
+          alert("Oturum zaman aşımına uğradı. Lütfen tekrar deneyin.");
+        }, 180000);
+
         return;
       }
-      // fallback for unexpected response
-      alert('Beklenmeyen ödeme yanıtı');
+
+      // Handle JSON response
+      const json: PaymentResult = await response.json();
+      console.log("json", json);
+      setResult(json);
+
+      if (json.success) {
+        alert('Ödeme başarılı!');
+        setActiveTab(2);
+      } else {
+        alert('Ödeme başarısız: ' + json.message);
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Bilinmeyen hata';
-      setResult({ success: false, message: 'Ağ hatası: ' + message });
+      const errorResult = { success: false, message: 'Ağ hatası: ' + message };
+      setResult(errorResult);
       alert('Ödeme başarısız: ' + message);
     } finally {
       setLoading(false);
@@ -243,51 +267,60 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
     setFinalPrice(totalPrice);
   }, [totalPrice]);
 
-  // UPDATED: Enhanced message listener for better communication
+  // Inject HTML into iframe for 3D Secure
   useEffect(() => {
-    const messageListener = (event: MessageEvent) => {
-      console.log('[parent] Received message:', event.data);
-      
-      // Handle different types of messages
-      if (event.data?.type === 'CANCEL_3D') {
-        setShow3DModal(false);
-        alert('3D Secure verification cancelled');
+    console.log("iframe",iframeRef)
+    if (show3DModal && iframeRef.current && iframeHtml) {
+      const iframe = iframeRef.current;
+      const doc = iframe.contentDocument || iframe.contentWindow?.document;
+      if (doc) {
+        doc.open();
+        doc.write(iframeHtml);
+        doc.close();
       }
-      
-      if (event.data?.type === 'SUBMIT_3D') {
-        setShow3DModal(false);
-        alert('3D Secure verification submitted. Please wait for result...');
-      }
-      
+    }
+  }, [iframeHtml, show3DModal]);
+
+  // Listen for 3D Secure cancel message
+useEffect(() => {
+    const listener = (event: MessageEvent) => {
       if (event.data?.paymentStatus === "success") {
         setPaymentStatus("success");
-        setShow3DModal(false);
-        setActiveTab(2);
-        alert("✅ Payment successful");
-      } 
-      
-      if (event.data?.paymentStatus === "fail") {
+      } else if (event.data?.paymentStatus === "fail") {
         setPaymentStatus("fail");
-        setShow3DModal(false);
-        alert("❌ Payment failed");
-      }
-
-      // Handle PayTR specific messages
-      if (event.data?.merchant_ok === "1") {
-        setShow3DModal(false);
-        setActiveTab(2);
-        alert("✅ Payment successful");
-      }
-      
-      if (event.data?.merchant_ok === "0") {
-        setShow3DModal(false);
-        alert("❌ Payment failed");
       }
     };
 
-    window.addEventListener("message", messageListener);
-    return () => window.removeEventListener("message", messageListener);
+    window.addEventListener("message", listener);
+    return () => window.removeEventListener("message", listener);
   }, []);
+
+
+// In React useEffect (for iframe listener)
+useEffect(() => {
+  const interval = setInterval(() => {
+    const iframe = iframeRef.current;
+    if (iframe && iframe.contentWindow?.location.href.includes('/payment/success')) {
+      console.log("window")
+      alert("✅ Payment successful");
+      setShow3DModal(false);
+      clearInterval(interval);
+    }
+    if (iframe && iframe.contentWindow?.location.href.includes('/payment/Failed')) {
+      console.log("window")
+
+      alert("❌ Payment failed");
+
+      setShow3DModal(false);
+      clearInterval(interval);
+    }
+  }, 1000);
+
+  return () => clearInterval(interval);
+}, [show3DModal]);
+
+
+
 
   // Render helper for additional services
   const renderAdditionalService = (
@@ -858,10 +891,11 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
                     <div className="absolute top-2 right-2">
                       <button onClick={() => setShow3DModal(false)} className="text-red-600 text-xl font-bold px-3 py-1">×</button>
                     </div>
-                    {!iframeUrl ? (
+
+                    {!iframeHtml ? (
                       <div className="flex items-center justify-center h-full text-gray-600">Yükleniyor...</div>
                     ) : (
-                      <iframe ref={iframeRef} title="3D Secure Verification" className="w-full h-full border-0 rounded-b" src={iframeUrl} />
+                      <iframe ref={iframeRef} title="3D Secure Verification" className="w-full h-full border-0 rounded-b" />
                     )}
                   </div>
                 </div>
