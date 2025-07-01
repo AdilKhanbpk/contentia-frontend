@@ -26,7 +26,7 @@ export default function SignupPage() {
     try {
       await dispatch(signupUser(form) as any).unwrap();
       // Replace home page redirect with OTP page redirect
-      router.push(`/verify-otp?phoneNumber=${encodeURIComponent(form.phoneNumber)}`);
+      router.push(`/verify-otp?phoneNumber=${(form.phoneNumber)}`);
     } catch (error) {
       // ...error handling...
     }
