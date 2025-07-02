@@ -162,7 +162,7 @@ export default function VerifyCreatorOtpPage() {
               {Array.from({ length: 6 }).map((_, index) => (
                 <input
                   key={index}
-                  ref={(el) => (inputRefs.current[index] = el)}
+                  ref={(el) => { inputRefs.current[index] = el; }}
                   type="text"
                   maxLength={1}
                   value={otp[index]}
