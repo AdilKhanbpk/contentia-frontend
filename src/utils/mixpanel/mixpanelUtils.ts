@@ -80,21 +80,44 @@ class MixpanelService {
    */
 private enableAutoTracking(): void {
   try {
-    // Track all link clicks
-    mixpanel.track_links("a", "Link Clicked", (element: HTMLAnchorElement) => ({
-      link_text: element.innerText?.trim() || '',
-      link_url: element.href || '',
-      link_target: element.target || '_self'
-    }));
+    // Wait for DOM to be ready and then check for elements
+    const setupTracking = () => {
+      // Check if there are any anchor elements before tracking
+      const links = document.querySelectorAll("a");
+      if (links.length > 0) {
+        mixpanel.track_links("a", "Link Clicked", (element: HTMLAnchorElement) => ({
+          link_text: element.innerText?.trim() || '',
+          link_url: element.href || '',
+          link_target: element.target || '_self'
+        }));
+        console.log(`✅ Mixpanel: Link tracking enabled for ${links.length} links`);
+      } else {
+        console.log("ℹ️ Mixpanel: No links found, skipping link tracking");
+      }
 
-    // Track all form submissions
-    mixpanel.track_forms("form", "Form Submitted", (form: HTMLFormElement) => ({
-      form_id: form.id || '',
-      form_action: form.action || '',
-      form_method: form.method || 'GET'
-    }));
+      // Check if there are any form elements before tracking
+      const forms = document.querySelectorAll("form");
+      if (forms.length > 0) {
+        mixpanel.track_forms("form", "Form Submitted", (form: HTMLFormElement) => ({
+          form_id: form.id || '',
+          form_action: form.action || '',
+          form_method: form.method || 'GET'
+        }));
+        console.log(`✅ Mixpanel: Form tracking enabled for ${forms.length} forms`);
+      } else {
+        console.log("ℹ️ Mixpanel: No forms found, skipping form tracking");
+      }
+    };
 
-    console.log("✅ Mixpanel: Auto-tracking enabled");
+    // If DOM is already loaded, setup immediately
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupTracking);
+    } else {
+      // DOM is already loaded, but wait a bit for React components to render
+      setTimeout(setupTracking, 100);
+    }
+
+    console.log("✅ Mixpanel: Auto-tracking setup initiated");
   } catch (error) {
     console.error("❌ Mixpanel: Failed to enable auto-tracking", error);
   }

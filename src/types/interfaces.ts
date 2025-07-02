@@ -208,6 +208,24 @@ export interface OrderInterface {
         updatedAt?: string;
         status?: 'pending' | 'approved' | 'rejected';
     }>;
+    customerInfo?: {
+        companyName?: string;
+        taxNumber?: string;
+        taxOffice?: string;
+        address?: string;
+        email?: string;
+        phoneNumber?: string;
+        whereDidYouHear?: string;
+    };
+    paymentInfo?: {
+        cardNumber?: string;
+        expiryDate?: string;
+        cvv?: string;
+        nameOnCard?: string;
+        country?: string;
+        saveCard?: boolean;
+        agreement?: boolean;
+    };
 }
 
 interface BillingInformation {
