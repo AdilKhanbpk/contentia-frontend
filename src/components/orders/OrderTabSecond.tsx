@@ -4,8 +4,10 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { validateCoupon } from "@/store/features/admin/couponSlice";
+import { setOrderFormData } from "@/store/features/profile/orderSlice";
 import { OrderInterface } from "@/types/interfaces";
 import Image from "next/image";
+import { toast } from "react-toastify";
 
 // Define form input types
 interface PaymentFormInputs {
@@ -69,7 +71,35 @@ export default function TabSecond({
     const dispatch = useDispatch<AppDispatch>();
 
     const onSubmit = async (data: PaymentFormInputs) => {
-        console.log(data);
+        console.log("🚀 FORM SUBMITTED! Payment form data:", data);
+        console.log("🏷️ Tax ID from form:", data.taxId);
+
+        // Save payment and customer information to Redux store
+        const paymentData = {
+            paymentInfo: {
+                cardNumber: data.cardNumber,
+                expiryDate: data.expiryDate,
+                cvv: data.cvv,
+                nameOnCard: data.nameOnCard,
+                country: data.country,
+                saveCard: data.saveCard,
+                agreement: data.agreement
+            },
+            customerInfo: {
+                companyName: data.companyName,
+                taxNumber: data.taxId, // Map taxId to taxNumber
+                taxOffice: data.taxOffice,
+                address: data.address,
+                email: data.email,
+                phoneNumber: data.phoneNumber,
+                whereDidYouHear: data.whereDidYouHear
+            }
+        };
+
+        console.log("📦 Saving to Redux:", paymentData);
+        dispatch(setOrderFormData(paymentData));
+        toast.success("Payment information saved successfully!");
+        setActiveTab(2);
     };
 
     const basePrice = orderFormData?.basePrice;
@@ -700,7 +730,6 @@ export default function TabSecond({
                                 {/* Submit Button */}
                                 <button
                                     type='submit'
-                                    onClick={() => setActiveTab(2)}
                                     className='w-full Button text-white px-4 py-2 rounded-md font-semibold'
                                 >
                                     <div className='flex flex-row space-x-8'>

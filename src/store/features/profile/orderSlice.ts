@@ -101,6 +101,28 @@ export const createOrder = createAsyncThunk(
         });
       }
 
+      // Append customer info if available
+      if (orderData.customerInfo) {
+        console.log("📋 Customer info from Redux:", orderData.customerInfo);
+        Object.entries(orderData.customerInfo).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            formData.append(`customerInfo[${key}]`, String(value));
+            console.log(`📤 Adding customerInfo[${key}]: ${value}`);
+          }
+        });
+      } else {
+        console.log("⚠️ No customerInfo found in orderData");
+      }
+
+      // Append payment info if available
+      if (orderData.paymentInfo) {
+        Object.entries(orderData.paymentInfo).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            formData.append(`paymentInfo[${key}]`, String(value));
+          }
+        });
+      }
+
       // Append selected files
       selectedFiles.forEach((file) => {
         formData.append("uploadFiles", file);

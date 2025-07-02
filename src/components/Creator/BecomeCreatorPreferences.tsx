@@ -98,7 +98,15 @@ const Preferences: React.FC<PreferencesProps> = ({ setActiveTab }) => {
 
             if (res.status === 201) {
                 toast.success(res.message);
-                router.push("/icerik-uretici-ol/submitted-successfully");
+
+                // Check if OTP verification is required
+                if (res.data?.requiresOtpVerification && res.data?.phoneNumber) {
+                    // Redirect to OTP verification page
+                    router.push(`/verify-creator-otp?phoneNumber=${encodeURIComponent(res.data.phoneNumber)}`);
+                } else {
+                    // Fallback to success page
+                    router.push("/icerik-uretici-ol/submitted-successfully");
+                }
             }
         } catch (error: any) {
             const errorMessage =
