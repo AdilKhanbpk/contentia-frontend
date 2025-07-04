@@ -10,9 +10,9 @@ const OrderDetails = () => {
 
     const tabs = [
         { id: 0, label: "Sipariş Detayları" },
-        { id: 1, label: "Ödeme" },
-        { id: 2, label: "UGC Brief" },
-        { id: 3, label: "Tercihler" },
+        { id: 1, label: "UGC Brief" },
+        { id: 2, label: "Tercihler" },
+        { id: 3, label: "Ödeme" },
     ];
 
     return (
@@ -37,13 +37,15 @@ const OrderDetails = () => {
                 <TabFirst setActiveTab={setActiveTab}></TabFirst>
             )}
             {activeTab === 1 && (
-                <TabSecond setActiveTab={setActiveTab}/>
-            )}
-            {activeTab === 2 && (
+             
                 <TabThird setActiveTab={setActiveTab}></TabThird>
             )}
+            {activeTab === 2 && (
+                     <TabFourth setActiveTab={setActiveTab}></TabFourth>
+            )}
             {activeTab === 3 && (
-                <TabFourth setActiveTab={setActiveTab}></TabFourth>
+             
+                 <TabSecond setActiveTab={setActiveTab}/>
             )}
         </div>
     );

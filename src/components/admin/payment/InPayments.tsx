@@ -20,6 +20,8 @@ import {
     deletePayment,
     updatePayment,
 } from "@/store/features/admin/incomingPaymentSlice";
+import { fetchOrders } from "@/store/features/admin/ordersSlice";
+import { OrderInterface } from "@/types/interfaces";
 import { exportCsvFile } from "@/utils/exportCsvFile";
 import CreateInvoiceModal from "./sub-in-payment/UploadInPaymentInvoiceModal";
 import ViewModal from "./sub-in-payment/ViewInPaymentModal";
@@ -32,6 +34,9 @@ const InPayments: React.FC = () => {
     const { payments = [], loading } = useSelector(
         (state: RootState) => state.incomingPayment
     );
+    const { data: orders = [] } = useSelector(
+        (state: RootState) => state.orders
+    );
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditInvoiceModalOpen, setIsEditInvoiceModalOpen] = useState(false);
@@ -40,10 +45,33 @@ const InPayments: React.FC = () => {
         {} as PaymentInterface
     );
     const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+    const [Allorders, setAllOrders] = useState<any[]>([]);
 
     useEffect(() => {
         dispatch(fetchPayments());
+        dispatch(fetchOrders());
     }, [dispatch]);
+
+    useEffect(() => {
+        if (orders.length > 0) {
+            const ordersData = orders.map((order: OrderInterface) => ({
+                orderId: order._id,
+                orderName: order.associatedBrands?.brandName || order.briefContent?.brandName || `Order ${order._id.slice(-6)}`,
+                orderOwner: order.orderOwner?.fullName || 'Unknown',
+                orderStatus: order.orderStatus,
+                paymentStatus: order.paymentStatus,
+                totalPrice: order.totalPriceForCustomer,
+                createdAt: order.createdAt
+            }));
+
+            // Sort by creation date - newest first (descending order)
+            const sortedOrdersData = ordersData.sort((a, b) =>
+                new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+
+            setAllOrders(sortedOrdersData);
+        }
+    }, [orders]);
 
     const handleRefund = async (id: string) => {
         try {
@@ -89,6 +117,17 @@ const InPayments: React.FC = () => {
         }
         setIsEditInvoiceModalOpen(true);
     };
+
+
+
+    const getOrder = (id: string) => {
+        const payment = payments.find((payment) => payment._id === id);
+        if (payment) {
+            setCurrentPayment(payment);
+        }
+        setIsViewModalOpen(true);
+    };
+
     const handleExport = useCallback(() => {
         if (!payments) {
             console.error("No payments available to export");
@@ -216,6 +255,80 @@ const InPayments: React.FC = () => {
         []
     );
 
+    const orderColumns = useMemo(
+        () => [
+            {
+                name: "Order ID",
+                selector: (row: any) => row.orderId,
+                sortable: true,
+                grow: 1,
+                wrap: true,
+            },
+            {
+                name: "Order Title",
+                selector: (row: any) => row.orderName,
+                sortable: true,
+                grow: 1,
+                wrap: true,
+            },
+            {
+                name: "Creator Name",
+                selector: (row: any) => row.orderOwner,
+                sortable: true,
+                grow: 1,
+                wrap: true,
+            },
+            {
+                name: "Created Date",
+                selector: (row: any) => new Date(row.createdAt).toLocaleDateString(),
+                sortable: true,
+                grow: 1,
+                wrap: true,
+            },
+            {
+                name: "Order Status",
+                selector: (row: any) => row.orderStatus,
+                sortable: true,
+                cell: (row: any) => (
+                    <span className={`px-2 py-1 rounded text-xs ${
+                        row.orderStatus === 'completed' ? 'bg-green-100 text-green-800' :
+                        row.orderStatus === 'active' ? 'bg-blue-100 text-blue-800' :
+                        row.orderStatus === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-gray-100 text-gray-800'
+                    }`}>
+                        {row.orderStatus}
+                    </span>
+                ),
+                grow: 1,
+                wrap: true,
+            },
+            {
+                name: "Total Price",
+                selector: (row: any) => `₺${row.totalPrice}`,
+                sortable: true,
+                grow: 1,
+                wrap: true,
+            },
+            {
+                name: "Payment Status",
+                selector: (row: any) => row.paymentStatus,
+                sortable: true,
+                cell: (row: any) => (
+                    <span className={`px-2 py-1 rounded text-xs ${
+                        row.paymentStatus === 'paid' ? 'bg-green-100 text-green-800' :
+                        row.paymentStatus === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                    }`}>
+                        {row.paymentStatus}
+                    </span>
+                ),
+                grow: 1,
+                wrap: true,
+            },
+        ],
+        []
+    );
+
     const deferredSearchTerm = useDeferredValue(searchTerm);
     const filteredPayments = useMemo(() => {
         if (!payments) return [];
@@ -228,6 +341,19 @@ const InPayments: React.FC = () => {
                     .includes(lowerCaseSearchTerm)
         );
     }, [payments, deferredSearchTerm]);
+
+    const filteredOrders = useMemo(() => {
+        if (!Allorders) return [];
+        const lowerCaseSearchTerm = deferredSearchTerm.toLowerCase().trim();
+        return Allorders.filter(
+            (order: any) =>
+                order.orderName.toLowerCase().includes(lowerCaseSearchTerm) ||
+                order.orderId.toLowerCase().includes(lowerCaseSearchTerm) ||
+                order.orderOwner.toLowerCase().includes(lowerCaseSearchTerm) ||
+                order.orderStatus.toLowerCase().includes(lowerCaseSearchTerm) ||
+                order.paymentStatus.toLowerCase().includes(lowerCaseSearchTerm)
+        );
+    }, [Allorders, deferredSearchTerm]);
 
     return (
         <div className='bg-white rounded-lg'>
@@ -255,14 +381,27 @@ const InPayments: React.FC = () => {
                         </button>
                     </div>
                 </div>
-                <div className='shadow-md'>
-                    <CustomTable
-                        columns={columns}
-                        data={filteredPayments}
-                        noDataComponent='No Ingoing Payments Found'
-                        loading={loading}
-                    />
-                </div>
+                {Allorders.length === 0 && (
+                    <div className='shadow-md'>
+                        <CustomTable
+                            columns={columns}
+                            data={filteredPayments}
+                            noDataComponent='No Ingoing Payments Found'
+                            loading={loading}
+                        />
+                    </div>
+                )}
+
+                {Allorders.length > 0 && (
+                    <div className='shadow-md'>
+                        <CustomTable
+                            columns={orderColumns}
+                            data={filteredOrders}
+                            noDataComponent='No Orders Found'
+                            loading={loading}
+                        />
+                    </div>
+                )}
             </div>
 
             <CustomModelAdmin
