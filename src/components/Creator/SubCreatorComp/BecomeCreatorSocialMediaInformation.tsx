@@ -217,21 +217,21 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                             className='text-sm text-gray-500'
                         >
                             <span className='underline'>
-                                <Link href='/dummy-url'>
+                                <Link href='https://www.contentia.io/sozlesmeler/icerik-uretici-uyelik-ve-kullanici-sozlesmesi/'>
                                     Kullanıcı Sözleşmesi
                                 </Link>
                             </span>
                             'ni{" "}
                             <span className='underline'>
-                                <Link href='/dummy-url'>Aydınlatma Metni</Link>
+                                <Link href='https://www.contentia.io/sozlesmeler/icerik-uretici-gizlilik-politikasi/'>Aydınlatma Metni</Link>
                             </span>
                             'ni{" "}
                             <span className='underline'>
-                                <Link href='/dummy-url'>Açık Rıza Metni</Link>
+                                <Link href='https://www.contentia.io/sozlesmeler/icerik-uretici-kvkk-acik-riza-metni/'>Açık Rıza Metni</Link>
                             </span>
                             'ni ve{" "}
                             <span className='underline'>
-                                <Link href='/dummy-url'>
+                                <Link href='https://www.contentia.io/sozlesmeler/kullanim-sartlari/'>
                                     Ödeme Platform Kullanım Sözleşmesi
                                 </Link>
                             </span>
@@ -261,7 +261,7 @@ const SocialMediaInformation: React.FC<{ register: any; errors: any }> = ({
                             className='text-sm text-gray-500'
                         >
                             <span className='underline'>
-                                <Link href='/dummy-url'>
+                                <Link href='https://www.contentia.io/sozlesmeler/ticari-elektronik-ileti-ve-iletisim-izni/'>
                                     Ticari Elektronik İleti ve İletişim İzni
                                 </Link>
                             </span>

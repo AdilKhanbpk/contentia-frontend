@@ -125,7 +125,7 @@ const Footer = () => {
                             </li>
                             <li>
                                 <Link
-                                    href='/sozlesmeler/gizlilik-politikasi'
+                                    href='https://www.contentia.io/sozlesmeler/gizlilik-politikasi/'
                                     className='text-sm whitespace-nowrap text-gray-600 hover:underline'
                                 >
                                     Gizlilik Politikası
@@ -133,7 +133,7 @@ const Footer = () => {
                             </li>
                             <li>
                                 <Link
-                                    href='/sozlesmeler/kullanim-sartlari'
+                                    href='https://www.contentia.io/sozlesmeler/kullanim-sartlari/'
                                     className='text-sm whitespace-nowrap text-gray-600 hover:underline'
                                 >
                                     Kullanım Koşulları
@@ -247,10 +247,7 @@ const Footer = () => {
                         </div>
                     </div>
 
-                    {/* Copyright */}
-                    <p className='text-sm text-gray-600 mt-4'>
-                        2024 Contentia. Tüm Hakları Saklıdır
-                    </p>
+
                 </div>
 
                 {/* Right Section */}
@@ -277,6 +274,50 @@ const Footer = () => {
                             </Link>
                         ))}
                     </div>
+                </div>
+            </div>
+
+            {/* Payment & Partner Logos Section - Full Width */}
+            <div className='mt-5'>
+                <div className='flex flex-wrap justify-center items-center gap-2'>
+                    <div className='flex items-center justify-center bg-white rounded-md shadow-sm '>
+                        <Image
+                            src='/dikdortgen-logo-paytr.jpg'
+                            alt='PayTR Payment Gateway'
+                            width={150}
+                            height={80}
+                            className='object-contain'
+                        />
+                    </div>
+
+                    <div className='flex items-center justify-center bg-white rounded-md shadow-sm '>
+                        <Image
+                            src='/tekparca-logolar-1.jpg'
+                            alt='Partner Logo'
+                            width={240}
+                            height={140}
+                            className='object-contain'
+                        />
+                    </div>
+
+                    <div className='flex items-center justify-center bg-white rounded-md shadow-sm'>
+                        <Image
+                            src='/bankalar-tek-parca.jpg'
+                            alt='Banking Partners'
+                            width={870}
+                            height={550}
+                            className='object-contain'
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Copyright Section - At the very bottom */}
+            <div className='mt-5'>
+                <div className='text-center'>
+                    <p className='text-sm text-gray-600'>
+                        2024 Contentia. Tüm Hakları Saklıdır
+                    </p>
                 </div>
             </div>
         </footer>

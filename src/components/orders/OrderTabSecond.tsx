@@ -722,7 +722,14 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
                 {...register("agreement", { required: "Sözleşmeyi onaylamalısınız" })}
               />
               <label className="ml-2 text-sm font-semibold">
-                Mesafeli Satış Sözleşmesini ve Ön Bilgilendirme Formunu Onaylıyorum
+                <a href="https://www.contentia.io/sozlesmeler/mesafeli-satis-sozlesmesi/" target="_blank" rel="noopener noreferrer" className="underline text-blue-600 hover:text-blue-800">
+                  Mesafeli Satış Sözleşmesi
+                </a>
+                'ni ve{" "}
+                <a href="https://www.contentia.io/sozlesmeler/on-bilgilendirme-formu/" target="_blank" rel="noopener noreferrer" className="underline text-blue-600 hover:text-blue-800">
+                  Ön Bilgilendirme Formu
+                </a>
+                'nu Onaylıyorum
               </label>
               {errors.agreement && <span className="text-red-500 text-sm">{errors.agreement.message}</span>}
             </div>
