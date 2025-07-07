@@ -64,6 +64,11 @@ export const createOrder = createAsyncThunk(
       formData.append("noOfUgc", String(orderData.noOfUgc || 0));
       formData.append("basePrice", String(orderData.basePrice || 0));
 
+      // Append coupon if available
+      if (orderData.coupon) {
+        formData.append("coupon", orderData.coupon);
+      }
+
       // Append additional services if available
       if (orderData.additionalServices) {
         Object.entries(orderData.additionalServices).forEach(([key, value]) => {

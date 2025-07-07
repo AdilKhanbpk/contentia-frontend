@@ -47,6 +47,7 @@ function NavbarNotification({ user, notifications }: NavbarNotificationProps) {
     };
 
     const handleMarkAllAsRead = () => {
+        
         dispatch(markAllAsRead());
     };
 

@@ -406,3 +406,8 @@ export interface AnalyticsInterface {
         users: number;
     };
 }
+
+// export interface OrderData {
+//     selectedFiles: File[];
+//     coupon?: string; // <-- Add this line
+// }

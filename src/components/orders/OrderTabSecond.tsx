@@ -2,10 +2,11 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/store/store";
+import { AppDispatch, RootState } from "@/store/store"; 
 import { validateCoupon } from "@/store/features/admin/couponSlice";
 import { OrderInterface } from "@/types/interfaces";
 import Image from "next/image";
+import { setOrderFormData } from "@/store/features/profile/orderSlice";
 
 // Define form input types
 interface PaymentFormInputs {
@@ -69,7 +70,9 @@ export default function TabSecond({
     const dispatch = useDispatch<AppDispatch>();
 
     const onSubmit = async (data: PaymentFormInputs) => {
-        console.log(data);
+        // Only submit payment form data, coupon is already in Redux from handleApplyCoupon
+        dispatch(setOrderFormData({ ...data  }));
+        console.log("Form submitted with data:", data);
     };
 
     const basePrice = orderFormData?.basePrice;
@@ -104,6 +107,24 @@ export default function TabSecond({
 
             setDiscount(discountAmount);
             setCouponError("");
+
+            // Store coupon ObjectId and update totalPrice in Redux orderFormData
+            if (result._id) {
+                // Calculate new basePrice per video if needed
+                // let newBasePrice = basePrice;
+                // if (result.discountPercentage) {
+                //     newBasePrice = basePrice - (basePrice * result.discountPercentage) / 100;
+                // } else if (result.discountTl) {
+                //     // If TL discount, you may want to subtract per video or just from platform, see your business logic
+                //     newBasePrice = basePrice; // Usually TL discount is not per video, so keep as is
+                // }
+                dispatch(setOrderFormData({
+                    coupon: result._id,
+                    totalPrice: updatedFinalPrice,
+                }));
+                console.log("this is the updated totalPrice:", updatedFinalPrice);
+                
+            }
         } catch (error: any) {
             setCouponError(error.message || "Bir hata oluştu");
         } finally {
@@ -700,7 +721,6 @@ export default function TabSecond({
                                 {/* Submit Button */}
                                 <button
                                     type='submit'
-                                    onClick={() => setActiveTab(2)}
                                     className='w-full Button text-white px-4 py-2 rounded-md font-semibold'
                                 >
                                     <div className='flex flex-row space-x-8'>

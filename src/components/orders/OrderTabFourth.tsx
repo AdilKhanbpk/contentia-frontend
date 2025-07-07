@@ -13,6 +13,7 @@ import {
 import { useFileContext } from "@/context/FileContext";
 import CustomModalAdmin from "@/components/modal/CustomModelAdmin";
 import { useRouter } from "next/navigation";
+import { OrderInterface } from "@/types/interfaces";
 
 const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
     setActiveTab,
@@ -27,6 +28,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
     const [isOrderSuccessFullyPlaced, setIsOrderSuccessFullyPlaced] =
         useState(false);
     const [isOrderFailed, setIsOrderFailed] = useState(false);
+    const orderFormData = useSelector(selectOrderFormData);
 
     const handleMaxAgeChange = (e: any) => {
         const value = Math.max(Number(e.target.value), minAge + 1);
@@ -61,7 +63,13 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
 
             dispatch(setOrderFormData(preferencesData));
 
-            await dispatch(createOrder({ selectedFiles })).unwrap();
+            // Get coupon from Redux orderFormData
+            await dispatch(
+                createOrder({
+                    selectedFiles,
+                    // coupon: orderFormData.coupon || "",
+                })
+            ).unwrap();
             setSelectedFiles([]);
             setIsOrderSuccessFullyPlaced(true);
         } catch (error: any) {

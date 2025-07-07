@@ -43,6 +43,7 @@ export const createOrder = createAsyncThunk(
           creatorType: data.additionalServices?.creatorType,
           productShipping: data.additionalServices?.productShipping === true ? true : false,
         },
+        coupon: data.coupon,
       };
 
       // First create the order
@@ -58,6 +59,23 @@ export const createOrder = createAsyncThunk(
         return rejectWithValue(axiosError.response?.data?.message || 'Failed to create order');
       }
       return rejectWithValue('Failed to create order');
+    }
+  }
+);
+
+export const approvePayment = createAsyncThunk(
+  'orders/approvePayment',
+  async ({ orderId }: { orderId: string; }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.patch(`/admin/orders/approve-payment/${orderId}`);
+
+      return response.data.data;
+    } catch (error) {
+      if ((error as AxiosError).isAxiosError) {
+        const axiosError = error as AxiosError<ErrorResponse>;
+        return rejectWithValue(axiosError.response?.data?.message || 'Failed to approve payment');
+      }
+      return rejectWithValue('Failed to approve payment');
     }
   }
 );

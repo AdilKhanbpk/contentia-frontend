@@ -114,7 +114,12 @@ const OutPayments: React.FC = () => {
         }
     }, [flattenedOrders]);
 
+    
     const handleApprove = useCallback(async (id: string) => {
+        // Here you would typically dispatch an action to approve the payment
+        // For now, we will just show a success message
+        // await dispatch(approvePayment(id)).unwrap();
+
         toast.success("Payment Sent successfully!");
     }, []);
 
