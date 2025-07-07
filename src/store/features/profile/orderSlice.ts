@@ -59,6 +59,8 @@ export const createOrder = createAsyncThunk(
         return rejectWithValue("Order data is missing");
       }
 
+      console.log("🚀 Complete orderData being sent:", orderData);
+
       // Convert orderData to FormData
       const formData = new FormData();
       formData.append("noOfUgc", String(orderData.noOfUgc || 0));
@@ -90,6 +92,7 @@ export const createOrder = createAsyncThunk(
 
       // Append brief content if available
       if (orderData.briefContent) {
+        console.log("📋 Brief content from Redux:", orderData.briefContent);
         Object.entries(orderData.briefContent).forEach(([key, value]) => {
           if (Array.isArray(value)) {
             value.forEach((item, index) => {
@@ -97,8 +100,11 @@ export const createOrder = createAsyncThunk(
             });
           } else {
             formData.append(`briefContent[${key}]`, String(value));
+            console.log(`📤 Adding briefContent[${key}]: ${value}`);
           }
         });
+      } else {
+        console.log("⚠️ No briefContent found in orderData");
       }
 
       // Append customer info if available

@@ -4,10 +4,18 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { validateCoupon } from "@/store/features/admin/couponSlice";
-import { setOrderFormData } from "@/store/features/profile/orderSlice";
+import {
+  setOrderFormData,
+  createOrder,
+  selectOrderFormData,
+  selectOrderIsLoading
+} from "@/store/features/profile/orderSlice";
 import { OrderInterface } from "@/types/interfaces";
 import Image from "next/image";
 import { toast } from "react-toastify";
+import { useFileContext } from "@/context/FileContext";
+import CustomModalAdmin from "@/components/modal/CustomModelAdmin";
+import { useRouter } from "next/navigation";
 
 // Unified interface for form inputs and payment data
 interface PaymentFormData {
@@ -67,6 +75,11 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+  const { selectedFiles, setSelectedFiles } = useFileContext();
+  const [isOrderSuccessFullyPlaced, setIsOrderSuccessFullyPlaced] = useState(false);
+  const [isOrderFailed, setIsOrderFailed] = useState(false);
+  const orderLoading = useSelector(selectOrderIsLoading);
   const { data: additionalService } = useSelector((state: RootState) => state.addPrice);
   const orderFormData = useSelector<RootState, OrderInterface | null>(
     (state) => state.order.orderFormData as OrderInterface
@@ -254,6 +267,19 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
 
     // Process payment
     await processPayment(data);
+
+    // Create order after successful payment processing
+    try {
+      await dispatch(createOrder({ selectedFiles })).unwrap();
+      setSelectedFiles([]);
+      setIsOrderSuccessFullyPlaced(true);
+      toast.success("Sipariş başarıyla oluşturuldu!");
+    } catch (error: any) {
+      setIsOrderFailed(true);
+      toast.error(error.message || "Sipariş oluşturulurken bir hata oluştu.");
+      setSelectedFiles([]);
+      console.error("Error creating order:", error.message);
+    }
   };
 
   // Effects
@@ -771,6 +797,56 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
           </form>
         </div>
       </div>
+
+      {/* SUCCESS MODAL */}
+      <CustomModalAdmin
+        title=""
+        isOpen={isOrderSuccessFullyPlaced}
+        closeModal={() => setIsOrderSuccessFullyPlaced(false)}
+      >
+        <div className="flex flex-col items-center justify-center pt-4 pb-16 px-16 text-center">
+          <Image
+            alt="success"
+            src="/check.png"
+            height={100}
+            width={100}
+            className="w-28 h-28 mb-6"
+          />
+          <h1 className="text-xl font-semibold text-green-600 mb-2">
+            Siparişin Başarıyla Oluşturuldu
+          </h1>
+          <p className="text-gray-600">
+            Siparişin oluşturuldu, içerik üreticilerine iletildi.{" "}
+            <span className="font-medium">Siparişlerim</span> sekmesi altından takip edebilirsin.
+          </p>
+        </div>
+      </CustomModalAdmin>
+
+      {/* ERROR MODAL */}
+      <CustomModalAdmin
+        title=""
+        isOpen={isOrderFailed}
+        closeModal={() => {
+          setIsOrderFailed(false);
+          router.push("/siparislerim");
+        }}
+      >
+        <div className="flex flex-col items-center justify-center pt-4 pb-16 px-16 text-center">
+          <Image
+            alt="error"
+            src="/x.png"
+            height={100}
+            width={100}
+            className="w-28 h-28 mb-6"
+          />
+          <h1 className="text-xl font-semibold text-red-600 mb-2">
+            Bir Sorun Oluştu
+          </h1>
+          <p className="text-gray-600">
+            Sipariş oluştururken bir sorun oluştu. Lütfen tekrar dene. Sorun devam ederse bizimle iletişime geç.
+          </p>
+        </div>
+      </CustomModalAdmin>
     </div>
   );
 }

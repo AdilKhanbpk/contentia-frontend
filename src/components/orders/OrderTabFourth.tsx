@@ -6,27 +6,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import {
     setOrderFormData,
-    createOrder,
-    selectOrderFormData,
     selectOrderIsLoading,
 } from "@/store/features/profile/orderSlice";
-import { useFileContext } from "@/context/FileContext";
-import CustomModalAdmin from "@/components/modal/CustomModelAdmin";
-import { useRouter } from "next/navigation";
 
 const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
     setActiveTab,
 }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const router = useRouter();
 
     const [minAge, setMinAge] = useState(18);
     const [maxAge, setMaxAge] = useState(65);
     const orderLoading = useSelector(selectOrderIsLoading);
-    const { selectedFiles, setSelectedFiles } = useFileContext();
-    const [isOrderSuccessFullyPlaced, setIsOrderSuccessFullyPlaced] =
-        useState(false);
-    const [isOrderFailed, setIsOrderFailed] = useState(false);
 
     const handleMaxAgeChange = (e: any) => {
         const value = Math.max(Number(e.target.value), minAge + 1);
@@ -60,14 +50,12 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
             };
 
             dispatch(setOrderFormData(preferencesData));
+            toast.success("Tercihler kaydedildi!");
 
-            await dispatch(createOrder({ selectedFiles })).unwrap();
-            setSelectedFiles([]);
-            setIsOrderSuccessFullyPlaced(true);
+            // Navigate to payment tab - order will be created after payment
+            setActiveTab(1); // Go to OrderTabSecond (Payment)
         } catch (error: any) {
-            setIsOrderFailed(true);
-            toast.error(error.message || "Something went wrong.");
-            setSelectedFiles([]);
+            toast.error(error.message || "Tercihler kaydedilirken bir hata oluştu.");
             console.error("Error submitting form:", error.message);
         }
     };
@@ -532,66 +520,15 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                         <div className='w-full flex justify-end'>
                             <button
                                 type='submit'
+                                onClick={() => setActiveTab(3)}
                                 className=' Button text-white py-2 px-4 rounded-md'
                             >
-                                {orderLoading ? "Tamamlanıyor..." : "Tamamla"}
+                                {orderLoading ? "Kaydediliyor..." : "Tamamla"}
                             </button>
                         </div>
                     </div>
                 </div>
             </form>
-
-            {/* SUCCESS MODAL */}
-            <CustomModalAdmin
-                title=''
-                isOpen={isOrderSuccessFullyPlaced}
-                closeModal={() => setIsOrderSuccessFullyPlaced(false)}
-            >
-                <div className='flex flex-col items-center justify-center pt-4 pb-16 px-16 text-center'>
-                    <Image
-                        alt='success'
-                        src='/check.png'
-                        height={100}
-                        width={100}
-                        className='w-28 h-28 mb-6'
-                    />
-                    <h1 className='text-xl font-semibold text-green-600 mb-2'>
-                        Siparişin Başarıyla Oluşturuldu
-                    </h1>
-                    <p className='text-gray-600'>
-                        Siparişin oluşturuldu, içerik üreticilerine iletildi.
-                        <span className='font-medium'>Siparişlerim</span>{" "}
-                        sekmesi altından takip edebilirsin.
-                    </p>
-                </div>
-            </CustomModalAdmin>
-
-            {/* ERROR MODAL */}
-            <CustomModalAdmin
-                title=''
-                isOpen={isOrderFailed}
-                closeModal={() => {
-                    setIsOrderFailed(false);
-                    router.push("/siparislerim");
-                }}
-            >
-                <div className='flex flex-col items-center justify-center pt-4 pb-16 px-16 text-center'>
-                    <Image
-                        alt='error'
-                        src='/x.png'
-                        height={100}
-                        width={100}
-                        className='w-28 h-28 mb-6'
-                    />
-                    <h1 className='text-xl font-semibold text-red-600 mb-2'>
-                        Bir Sorun Oluştu
-                    </h1>
-                    <p className='text-gray-600'>
-                        Sipariş oluştururken bir sorun oluştu. Lütfen tekrar
-                        dene. Sorun devam ederse bizimle iletişime geç.
-                    </p>
-                </div>
-            </CustomModalAdmin>
         </>
     );
 };

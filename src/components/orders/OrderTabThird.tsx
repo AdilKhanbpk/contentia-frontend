@@ -60,7 +60,7 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
 
     await dispatch(setOrderFormData(formData));
     toast.success("Order Brief Saved Successfully!");
-    setActiveTab(3);
+    setActiveTab(3); // Go to OrderTabFourth (Preferences)
   };
 
   const openModal = () => setIsModalOpen(true);
@@ -283,7 +283,7 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
           <div className="text-right">
             <button
               type="submit"
-              // onClick={() => setActiveTab(3)}
+              onClick={() => setActiveTab(2)}
               className="py-2 px-4 Button font-semibold text-white rounded-md focus:outline-none"
             >
               İleri
