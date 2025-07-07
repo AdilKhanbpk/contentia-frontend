@@ -27,16 +27,16 @@ export default function HowItWorks() {
         const fetchData = async () => {
             try {
                 await dispatch(fetchFaqs()).unwrap();
-                toast.success("FAQs fetched successfully");
+                toast.success("SSS başarıyla alındı");
             } catch {
-                toast.error("Failed to fetch FAQs");
+                toast.error("SSS alınamadı");
             }
 
             try {
                 await dispatch(fetchHowItWorks()).unwrap();
-                toast.success("Data fetched successfully");
+                toast.success("Veriler başarıyla alındı");
             } catch {
-                toast.error("Failed to fetch data");
+                toast.error("Veriler alınamadı");
             }
         };
 

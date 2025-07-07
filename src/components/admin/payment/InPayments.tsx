@@ -72,8 +72,7 @@ const InPayments: React.FC = () => {
                 })
                 .catch((error: any) => {
                     toast.error(
-                        `Error deleting Payment: ${
-                            error?.message || "Unknown error"
+                        `Error deleting Payment: ${error?.message || "Unknown error"
                         }`
                     );
                 });
@@ -232,23 +231,25 @@ const InPayments: React.FC = () => {
     return (
         <div className='bg-white rounded-lg'>
             <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
-                <div className='flex justify-between mb-4'>
-                    <input
-                        type='text'
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder='Search...'
-                        className='p-2 border border-gray-300 rounded-lg'
-                    />
-                    <div className='flex space-x-2'>
+                <div className='flex flex-col sm:flex-row justify-between items-stretch sm:items-center mb-4 space-y-2 sm:space-y-0 sm:space-x-2'>
+                    <div className='flex justify-center items-center w-full sm:w-auto'>
+                        <input
+                            type='text'
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            placeholder='Search...'
+                            className='p-2 border border-gray-300 rounded-lg w-full sm:w-auto'
+                        />
+                    </div>
+                    <div className='flex flex-col xs:flex-row justify-center space-y-2 xs:space-y-0 xs:space-x-2 w-full sm:w-auto'>
                         <button
                             onClick={() => setIsModalOpen(true)}
-                            className='px-4 py-2 Button text-white rounded-md'
+                            className='px-4 py-2 Button text-white rounded-md w-full xs:w-auto'
                         >
                             Add Invoice
                         </button>
                         <button
-                            className='px-4 py-2 bg-green-500 text-white rounded-md'
+                            className='px-4 py-2 bg-green-500 text-white rounded-md w-full xs:w-auto'
                             onClick={handleExport}
                         >
                             Export CSV <FaFileCsv className='inline ml-2' />
@@ -264,7 +265,6 @@ const InPayments: React.FC = () => {
                     />
                 </div>
             </div>
-
             <CustomModelAdmin
                 isOpen={isModalOpen}
                 closeModal={() => setIsModalOpen(false)}

@@ -48,13 +48,13 @@ export default function ModelRevision({ orderData }: ModelRevisionProps) {
             if (createRevision.fulfilled.match(resultAction)) {
                 reset();
                 await dispatch(fetchOrders());
-                toast.success("Revision created successfully");
+                toast.success("Revizyon başarıyla oluşturuldu");
             } else if (createRevision.rejected.match(resultAction)) {
                 throw new Error(resultAction.error.message);
             }
         } catch (error) {
             console.error("Failed to submit revision request:", error);
-            toast.error("Revision creation failed");
+            toast.error("Revizyon oluşturma başarısız oldu");
         } finally {
             setIsSubmitting(false);
         }

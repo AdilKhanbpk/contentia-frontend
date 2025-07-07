@@ -54,9 +54,9 @@ const CARDS = [
 
 export default function SmallCards() {
     return (
-        <div className='w-full ml-2 mt-10 sm:mt-10 md:mt-16 lg:mt-20'>
-            <div>
-                <div className='block lg:hidden'>
+        <div className='w-full max-w-full overflow-hidden ml-2 mt-10 sm:mt-10 md:mt-16 lg:mt-20'>
+            <div className='overflow-hidden'>
+                <div className='block lg:hidden overflow-hidden'>
                     <Slider {...settings}>
                         {CARDS.map((card, index) => (
                             <div

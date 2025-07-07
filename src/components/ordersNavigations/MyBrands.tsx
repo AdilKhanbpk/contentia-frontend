@@ -40,11 +40,11 @@ export default function MyBrands() {
                 })
             ).unwrap();
 
-            toast.success("Brand updated successfully!");
+            toast.success("Marka başarıyla güncellendi!");
             setEditingBrandId(null);
             dispatch(fetchMyBrands());
         } catch (error) {
-            toast.error("Failed to update brand. Please try again.");
+            toast.error("Marka güncellenemedi. Lütfen tekrar deneyin.");
         }
     };
 

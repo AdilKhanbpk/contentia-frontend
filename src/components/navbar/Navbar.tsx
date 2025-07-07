@@ -88,12 +88,12 @@ export default function Navbar() {
                     .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
             });
 
-            toast.success("Logout successful");
+            toast.success("Çıkış başarılı");
 
             // Force a page reload to clear any in-memory state
             window.location.href = "/giris-yap";
         } catch (error) {
-            toast.error("Logout failed");
+            toast.error("Çıkış başarısız");
         }
     };
 
@@ -173,9 +173,8 @@ export default function Navbar() {
                                     </button>
                                     {/* Show the menu only when isOpen is true */}
                                     <ul
-                                        className={`absolute left-0 mt-2 w-40 rounded-lg shadow-lg bg-white dark:bg-gray-800 z-50 ${
-                                            isOpen ? "block" : "hidden"
-                                        }`}
+                                        className={`absolute left-0 mt-2 w-40 rounded-lg shadow-lg bg-white dark:bg-gray-800 z-50 ${isOpen ? "block" : "hidden"
+                                            }`}
                                     >
                                         <li>
                                             <Link
@@ -341,9 +340,8 @@ export default function Navbar() {
             {/* Sidebar */}
             <aside
                 id='logo-sidebar'
-                className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${
-                    isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-                } bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700 lg:hidden`}
+                className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+                    } bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700 lg:hidden`}
                 aria-label='Sidebar'
             >
                 <div className='h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800'>
@@ -355,9 +353,8 @@ export default function Navbar() {
                             >
                                 <span className='ms-3'>{t("services")}</span>
                                 <svg
-                                    className={`w-4 h-4 transition-transform ${
-                                        isOpen ? "rotate-180" : ""
-                                    }`}
+                                    className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""
+                                        }`}
                                     fill='none'
                                     stroke='currentColor'
                                     strokeWidth='2'

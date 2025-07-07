@@ -285,6 +285,25 @@ export const markTheOrderAsCompleted = createAsyncThunk(
   }
 )
 
+export const updatePaymentStatus = createAsyncThunk(
+  'orders/updatePaymentStatus',
+  async ({ orderid, paymentstatus }: { orderid: string; paymentstatus: string; }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.put('/admin/orders/updatepaymentstatus', {
+        orderid,
+        paymentstatus
+      });
+      return response.data.data;
+    } catch (error) {
+      if ((error as AxiosError).isAxiosError) {
+        const axiosError = error as AxiosError<ErrorResponse>;
+        return rejectWithValue(axiosError.response?.data?.message || 'Failed to update payment status');
+      }
+      return rejectWithValue('Failed to update payment status');
+    }
+  }
+);
+
 export const markTheOrderAsRejected = createAsyncThunk(
   'orders/markTheOrderAsRejected',
   async ({ orderId }: { orderId: string; }, { rejectWithValue }) => {
@@ -315,6 +334,16 @@ const ordersSlice = createSlice({
     },
     clearOrdersError: (state) => {
       state.error = null;
+    },
+    updateOrderPaymentStatusLocally: (state, action: PayloadAction<{ orderId: string; paymentStatus: OrderInterface['paymentStatus'] }>) => {
+      const { orderId, paymentStatus } = action.payload;
+      const index = state.data.findIndex(order => order._id === orderId);
+      if (index !== -1) {
+        state.data[index].paymentStatus = paymentStatus;
+        if (state.currentOrder?._id === orderId) {
+          state.currentOrder.paymentStatus = paymentStatus;
+        }
+      }
     },
   },
   extraReducers: (builder) => {
@@ -510,9 +539,29 @@ const ordersSlice = createSlice({
         state.error = action.payload as string;
       })
 
+      // Update Payment Status
+      .addCase(updatePaymentStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updatePaymentStatus.fulfilled, (state, action: PayloadAction<OrderInterface>) => {
+        state.loading = false;
+        const index = state.data.findIndex(order => order._id === action.payload._id);
+        if (index !== -1) {
+          state.data[index] = action.payload;
+          if (state.currentOrder?._id === action.payload._id) {
+            state.currentOrder = action.payload;
+          }
+        }
+      })
+      .addCase(updatePaymentStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
   },
 });
 
-export const { setCurrentOrder, clearCurrentOrder, clearOrdersError } = ordersSlice.actions;
+export const { setCurrentOrder, clearCurrentOrder, clearOrdersError, updateOrderPaymentStatusLocally } = ordersSlice.actions;
 
 export default ordersSlice.reducer;

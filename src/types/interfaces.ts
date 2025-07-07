@@ -86,7 +86,7 @@ export interface CreatorInterface {
     };
     settings: {
         isNotificationOn: boolean;
-    }
+    };
     userAgreement: boolean;
     approvedCommercial: boolean;
 }
@@ -99,7 +99,6 @@ export interface ProfileFormInputs {
     tckn: string;
     dateOfBirth: string;
     gender?: string;
-
     addressDetails: {
         addressOne: string;
         addressTwo: string;
@@ -132,6 +131,12 @@ export interface PaymentInformationFormValues {
     };
 }
 
+export interface UploadFile {
+    uploadedBy: string;
+    fileUrls: string[];
+    uploadedDate: string;
+    creatorNoteOnOrder?: string;
+}
 
 export interface OrderInterface {
     _id: string;
@@ -142,11 +147,7 @@ export interface OrderInterface {
         fullName: string;
         email: string;
     };
-    assignedCreators: string[] | CreatorInterface[] | [{
-        _id: string;
-        fullName: string;
-        email: string;
-    }];
+    assignedCreators: any[]; // Standardized to CreatorInterface[]
     appliedCreators: string[] | CreatorInterface[];
     associatedBrands?: {
         brandName: string;
@@ -159,7 +160,7 @@ export interface OrderInterface {
     totalPriceForCustomer?: number;
     totalPriceForCreator?: number;
     orderStatus: "pending" | "active" | "completed" | "cancelled" | "revision" | "rejected";
-    paymentStatus: "paid" | "pending" | "refunded" | "cancelled"  | "rejected";
+    paymentStatus: "pending" | "approved" | "paid" | "refunded" | "cancelled" | "rejected";
     contentsDelivered?: number;
     additionalServices: {
         platform: string;
@@ -247,8 +248,6 @@ export interface Customer {
     termsAndConditionsApproved?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
-
-    // Methods
     AccessToken(): string;
     RefreshToken(): string;
     ComparePassword(password: string): Promise<boolean>;
@@ -268,7 +267,7 @@ export interface PackageInterface {
         fullName: string;
         profilePic: string;
         email: string;
-    },
+    };
     noOfUgc: number;
     packageTotalPrice: number;
     packageStatus: "pending" | "active" | "completed" | "cancelled" | "revision";
@@ -289,7 +288,6 @@ export interface PackageInterface {
     quotaLeft?: number;
     createdAt?: Date;
     updatedAt?: Date;
-
 }
 
 export interface BlogInterface {
@@ -335,14 +333,13 @@ export interface BlogInterface {
 }
 
 export interface EmailNotificationInterface {
-    _id?: string,
-    userType: 'all' | 'all-creators' | 'all-customers' | 'some-creators' | 'some-customers',
-    emailTitle: string,
-    emailContent: string,
-    users: string[],
-    createdAt?: string,
-    updatedAt?: string,
-
+    _id?: string;
+    userType: 'all' | 'all-creators' | 'all-customers' | 'some-creators' | 'some-customers';
+    emailTitle: string;
+    emailContent: string;
+    users: string[];
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export interface TermsInterface {
@@ -407,7 +404,10 @@ export interface AnalyticsInterface {
     };
 }
 
-// export interface OrderData {
-//     selectedFiles: File[];
-//     coupon?: string; // <-- Add this line
-// }
+interface BriefContent {
+    brandName: string;
+    productServiceName: string;
+    productServiceDesc: string;
+    scenario: string;
+    caseStudy: string;
+}

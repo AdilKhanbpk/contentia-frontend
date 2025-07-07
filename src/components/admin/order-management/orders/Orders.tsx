@@ -5,8 +5,6 @@ import {
     FaEdit,
     FaTrashAlt,
     FaEye,
-    FaGrav,
-    FaFan,
     FaCheck,
     FaTimes,
 } from "react-icons/fa";
@@ -325,7 +323,7 @@ const Orders: React.FC = () => {
                             <div>
                                 <p className='font-semibold'>
                                     {row.associatedBrands &&
-                                    row.associatedBrands.brandName
+                                        row.associatedBrands.brandName
                                         ? row.associatedBrands.brandName
                                         : "No Title"}
                                 </p>
@@ -361,13 +359,12 @@ const Orders: React.FC = () => {
                 name: "Order Status",
                 cell: (row: OrderInterface) => (
                     <span
-                        className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                            row.orderStatus === "completed"
-                                ? "text-green-700 bg-green-100"
-                                : row.orderStatus === "pending"
+                        className={`px-3 py-1 rounded-full text-sm font-semibold ${row.orderStatus === "completed"
+                            ? "text-green-700 bg-green-100"
+                            : row.orderStatus === "pending"
                                 ? "text-yellow-700 bg-yellow-100"
                                 : "text-red-700 bg-red-100"
-                        }`}
+                            }`}
                     >
                         {row.orderStatus.charAt(0).toUpperCase() +
                             row.orderStatus.slice(1)}
@@ -396,7 +393,7 @@ const Orders: React.FC = () => {
 
     const filteredOrders = React.useMemo(() => {
         const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
-        
+
         // First filter the orders
         const filtered = orders?.filter((order) => {
             const owner = order.orderOwner;
@@ -422,27 +419,25 @@ const Orders: React.FC = () => {
     return (
         <div className='bg-white rounded-lg'>
             <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
-                <div className='flex flex-row justify-between items-center mb-4 space-x-2'>
-                    <div className='flex justify-center items-center'>
+                <div className='flex flex-col sm:flex-row justify-between items-stretch sm:items-center mb-4 space-y-2 sm:space-y-0 sm:space-x-2'>
+                    <div className='flex justify-center items-center w-full sm:w-auto'>
                         <SearchBar onSearch={handleSearch} />
                     </div>
-
-                    <div className='flex flex-row space-x-2'>
+                    <div className='flex flex-col xs:flex-row justify-center space-y-2 xs:space-y-0 xs:space-x-2 w-full sm:w-auto'>
                         <button
                             onClick={() => setIsModalOpen(true)}
-                            className='px-4 py-2 Button text-white rounded-md'
+                            className='px-4 py-2 Button text-white rounded-md w-full xs:w-auto'
                         >
                             Add Order
                         </button>
                         <button
                             onClick={handleExport}
-                            className='px-4 py-2 bg-green-500 text-white rounded-md'
+                            className='px-4 py-2 bg-green-500 text-white rounded-md w-full xs:w-auto'
                         >
                             Export CSV
                         </button>
                     </div>
                 </div>
-
                 <CustomTable
                     columns={columns}
                     data={filteredOrders}

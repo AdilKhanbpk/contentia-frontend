@@ -42,12 +42,11 @@ const ModelBrand: React.FC = () => {
             .unwrap()
             .then(() => {
                 reset();
-                toast.success("Brand created successfully!");
+                toast.success("Marka başarıyla oluşturuldu!");
             })
             .catch((error) => {
                 toast.error(
-                    `Failed to create brand: ${
-                        error.message || "Unknown error"
+                    `Marka oluşturulamadı: ${error.message || "Bilinmeyen hata"
                     }`
                 );
             });

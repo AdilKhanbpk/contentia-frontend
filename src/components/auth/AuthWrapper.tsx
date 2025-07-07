@@ -23,15 +23,15 @@ const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
         if (!isLoading) {
             if (isAdminRoute && user?.role !== "admin") {
                 router.replace("/");
-                toast.error("Admin access only");
+                toast.error("Yalnızca yönetici erişimi");
             }
             if (isCustomerRoute && user?.role !== "user") {
                 router.replace("/giris-yap");
-                toast.error("Login is required");
+                toast.error("Giriş yapılması gerekiyor");
             }
             if (user && isAuthPage) {
                 router.replace("/");
-                toast.info("You are already logged in");
+                toast.info("Zaten giriş yaptınız");
             }
         }
     }, [user, isLoading, pathname, router]);

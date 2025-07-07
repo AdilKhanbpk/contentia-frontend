@@ -13,9 +13,26 @@ interface BrandFormInputs {
     brandImage?: FileList;
 }
 
-const ModelBrand: React.FC = () => {
+interface ModelBrandProps {
+    onClose?: () => void;
+}
+
+const ModelBrand: React.FC<ModelBrandProps> = ({ onClose }) => {
     const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
     const [loading, setLoading] = React.useState(false);
+    const [isVisible, setIsVisible] = React.useState(true);
+
+    const handleClose = () => {
+        if (onClose) {
+            onClose();
+        } else {
+            setIsVisible(false);
+        }
+    };
+
+    if (!isVisible) {
+        return null;
+    }
     const {
         register,
         handleSubmit,
@@ -39,13 +56,12 @@ const ModelBrand: React.FC = () => {
             .unwrap()
             .then(() => {
                 reset();
-                toast.success("Brand created successfully!");
+                toast.success("Marka başarıyla oluşturuldu!");
                 setLoading(false);
             })
             .catch((error) => {
                 toast.error(
-                    `Failed to create brand: ${
-                        error.message || "Unknown error"
+                    `Marka oluşturulamadı: ${error.message || "Bilinmeyen hata"
                     }`
                 );
                 setLoading(false);
@@ -57,7 +73,16 @@ const ModelBrand: React.FC = () => {
             onSubmit={handleSubmit(onSubmit)}
             className='flex flex-col justify-start items-start px-4 mt-1 mb-4'
         >
-            <h1 className='text-md font-semibold mb-4'>Add Brand</h1>
+            <div className='flex justify-between items-center w-full mb-4'>
+                <h1 className='text-md font-semibold'>Add Brand</h1>
+                <button
+                    type='button'
+                    onClick={handleClose}
+                    className='text-gray-500 hover:text-gray-700 text-4xl font-bold cursor-pointer'
+                >
+                    ×
+                </button>
+            </div>
 
             <div className='w-full flex flex-col'>
                 <label

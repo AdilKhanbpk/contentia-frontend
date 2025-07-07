@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { fetchMyBrands } from "@/store/features/profile/brandSlice";
-import { fetchOrders } from "@/store/features/admin/ordersSlice";
+import { fetchOrders, updatePaymentStatus, updateOrderPaymentStatusLocally } from "@/store/features/admin/ordersSlice";
 import CustomModelAdmin from "../../modal/CustomModelAdmin";
 import ModalTwo from "./sub-in-payment/ViewInPaymentModal";
 import { OrderInterface, CreatorInterface } from "@/types/interfaces";
@@ -40,6 +40,10 @@ const OutPayments: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState<OrderInterface | null>(null);
+    const [isInitialLoading, setIsInitialLoading] = useState(true);
+
+
+
     const { data: orders, loading } = useSelector(
         (state: RootState) => state.orders
     );
@@ -64,9 +68,6 @@ const OutPayments: React.FC = () => {
                     ? order.totalPriceForCreator / order.noOfUgc
                     : 0;
 
-                // Note: If you want to add a priceForSingleCreator field to the database,
-                // you would need to update the OrderInterface in src/types/interfaces.ts
-
                 // Create a separate entry for each creator
                 order.assignedCreators.forEach((creator: any) => {
                     result.push({
@@ -87,7 +88,11 @@ const OutPayments: React.FC = () => {
             }
         });
 
-        return result;
+        return result.sort((a, b) => {
+            const dateA = new Date(a.originalOrder.createdAt).getTime();
+            const dateB = new Date(b.originalOrder.createdAt).getTime();
+            return dateB - dateA; // Newest first
+        });
     }, [orders]);
 
     // Filter flattened orders based on search term
@@ -114,18 +119,43 @@ const OutPayments: React.FC = () => {
         }
     }, [flattenedOrders]);
 
-    
+    const silentRefresh = useCallback(async () => {
+        try {
+            await dispatch(fetchOrders()).unwrap();
+        } catch (error: any) {
+            console.error("Silent refresh failed:", error);
+        }
+    }, [dispatch]);
+
+    // Modified handleApprove with optimistic UI update
     const handleApprove = useCallback(async (id: string) => {
-        // Here you would typically dispatch an action to approve the payment
-        // For now, we will just show a success message
-        // await dispatch(approvePayment(id)).unwrap();
+        try {
+            dispatch(updateOrderPaymentStatusLocally({ orderId: id, paymentStatus: "approved" }));
+            await dispatch(updatePaymentStatus({
+                orderid: id,
+                paymentstatus: "approved"
+            })).unwrap();
+            await dispatch(fetchOrders()).unwrap();
+            toast.success("Payment Sent successfully!");
+        } catch (error: any) {
+            toast.error(error || "Failed to approve payment");
+        }
+    }, [dispatch]);
 
-        toast.success("Payment Sent successfully!");
-    }, []);
-
+    // Modified handleReject with optimistic UI update
     const handleReject = useCallback(async (id: string) => {
-        toast.dark("Payment rejected for the Order!");
-    }, []);
+        try {
+            dispatch(updateOrderPaymentStatusLocally({ orderId: id, paymentStatus: "rejected" }));
+            await dispatch(updatePaymentStatus({
+                orderid: id,
+                paymentstatus: "rejected"
+            })).unwrap();
+            await dispatch(fetchOrders()).unwrap();
+            toast.dark("Payment rejected for the Order!");
+        } catch (error: any) {
+            toast.error(error || "Failed to reject payment");
+        }
+    }, [dispatch]);
 
     const TableActions = memo(
         ({ onApprove, onReject, onView, id }: TableActionsProps) => (
@@ -212,6 +242,10 @@ const OutPayments: React.FC = () => {
             name: "Payment Status",
             selector: (row: SingleCreatorOrderData) => row.paymentStatus,
             sortable: true,
+            sortFunction: (a: SingleCreatorOrderData, b: SingleCreatorOrderData) => {
+                const statusOrder = { pending: 0, approved: 1, rejected: 2 };
+                return statusOrder[a.paymentStatus as keyof typeof statusOrder] - statusOrder[b.paymentStatus as keyof typeof statusOrder];
+            },
         },
         {
             name: "Actions",
@@ -253,8 +287,10 @@ const OutPayments: React.FC = () => {
     const fetchOrdersData = useCallback(async () => {
         try {
             await dispatch(fetchOrders()).unwrap();
+            setIsInitialLoading(false);
             toast.success("Orders data refreshed successfully");
         } catch (error: any) {
+            setIsInitialLoading(false);
             toast.error(error.message || "Failed to fetch orders");
         }
     }, [dispatch]);
@@ -272,44 +308,50 @@ const OutPayments: React.FC = () => {
         fetchOrdersData();
     }, [fetchBrands, fetchOrdersData]);
 
+    // Use initial loading state only for first load, not for payment updates
+    const tableLoading = isInitialLoading && loading;
+
     return (
         <div className='bg-white rounded-lg'>
             <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
                 {/* Search and Buttons */}
-                <div className='flex justify-between mb-4'>
-                    <input
-                        type='text'
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder='Search...'
-                        className='p-2 border border-gray-300 rounded-lg'
-                    />
-                    <div className='flex flex-col md:flex-row lg:space-x-2'>
+                <div className='flex flex-col sm:flex-row justify-between items-stretch sm:items-center mb-4 space-y-2 sm:space-y-0 sm:space-x-2'>
+                    <div className='flex justify-center items-center w-full sm:w-auto'>
+                        <input
+                            type='text'
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            placeholder='Search...'
+                            className='p-2 border border-gray-300 rounded-lg w-full sm:w-auto'
+                        />
+                    </div>
+                    <div className='flex flex-col xs:flex-row justify-center space-y-2 xs:space-y-0 xs:space-x-2 w-full sm:w-auto'>
                         <button
-                            className='px-1 md:px-4 py-0.5 md:py-2 bg-blue-500 text-white rounded-md'
+                            className='px-4 py-2 bg-blue-500 text-white rounded-md w-full xs:w-auto'
                             onClick={fetchOrdersData}
                         >
                             Refresh <FaSync className='inline ml-2' />
                         </button>
-                        <button className='px-1 md:px-4 py-0.5 md:py-2 Button text-white rounded-md'>
+                        <button
+                            className='px-4 py-2 Button text-white rounded-md w-full xs:w-auto'
+                        >
                             Add Out Payment
                         </button>
                         <button
-                            className='px-1 md:px-4 py-0.5 md:py-2 bg-green-500 text-white rounded-md'
+                            className='px-4 py-2 bg-green-500 text-white rounded-md w-full xs:w-auto'
                             onClick={exportToCSV}
                         >
                             Export CSV <FaFileCsv className='inline ml-2' />
                         </button>
                     </div>
                 </div>
-
                 {/* Data Table */}
                 <div className='shadow-md'>
                     <CustomTable
                         columns={columns}
                         data={filteredFlattenedOrders}
                         noDataComponent='No Outgoing Payments Found'
-                        loading={loading}
+                        loading={tableLoading}
                     />
                 </div>
             </div>
@@ -364,13 +406,13 @@ const OutPayments: React.FC = () => {
                                 </thead>
                                 <tbody>
                                     {Array.isArray(selectedOrder.assignedCreators) &&
-                                     selectedOrder.assignedCreators.map((creator: any, index: number) => (
-                                        <tr key={index}>
-                                            <td className="py-2 px-4 border">{typeof creator === 'string' ? creator : creator._id}</td>
-                                            <td className="py-2 px-4 border">{typeof creator === 'string' ? 'Unknown' : creator.fullName}</td>
-                                            <td className="py-2 px-4 border">{typeof creator === 'string' ? '' : creator.email}</td>
-                                        </tr>
-                                    ))}
+                                        selectedOrder.assignedCreators.map((creator: any, index: number) => (
+                                            <tr key={index}>
+                                                <td className="py-2 px-4 border">{typeof creator === 'string' ? creator : creator._id}</td>
+                                                <td className="py-2 px-4 border">{typeof creator === 'string' ? 'Unknown' : creator.fullName}</td>
+                                                <td className="py-2 px-4 border">{typeof creator === 'string' ? '' : creator.email}</td>
+                                            </tr>
+                                        ))}
                                 </tbody>
                             </table>
                         </div>

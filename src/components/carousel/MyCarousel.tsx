@@ -24,6 +24,32 @@ const MyCarousel: React.FC<CarouselProps> = ({ videos }) => {
         },
         // Disable autoplay here since we will manage it manually
         autoplay: false,
+        responsive: [
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 3,
+                    centerMode: true,
+                    centerPadding: "0px",
+                }
+            },
+            {
+                breakpoint: 768,
+                settings: {
+                    slidesToShow: 1,
+                    centerMode: true,
+                    centerPadding: "60px",
+                }
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 1,
+                    centerMode: true,
+                    centerPadding: "40px",
+                }
+            }
+        ]
     };
 
     useEffect(() => {
@@ -57,7 +83,7 @@ const MyCarousel: React.FC<CarouselProps> = ({ videos }) => {
     };
 
     return (
-        <div className='carousel-container relative'>
+        <div className='carousel-container relative overflow-hidden w-full max-w-full'>
             <Slider
                 ref={sliderRef}
                 {...settings}
@@ -65,22 +91,20 @@ const MyCarousel: React.FC<CarouselProps> = ({ videos }) => {
                 {videos.map((video, index) => (
                     <div
                         key={index}
-                        className='carousel-slide relative px-2 py-10 overflow-visible'
+                        className='carousel-slide relative px-1 py-10 overflow-hidden flex justify-center'
                     >
                         <div
-                            className={`relative rounded-3xl overflow-hidden transition-all duration-500 ease-in-out ${
-                                index === playingVideoIndex
-                                    ? "absolute top-[-20%] left-1/2 transform -translate-x-1/2 -mt-5 scale-110"
-                                    : "border border-gray-200"
-                            }`}
+                            className={`relative rounded-3xl overflow-hidden transition-all duration-500 ease-in-out ${index === playingVideoIndex
+                                ? "absolute top-[-20%] left-1/2 transform -translate-x-1/2 -mt-5 scale-110"
+                                : "border border-gray-200"
+                                }`}
                         >
                             <video
                                 muted={true}
-                                className={`object-cover rounded-3xl transition-all duration-500 ease-in-out ${
-                                    index === playingVideoIndex
-                                        ? "w-[250px] h-[250px] sm:w-[350px] sm:h-[350px] md:w-[400px] md:h-[400px]"
-                                        : "w-[200px] h-[200px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[350px]"
-                                }`}
+                                className={`object-cover rounded-3xl transition-all duration-500 ease-in-out ${index === playingVideoIndex
+                                    ? "w-[180px] h-[180px] sm:w-[220px] sm:h-[220px] md:w-[280px] md:h-[280px] lg:w-[320px] lg:h-[320px]"
+                                    : "w-[150px] h-[150px] sm:w-[180px] sm:h-[180px] md:w-[220px] md:h-[220px] lg:w-[260px] lg:h-[260px]"
+                                    }`}
                                 onClick={() => handleVideoClick(index)}
                                 onEnded={handleVideoEnded}
                                 ref={(videoRef) => {

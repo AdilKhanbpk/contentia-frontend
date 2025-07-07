@@ -67,28 +67,28 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
         try {
             const res = await dispatch(setCreatorFormData(data));
             if (res) {
-                toast.success("Profile information saved successfully");
+                toast.success("Profil bilgileri başarıyla kaydedildi");
                 setShowVerification(true);
             } else {
-                toast.error("Failed to save profile information");
+                toast.error("Profil bilgileri kaydedilemedi");
             }
         } catch (error) {
-            toast.error("An error occurred while saving profile information");
+            toast.error("Profil bilgileri kaydedilirken bir hata oluştu");
         }
     };
 
     const handleVerify = () => {
-        toast.success("Phone number verified successfully");
+        toast.success("Telefon numarası başarıyla doğrulandı");
         setActiveTab(2);
     };
 
     const handleChangePhoneNumber = () => {
-        toast.success("Phone number changed successfully");
+        toast.success("Telefon numarası başarıyla değiştirildi");
     };
 
     const handleResend = () => {
         if (countdown === 0) {
-            toast.success("Verification code resent successfully");
+            toast.success("Doğrulama kodu başarıyla yeniden gönderildi");
             startCountdown();
         }
     };
@@ -166,7 +166,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
 
                                     <div>
                                         <label className='block text-sm font-medium'>
-                                            Password
+                                            Şifre
                                         </label>
                                         <input
                                             type='password'
@@ -179,7 +179,9 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                                     </div>
 
                                     <div>
-                                        <p className='text-base'></p>
+                                        <label className='block text-sm font-medium'>
+                                            E-Posta
+                                        </label>
                                         <input
                                             {...register("email", {
                                                 required: "Email is required",
@@ -333,11 +335,10 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                         </button>
                         <p
                             onClick={handleResend}
-                            className={`mt-3 ${
-                                countdown === 0
-                                    ? "cursor-pointer text-blue-500"
-                                    : "text-gray-400"
-                            }`}
+                            className={`mt-3 ${countdown === 0
+                                ? "cursor-pointer text-blue-500"
+                                : "text-gray-400"
+                                }`}
                         >
                             {countdown === 0
                                 ? "Tekrar Gönder"

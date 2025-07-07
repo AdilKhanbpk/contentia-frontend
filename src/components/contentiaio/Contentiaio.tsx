@@ -105,7 +105,7 @@ export function Contentiaio() {
 
     return (
         <>
-            <div className='px-4 sm:px-6 md:px-8 lg:px-24 '>
+            <div className='px-4 sm:px-6 md:px-8 lg:px-24 overflow-x-hidden w-full max-w-full'>
                 <HeroSection
                     landingPage={landingPage}
                     landingPageLoading={landingPageLoading}

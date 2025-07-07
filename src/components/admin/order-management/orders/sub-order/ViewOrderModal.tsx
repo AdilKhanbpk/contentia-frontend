@@ -499,78 +499,68 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                 <th className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border'>
                                     Upload Date
                                 </th>
+                                <th className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border'>
+                                    Sipariş Notu
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             {order?.assignedCreators.map((creator, index) => {
-                                const hasFiles =
-                                    order.uploadFiles &&
-                                    order.uploadFiles.length > 0;
-                                return hasFiles ? (
-                                    order.uploadFiles &&
-                                        order.uploadFiles.map((file, i) =>
-                                            file.fileUrls.map((f, j) => (
-                                                <tr
-                                                    key={`${
-                                                        (
-                                                            creator as CreatorInterface
-                                                        )._id
-                                                    }-${i}-${j}`}
-                                                >
-                                                    {/* Index Column */}
-                                                    <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm'>
-                                                        {index + 1}
-                                                    </td>
+                                // Filter files for current creator
+                                const creatorFiles = order.uploadFiles?.filter(
+                                    file => file.uploadedBy === (creator as CreatorInterface)._id
+                                );
 
-                                                    {/* Creator ID Column */}
-                                                    <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm'>
-                                                        {
-                                                            (
-                                                                creator as CreatorInterface
-                                                            )?._id
-                                                        }
-                                                    </td>
-
-                                                    {/* File URL Column */}
-                                                    <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border'>
-                                                        <a
-                                                            className='text-xs lg:text-sm BlueText block whitespace-normal lg:whitespace-nowrap'
-                                                            href={f}
-                                                            target='_blank'
-                                                            rel='noopener noreferrer'
+                                return creatorFiles && creatorFiles.length > 0 ? (
+                                    creatorFiles.map((file, fileIndex) =>
+                                        file.fileUrls.map((f, urlIndex) => (
+                                            <tr key={`${(creator as CreatorInterface)._id}-${fileIndex}-${urlIndex}`}>
+                                                <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm'>
+                                                    {index + 1}
+                                                </td>
+                                                <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm'>
+                                                    {(creator as CreatorInterface)?._id}
+                                                </td>
+                                                <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border'>
+                                                    <a
+                                                        className='text-xs lg:text-sm BlueText flex items-center gap-2'
+                                                        href={f}
+                                                        target='_blank'
+                                                        rel='noopener noreferrer'
+                                                    >
+                                                        <span className="max-w-[200px] truncate">
+                                                            {f.split('/').pop() || f}
+                                                        </span>
+                                                        <svg 
+                                                            className="w-3 h-3 flex-shrink-0" 
+                                                            fill="currentColor" 
+                                                            viewBox="0 0 20 20"
                                                         >
-                                                            {f}
-                                                        </a>
-                                                    </td>
-
-                                                    {/* Upload Date Column */}
-                                                    <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm text-gray-600'>
-                                                        {file?.uploadedDate
-                                                            ? new Date(
-                                                                  file.uploadedDate
-                                                              ).toLocaleDateString()
-                                                            : "No Date Available"}
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        )
+                                                            <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                                                            <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+                                                        </svg>
+                                                    </a>
+                                                </td>
+                                                <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm text-gray-600'>
+                                                    {file?.uploadedDate
+                                                        ? new Date(file.uploadedDate).toLocaleDateString()
+                                                        : "No Date Available"}
+                                                </td>
+                                                <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm'>
+                                                    {file.creatorNoteOnOrder || "No Notes"}
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )
                                 ) : (
-                                    <tr key={(creator as CreatorInterface)._id}>
-                                        {/* Index Column */}
+                                    <tr key={`${(creator as CreatorInterface)._id}-no-files`}>
                                         <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm'>
                                             {index + 1}
                                         </td>
-
-                                        {/* Creator ID Column */}
                                         <td className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm'>
                                             {(creator as CreatorInterface)?._id}
                                         </td>
-
-                                        {/* No Files Uploaded Column */}
-                                        <td
-                                            className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-xs lg:text-sm text-center'
-                                            colSpan={2}
-                                        >
+                                        <td colSpan={3} className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 border text-center'>
                                             No Files Uploaded
                                         </td>
                                     </tr>
@@ -594,12 +584,15 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                 <th className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border'>
                                     Upload Date
                                 </th>
+                                <th className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4 text-start border'>
+                                    Sipariş Notu
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td
-                                    colSpan={4}
+                                    colSpan={5}
                                     className='py-0.5 px-0.5 sm:py-0.5 sm:px-0.5 md:py-2 md:px-4 lg:py-2 lg:px-4  border text-xs lg:text-sm text-center'
                                 >
                                     <p className='text-xs lg:text-sm'>
