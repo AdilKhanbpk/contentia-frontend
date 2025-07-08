@@ -46,6 +46,7 @@ const initialState: OrderState = {
 interface OrderData {
 
   selectedFiles: File[];
+  // Optional for createOrder, required for updateOrder
 }
 
 export const createOrder = createAsyncThunk(
@@ -134,6 +135,10 @@ export const createOrder = createAsyncThunk(
         });
       }
 
+      // if (orderId) {
+      //   formData.append("orderId", orderId);
+      //   console.log("📦 Sending orderId:", orderId);
+      // }
       // Append selected files
       selectedFiles.forEach((file) => {
         formData.append("uploadFiles", file);

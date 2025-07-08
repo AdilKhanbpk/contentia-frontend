@@ -72,7 +72,7 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
   const [couponError, setCouponError] = useState("");
   const [discount, setDiscount] = useState(0);
   const [isCouponAppliedLoading, setIsCouponAppliedLoading] = useState(false);
-
+  const [orderId, setOrderId] = useState<string>("")
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
@@ -113,8 +113,9 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
     value.replace(/\s/g, "").replace(/(.{4})/g, "$1 ").trim();
 
   const generateOrderId = () => `ORDER${Date.now()}`;
-
-  // Event handlers
+  useEffect(() => {
+    setOrderId(generateOrderId());
+  }, []);
   const handleCalendarClick = () => setIsDatePickerOpen(!isDatePickerOpen);
 
   const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -250,6 +251,7 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
         country: data.country,
         saveCard: data.saveCard,
         agreement: data.agreement,
+        orderId: orderId, // Include orderId if available 
       },
       customerInfo: {
         companyName: data.companyName,
@@ -269,17 +271,7 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
     await processPayment(data);
 
     // Create order after successful payment processing
-    try {
-      await dispatch(createOrder({ selectedFiles })).unwrap();
-      setSelectedFiles([]);
-      setIsOrderSuccessFullyPlaced(true);
-      toast.success("Sipariş başarıyla oluşturuldu!");
-    } catch (error: any) {
-      setIsOrderFailed(true);
-      toast.error(error.message || "Sipariş oluşturulurken bir hata oluştu.");
-      setSelectedFiles([]);
-      console.error("Error creating order:", error.message);
-    }
+
   };
 
   // Effects
@@ -298,27 +290,43 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
     }
   }, [iframeHtml, show3DModal]);
 
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (event.data?.paymentStatus === "success") {
-        setPaymentStatus("success");
-        setShow3DModal(false);
-        setActiveTab(2);
-        toast.success("Ödeme başarılı!");
-      } else if (event.data?.paymentStatus === "fail") {
-        setPaymentStatus("fail");
-        setShow3DModal(false);
-        toast.error("Ödeme başarısız.");
-      } else if (event.data?.type === "CANCEL_3D") {
-        setShow3DModal(false);
-        setResult({ success: false, message: "Ödeme işlemi iptal edildi." });
-        toast.error("Ödeme işlemi iptal edildi.");
-      }
-    };
+ useEffect(() => {
+  const handleMessage = (event: MessageEvent) => {
+    if (event.data?.paymentStatus === "success") {
+      setPaymentStatus("success");
+      setShow3DModal(false);
+      toast.success("Ödeme başarılı!");
 
-    window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
-  }, [setActiveTab]);
+      // ✅ Wrap async logic in a self-invoking function
+      (async () => {
+        try {
+          await dispatch(createOrder({ selectedFiles})).unwrap();
+          setSelectedFiles([]);
+          setIsOrderSuccessFullyPlaced(true);
+          toast.success("Sipariş başarıyla oluşturuldu!");
+          router.push('/siparislerim')
+        } catch (error: any) {
+          setIsOrderFailed(true);
+          setSelectedFiles([]);
+          toast.error(error.message || "Sipariş oluşturulurken bir hata oluştu.");
+          console.error("Error creating order:", error.message);
+        }
+      })();
+    } else if (event.data?.paymentStatus === "fail") {
+      setPaymentStatus("fail");
+      setShow3DModal(false);
+      toast.error("Ödeme başarısız.");
+    } else if (event.data?.type === "CANCEL_3D") {
+      setShow3DModal(false);
+      setResult({ success: false, message: "Ödeme işlemi iptal edildi." });
+      toast.error("Ödeme işlemi iptal edildi.");
+    }
+  };
+
+  window.addEventListener("message", handleMessage);
+  return () => window.removeEventListener("message", handleMessage);
+}, [dispatch, selectedFiles, setActiveTab, orderId]);
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -460,9 +468,8 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
               <button
                 onClick={handleApplyCoupon}
                 disabled={isCouponAppliedLoading || !couponCode.trim()}
-                className={`Button text-white px-4 py-2 rounded-md font-semibold transition-opacity ${
-                  isCouponAppliedLoading || !couponCode.trim() ? "opacity-60 cursor-not-allowed" : "hover:opacity-90"
-                }`}
+                className={`Button text-white px-4 py-2 rounded-md font-semibold transition-opacity ${isCouponAppliedLoading || !couponCode.trim() ? "opacity-60 cursor-not-allowed" : "hover:opacity-90"
+                  }`}
               >
                 {isCouponAppliedLoading ? "Uygulanıyor..." : "Uygula"}
               </button>
@@ -518,9 +525,8 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
           <h2 className="text-xl font-semibold mb-6">Ödeme</h2>
           {result && (
             <div
-              className={`mb-6 p-4 rounded-lg border ${
-                result.success ? "bg-green-50 border-green-200 text-green-800" : "bg-red-50 border-red-200 text-red-800"
-              }`}
+              className={`mb-6 p-4 rounded-lg border ${result.success ? "bg-green-50 border-green-200 text-green-800" : "bg-red-50 border-red-200 text-red-800"
+                }`}
             >
               <h3 className="font-semibold mb-1">{result.success ? "Ödeme Başarılı!" : "Ödeme Başarısız"}</h3>
               <p className="text-sm">{result.message}</p>
@@ -763,9 +769,8 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full Button text-white px-4 py-2 rounded-md font-semibold transition-opacity ${
-                loading ? "opacity-60 cursor-not-allowed" : "hover:opacity-90"
-              }`}
+              className={`w-full Button text-white px-4 py-2 rounded-md font-semibold transition-opacity ${loading ? "opacity-60 cursor-not-allowed" : "hover:opacity-90"
+                }`}
             >
               <div className="flex flex-row space-x-8">
                 <div className="w-1/4 flex justify-end items-center">
