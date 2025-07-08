@@ -53,7 +53,6 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
             toast.success("Tercihler kaydedildi!");
 
             // Navigate to payment tab - order will be created after payment
-            setActiveTab(1); // Go to OrderTabSecond (Payment)
         } catch (error: any) {
             toast.error(error.message || "Tercihler kaydedilirken bir hata oluştu.");
             console.error("Error submitting form:", error.message);

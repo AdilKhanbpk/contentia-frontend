@@ -46,6 +46,7 @@ const initialState: OrderState = {
 interface OrderData {
 
   selectedFiles: File[];
+  // Optional for createOrder, required for updateOrder
 }
 
 export const createOrder = createAsyncThunk(
@@ -129,6 +130,10 @@ export const createOrder = createAsyncThunk(
         });
       }
 
+      // if (orderId) {
+      //   formData.append("orderId", orderId);
+      //   console.log("📦 Sending orderId:", orderId);
+      // }
       // Append selected files
       selectedFiles.forEach((file) => {
         formData.append("uploadFiles", file);
@@ -138,8 +143,8 @@ export const createOrder = createAsyncThunk(
 
       // Make API request
       const response = await axiosInstance.postForm("/orders", formData);
-      console.log("Order Data :" , formData);
-      
+      console.log("Order Data :", formData);
+
 
       return response.data.data;
     } catch (error) {
