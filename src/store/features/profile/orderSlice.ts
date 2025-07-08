@@ -60,6 +60,11 @@ export const createOrder = createAsyncThunk(
       }
 
       console.log("🚀 Complete orderData being sent:", orderData);
+      console.log("🔍 briefContent specifically:", orderData.briefContent);
+      console.log("🔍 Does briefContent exist?", !!orderData.briefContent);
+      console.log("🔍 All keys in orderData:", Object.keys(orderData));
+      console.log("🔍 Complete Redux state.order:", state.order);
+      console.log("🔍 Raw orderFormData from Redux:", state.order.orderFormData);
 
       // Convert orderData to FormData
       const formData = new FormData();
@@ -136,9 +141,15 @@ export const createOrder = createAsyncThunk(
 
       // Set Authorization header 
 
+      // Log FormData contents before sending
+      console.log("📦 FormData contents:");
+      for (let [key, value] of formData.entries()) {
+        console.log(`📤 ${key}: ${value}`);
+      }
+
       // Make API request
       const response = await axiosInstance.postForm("/orders", formData);
-      console.log("Order Data :" , formData);
+      console.log("✅ Order created successfully:", response.data);
       
 
       return response.data.data;
@@ -148,6 +159,12 @@ export const createOrder = createAsyncThunk(
       const axiosError = error as AxiosError;
       const errorMessage =
         axiosError.response?.data || "An unknown error occurred";
+
+      // Check if it's a Paraşüt invoice error
+      if (typeof errorMessage === 'string' && errorMessage.includes('Paraşüt')) {
+        console.warn("⚠️ Paraşüt invoice error detected - order may still be created");
+        return rejectWithValue("Order created but invoice generation failed. Please contact support.");
+      }
 
       return rejectWithValue(errorMessage);
     }
@@ -286,7 +303,10 @@ const orderSlice = createSlice({
   reducers: {
     // Add new reducer for form data
     setOrderFormData: (state, action: PayloadAction<object>) => {
+      console.log("🔄 Redux setOrderFormData - Before:", state.orderFormData);
+      console.log("🔄 Redux setOrderFormData - New payload:", action.payload);
       state.orderFormData = { ...state.orderFormData, ...action.payload };
+      console.log("🔄 Redux setOrderFormData - After merge:", state.orderFormData);
     },
     resetOrderFormData: (state) => {
       state.orderFormData = {};

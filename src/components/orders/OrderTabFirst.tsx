@@ -149,7 +149,7 @@ export default function TabFirst({
         };
         dispatch(setOrderFormData(formData));
         toast.success("Order Details Saved Successfully!");
-        setActiveTab(1); // Go to OrderTabThird (Brand/Brief) instead of OrderTabSecond (Payment)
+        setActiveTab(1); // Go to OrderTabThird (Brand/Brief) - Tab index 1
     };
 
     useEffect(() => {

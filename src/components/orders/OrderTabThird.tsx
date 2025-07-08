@@ -40,6 +40,17 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
   };
 
   const onSubmit = async (data: any) => {
+    // Validate required fields
+    if (!selectedBrand) {
+      toast.error("Lütfen bir marka seçin!");
+      return;
+    }
+
+    if (!data.brief) {
+      toast.error("Lütfen brief içeriğini doldurun!");
+      return;
+    }
+
     // Prepare brief content data
     const briefContentData = {
       brandName: selectedBrand,
@@ -58,9 +69,15 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
       briefContent: briefContentData,
     };
 
+    console.log("📝 OrderTabThird - Saving briefContent:", briefContentData);
+    console.log("📝 OrderTabThird - Complete formData:", formData);
+    console.log("📝 OrderTabThird - Selected brand:", selectedBrand);
+
     await dispatch(setOrderFormData(formData));
+
+    console.log("✅ OrderTabThird - Data dispatched to Redux");
     toast.success("Order Brief Saved Successfully!");
-    setActiveTab(3); // Go to OrderTabFourth (Preferences)
+    setActiveTab(2); // Go to OrderTabFourth (Preferences)
   };
 
   const openModal = () => setIsModalOpen(true);
@@ -283,7 +300,6 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
           <div className="text-right">
             <button
               type="submit"
-              onClick={() => setActiveTab(2)}
               className="py-2 px-4 Button font-semibold text-white rounded-md focus:outline-none"
             >
               İleri
