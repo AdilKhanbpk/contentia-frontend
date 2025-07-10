@@ -43,8 +43,13 @@ export const createOrder = createAsyncThunk(
           creatorType: data.additionalServices?.creatorType,
           productShipping: data.additionalServices?.productShipping === true ? true : false,
         },
-        coupon: data.coupon,
+        // Only include coupon if it exists and is not empty
+        ...(data.coupon && data.coupon.trim() !== '' && { coupon: data.coupon }),
       };
+
+      // Debug logging to see what's being sent
+      console.log('🚀 Original data.coupon:', data.coupon);
+      console.log('🚀 TransformedData being sent to backend:', transformedData);
 
       // First create the order
       const response = await axiosInstance.post('/admin/orders', transformedData);

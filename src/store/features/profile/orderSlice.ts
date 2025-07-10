@@ -59,6 +59,9 @@ export const createOrder = createAsyncThunk(
         return rejectWithValue("Order data is missing");
       }
 
+      console.log("🚀 Complete orderData being sent:", orderData);
+      console.log("🚀 Coupon in orderData:", orderData.coupon);
+
       // Convert orderData to FormData
       const formData = new FormData();
       formData.append("noOfUgc", String(orderData.noOfUgc || 0));
@@ -66,7 +69,10 @@ export const createOrder = createAsyncThunk(
 
       // Append coupon if available
       if (orderData.coupon) {
+        console.log("🚀 Adding coupon to FormData:", orderData.coupon);
         formData.append("coupon", orderData.coupon);
+      } else {
+        console.log("🚀 No coupon found in orderData");
       }
 
       // Append additional services if available
@@ -78,23 +84,31 @@ export const createOrder = createAsyncThunk(
 
       // Append preferences if available
       if (orderData.preferences) {
+        console.log("🚀 Preferences found in orderData:", orderData.preferences);
         Object.entries(orderData.preferences).forEach(([key, value]) => {
+          console.log(`🚀 Processing preference: ${key} = ${value}`);
           if (key === "addressDetails" && typeof value === "object") {
             Object.entries(value).forEach(([subKey, subValue]) => {
               formData.append(`preferences[addressDetails][${subKey}]`, String(subValue));
+              console.log(`🚀 Added addressDetails: ${subKey} = ${subValue}`);
             });
           } else if (key === "areaOfInterest" && Array.isArray(value)) {
             value.forEach((item, index) => {
               formData.append(`preferences[areaOfInterest][${index}]`, item);
+              console.log(`🚀 Added areaOfInterest[${index}]: ${item}`);
             });
           } else {
             formData.append(`preferences[${key}]`, String(value));
+            console.log(`🚀 Added preference: ${key} = ${value}`);
           }
         });
+      } else {
+        console.log("🚀 No preferences found in orderData");
       }
 
       // Append brief content if available
       if (orderData.briefContent) {
+        console.log("📋 Brief content from Redux:", orderData.briefContent);
         Object.entries(orderData.briefContent).forEach(([key, value]) => {
           if (Array.isArray(value)) {
             value.forEach((item, index) => {
@@ -102,6 +116,31 @@ export const createOrder = createAsyncThunk(
             });
           } else {
             formData.append(`briefContent[${key}]`, String(value));
+            console.log(`📤 Adding briefContent[${key}]: ${value}`);
+          }
+        });
+      } else {
+        console.log("⚠️ No briefContent found in orderData");
+      }
+
+      // Append customer info if available
+      if (orderData.customerInfo) {
+        console.log("📋 Customer info from Redux:", orderData.customerInfo);
+        Object.entries(orderData.customerInfo).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            formData.append(`customerInfo[${key}]`, String(value));
+            console.log(`📤 Adding customerInfo[${key}]: ${value}`);
+          }
+        });
+      } else {
+        console.log("⚠️ No customerInfo found in orderData");
+      }
+
+      // Append payment info if available
+      if (orderData.paymentInfo) {
+        Object.entries(orderData.paymentInfo).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            formData.append(`paymentInfo[${key}]`, String(value));
           }
         });
       }

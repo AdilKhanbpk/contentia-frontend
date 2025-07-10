@@ -58,7 +58,13 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
 
     const onSubmit = async (data: PaymentInformationFormValues) => {
         try {
-            const res = await dispatch(setCreatorFormData(data));
+            // Ensure invoiceType is always included
+            const formDataWithInvoiceType = {
+                ...data,
+                invoiceType: data.invoiceType || invoiceType // Use form data or state value
+            };
+
+            const res = await dispatch(setCreatorFormData(formDataWithInvoiceType));
             if (res) {
                 toast.success("Ödeme bilgileri başarıyla kaydedildi");
                 setActiveTab(3);
@@ -671,6 +677,15 @@ const PaymentInformation: React.FC<{ setActiveTab: (id: number) => void }> = ({
                             )}
                         </div>
                     </div>
+
+                    {/* Hidden input to ensure invoiceType is always included */}
+                    {String(invoiceStatus) !== "true" && (
+                        <input
+                            type="hidden"
+                            {...register("invoiceType")}
+                            value={invoiceType}
+                        />
+                    )}
 
                     <div className='flex justify-end'>
                         <button

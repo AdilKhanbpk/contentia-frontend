@@ -13,11 +13,11 @@ interface HeroSectionProps {
 
 export default function HeroSection({
     landingPage,
-    landingPageLoading,
+    landingPageLoading, 
     landingPageError,
 }: HeroSectionProps) {
     return (
-        <div className='flex flex-col lg:flex-row w-full max-w-full overflow-hidden pt-24  md:pt-24 lg:pt-[180px] lg:justify-between'>
+        <div className='flex flex-col lg:flex-row w-full pt-24  md:pt-24 lg:pt-[180px] lg:justify-between'>
             {landingPageLoading ? (
                 <LoadingSkeleton />
             ) : landingPageError ? (
@@ -62,7 +62,7 @@ export default function HeroSection({
                         )}
                     </div>
 
-                    <div className='lg:w-1/2 w-full max-w-full overflow-hidden lg:ml-2 mx-auto'>
+                    <div className='lg:w-1/2 w-full lg:ml-2 mx-auto'>
                         <MyCarousel videos={landingPage?.videos || []} />
                     </div>
                 </>

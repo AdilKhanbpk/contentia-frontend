@@ -169,23 +169,34 @@ export default function Navbar() {
     return (
         <>
             {/* Main Navbar */}
-            <nav className='fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700'>
-                <div className='px-3 sm:px-4 md:px-6 lg:px-8 xl:px-10 py-3'>
+                        <nav className='fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700 px-2 sm:px-4 md:px-6 lg:px-10'>
+                <div className='px-3 py-3 lg:px-5 lg:pl-3'>
+                    <a
+                        href='/'
+                        className='flex lg:ms-4 md:me-0 mb-3'
+                    >
+                        <Image
+                            src='/contentiaLogo.png'
+                            height={44}
+                            width={151}
+                            alt='logo'
+                            className='h-[33px] w-[173px]'
+                        />
+                    </a>
                     <div className='flex items-center justify-between'>
-                        {/* Left Section: Logo and Navigation */}
-                        <div className='flex items-center gap-2 sm:gap-4 md:gap-6 lg:gap-8'>
-                            {/* Mobile Menu Button */}
+                        <div className='flex items-center'>
                             <button
-                                id='sidebar-toggle'
                                 type='button'
                                 onClick={toggleSidebar}
-                                className='inline-flex items-center justify-center p-2 w-10 h-10 text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600'
+                                className='inline-flex items-center p-2 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600'
                                 aria-controls='sidebar'
                                 aria-expanded={isSidebarOpen}
                             >
-                                <span className='sr-only'>{t("open_sidebar")}</span>
+                                <span className='sr-only'>
+                                    {t("open_sidebar")}
+                                </span>
                                 <svg
-                                    className='w-5 h-5'
+                                    className='w-6 h-6'
                                     fill='currentColor'
                                     viewBox='0 0 20 20'
                                     xmlns='http://www.w3.org/2000/svg'
@@ -194,91 +205,85 @@ export default function Navbar() {
                                         clipRule='evenodd'
                                         fillRule='evenodd'
                                         d='M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z'
-                                    />
+                                    ></path>
                                 </svg>
                             </button>
 
-                            {/* Logo */}
-                            <Link href='/' className='flex items-center'>
-                                <Image
-                                    src='/contentiaLogo.png'
-                                    height={44}
-                                    width={173}
-                                    alt='logo'
-                                    className='h-7 w-auto sm:h-8 md:h-9 lg:h-11'
-                                    priority
-                                />
-                            </Link>
-
-                            {/* Desktop Navigation */}
-                            <div className='hidden lg:flex items-center gap-6 xl:gap-8'>
-                                <BrandNames />
-                                <ul className='flex items-center gap-2 xl:gap-4 font-medium'>
+                            <div className='flex items-center space-x-8 ms-1'>
+                                <div className='flex items-center space-x-2'>
+                                    <BrandNames />
+                                </div>
+                                <ul className='hidden lg:flex space-x-4 font-medium'>
                                     <NavLinks />
                                 </ul>
                             </div>
                         </div>
 
-                        {/* Right Section: Profile */}
-                        <div className='relative'>
-                            <Dropdown
-                                isOpen={isProfileOpen}
-                                setIsOpen={setIsProfileOpen}
-                                icon={
-                                    <button
-                                        type='button'
-                                        className='flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-gray-300 dark:border-gray-600 bg-blue-600 text-white font-semibold text-sm sm:text-base hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
-                                        aria-label='Open user menu'
+                        <div className='flex items-center space-x-4'>
+                            <div className='relative'>
+                                <button
+                                    type='button'
+                                    className='flex items-center text-sm rounded-full focus:outline-none'
+                                    id='user-menu-button'
+                                >
+                                    <span className='sr-only'>
+                                        Open user menu
+                                    </span>
+                                    <Dropdown
+                                        isOpen={isProfileOpen}
+                                        setIsOpen={setIsProfileOpen}
+                                        icon={
+                                            user?.fullName ? (
+                                                <div className='w-10 h-10 rounded-full border-2 border-gray-600 flex items-center justify-center bg-blue-600 text-white font-semibold'>
+                                                    {userInitials}
+                                                </div>
+                                            ) : (
+                                                <div className='w-10 h-10 rounded-full border-2 border-gray-600 flex items-center justify-center bg-blue-600 text-white font-semibold'>
+                                                    UN
+                                                </div>
+                                            )
+                                        }
                                     >
-                                        {user?.fullName ? userInitials : "UN"}
-                                    </button>
-                                }
-                            >
-                                <div className='py-2 w-56 max-w-[calc(100vw-2rem)]'>
-                                    {/* User Info */}
-                                    <div className='px-3 py-2 mb-2 border-b border-gray-200 dark:border-gray-700'>
-                                        <div className='flex items-center gap-3'>
-                                            <div className='w-8 h-8 rounded-full border-2 border-gray-300 dark:border-gray-600 flex items-center justify-center bg-blue-600 text-white font-semibold text-sm flex-shrink-0'>
-                                                {user?.fullName ? userInitials : "UN"}
-                                            </div>
-                                            <span className='text-sm font-medium text-gray-900 dark:text-white truncate'>
+                                        <ul className='p-2 text-sm'>
+                                            <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                {user?.fullName ? (
+                                                    <div className='w-8 h-8 rounded-full border-2 border-gray-600 flex items-center justify-center bg-blue-600 text-white font-semibold'>
+                                                        {userInitials}
+                                                    </div>
+                                                ) : (
+                                                    <div className='w-8 h-8 rounded-full border-2 border-gray-600 flex items-center justify-center bg-blue-600 text-white font-semibold'>
+                                                        UN
+                                                    </div>
+                                                )}
                                                 {user?.fullName || "John Doe"}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {/* Menu Items */}
-                                    <ul className='space-y-1'>
-                                        <ProfileMenuItem
-                                            href='/profil'
-                                            icon={UserIcon}
-                                            label='Profil'
-                                        />
-                                        <ProfileMenuItem
-                                            href='/siparislerim'
-                                            icon={ShoppingCartIcon}
-                                            label='Siparişler'
-                                        />
-                                        <ProfileMenuItem
-                                            href='/paketler'
-                                            icon={PaperClipIcon}
-                                            label='Paketler'
-                                        />
-                                        <ProfileMenuItem
-                                            href='/markalarim'
-                                            icon={BriefcaseIcon}
-                                            label='Markalarım'
-                                        />
-                                        <div className='my-1 border-t border-gray-200 dark:border-gray-700' />
-                                        <ProfileMenuItem
-                                            icon={IoLogOut}
-                                            label='Çıkış Yap'
-                                            onClick={handleLogout}
-                                            className='text-red-600 hover:bg-red-50'
-                                        />
-                                    </ul>
-                                </div>
-                            </Dropdown>
+                                            </li>
+                                            <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                <UserIcon className='w-4 h-4' />
+                                                Profil
+                                            </li>
+                                            <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                <ShoppingCartIcon className='w-4 h-4' />
+                                                Siparişler
+                                            </li>
+                                            <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                <PaperClipIcon className='w-4 h-4' />
+                                                Paketler
+                                            </li>
+                                            <li className='p-2 BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-2'>
+                                                <BriefcaseIcon className='w-4 h-4' />
+                                                Markalarım
+                                            </li>
+                                            <li
+                                                className='p-2 BlueText hover:bg-red-100 cursor-pointer text-red-600 flex items-center gap-2'
+                                                onClick={handleLogout}
+                                            >
+                                                <IoLogOut className='w-4 h-4' />
+                                                Çıkış Yap
+                                            </li>
+                                        </ul>
+                                    </Dropdown>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -325,9 +330,9 @@ export default function Navbar() {
                 <div className='h-[calc(100%-73px)] overflow-y-auto'>
                     <div className='px-3 py-4'>
                         {/* BrandNames for mobile */}
-                        <div className='mb-6'>
+                        {/* <div className='mb-6'>
                             <BrandNames />
-                        </div>
+                        </div> */}
 
                         {/* Navigation Links */}
                         <ul className='space-y-2 font-medium'>

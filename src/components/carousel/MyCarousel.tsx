@@ -101,10 +101,12 @@ const MyCarousel: React.FC<CarouselProps> = ({ videos }) => {
                         >
                             <video
                                 muted={true}
-                                className={`object-cover rounded-3xl transition-all duration-500 ease-in-out ${index === playingVideoIndex
-                                    ? "w-[180px] h-[180px] sm:w-[220px] sm:h-[220px] md:w-[280px] md:h-[280px] lg:w-[320px] lg:h-[320px]"
-                                    : "w-[150px] h-[150px] sm:w-[180px] sm:h-[180px] md:w-[220px] md:h-[220px] lg:w-[260px] lg:h-[260px]"
-                                    }`}
+                                playsInline // Added to prevent iOS fullscreen flash
+                                className={`object-cover rounded-3xl transition-all duration-500 ease-in-out ${
+                                    index === playingVideoIndex
+                                        ? "w-[250px] h-[250px] sm:w-[350px] sm:h-[350px] md:w-[400px] md:h-[400px]"
+                                        : "w-[200px] h-[200px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[350px]"
+                                }`}
                                 onClick={() => handleVideoClick(index)}
                                 onEnded={handleVideoEnded}
                                 ref={(videoRef) => {

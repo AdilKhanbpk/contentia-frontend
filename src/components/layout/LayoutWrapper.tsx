@@ -14,11 +14,16 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
 
     const isRootRoute = pathname === "/";
     const isAdminRoute = pathname.startsWith("/admin");
-
+    const isAuthRoute = pathname.startsWith("/verify-otp") || pathname === "/signup" || pathname === "/login";
 
     if (loading) {
         console.log("🎯 LayoutWrapper: Still loading, showing LoadingSpinner");
         return <LoadingSpinner />;
+    }
+
+    // For auth routes, render without navbar and footer
+    if (isAuthRoute) {
+        return <>{children}</>;
     }
 
     return (

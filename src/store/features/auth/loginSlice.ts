@@ -90,6 +90,14 @@ const loginSlice = createSlice({
       state.token = null;
       state.user = null;
     },
+    // Add action to restore state from localStorage
+    restoreAuthState(state, action: PayloadAction<{ user: any; token: string }>) {
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+      state.success = true;
+      state.loading = false;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -134,6 +142,12 @@ const loginSlice = createSlice({
         state.error = null;
         state.token = null;
         state.user = null;
+        // Clear localStorage on successful logout
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("user");
+          localStorage.removeItem("refreshToken");
+        }
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;
@@ -144,7 +158,7 @@ const loginSlice = createSlice({
 });
 
 
-export const { resetLoginState } = loginSlice.actions;
+export const { resetLoginState, restoreAuthState } = loginSlice.actions;
 
 // Corrected selector to get the user instead of token
 export const selectUser = (state: any) => state.login.user;

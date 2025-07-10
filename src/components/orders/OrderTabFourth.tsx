@@ -6,8 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import {
     setOrderFormData,
-    createOrder,
-    selectOrderFormData,
     selectOrderIsLoading,
 } from "@/store/features/profile/orderSlice";
 import { useFileContext } from "@/context/FileContext";
@@ -19,16 +17,10 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
     setActiveTab,
 }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const router = useRouter();
 
     const [minAge, setMinAge] = useState(18);
     const [maxAge, setMaxAge] = useState(65);
     const orderLoading = useSelector(selectOrderIsLoading);
-    const { selectedFiles, setSelectedFiles } = useFileContext();
-    const [isOrderSuccessFullyPlaced, setIsOrderSuccessFullyPlaced] =
-        useState(false);
-    const [isOrderFailed, setIsOrderFailed] = useState(false);
-    const orderFormData = useSelector(selectOrderFormData);
 
     const handleMaxAgeChange = (e: any) => {
         const value = Math.max(Number(e.target.value), minAge + 1);
@@ -41,18 +33,33 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
     const { register, handleSubmit, watch } = useForm();
 
     const contentTypes = watch("preferences.contentType") || [];
+    const watchedGender = watch("preferences.creatorGender");
+    const watchedAreaOfInterest = watch("preferences.areaOfInterest");
+
+    // Debug: Log form values when they change
+    useEffect(() => {
+        console.log("🚀 Form values changed:");
+        console.log("  - Gender:", watchedGender);
+        console.log("  - Content Type:", contentTypes);
+        console.log("  - Area of Interest:", watchedAreaOfInterest);
+    }, [watchedGender, contentTypes, watchedAreaOfInterest]);
 
     const onSubmit = async (data: any) => {
+        console.log("🚀 OrderTabFourth onSubmit called!");
         try {
             const user = JSON.parse(localStorage.getItem("user") || "{}");
             const userEmail = user.email || "";
+
+            console.log("🚀 Raw form data from OrderTabFourth:", data);
+            console.log("🚀 Min Age:", minAge, "Max Age:", maxAge);
+
             const preferencesData = {
                 preferences: {
-                    creatorGender: data.preferences.creatorGender,
+                    creatorGender: data.preferences?.creatorGender || null,
                     minCreatorAge: minAge,
                     maxCreatorAge: maxAge,
-                    areaOfInterest: data.preferences.areaOfInterest || [],
-                    contentType: data.preferences.contentType || [],
+                    areaOfInterest: data.preferences?.areaOfInterest || [],
+                    contentType: data.preferences?.contentType || null, // Single value, not array
                     addressDetails: data.preferences?.addressDetails ?? {
                         country: "",
                         state: "",
@@ -64,21 +71,14 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                 },
             };
 
+            console.log("🚀 Preferences data being saved to Redux:", preferencesData);
             dispatch(setOrderFormData(preferencesData));
+            toast.success("Tercihler kaydedildi!");
 
-            // Get coupon from Redux orderFormData
-            await dispatch(
-                createOrder({
-                    selectedFiles,
-                    // coupon: orderFormData.coupon || "",
-                })
-            ).unwrap();
-            setSelectedFiles([]);
-            setIsOrderSuccessFullyPlaced(true);
+            // Navigate to payment tab (OrderTabSecond is Tab 3)
+            setActiveTab(3); // Go to OrderTabSecond (Payment)
         } catch (error: any) {
-            setIsOrderFailed(true);
-            toast.error(error.message || "Bir şeyler ters gitti.");
-            setSelectedFiles([]);
+            toast.error(error.message || "Tercihler kaydedilirken bir hata oluştu.");
             console.error("Error submitting form:", error.message);
         }
     };
@@ -538,69 +538,27 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                 </div>
                             </div>
                         </div>
-                        <div className='w-full flex justify-end'>
+                        <div className='w-full flex justify-end space-x-4'>
+                            <button
+                                type='button'
+                                onClick={() => {
+                                    const currentValues = watch();
+                                    console.log("🚀 Current form values:", currentValues);
+                                }}
+                                className='bg-gray-500 text-white py-2 px-4 rounded-md'
+                            >
+                                Debug Form
+                            </button>
                             <button
                                 type='submit'
                                 className=' Button text-white py-2 px-4 rounded-md'
                             >
-                                {orderLoading ? "Tamamlanıyor..." : "Tamamla"}
+                                {orderLoading ? "Kaydediliyor..." : "Tamamla"}
                             </button>
                         </div>
                     </div>
                 </div>
             </form>
-
-            {/* SUCCESS MODAL */}
-            <CustomModalAdmin
-                title=''
-                isOpen={isOrderSuccessFullyPlaced}
-                closeModal={() => setIsOrderSuccessFullyPlaced(false)}
-            >
-                <div className='flex flex-col items-center justify-center pt-4 pb-16 px-16 text-center'>
-                    <Image
-                        alt='success'
-                        src='/check.png'
-                        height={100}
-                        width={100}
-                        className='w-28 h-28 mb-6'
-                    />
-                    <h1 className='text-xl font-semibold text-green-600 mb-2'>
-                        Siparişin Başarıyla Oluşturuldu
-                    </h1>
-                    <p className='text-gray-600'>
-                        Siparişin oluşturuldu, içerik üreticilerine iletildi.
-                        <span className='font-medium'>Siparişlerim</span>{" "}
-                        sekmesi altından takip edebilirsin.
-                    </p>
-                </div>
-            </CustomModalAdmin>
-
-            {/* ERROR MODAL */}
-            <CustomModalAdmin
-                title=''
-                isOpen={isOrderFailed}
-                closeModal={() => {
-                    setIsOrderFailed(false);
-                    router.push("/siparislerim");
-                }}
-            >
-                <div className='flex flex-col items-center justify-center pt-4 pb-16 px-16 text-center'>
-                    <Image
-                        alt='error'
-                        src='/x.png'
-                        height={100}
-                        width={100}
-                        className='w-28 h-28 mb-6'
-                    />
-                    <h1 className='text-xl font-semibold text-red-600 mb-2'>
-                        Bir Sorun Oluştu
-                    </h1>
-                    <p className='text-gray-600'>
-                        Sipariş oluştururken bir sorun oluştu. Lütfen tekrar
-                        dene. Sorun devam ederse bizimle iletişime geç.
-                    </p>
-                </div>
-            </CustomModalAdmin>
         </>
     );
 };

@@ -1,6 +1,7 @@
-import { selectToken } from "@/store/features/auth/loginSlice";
+import { selectToken, selectUser, restoreAuthState } from "@/store/features/auth/loginSlice";
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 interface TokenContextType {
     token: string | null;
@@ -16,17 +17,25 @@ export const TokenProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
     const [token, setToken] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
+    const dispatch = useDispatch();
 
     const tokenFromRedux = useSelector(selectToken);
+    const userFromRedux = useSelector(selectUser);
+    const { loading: reduxLoading } = useSelector((state: RootState) => state.login);
 
     useEffect(() => {
-
+        console.log("🔍 TokenProvider: Initializing token check", {
+            tokenFromRedux,
+            userFromRedux,
+            reduxLoading,
+            currentPath: typeof window !== 'undefined' ? window.location.pathname : 'N/A'
+        });
 
         const tokenFromParams = new URLSearchParams(window.location.search).get(
             "accessToken"
         );
         const storedToken = localStorage.getItem("accessToken");
-
+        const storedUser = localStorage.getItem("user");
 
         // Priority: 1) URL param token 2) Redux token 3) LocalStorage token
         if (tokenFromParams) {
@@ -35,9 +44,32 @@ export const TokenProvider: React.FC<{ children: React.ReactNode }> = ({
         } else if (tokenFromRedux) {
             console.log("🔍 TokenProvider: Using token from Redux");
             setToken(tokenFromRedux);
-        } else if (storedToken) {
-            console.log("🔍 TokenProvider: Using token from localStorage");
-            setToken(storedToken);
+        } else if (storedToken && storedUser) {
+            console.log("🔍 TokenProvider: Using token from localStorage and restoring Redux state");
+
+            try {
+                const parsedUser = JSON.parse(storedUser);
+                // Validate that the parsed user has required properties
+                if (parsedUser && typeof parsedUser === 'object' && parsedUser.role) {
+                    setToken(storedToken);
+
+                    // Restore Redux state from localStorage if it's not already there
+                    if (!tokenFromRedux && !reduxLoading) {
+                        dispatch(restoreAuthState({ user: parsedUser, token: storedToken }));
+                        console.log("🔍 TokenProvider: Redux state restored from localStorage");
+                    }
+                } else {
+                    console.warn("🔍 TokenProvider: Invalid user data in localStorage");
+                    localStorage.removeItem("user");
+                    localStorage.removeItem("accessToken");
+                    setToken(null);
+                }
+            } catch (error) {
+                console.error("🔍 TokenProvider: Error parsing stored user data", error);
+                localStorage.removeItem("user");
+                localStorage.removeItem("accessToken");
+                setToken(null);
+            }
         } else {
             console.log("🔍 TokenProvider: No token found");
             setToken(null);
@@ -45,12 +77,14 @@ export const TokenProvider: React.FC<{ children: React.ReactNode }> = ({
 
         console.log("🔍 TokenProvider: Setting loading to false");
         setLoading(false);
-    }, [tokenFromRedux]); // notice we depend on tokenFromRedux here
+    }, [tokenFromRedux, userFromRedux, reduxLoading, dispatch]);
 
     useEffect(() => {
         if (token) {
+            console.log("🔍 TokenProvider: Saving token to localStorage");
             localStorage.setItem("accessToken", token);
         } else {
+            console.log("🔍 TokenProvider: Removing token from localStorage");
             localStorage.removeItem("accessToken");
         }
     }, [token]);
