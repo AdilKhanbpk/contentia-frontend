@@ -72,7 +72,6 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
   const [couponError, setCouponError] = useState("");
   const [discount, setDiscount] = useState(0);
   const [isCouponAppliedLoading, setIsCouponAppliedLoading] = useState(false);
-<<<<<<< HEAD
   const [orderId, setOrderId] = useState<string>("")
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const dispatch = useDispatch<AppDispatch>();
@@ -306,141 +305,12 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
           setIsOrderSuccessFullyPlaced(true);
           toast.success("Sipariş başarıyla oluşturuldu!");
           router.push('/siparislerim')
-=======
-  
-
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
-  const { selectedFiles, setSelectedFiles } = useFileContext();
-  const [isOrderSuccessFullyPlaced, setIsOrderSuccessFullyPlaced] = useState(false);
-  const [isOrderFailed, setIsOrderFailed] = useState(false);
-  const orderLoading = useSelector(selectOrderIsLoading);
-  const { data: additionalService } = useSelector((state: RootState) => state.addPrice);
-  const orderFormData = useSelector<RootState, OrderInterface | null>(
-    (state) => state.order.orderFormData as OrderInterface
-  );
-
-  // Form setup
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-  } = useForm<PaymentFormData>({ mode: "onChange" });
-
-  // Calculated values
-  const basePrice = orderFormData?.basePrice || 0;
-  const quantity = orderFormData?.noOfUgc || 1;
-  const totalPrice = orderFormData?.totalPrice || 0;
-  const [finalPrice, setFinalPrice] = useState(totalPrice);
-
-  // Delivery date calculations
-  const deliveryStartDate = new Date(orderDate);
-  deliveryStartDate.setDate(deliveryStartDate.getDate() + 30);
-  const deliveryEndDate = new Date(orderDate);
-  deliveryEndDate.setDate(deliveryEndDate.getDate() + 35);
-
-  // Utility functions
-  const formatDate = (date: Date) =>
-    date.toLocaleDateString("tr-TR", { day: "numeric", month: "long" });
-
-  const formatCardNumber = (value: string) =>
-    value.replace(/\s/g, "").replace(/(.{4})/g, "$1 ").trim();
-
-  const generateOrderId = () => `ORDER${Date.now()}`;
-
-  // Event handlers
-  const handleCalendarClick = () => setIsDatePickerOpen(!isDatePickerOpen);
-
-  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatCardNumber(e.target.value);
-    if (formatted.replace(/\s/g, "").length <= 16) {
-      setValue("cardNumber", formatted, { shouldValidate: true });
-    }
-  };
-
-  // const handleApplyCoupon = async () => {
-  //   if (!couponCode.trim()) return;
-
-  //   setIsCouponAppliedLoading(true);
-  //   setCouponError("");
-
-  //   try {
-  //     const result = await dispatch(validateCoupon({ code: couponCode })).unwrap();
-  //     let discountAmount = 0;
-  //     if (result.discountTl) {
-  //       discountAmount = result.discountTl;
-  //     } else if (result.discountPercentage) {
-  //       discountAmount = (totalPrice * result.discountPercentage) / 100;
-  //     }
-  //     const updatedFinalPrice = Math.max(0, totalPrice - discountAmount);
-  //     setFinalPrice(updatedFinalPrice);
-  //     setDiscount(discountAmount);
-  //     toast.success("Kupon başarıyla uygulandı!");
-  //   } catch (error: any) {
-  //     setCouponError(error.message || "Kupon kodu geçersiz");
-  //     setDiscount(0);
-  //     setFinalPrice(totalPrice);
-  //     toast.error(error.message || "Kupon kodu geçersiz");
-  //   } finally {
-  //     setIsCouponAppliedLoading(false);
-  //   }
-  // };
-
-  // Payment processing
-  
-   const handleApplyCoupon = async () => {
-        setIsCouponAppliedLoading(true);
-        try {
-            const result = await dispatch(
-                validateCoupon({
-                    code: couponCode,
-                })
-            ).unwrap();
-
-            let discountAmount = 0;
-
-            if (result.discountTl) {
-                discountAmount = result.discountTl;
-            } else if (result.discountPercentage) {
-                discountAmount = (totalPrice * result.discountPercentage) / 100;
-            }
-
-            const updatedFinalPrice = totalPrice - discountAmount;
-            setFinalPrice(updatedFinalPrice);
-
-            setDiscount(discountAmount);
-            setCouponError("");
-
-            // Store coupon code (not ObjectId) and update totalPrice in Redux orderFormData
-            if (result._id) {
-                // Calculate new basePrice per video if needed
-                // let newBasePrice = basePrice;
-                // if (result.discountPercentage) {
-                //     newBasePrice = basePrice - (basePrice * result.discountPercentage) / 100;
-                // } else if (result.discountTl) {
-                //     // If TL discount, you may want to subtract per video or just from platform, see your business logic
-                //     newBasePrice = basePrice; // Usually TL discount is not per video, so keep as is
-                // }
-                dispatch(setOrderFormData({
-                    coupon: couponCode, // Send the actual coupon code, not the ObjectId
-                    totalPrice: updatedFinalPrice,
-                }));
-                console.log("this is the updated totalPrice:", updatedFinalPrice);
-                console.log("🚀 Coupon code being stored:", couponCode);
-                console.log("🚀 Coupon ObjectId from API:", result._id);
-                console.log("🚀 User typed coupon code:", couponCode);
-
-            }
->>>>>>> efbfa6d434c73d36dd5c10255316c6148390d4fc
         } catch (error: any) {
           setIsOrderFailed(true);
           setSelectedFiles([]);
           toast.error(error.message || "Sipariş oluşturulurken bir hata oluştu.");
           console.error("Error creating order:", error.message);
         }
-<<<<<<< HEAD
       })();
     } else if (event.data?.paymentStatus === "fail") {
       setPaymentStatus("fail");
@@ -457,180 +327,6 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
   return () => window.removeEventListener("message", handleMessage);
 }, [dispatch, selectedFiles, setActiveTab, orderId]);
 
-=======
-    };
-  const processPayment = async (formData: PaymentFormData) => {
-    setLoading(true);
-    setResult(null);
-
-    try {
-      const [expiryMonth, expiryYear] = formData.expiryDate.split("/");
-      if (!expiryMonth || !expiryYear) {
-        throw new Error("Geçersiz son kullanma tarihi formatı");
-      }
-
-      const paymentData: PaymentApiData = {
-        amount: finalPrice.toString(),
-        orderId: generateOrderId(),
-        userName: formData.companyName,
-        userEmail: formData.email,
-        userPhone: formData.phoneNumber,
-        cardNumber: formData.cardNumber.replace(/\s/g, ""),
-        expiryMonth,
-        expiryYear,
-        cvv: formData.cvv,
-        nameOnCard: formData.nameOnCard,
-        country: formData.country,
-        whereDidYouHear: formData.whereDidYouHear,
-        companyName: formData.companyName,
-        taxId: formData.taxId,
-        taxOffice: formData.taxOffice,
-        address: formData.address,
-        email: formData.email,
-        phoneNumber: formData.phoneNumber,
-      };
-
-      const response = await fetch("https://contentia-backend-s4pw.onrender.com/api/paytr/direct-payment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(paymentData),
-      });
-
-      const contentType = response.headers.get("content-type");
-      if (contentType?.includes("text/html")) {
-        let html = await response.text();
-        html = html
-          .replace("</body>", `
-            <script>
-              document.querySelector('input[type="button"][value="Cancel"]')?.addEventListener('click', function(e) {
-                window.parent.postMessage({ type: 'CANCEL_3D' }, '*');
-                e.preventDefault();
-              });
-            </script>
-          </body>`)
-          .replace(/target=("|')?_top("|')?/gi, 'target="_self"');
-
-        setIframeHtml(html);
-        setShow3DModal(true);
-        setTimeout(() => {
-          if (show3DModal) {
-            setShow3DModal(false);
-            setResult({ success: false, message: "Oturum zaman aşımına uğradı. Lütfen tekrar deneyin." });
-            toast.error("Oturum zaman aşımına uğradı.");
-          }
-        }, 180000);
-        return;
-      }
-
-      const json: PaymentResult = await response.json();
-      setResult(json);
-      if (json.success) {
-        toast.success("Ödeme başarılı!");
-        setActiveTab(2);
-      } else {
-        toast.error(`Ödeme başarısız: ${json.message}`);
-      }
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Bilinmeyen hata";
-      setResult({ success: false, message: `Ağ hatası: ${message}` });
-      toast.error(`Ödeme başarısız: ${message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Form submission handler
-  const onSubmit = async (data: PaymentFormData) => {
-    if (!data.agreement) {
-      toast.error("Lütfen mesafeli satış sözleşmesini onaylayın.");
-      return;
-    }
-
-    // Save to Redux - preserve existing coupon data
-    const paymentData = {
-      paymentInfo: {
-        cardNumber: data.cardNumber,
-        expiryDate: data.expiryDate,
-        cvv: data.cvv,
-        nameOnCard: data.nameOnCard,
-        country: data.country,
-        saveCard: data.saveCard,
-        agreement: data.agreement,
-      },
-      customerInfo: {
-        companyName: data.companyName,
-        taxNumber: data.taxId,
-        taxOffice: data.taxOffice,
-        address: data.address,
-        email: data.email,
-        phoneNumber: data.phoneNumber,
-        whereDidYouHear: data.whereDidYouHear,
-      },
-      // Preserve existing coupon and preferences if they exist
-      ...(orderFormData?.coupon && { coupon: orderFormData.coupon }),
-      ...(orderFormData?.preferences && { preferences: orderFormData.preferences }),
-    };
-
-    console.log("🚀 Payment data being saved (with preserved coupon & preferences):", paymentData);
-    console.log("🚀 Current orderFormData before payment save:", orderFormData);
-    dispatch(setOrderFormData(paymentData));
-    toast.success("Ödeme bilgileri kaydedildi!");
-
-    // Process payment
-    await processPayment(data);
-
-    // Create order after successful payment processing
-    try {
-      await dispatch(createOrder({ selectedFiles })).unwrap();
-      setSelectedFiles([]);
-      setIsOrderSuccessFullyPlaced(true);
-      toast.success("Sipariş başarıyla oluşturuldu!");
-    } catch (error: any) {
-      setIsOrderFailed(true);
-      toast.error(error.message || "Sipariş oluşturulurken bir hata oluştu.");
-      setSelectedFiles([]);
-      console.error("Error creating order:", error.message);
-    }
-  };
-
-  // Effects
-  useEffect(() => {
-    setFinalPrice(totalPrice);
-  }, [totalPrice]);
-
-  useEffect(() => {
-    if (show3DModal && iframeRef.current && iframeHtml) {
-      const doc = iframeRef.current.contentDocument || iframeRef.current.contentWindow?.document;
-      if (doc) {
-        doc.open();
-        doc.write(iframeHtml);
-        doc.close();
-      }
-    }
-  }, [iframeHtml, show3DModal]);
-
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (event.data?.paymentStatus === "success") {
-        setPaymentStatus("success");
-        setShow3DModal(false);
-        setActiveTab(2);
-        toast.success("Ödeme başarılı!");
-      } else if (event.data?.paymentStatus === "fail") {
-        setPaymentStatus("fail");
-        setShow3DModal(false);
-        toast.error("Ödeme başarısız.");
-      } else if (event.data?.type === "CANCEL_3D") {
-        setShow3DModal(false);
-        setResult({ success: false, message: "Ödeme işlemi iptal edildi." });
-        toast.error("Ödeme işlemi iptal edildi.");
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
-  }, [setActiveTab]);
->>>>>>> efbfa6d434c73d36dd5c10255316c6148390d4fc
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -758,11 +454,7 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
             </div>
           </div>
 
-<<<<<<< HEAD
           <div className="mt-4">
-=======
-          {/* <div className="mt-4">
->>>>>>> efbfa6d434c73d36dd5c10255316c6148390d4fc
             <label className="block text-sm font-semibold mb-2">Kupon Kodu</label>
             <div className="flex flex-col lg:flex-row lg:space-x-3 space-y-2 lg:space-y-0">
               <input
@@ -776,14 +468,8 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
               <button
                 onClick={handleApplyCoupon}
                 disabled={isCouponAppliedLoading || !couponCode.trim()}
-<<<<<<< HEAD
                 className={`Button text-white px-4 py-2 rounded-md font-semibold transition-opacity ${isCouponAppliedLoading || !couponCode.trim() ? "opacity-60 cursor-not-allowed" : "hover:opacity-90"
                   }`}
-=======
-                className={`Button text-white px-4 py-2 rounded-md font-semibold transition-opacity ${
-                  isCouponAppliedLoading || !couponCode.trim() ? "opacity-60 cursor-not-allowed" : "hover:opacity-90"
-                }`}
->>>>>>> efbfa6d434c73d36dd5c10255316c6148390d4fc
               >
                 {isCouponAppliedLoading ? "Uygulanıyor..." : "Uygula"}
               </button>
@@ -792,48 +478,7 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
             {discount > 0 && (
               <p className="text-green-500 text-sm mt-2">{discount.toLocaleString("tr-TR")} TL indirim uygulandı!</p>
             )}
-<<<<<<< HEAD
           </div>
-=======
-          </div> */}
-
-          <div className='mt-4 flex flex-col '>
-                            <div>
-                                <label>Kupon Kodu</label>
-                            </div>
-                            <div className='flex flex-col lg:flex-row lg:space-x-3 items-start lg:items-center'>
-                                <input
-                                    type='text'
-                                    value={couponCode}
-                                    onChange={(e) =>
-                                        setCouponCode(e.target.value)
-                                    }
-                                    className='border px-3 py-2 rounded-md focus:outline-none'
-                                    disabled={isCouponAppliedLoading}
-                                />
-                                <button
-                                    onClick={handleApplyCoupon}
-                                    disabled={
-                                        isCouponAppliedLoading || !couponCode
-                                    }
-                                    className={`Button text-white px-4 py-2 rounded-md font-semibold ${
-                                        isCouponAppliedLoading
-                                            ? "opacity-60 cursor-not-allowed"
-                                            : ""
-                                    }`}
-                                >
-                                    {isCouponAppliedLoading
-                                        ? "Uygulanıyor..."
-                                        : "Uygula"}
-                                </button>
-                                {couponError && (
-                                    <p className='text-red-500 mt-2'>
-                                        {couponError}
-                                    </p>
-                                )}
-                            </div>
-                        </div>
->>>>>>> efbfa6d434c73d36dd5c10255316c6148390d4fc
 
           <div className="mt-6 sectionBG p-4 rounded-lg flex items-center space-x-3 relative">
             <div
@@ -880,14 +525,8 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
           <h2 className="text-xl font-semibold mb-6">Ödeme</h2>
           {result && (
             <div
-<<<<<<< HEAD
               className={`mb-6 p-4 rounded-lg border ${result.success ? "bg-green-50 border-green-200 text-green-800" : "bg-red-50 border-red-200 text-red-800"
                 }`}
-=======
-              className={`mb-6 p-4 rounded-lg border ${
-                result.success ? "bg-green-50 border-green-200 text-green-800" : "bg-red-50 border-red-200 text-red-800"
-              }`}
->>>>>>> efbfa6d434c73d36dd5c10255316c6148390d4fc
             >
               <h3 className="font-semibold mb-1">{result.success ? "Ödeme Başarılı!" : "Ödeme Başarısız"}</h3>
               <p className="text-sm">{result.message}</p>
@@ -1130,14 +769,8 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
             <button
               type="submit"
               disabled={loading}
-<<<<<<< HEAD
               className={`w-full Button text-white px-4 py-2 rounded-md font-semibold transition-opacity ${loading ? "opacity-60 cursor-not-allowed" : "hover:opacity-90"
                 }`}
-=======
-              className={`w-full Button text-white px-4 py-2 rounded-md font-semibold transition-opacity ${
-                loading ? "opacity-60 cursor-not-allowed" : "hover:opacity-90"
-              }`}
->>>>>>> efbfa6d434c73d36dd5c10255316c6148390d4fc
             >
               <div className="flex flex-row space-x-8">
                 <div className="w-1/4 flex justify-end items-center">
