@@ -39,6 +39,7 @@ export const fetchAdminCreators = createAsyncThunk(
         const creators = response.data.data.map((creator: CreatorInterface) => {
           return {
             _id: creator._id ?? null,
+            createdAt: creator.createdAt ?? new Date().toISOString(),
             fullName: creator.fullName ?? '',
             userType: creator.userType ?? '',
             role: creator.role ?? '',

@@ -214,21 +214,20 @@ const Brands: React.FC = () => {
     return (
         <div className='bg-white rounded-lg'>
             <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
-                <div className='flex flex-row justify-between items-center mb-4 space-x-2'>
-                    <div className='flex justify-center items-center'>
+                <div className='flex flex-col sm:flex-row justify-between items-stretch sm:items-center mb-4 space-y-2 sm:space-y-0 sm:space-x-2'>
+                    <div className='flex justify-center items-center w-full sm:w-auto'>
                         <SearchBar onSearch={handleSearch} />
                     </div>
-
-                    <div className='flex flex-row space-x-2'>
+                    <div className='flex flex-col xs:flex-row justify-center space-y-2 xs:space-y-0 xs:space-x-2 w-full sm:w-auto'>
                         <button
                             onClick={() => setIsModalOpen(true)}
-                            className='px-4 py-2 Button text-white rounded-md'
+                            className='px-4 py-2 Button text-white rounded-md w-full xs:w-auto'
                         >
                             Add Brand
                         </button>
                         <button
                             onClick={handleExport}
-                            className='px-4 py-2 bg-green-500 text-white rounded-md'
+                            className='px-4 py-2 bg-green-500 text-white rounded-md w-full xs:w-auto'
                         >
                             Export CSV
                         </button>

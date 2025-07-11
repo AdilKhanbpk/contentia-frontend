@@ -13,6 +13,7 @@ import { OrderInterface, CreatorInterface } from "@/types/interfaces";
 import { CiPickerEmpty } from "react-icons/ci";
 import { FaBoxOpen } from "react-icons/fa";
 import { checkStatus } from "@/utils/CheckOrderStatus";
+import { FaChevronDown } from "react-icons/fa";
 
 
 export default function OrdersOrders() {
@@ -25,6 +26,7 @@ export default function OrdersOrders() {
     const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState<OrderInterface | null>(null);
     const [selectedFilter, setSelectedFilter] = useState<string>("all");
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     useEffect(() => {
         dispatch(fetchOrders());
@@ -89,53 +91,89 @@ export default function OrdersOrders() {
                             <h1 className='text-base font-semibold mb-4 sm:mb-5 md:mb-6 lg:mb-6'>
                                 Sipariş Detayları
                             </h1>
-                            <div className='flex space-x-2'>
+                            {/* Mobile Dropdown */}
+                            <div className='md:hidden relative'>
                                 <button
-                                    className={`px-3 py-0.5 lg:px-4 lg:py-1 border-2 text-sm lg:text-base ${
-                                        selectedFilter === "all"
+                                    className='w-full px-4 py-2 bg-white border-2 BlueBorder BlueColor rounded-lg font-medium flex items-center justify-between'
+                                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                >
+                                    <span>
+                                        {selectedFilter === "all" && "Tümü"}
+                                        {selectedFilter === "completed" && "Tamamlandı"}
+                                        {selectedFilter === "active" && "Aktif"}
+                                        {selectedFilter === "pending" && "Onay Bekliyor"}
+                                        {selectedFilter === "revision" && "Revizyon"}
+                                    </span>
+                                    <FaChevronDown className={`transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                                </button>
+                                {isDropdownOpen && (
+                                    <div className='absolute top-full left-0 right-0 mt-1 bg-white border-2 BlueBorder rounded-lg shadow-lg z-10'>
+                                        {[
+                                            { key: "all", label: "Tümü" },
+                                            { key: "completed", label: "Tamamlandı" },
+                                            { key: "active", label: "Aktif" },
+                                            { key: "pending", label: "Onay Bekliyor" },
+                                            { key: "revision", label: "Revizyon" }
+                                        ].map((option) => (
+                                            <button
+                                                key={option.key}
+                                                className={`w-full px-4 py-2 text-left hover:bg-gray-50 first:rounded-t-lg last:rounded-b-lg ${selectedFilter === option.key ? 'bg-blue-50 BlueColor font-semibold' : 'text-gray-700'
+                                                    }`}
+                                                onClick={() => {
+                                                    setSelectedFilter(option.key);
+                                                    setIsDropdownOpen(false);
+                                                }}
+                                            >
+                                                {option.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Desktop Buttons */}
+                            <div className='hidden md:flex space-x-2'>
+                                <button
+                                    className={`px-4 py-1 border-2 text-base ${selectedFilter === "all"
                                             ? "BlueBorder bg-white"
                                             : "border-transparent bg-[#F4F4F4]"
-                                    } BlueColor rounded-full font-medium`}
+                                        } BlueColor rounded-full font-medium`}
                                     onClick={() => setSelectedFilter("all")}
                                 >
                                     Tümü
                                 </button>
                                 <button
-                                    className={`px-3 py-0.5 lg:px-4 lg:py-1 border-2 text-sm lg:text-base ${
-                                        selectedFilter === "completed"
+                                    className={`px-4 py-1 border-2 text-base ${selectedFilter === "completed"
                                             ? "BlueBorder bg-white"
                                             : "border-transparent bg-[#F4F4F4]"
-                                    } BlueColor rounded-full font-medium`}
+                                        } BlueColor rounded-full font-medium`}
                                     onClick={() => setSelectedFilter("completed")}
                                 >
                                     Tamamlandı
                                 </button>
                                 <button
-                                    className={`px-3 py-0.5 lg:px-4 lg:py-1 border-2 text-sm lg:text-base ${
-                                        selectedFilter === "active"
+                                    className={`px-4 py-1 border-2 text-base ${selectedFilter === "active"
                                             ? "BlueBorder bg-white"
                                             : "border-transparent bg-[#F4F4F4]"
-                                    } BlueColor rounded-full font-medium`}
+                                        } BlueColor rounded-full font-medium`}
                                     onClick={() => setSelectedFilter("active")}
                                 >
                                     Aktif
                                 </button>
                                 <button
-                                    className={`px-3 py-0.5 lg:px-4 lg:py-1 border-2 text-sm lg:text-base ${
-                                        selectedFilter === "pending"
+                                    className={`px-4 py-1 border-2 text-base ${selectedFilter === "pending"
                                             ? "BlueBorder bg-white"
                                             : "border-transparent bg-[#F4F4F4]"
-                                    } BlueColor rounded-full font-medium`}
+                                        } BlueColor rounded-full font-medium`}
                                     onClick={() => setSelectedFilter("pending")}
                                 >
                                     Onay Bekliyor
                                 </button>
                                 <button
-                                    className={`px-3 py-0.5 lg:px-4 lg:py-1 border-2 text-sm lg:text-base ${
-                                        selectedFilter === "revision"
+                                    className={`px-4 py-1 border-2 text-base ${selectedFilter === "revision"
                                             ? "BlueBorder bg-white"
                                             : "border-transparent bg-[#F4F4F4]"
-                                    } BlueColor rounded-full font-medium`}
+                                        } BlueColor rounded-full font-medium`}
                                     onClick={() => setSelectedFilter("revision")}
                                 >
                                     Revizyon
@@ -264,7 +302,7 @@ export default function OrdersOrders() {
                 <CustomModal isOpen={isEditModalOpen} closeModal={closeModal} title=''>
                     {selectedOrder && <EditOrder orderData={selectedOrder} />}
                 </CustomModal>
-                
+
                 <CustomModal isOpen={isViewModalOpen} closeModal={closeModal} title=''>
                     {selectedOrder && <ModelDetails orderData={selectedOrder} />}
                 </CustomModal>

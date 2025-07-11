@@ -8,6 +8,13 @@ import {
     setOrderFormData,
     selectOrderIsLoading,
 } from "@/store/features/profile/orderSlice";
+<<<<<<< HEAD
+=======
+import { useFileContext } from "@/context/FileContext";
+import CustomModalAdmin from "@/components/modal/CustomModelAdmin";
+import { useRouter } from "next/navigation";
+import { OrderInterface } from "@/types/interfaces";
+>>>>>>> efbfa6d434c73d36dd5c10255316c6148390d4fc
 
 const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
     setActiveTab,
@@ -29,16 +36,33 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
     const { register, handleSubmit, watch } = useForm();
 
     const contentTypes = watch("preferences.contentType") || [];
+    const watchedGender = watch("preferences.creatorGender");
+    const watchedAreaOfInterest = watch("preferences.areaOfInterest");
+
+    // Debug: Log form values when they change
+    useEffect(() => {
+        console.log("🚀 Form values changed:");
+        console.log("  - Gender:", watchedGender);
+        console.log("  - Content Type:", contentTypes);
+        console.log("  - Area of Interest:", watchedAreaOfInterest);
+    }, [watchedGender, contentTypes, watchedAreaOfInterest]);
 
     const onSubmit = async (data: any) => {
+        console.log("🚀 OrderTabFourth onSubmit called!");
         try {
+            const user = JSON.parse(localStorage.getItem("user") || "{}");
+            const userEmail = user.email || "";
+
+            console.log("🚀 Raw form data from OrderTabFourth:", data);
+            console.log("🚀 Min Age:", minAge, "Max Age:", maxAge);
+
             const preferencesData = {
                 preferences: {
-                    creatorGender: data.preferences.creatorGender,
+                    creatorGender: data.preferences?.creatorGender || null,
                     minCreatorAge: minAge,
                     maxCreatorAge: maxAge,
-                    areaOfInterest: data.preferences.areaOfInterest || [],
-                    contentType: data.preferences.contentType || [],
+                    areaOfInterest: data.preferences?.areaOfInterest || [],
+                    contentType: data.preferences?.contentType || null, // Single value, not array
                     addressDetails: data.preferences?.addressDetails ?? {
                         country: "",
                         state: "",
@@ -46,13 +70,20 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                         neighborhood: "",
                         fullAddress: "",
                     },
+                    email: userEmail,
                 },
             };
 
+            console.log("🚀 Preferences data being saved to Redux:", preferencesData);
             dispatch(setOrderFormData(preferencesData));
             toast.success("Tercihler kaydedildi!");
 
+<<<<<<< HEAD
             // Navigate to payment tab - order will be created after payment
+=======
+            // Navigate to payment tab (OrderTabSecond is Tab 3)
+            setActiveTab(3); // Go to OrderTabSecond (Payment)
+>>>>>>> efbfa6d434c73d36dd5c10255316c6148390d4fc
         } catch (error: any) {
             toast.error(error.message || "Tercihler kaydedilirken bir hata oluştu.");
             console.error("Error submitting form:", error.message);
@@ -94,7 +125,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                     </button>
                                     {showTooltipOne && (
                                         <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
-                                           <i> İçerik Üreticileri için yapmış olduğunuz tercihler, sizi doğru içerik üreticilerle eşleştirmemize yardımcı olacaktır. Tercihlerinizi, maksimum düzeyde karşılamaya çalışacağız.
+                                            <i> İçerik Üreticileri için yapmış olduğunuz tercihler, sizi doğru içerik üreticilerle eşleştirmemize yardımcı olacaktır. Tercihlerinizi, maksimum düzeyde karşılamaya çalışacağız.
                                             </i>
                                         </div>
                                     )}
@@ -174,17 +205,15 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                         <div
                                             className='absolute h-2 BlueBg rounded-full'
                                             style={{
-                                                left: `${
-                                                    ((minAge - 18) /
-                                                        (65 - 18)) *
+                                                left: `${((minAge - 18) /
+                                                    (65 - 18)) *
                                                     100
-                                                }%`,
-                                                right: `${
-                                                    100 -
+                                                    }%`,
+                                                right: `${100 -
                                                     ((maxAge - 18) /
                                                         (65 - 18)) *
-                                                        100
-                                                }%`,
+                                                    100
+                                                    }%`,
                                             }}
                                         />
 
@@ -326,8 +355,8 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                             </button>
                                             {showTooltipTwo && (
                                                 <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
-                                                   <i>İçerik üreticilerine ürün gönderimi sağlayacaksanız ya da üreticilerin bir fiziki lokasyona ulaşması gerekiyorsa, bu alanda içerik türünüzü belirterek lokasyona göre eşleştirme gerçekleştirme yapılması gerekir.
-                                                </i>
+                                                    <i>İçerik üreticilerine ürün gönderimi sağlayacaksanız ya da üreticilerin bir fiziki lokasyona ulaşması gerekiyorsa, bu alanda içerik türünüzü belirterek lokasyona göre eşleştirme gerçekleştirme yapılması gerekir.
+                                                    </i>
                                                 </div>
                                             )}
                                         </div>
@@ -395,128 +424,138 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                     {/* If Mekan (Place) selected */}
                                     {(contentTypes.includes("location") ||
                                         contentTypes.includes("product")) && (
-                                        <div>
-                                            <div className='flex flex-row'>
-                                                <h2 className='text-lg font-semibold mb-4'>
-                                                    Adres:
-                                                </h2>
+                                            <div>
+                                                <div className='flex flex-row'>
+                                                    <h2 className='text-lg font-semibold mb-4'>
+                                                        Adres:
+                                                    </h2>
 
-                                                {/* Tooltip or Information section */}
-                                                <div className='relative mb-4 flex justify-center'>
-                                                    <button
-                                                        className='text-black text-sm px-3 py-1 rounded-full'
-                                                        onMouseEnter={() =>
-                                                            setShowTooltipThree(
-                                                                true
-                                                            )
-                                                        }
-                                                        onMouseLeave={() =>
-                                                            setShowTooltipThree(
-                                                                false
-                                                            )
-                                                        }
-                                                    >
-                                                        <Image
-                                                            src='/tooltipIcon.png'
-                                                            alt='brand logo'
-                                                            height={16}
-                                                            width={16}
-                                                            className='rounded-full'
+                                                    {/* Tooltip or Information section */}
+                                                    <div className='relative mb-4 flex justify-center'>
+                                                        <button
+                                                            className='text-black text-sm px-3 py-1 rounded-full'
+                                                            onMouseEnter={() =>
+                                                                setShowTooltipThree(
+                                                                    true
+                                                                )
+                                                            }
+                                                            onMouseLeave={() =>
+                                                                setShowTooltipThree(
+                                                                    false
+                                                                )
+                                                            }
+                                                        >
+                                                            <Image
+                                                                src='/tooltipIcon.png'
+                                                                alt='brand logo'
+                                                                height={16}
+                                                                width={16}
+                                                                className='rounded-full'
+                                                            />
+                                                        </button>
+                                                        {showTooltipThree && (
+                                                            <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
+                                                                <i> Adres bilgileri, tüm
+                                                                    içerik üreticileri
+                                                                    tarafından İl, İlçe
+                                                                    ve Mahalle olarak
+                                                                    gösterilecektir.
+                                                                    Onaylanan içerik
+                                                                    üreticiler, işletme
+                                                                    adı ve açık adresi
+                                                                    görüntüleyebilecektir.
+                                                                </i>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                                                    {contentTypes.includes(
+                                                        "product"
+                                                    )
+                                                        ? "Lütfen ürünlerinizi teslim alınacağı adres bilgisini girin."
+                                                        : "Lütfen tanıtılmasını istediğiniz mekanın adres bilgilerini belirtin"}
+                                                </label>
+
+                                                <div className='grid lg:grid-cols-2 gap-x-8 gap-y-8'>
+                                                    <div>
+                                                        <label className='block text-sm font-semibold mb-2'>
+                                                            Ülke
+                                                        </label>
+                                                        <input
+                                                            className='w-full px-3 py-2 border rounded-md focus:outline-none'
+                                                            {...register(
+                                                                "preferences.addressDetails.country"
+                                                            )}
                                                         />
-                                                    </button>
-                                                    {showTooltipThree && (
-                                                        <div className='absolute left-0 top-full mb-1 w-48 bg-gray-700 text-white text-sm rounded p-2'>
-                                                           <i> Adres bilgileri, tüm
-                                                            içerik üreticileri
-                                                            tarafından İl, İlçe
-                                                            ve Mahalle olarak
-                                                            gösterilecektir.
-                                                            Onaylanan içerik
-                                                            üreticiler, işletme
-                                                            adı ve açık adresi
-                                                            görüntüleyebilecektir.
-                                                            </i>
-                                                        </div>
-                                                    )}
+                                                    </div>
+
+                                                    <div>
+                                                        <label className='block text-sm font-semibold mb-2'>
+                                                            İl
+                                                        </label>
+                                                        <input
+                                                            className='w-full px-3 py-2 border rounded-md focus:outline-none'
+                                                            {...register(
+                                                                "preferences.addressDetails.state"
+                                                            )}
+                                                        />
+                                                    </div>
+
+                                                    <div>
+                                                        <label className='block text-sm font-semibold mb-2'>
+                                                            İlçe
+                                                        </label>
+                                                        <input
+                                                            className='w-full px-3 py-2 border rounded-md focus:outline-none'
+                                                            {...register(
+                                                                "preferences.addressDetails.district"
+                                                            )}
+                                                        />
+                                                    </div>
+
+                                                    <div>
+                                                        <label className='block text-sm font-semibold mb-2'>
+                                                            Mahalle
+                                                        </label>
+                                                        <input
+                                                            className='w-full px-3 py-2 border rounded-md focus:outline-none'
+                                                            {...register(
+                                                                "preferences.addressDetails.neighborhood"
+                                                            )}
+                                                        />
+                                                    </div>
+
+                                                    <div className='col-span-2'>
+                                                        <label className='block text-sm font-semibold mb-2'>
+                                                            İşletme Adı & Adres
+                                                        </label>
+                                                        <textarea
+                                                            placeholder='Lütfen işletme adını ve açık adres bilgilerini girin.'
+                                                            className='w-full text-sm px-3 py-2 border rounded-md focus:outline-none'
+                                                            rows={2}
+                                                            {...register(
+                                                                "preferences.addressDetails.fullAddress"
+                                                            )}
+                                                        />
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <label className='block text-sm font-medium text-gray-700 mb-2'>
-                                                {contentTypes.includes(
-                                                    "product"
-                                                )
-                                                    ? "Lütfen ürünlerinizi teslim alınacağı adres bilgisini girin."
-                                                    : "Lütfen tanıtılmasını istediğiniz mekanın adres bilgilerini belirtin"}
-                                            </label>
-
-                                            <div className='grid lg:grid-cols-2 gap-x-8 gap-y-8'>
-                                                <div>
-                                                    <label className='block text-sm font-semibold mb-2'>
-                                                        Ülke
-                                                    </label>
-                                                    <input
-                                                        className='w-full px-3 py-2 border rounded-md focus:outline-none'
-                                                        {...register(
-                                                            "preferences.addressDetails.country"
-                                                        )}
-                                                    />
-                                                </div>
-
-                                                <div>
-                                                    <label className='block text-sm font-semibold mb-2'>
-                                                        İl
-                                                    </label>
-                                                    <input
-                                                        className='w-full px-3 py-2 border rounded-md focus:outline-none'
-                                                        {...register(
-                                                            "preferences.addressDetails.state"
-                                                        )}
-                                                    />
-                                                </div>
-
-                                                <div>
-                                                    <label className='block text-sm font-semibold mb-2'>
-                                                        İlçe
-                                                    </label>
-                                                    <input
-                                                        className='w-full px-3 py-2 border rounded-md focus:outline-none'
-                                                        {...register(
-                                                            "preferences.addressDetails.district"
-                                                        )}
-                                                    />
-                                                </div>
-
-                                                <div>
-                                                    <label className='block text-sm font-semibold mb-2'>
-                                                        Mahalle
-                                                    </label>
-                                                    <input
-                                                        className='w-full px-3 py-2 border rounded-md focus:outline-none'
-                                                        {...register(
-                                                            "preferences.addressDetails.neighborhood"
-                                                        )}
-                                                    />
-                                                </div>
-
-                                                <div className='col-span-2'>
-                                                    <label className='block text-sm font-semibold mb-2'>
-                                                        İşletme Adı & Adres
-                                                    </label>
-                                                    <textarea
-                                                        placeholder='Lütfen işletme adını ve açık adres bilgilerini girin.'
-                                                        className='w-full text-sm px-3 py-2 border rounded-md focus:outline-none'
-                                                        rows={2}
-                                                        {...register(
-                                                            "preferences.addressDetails.fullAddress"
-                                                        )}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
+                                        )}
                                 </div>
                             </div>
                         </div>
-                        <div className='w-full flex justify-end'>
+                        <div className='w-full flex justify-end space-x-4'>
+                            <button
+                                type='button'
+                                onClick={() => {
+                                    const currentValues = watch();
+                                    console.log("🚀 Current form values:", currentValues);
+                                }}
+                                className='bg-gray-500 text-white py-2 px-4 rounded-md'
+                            >
+                                Debug Form
+                            </button>
                             <button
                                 type='submit'
                                 onClick={() => setActiveTab(3)}

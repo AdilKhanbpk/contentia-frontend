@@ -729,7 +729,7 @@ index 5d448f8..2cec5f9 100644
              .unwrap()
 -            .catch((error) => {
 +            .catch((_error) => {
-                 toast.error("Failed to fetch landing page data.");
+                 toast.error("Açılış sayfası verileri alınamadı.");
              });
      }, [dispatch]);
 @@ -141,7 +138,7 @@ export default function LandingPages() {

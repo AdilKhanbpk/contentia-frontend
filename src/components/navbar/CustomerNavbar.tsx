@@ -19,6 +19,7 @@ import {
     PaperClipIcon,
     ShoppingCartIcon,
     UserIcon,
+    XMarkIcon,
 } from "@heroicons/react/24/solid";
 import { IoLogOut } from "react-icons/io5";
 import clsx from "clsx";
@@ -30,10 +31,8 @@ const generateInitials = (fullName: string | undefined): string => {
 
     const names = fullName.trim().split(" ");
     if (names.length === 1) {
-        // If only one name, return the first letter
         return names[0].charAt(0).toUpperCase();
     } else {
-        // If multiple names, return first letter of first name and first letter of last name
         return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
     }
 };
@@ -54,6 +53,34 @@ export default function Navbar() {
     useEffect(() => {
         dispatch(fetchProfile());
     }, [dispatch]);
+
+    // Close sidebar when screen size changes to desktop
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth >= 1024) {
+                setSidebarOpen(false);
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    // Close sidebar when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarButton = document.getElementById('sidebar-toggle');
+
+            if (isSidebarOpen && sidebar && !sidebar.contains(event.target as Node) &&
+                !sidebarButton?.contains(event.target as Node)) {
+                setSidebarOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [isSidebarOpen]);
 
     const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
@@ -76,7 +103,7 @@ export default function Navbar() {
                     .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
             });
 
-            toast.success("Logout successful");
+            toast.success("Çıkış başarılı");
 
             // Force a page reload to clear any in-memory state
             window.location.href = "/giris-yap";
@@ -103,7 +130,7 @@ export default function Navbar() {
                         href={href}
                         onClick={onClick}
                         className={clsx(
-                            "block p-2 rounded-lg transition-all",
+                            "block px-3 py-2 text-sm md:text-base rounded-lg transition-all",
                             pathname === href
                                 ? "BlueBg dark:bg-gray-800 text-white font-semibold"
                                 : "text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -116,9 +143,33 @@ export default function Navbar() {
         </>
     );
 
+    const ProfileMenuItem = ({ href, icon: Icon, label, onClick, className = "" }: {
+        href?: string;
+        icon: React.ElementType;
+        label: string;
+        onClick?: () => void;
+        className?: string;
+    }) => {
+        const content = (
+            <li
+                className={clsx(
+                    'px-3 py-2 text-sm BlueText hover:bg-gray-100 cursor-pointer flex items-center gap-3 rounded-md transition-colors',
+                    className
+                )}
+                onClick={onClick}
+            >
+                <Icon className='w-4 h-4 flex-shrink-0' />
+                <span className="truncate">{label}</span>
+            </li>
+        );
+
+        return href ? <Link href={href}>{content}</Link> : content;
+    };
+
     return (
         <>
-            <nav className='fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700 px-2 sm:px-4 md:px-6 lg:px-10'>
+            {/* Main Navbar */}
+                        <nav className='fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700 px-2 sm:px-4 md:px-6 lg:px-10'>
                 <div className='px-3 py-3 lg:px-5 lg:pl-3'>
                     <a
                         href='/'
@@ -238,18 +289,88 @@ export default function Navbar() {
                 </div>
             </nav>
 
-            {/* Sidebar for small screens */}
+            {/* Mobile Sidebar Overlay */}
+            {isSidebarOpen && (
+                <div
+                    className='fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden'
+                    onClick={() => setSidebarOpen(false)}
+                />
+            )}
+
+            {/* Mobile Sidebar */}
             <aside
                 id='sidebar'
-                className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${
-                    isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-                } bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700 lg:hidden`}
+                className={clsx(
+                    'fixed top-0 left-0 z-50 w-64 sm:w-72 h-screen transition-transform bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700 lg:hidden',
+                    isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                )}
                 aria-label='Sidebar'
             >
-                <div className='h-full px-3 pb-4 overflow-y-auto'>
-                    <ul className='space-y-2 font-medium'>
-                        <NavLinks onClick={() => setSidebarOpen(false)} />
-                    </ul>
+                {/* Sidebar Header */}
+                <div className='flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700'>
+                    <Link href='/' onClick={() => setSidebarOpen(false)}>
+                        <Image
+                            src='/contentiaLogo.png'
+                            height={36}
+                            width={140}
+                            alt='logo'
+                            className='h-8 w-auto'
+                        />
+                    </Link>
+                    <button
+                        onClick={() => setSidebarOpen(false)}
+                        className='p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700'
+                        aria-label='Close sidebar'
+                    >
+                        <XMarkIcon className='w-5 h-5' />
+                    </button>
+                </div>
+
+                {/* Sidebar Content */}
+                <div className='h-[calc(100%-73px)] overflow-y-auto'>
+                    <div className='px-3 py-4'>
+                        {/* BrandNames for mobile */}
+                        {/* <div className='mb-6'>
+                            <BrandNames />
+                        </div> */}
+
+                        {/* Navigation Links */}
+                        <ul className='space-y-2 font-medium'>
+                            <NavLinks onClick={() => setSidebarOpen(false)} />
+                        </ul>
+
+                        {/* User Section */}
+                        <div className='mt-6 pt-6 border-t border-gray-200 dark:border-gray-700'>
+                            <div className='flex items-center gap-3 px-3 py-2 mb-4'>
+                                <div className='w-10 h-10 rounded-full border-2 border-gray-300 dark:border-gray-600 flex items-center justify-center bg-blue-600 text-white font-semibold'>
+                                    {user?.fullName ? userInitials : "UN"}
+                                </div>
+                                <div className='flex-1 min-w-0'>
+                                    <p className='text-sm font-medium text-gray-900 dark:text-white truncate'>
+                                        {user?.fullName || "John Doe"}
+                                    </p>
+                                    <p className='text-xs text-gray-500 dark:text-gray-400 truncate'>
+                                        {user?.email || "user@example.com"}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <ul className='space-y-1'>
+                                <ProfileMenuItem
+                                    href='/paketler'
+                                    icon={PaperClipIcon}
+                                    label='Paketler'
+                                    onClick={() => setSidebarOpen(false)}
+                                />
+                                <ProfileMenuItem
+                                    icon={IoLogOut}
+                                    label='Çıkış Yap'
+                                    onClick={handleLogout}
+                                    className='text-red-600 hover:bg-red-50'
+                                />
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </aside>
         </>

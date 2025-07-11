@@ -15,10 +15,10 @@ const About = () => {
     useEffect(() => {
         dispatch(fetchAbout() as any)
             .then(() => {
-                toast.success("Data fetched successfully!");
+                toast.success("Veriler başarıyla alındı!");
             })
             .catch(() => {
-                toast.error("Failed to fetch data!");
+                toast.error("Veriler alınamadı!");
             });
     }, [dispatch]);
 

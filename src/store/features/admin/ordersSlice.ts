@@ -43,7 +43,13 @@ export const createOrder = createAsyncThunk(
           creatorType: data.additionalServices?.creatorType,
           productShipping: data.additionalServices?.productShipping === true ? true : false,
         },
+        // Only include coupon if it exists and is not empty
+        ...(data.coupon && data.coupon.trim() !== '' && { coupon: data.coupon }),
       };
+
+      // Debug logging to see what's being sent
+      console.log('🚀 Original data.coupon:', data.coupon);
+      console.log('🚀 TransformedData being sent to backend:', transformedData);
 
       // First create the order
       const response = await axiosInstance.post('/admin/orders', transformedData);
@@ -62,6 +68,23 @@ export const createOrder = createAsyncThunk(
   }
 );
 
+export const approvePayment = createAsyncThunk(
+  'orders/approvePayment',
+  async ({ orderId }: { orderId: string; }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.patch(`/admin/orders/approve-payment/${orderId}`);
+
+      return response.data.data;
+    } catch (error) {
+      if ((error as AxiosError).isAxiosError) {
+        const axiosError = error as AxiosError<ErrorResponse>;
+        return rejectWithValue(axiosError.response?.data?.message || 'Failed to approve payment');
+      }
+      return rejectWithValue('Failed to approve payment');
+    }
+  }
+);
+
 // Fetch All Orders
 export const fetchOrders = createAsyncThunk(
   'orders/fetchOrders',
@@ -69,7 +92,15 @@ export const fetchOrders = createAsyncThunk(
     try {
       const response = await axiosInstance.get('/admin/orders');
 
-      return response.data.data;
+      // Sort orders by createdAt before returning
+      const sortedOrders = response.data.data.sort((a: OrderInterface, b: OrderInterface) => {
+        // Add type safety for createdAt field
+        const dateA = new Date(a.createdAt || Date.now()).getTime();
+        const dateB = new Date(b.createdAt || Date.now()).getTime();
+        return dateB - dateA; // Newest first
+      });
+
+      return sortedOrders;
 
     } catch (error) {
 
@@ -259,6 +290,25 @@ export const markTheOrderAsCompleted = createAsyncThunk(
   }
 )
 
+export const updatePaymentStatus = createAsyncThunk(
+  'orders/updatePaymentStatus',
+  async ({ orderid, paymentstatus }: { orderid: string; paymentstatus: string; }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.put('/admin/orders/updatepaymentstatus', {
+        orderid,
+        paymentstatus
+      });
+      return response.data.data;
+    } catch (error) {
+      if ((error as AxiosError).isAxiosError) {
+        const axiosError = error as AxiosError<ErrorResponse>;
+        return rejectWithValue(axiosError.response?.data?.message || 'Failed to update payment status');
+      }
+      return rejectWithValue('Failed to update payment status');
+    }
+  }
+);
+
 export const markTheOrderAsRejected = createAsyncThunk(
   'orders/markTheOrderAsRejected',
   async ({ orderId }: { orderId: string; }, { rejectWithValue }) => {
@@ -289,6 +339,16 @@ const ordersSlice = createSlice({
     },
     clearOrdersError: (state) => {
       state.error = null;
+    },
+    updateOrderPaymentStatusLocally: (state, action: PayloadAction<{ orderId: string; paymentStatus: OrderInterface['paymentStatus'] }>) => {
+      const { orderId, paymentStatus } = action.payload;
+      const index = state.data.findIndex(order => order._id === orderId);
+      if (index !== -1) {
+        state.data[index].paymentStatus = paymentStatus;
+        if (state.currentOrder?._id === orderId) {
+          state.currentOrder.paymentStatus = paymentStatus;
+        }
+      }
     },
   },
   extraReducers: (builder) => {
@@ -337,6 +397,7 @@ const ordersSlice = createSlice({
       })
       .addCase(createOrder.fulfilled, (state, action: PayloadAction<OrderInterface>) => {
         state.loading = false;
+        // Add new order at the beginning since it's the newest
         state.data.unshift(action.payload);
       })
       .addCase(createOrder.rejected, (state, action) => {
@@ -351,7 +412,7 @@ const ordersSlice = createSlice({
       })
       .addCase(fetchOrders.fulfilled, (state, action: PayloadAction<OrderInterface[]>) => {
         state.loading = false;
-        state.data = action.payload;
+        state.data = action.payload; // Data is already sorted
       })
       .addCase(fetchOrders.rejected, (state, action) => {
         state.loading = false;
@@ -483,9 +544,29 @@ const ordersSlice = createSlice({
         state.error = action.payload as string;
       })
 
+      // Update Payment Status
+      .addCase(updatePaymentStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updatePaymentStatus.fulfilled, (state, action: PayloadAction<OrderInterface>) => {
+        state.loading = false;
+        const index = state.data.findIndex(order => order._id === action.payload._id);
+        if (index !== -1) {
+          state.data[index] = action.payload;
+          if (state.currentOrder?._id === action.payload._id) {
+            state.currentOrder = action.payload;
+          }
+        }
+      })
+      .addCase(updatePaymentStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
   },
 });
 
-export const { setCurrentOrder, clearCurrentOrder, clearOrdersError } = ordersSlice.actions;
+export const { setCurrentOrder, clearCurrentOrder, clearOrdersError, updateOrderPaymentStatusLocally } = ordersSlice.actions;
 
 export default ordersSlice.reducer;

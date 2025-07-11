@@ -36,10 +36,22 @@ const OrderDetails = () => {
                 <TabFirst setActiveTab={setActiveTab}></TabFirst>
             )}
             {activeTab === 1 && (
+<<<<<<< HEAD
                 <TabThird setActiveTab={setActiveTab}></TabThird>
             )}
             {activeTab === 2 && (
                 <TabFourth setActiveTab={setActiveTab}></TabFourth>
+=======
+             
+                <TabThird setActiveTab={setActiveTab}></TabThird>
+            )}
+            {activeTab === 2 && (
+                     <TabFourth setActiveTab={setActiveTab}></TabFourth>
+            )}
+            {activeTab === 3 && (
+             
+                 <TabSecond setActiveTab={setActiveTab}/>
+>>>>>>> efbfa6d434c73d36dd5c10255316c6148390d4fc
             )}
             {activeTab === 3 && (
                 <TabSecond setActiveTab={setActiveTab}></TabSecond>

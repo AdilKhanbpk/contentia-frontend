@@ -13,7 +13,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({
     landingPage,
-    landingPageLoading,
+    landingPageLoading, 
     landingPageError,
 }: HeroSectionProps) {
     return (

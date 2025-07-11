@@ -6,6 +6,7 @@ export interface CreatorInterface {
     password: string;
     tckn: string;
     email: string;
+    createdAt: string | Date; // Add this line
     dateOfBirth: string;
     gender: "male" | "female" | "other";
     phoneNumber: string;
@@ -139,6 +140,7 @@ export interface UploadFile {
 
 export interface OrderInterface {
     _id: string;
+    createdAt: string; // Should be string since it comes from API
     coupon?: string;
     orderOwner: {
         _id: string;
@@ -158,7 +160,7 @@ export interface OrderInterface {
     totalPriceForCustomer?: number;
     totalPriceForCreator?: number;
     orderStatus: "pending" | "active" | "completed" | "cancelled" | "revision" | "rejected";
-    paymentStatus: "paid" | "pending" | "refunded" | "cancelled" | "rejected";
+    paymentStatus: "pending" | "approved" | "paid" | "refunded" | "cancelled" | "rejected";
     contentsDelivered?: number;
     additionalServices: {
         platform: string;
@@ -197,9 +199,14 @@ export interface OrderInterface {
     numberOfRequests?: number;
     orderQuota?: number;
     quotaLeft?: number;
-    uploadFiles: UploadFile[];
-    createdAt: string;
-    updatedAt?: string;
+    uploadFiles?: Array<{
+        uploadedBy: string;
+        fileUrls: string[];
+        uploadedDate: Date;
+        creatorNoteOnOrder?: string;
+    }>;
+    // createdAt?: Date;
+    updatedAt?: Date;
     creatorNoteOnOrder?: string;
     revisions?: Array<{
         revisionType: 'minor' | 'major';
@@ -218,7 +225,10 @@ export interface OrderInterface {
         whereDidYouHear?: string;
     };
     paymentInfo?: {
+<<<<<<< HEAD
         orderId?: string; 
+=======
+>>>>>>> efbfa6d434c73d36dd5c10255316c6148390d4fc
         cardNumber?: string;
         expiryDate?: string;
         cvv?: string;

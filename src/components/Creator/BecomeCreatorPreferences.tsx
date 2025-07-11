@@ -13,9 +13,10 @@ import { useEffect } from "react";
 
 interface PreferencesProps {
     setActiveTab: (id: number) => void;
+    onSuccess: () => void;
 }
 
-const Preferences: React.FC<PreferencesProps> = ({ setActiveTab }) => {
+const Preferences: React.FC<PreferencesProps> = ({ setActiveTab, onSuccess }) => {
     const {
         register,
         watch,
@@ -52,7 +53,7 @@ const Preferences: React.FC<PreferencesProps> = ({ setActiveTab }) => {
 
             const isValidContentType = checkingContentType(data);
             if (!isValidContentType) {
-                toast.error("Please select at least one content type.");
+                toast.error("Lütfen en az bir içerik türü seçin.");
                 return;
             }
 
@@ -89,7 +90,7 @@ const Preferences: React.FC<PreferencesProps> = ({ setActiveTab }) => {
 
             if (!isValidPlatforms) {
                 toast.error(
-                    "At least one platform should have both username and followers."
+                    "En az bir platformda hem kullanıcı adı hem de takipçi sayısı bulunmalıdır."
                 );
                 return;
             }
@@ -110,7 +111,7 @@ const Preferences: React.FC<PreferencesProps> = ({ setActiveTab }) => {
             }
         } catch (error: any) {
             const errorMessage =
-                error?.message || "Failed to submit creator information";
+                error?.message || "Oluşturucu bilgileri gönderilemedi";
             toast.error(errorMessage);
         }
     };

@@ -113,13 +113,13 @@ export default function TabFirst({
     const handleAddService = (key: string, price: number) => {
         setSelectedServices((prev) => {
             const updated = { ...prev };
-            
+
             if (updated[key]) {
                 delete updated[key];
             } else {
                 updated[key] = price;
             }
-                        console.log("🚀 ~ handleAddService ~ updated:", updated);
+            console.log("🚀 ~ handleAddService ~ updated:", updated);
 
             return updated;
         });
@@ -148,8 +148,13 @@ export default function TabFirst({
             },
         };
         dispatch(setOrderFormData(formData));
+<<<<<<< HEAD
         toast.success("Order Details Saved Successfully!");
         setActiveTab(1); // Go to OrderTabThird (Brand/Brief) instead of OrderTabSecond (Payment)
+=======
+        toast.success("Sipariş detayları başarıyla kaydedildi!");
+        setActiveTab(1);
+>>>>>>> efbfa6d434c73d36dd5c10255316c6148390d4fc
     };
 
     useEffect(() => {
@@ -262,12 +267,11 @@ export default function TabFirst({
                                             <button
                                                 key={platform.value}
                                                 type='button'
-                                                className={`px-3 py-1 min-w-[70px] text-xs rounded-sm border ${
-                                                    selectedPlatform ===
+                                                className={`px-3 py-1 min-w-[70px] text-xs rounded-sm border ${selectedPlatform ===
                                                     platform.value
-                                                        ? "BlueBg text-white"
-                                                        : "bg-gray-100"
-                                                }`}
+                                                    ? "BlueBg text-white"
+                                                    : "bg-gray-100"
+                                                    }`}
                                                 onClick={() => {
                                                     setSelectedPlatform(
                                                         platform.value
@@ -287,11 +291,10 @@ export default function TabFirst({
                                     <div className='flex space-x-2'>
                                         <button
                                             type='button'
-                                            className={`text-sm px-3 py-1 rounded ${
-                                                activeDuration === "15s"
-                                                    ? "Button text-white"
-                                                    : "bg-white text-black"
-                                            }`}
+                                            className={`text-sm px-3 py-1 rounded ${activeDuration === "15s"
+                                                ? "Button text-white"
+                                                : "bg-white text-black"
+                                                }`}
                                             onClick={() =>
                                                 setActiveDuration("15s")
                                             }
@@ -301,11 +304,10 @@ export default function TabFirst({
 
                                         <button
                                             type='button'
-                                            className={`text-sm px-3 py-1 rounded ${
-                                                activeDuration === "30s"
-                                                    ? "Button text-white"
-                                                    : "bg-white text-black"
-                                            }`}
+                                            className={`text-sm px-3 py-1 rounded ${activeDuration === "30s"
+                                                ? "Button text-white"
+                                                : "bg-white text-black"
+                                                }`}
                                             onClick={() =>
                                                 setActiveDuration("30s")
                                             }
@@ -315,11 +317,10 @@ export default function TabFirst({
 
                                         <button
                                             type='button'
-                                            className={`text-sm px-3 py-1 rounded ${
-                                                activeDuration === "60s"
-                                                    ? "Button text-white"
-                                                    : "bg-white text-black"
-                                            }`}
+                                            className={`text-sm px-3 py-1 rounded ${activeDuration === "60s"
+                                                ? "Button text-white"
+                                                : "bg-white text-black"
+                                                }`}
                                             onClick={() =>
                                                 setActiveDuration("60s")
                                             }
@@ -339,11 +340,10 @@ export default function TabFirst({
                                         {/* Evet Button */}
                                         <button
                                             type='button'
-                                            className={`text-sm px-4 py-1 rounded-md transition ${
-                                                activeEdit
-                                                    ? "BlueBg text-white"
-                                                    : "bg-white border border-gray-300 text-black"
-                                            }`}
+                                            className={`text-sm px-4 py-1 rounded-md transition ${activeEdit
+                                                ? "BlueBg text-white"
+                                                : "bg-white border border-gray-300 text-black"
+                                                }`}
                                             onClick={() => {
                                                 if (!activeEdit) {
                                                     setActiveEdit(true);
@@ -364,11 +364,10 @@ export default function TabFirst({
                                         {/* Hayır Button */}
                                         <button
                                             type='button'
-                                            className={`text-sm px-4 py-1 rounded-md transition ${
-                                                !activeEdit
-                                                    ? "BlueBg text-white"
-                                                    : "bg-white border border-gray-300 text-black"
-                                            }`}
+                                            className={`text-sm px-4 py-1 rounded-md transition ${!activeEdit
+                                                ? "BlueBg text-white"
+                                                : "bg-white border border-gray-300 text-black"
+                                                }`}
                                             onClick={() => {
                                                 if (activeEdit) {
                                                     setActiveEdit(false);
@@ -432,11 +431,10 @@ export default function TabFirst({
                                     <div className='flex space-x-2'>
                                         <button
                                             type='button'
-                                            className={`text-sm px-3 py-1 rounded ${
-                                                activeRatio === "9:16"
-                                                    ? "Button text-white"
-                                                    : "bg-white text-black"
-                                            }`}
+                                            className={`text-sm px-3 py-1 rounded ${activeRatio === "9:16"
+                                                ? "Button text-white"
+                                                : "bg-white text-black"
+                                                }`}
                                             onClick={() =>
                                                 setActiveRatio("9:16")
                                             }
@@ -445,11 +443,10 @@ export default function TabFirst({
                                         </button>
                                         <button
                                             type='button'
-                                            className={`text-sm px-3 py-1 rounded ${
-                                                activeRatio === "16:9"
-                                                    ? "Button text-white"
-                                                    : "bg-white text-black"
-                                            }`}
+                                            className={`text-sm px-3 py-1 rounded ${activeRatio === "16:9"
+                                                ? "Button text-white"
+                                                : "bg-white text-black"
+                                                }`}
                                             onClick={() =>
                                                 setActiveRatio("16:9")
                                             }
@@ -466,7 +463,7 @@ export default function TabFirst({
                         <h2 className='text-lg font-semibold pt-4 mb-8'>
                             UGC Adedini Seç:
                         </h2>
-                        <div className='grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8'>
+                        <div className='grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-8'>
                             {/* Displaying pricing where videoCount is NOT 1 */}
                             {pricing &&
                                 pricing
@@ -477,11 +474,10 @@ export default function TabFirst({
                                             onClick={() =>
                                                 handleCardSelect(option._id)
                                             }
-                                            className={`p-4 rounded-lg shadow-xl cursor-pointer ${
-                                                selectedCard === option._id
-                                                    ? "border-2 BlueBorder sectionBG"
-                                                    : "bg-white"
-                                            }`}
+                                            className={`p-4 rounded-lg shadow-xl cursor-pointer ${selectedCard === option._id
+                                                ? "border-2 BlueBorder sectionBG"
+                                                : "bg-white"
+                                                }`}
                                         >
                                             <h3 className='text-sm font-bold'>
                                                 {option.videoCount} Farklı Video
@@ -529,11 +525,10 @@ export default function TabFirst({
 
                             {/* Custom Card */}
                             <div
-                                className={`bg-white rounded-lg p-4 shadow-xl cursor-pointer ${
-                                    isCustomMode
-                                        ? "border-2 BlueBorder sectionBG"
-                                        : "sectionBG"
-                                }`}
+                                className={`bg-white rounded-lg p-4 shadow-xl cursor-pointer ${isCustomMode
+                                    ? "border-2 BlueBorder sectionBG"
+                                    : "sectionBG"
+                                    }`}
                                 onClick={() => setSelectedCard("")}
                             >
                                 <h3 className='text-base font-bold mb-2'>
@@ -567,8 +562,8 @@ export default function TabFirst({
                                 <p className='mt-6 text-sm BlueText font-semibold'>
                                     {isCustomMode
                                         ? singleVideoPrice.toLocaleString(
-                                              "tr-TR"
-                                          )
+                                            "tr-TR"
+                                        )
                                         : "—"}{" "}
                                     TL
                                     <span className='text-xs text-black font-thin'>
@@ -636,11 +631,10 @@ export default function TabFirst({
                                         </span>
                                         <button
                                             type='button'
-                                            className={`mt-2 px-2 py-1 border-2 rounded-md font-semibold w-20 ${
-                                                selectedServices[service.key]
-                                                    ? "border-red-500 text-red-500 hover:bg-red-50"
-                                                    : "BlueBorder BlueText hover:bg-blue-50"
-                                            }`}
+                                            className={`mt-2 px-2 py-1 border-2 rounded-md font-semibold w-20 ${selectedServices[service.key]
+                                                ? "border-red-500 text-red-500 hover:bg-red-50"
+                                                : "BlueBorder BlueText hover:bg-blue-50"
+                                                }`}
                                             onClick={() =>
                                                 handleAddService(
                                                     service.key,
@@ -666,12 +660,12 @@ export default function TabFirst({
                                     {(isCustomMode
                                         ? getSingleVideoPrice()
                                         : basePrice / selectedQuantity +
-                                          Object.values(
-                                              selectedServices
-                                          ).reduce(
-                                              (acc, price) => acc + price,
-                                              0
-                                          )
+                                        Object.values(
+                                            selectedServices
+                                        ).reduce(
+                                            (acc, price) => acc + price,
+                                            0
+                                        )
                                     ).toLocaleString("tr-TR")}{" "}
                                     TL
                                 </p>
@@ -681,12 +675,12 @@ export default function TabFirst({
                                         (isCustomMode
                                             ? getSingleVideoPrice()
                                             : basePrice / selectedQuantity +
-                                              Object.values(
-                                                  selectedServices
-                                              ).reduce(
-                                                  (acc, price) => acc + price,
-                                                  0
-                                              )) * selectedQuantity
+                                            Object.values(
+                                                selectedServices
+                                            ).reduce(
+                                                (acc, price) => acc + price,
+                                                0
+                                            )) * selectedQuantity
                                     ).toLocaleString("tr-TR")}{" "}
                                     TL
                                 </p>

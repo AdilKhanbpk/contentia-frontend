@@ -109,7 +109,7 @@ const HelpCenters: React.FC = () => {
     return (
         <div className='bg-white rounded-lg'>
             <div className='flex flex-col py-24 md:py-24 lg:my-0 px-4 sm:px-6 md:px-12 lg:pl-72'>
-                <div className='flex justify-between mb-4'>
+                <div className='flex flex-col sm:flex-row justify-between items-center mb-4 gap-4'>
                     <input
                         type='text'
                         value={searchTerm}
@@ -117,20 +117,20 @@ const HelpCenters: React.FC = () => {
                             setSearchTerm(e.target.value);
                         }}
                         placeholder='Search...'
-                        className='p-2 border border-gray-300 rounded-lg'
+                        className='p-2 border border-gray-300 rounded-lg w-full sm:w-auto'
                     />
-                    <div className='flex flex-col md:flex-row lg:space-x-2'>
+                    <div className='flex flex-row gap-2 justify-center'>
                         <button
                             onClick={() => {
                                 dispatch(setCurrentHelpSupport(null));
                                 setIsModalOpen(true);
                             }}
-                            className='px-1 md:px-4 py-0.5 md:py-2 Button text-white rounded-md'
+                            className='px-2 md:px-4 py-1 md:py-2 Button text-white rounded-md whitespace-nowrap'
                         >
                             Add
                         </button>
                         <button
-                            className='px-1 md:px-4 py-0.5 md:py-2 bg-green-500 text-white rounded-md'
+                            className='px-2 md:px-4 py-1 md:py-2 bg-green-500 text-white rounded-md whitespace-nowrap flex items-center'
                             onClick={exportToCSV}
                         >
                             Export CSV <FaFileCsv className='inline ml-2' />

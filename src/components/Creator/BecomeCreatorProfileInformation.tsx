@@ -32,10 +32,14 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                 toast.success("Profile information saved successfully");
                 setActiveTab(2); // Move to next tab directly
             } else {
-                toast.error("Failed to save profile information");
+                toast.error("Profil bilgileri kaydedilemedi");
             }
         } catch (error) {
+<<<<<<< HEAD
             toast.error("An error occurred while saving profile information");
+=======
+            toast.error("Profil bilgileri kaydedilirken bir hata oluştu");
+>>>>>>> efbfa6d434c73d36dd5c10255316c6148390d4fc
         }
     };
 
@@ -81,7 +85,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
 
                                     <div>
                                         <label className='block text-sm font-medium'>
-                                            Password
+                                            Şifre
                                         </label>
                                         <input
                                             type='password'
@@ -94,7 +98,9 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                                     </div>
 
                                     <div>
-                                        <p className='text-base'></p>
+                                        <label className='block text-sm font-medium'>
+                                            E-Posta
+                                        </label>
                                         <input
                                             {...register("email", {
                                                 required: "Email is required",

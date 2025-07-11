@@ -18,8 +18,8 @@ export default function Discover({
         <div className='mt-8 sm:mt-12 md:mt-16 lg:mt-[100px]'>
             <SectionHeader title={"İçeriklerimizi Keşfet"} />
 
-            <div className='flex flex-col lg:flex-row lg:justify-between lg:mx-0 mx-auto mt-6 sm:mt-8 md:mt-10 lg:mt-10'>
-                <div className='w-full mb-8 sm:mb-8 md:mb-0 lg:mb-0 lg:w-1/2 mx-auto lg:ml-2'>
+            <div className='flex flex-col lg:flex-row lg:justify-between lg:mx-0 mx-auto mt-6 sm:mt-8 md:mt-10 lg:mt-10 overflow-hidden max-w-full'>
+                <div className='w-full max-w-full overflow-hidden mb-8 sm:mb-8 md:mb-0 lg:mb-0 lg:w-1/2 mx-auto lg:ml-2'>
                     {landingPageLoading ? (
                         <div className='flex justify-center space-x-4'>
                             {[...Array(3)].map((_, index) => (
