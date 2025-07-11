@@ -22,6 +22,14 @@ const ModelBrand: React.FC<ModelBrandProps> = ({ onClose }) => {
     const [loading, setLoading] = React.useState(false);
     const [isVisible, setIsVisible] = React.useState(true);
 
+    // Move hooks before any conditional returns
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm<BrandFormInputs>();
+
     const handleClose = () => {
         if (onClose) {
             onClose();
@@ -33,12 +41,6 @@ const ModelBrand: React.FC<ModelBrandProps> = ({ onClose }) => {
     if (!isVisible) {
         return null;
     }
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: { errors },
-    } = useForm<BrandFormInputs>();
 
     const onSubmit: SubmitHandler<BrandFormInputs> = (data) => {
         setLoading(true);
