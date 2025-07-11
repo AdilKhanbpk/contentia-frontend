@@ -539,7 +539,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                             </div>
                         </div>
                         <div className='w-full flex justify-end space-x-4'>
-                            <button
+                            {/* <button
                                 type='button'
                                 onClick={() => {
                                     const currentValues = watch();
@@ -548,7 +548,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                 className='bg-gray-500 text-white py-2 px-4 rounded-md'
                             >
                                 Debug Form
-                            </button>
+                            </button> */}
                             <button
                                 type='submit'
                                 className=' Button text-white py-2 px-4 rounded-md'

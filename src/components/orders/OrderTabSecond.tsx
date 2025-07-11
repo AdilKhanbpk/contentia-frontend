@@ -199,9 +199,10 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
 
             }
         } catch (error: any) {
-            setCouponError(error.message || "Bir hata oluştu");
-        } finally {
-            setIsCouponAppliedLoading(false);
+          setIsOrderFailed(true);
+          setSelectedFiles([]);
+          toast.error(error.message || "Sipariş oluşturulurken bir hata oluştu.");
+          console.error("Error creating order:", error.message);
         }
     };
   const processPayment = async (formData: PaymentFormData) => {

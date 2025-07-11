@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { axiosInstance } from "@/store/axiosInstance";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 export default function VerifyOtpPage() {
   const router = useRouter();
@@ -63,8 +64,14 @@ export default function VerifyOtpPage() {
     setLoading(true);
     setError("");
     try {
-      await axiosInstance.post("/users/verify-otp", { phoneNumber, verificationCode: otpString });
-      router.push("/");
+      const res = await axiosInstance.post("/users/verify-otp", { phoneNumber, verificationCode: otpString });
+      console.log(res.data.statusCode, res)
+      if (res.data.statusCode == 200) {
+        toast.success("OTP verified successfully!");
+        setTimeout(() => {
+          router.push("/giris-yap");
+        }, 1500);
+      }
     } catch (err: any) {
       console.error("OTP Verification Error:", err);
       setError(err.response?.data?.message || "Verification failed");

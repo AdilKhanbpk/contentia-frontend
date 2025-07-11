@@ -21,11 +21,10 @@ const OrderDetails = () => {
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}
-                        className={`w-1/4 pt-2 pb-2 border-t-4 text-sm ${
-                            activeTab === tab.id
+                        className={`w-1/4 pt-2 pb-2 border-t-4 text-sm ${activeTab === tab.id
                                 ? "BlueBorder  BlueText font-bold"
                                 : "pinkBorder text-gray-400"
-                        }`}
+                            }`}
                         onClick={() => setActiveTab(tab.id)}
                     >
                         {tab.label}
@@ -37,15 +36,13 @@ const OrderDetails = () => {
                 <TabFirst setActiveTab={setActiveTab}></TabFirst>
             )}
             {activeTab === 1 && (
-             
                 <TabThird setActiveTab={setActiveTab}></TabThird>
             )}
             {activeTab === 2 && (
-                     <TabFourth setActiveTab={setActiveTab}></TabFourth>
+                <TabFourth setActiveTab={setActiveTab}></TabFourth>
             )}
             {activeTab === 3 && (
-             
-                 <TabSecond setActiveTab={setActiveTab}/>
+                <TabSecond setActiveTab={setActiveTab}></TabSecond>
             )}
         </div>
     );

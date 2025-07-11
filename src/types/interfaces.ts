@@ -225,6 +225,7 @@ export interface OrderInterface {
         whereDidYouHear?: string;
     };
     paymentInfo?: {
+        orderId?: string; 
         cardNumber?: string;
         expiryDate?: string;
         cvv?: string;
