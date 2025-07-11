@@ -8,13 +8,10 @@ import {
     setOrderFormData,
     selectOrderIsLoading,
 } from "@/store/features/profile/orderSlice";
-<<<<<<< HEAD
-=======
 import { useFileContext } from "@/context/FileContext";
 import CustomModalAdmin from "@/components/modal/CustomModelAdmin";
 import { useRouter } from "next/navigation";
 import { OrderInterface } from "@/types/interfaces";
->>>>>>> efbfa6d434c73d36dd5c10255316c6148390d4fc
 
 const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
     setActiveTab,
@@ -78,12 +75,8 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
             dispatch(setOrderFormData(preferencesData));
             toast.success("Tercihler kaydedildi!");
 
-<<<<<<< HEAD
-            // Navigate to payment tab - order will be created after payment
-=======
-            // Navigate to payment tab (OrderTabSecond is Tab 3)
             setActiveTab(3); // Go to OrderTabSecond (Payment)
->>>>>>> efbfa6d434c73d36dd5c10255316c6148390d4fc
+            // Navigate to payment tab (OrderTabSecond is Tab 3)
         } catch (error: any) {
             toast.error(error.message || "Tercihler kaydedilirken bir hata oluştu.");
             console.error("Error submitting form:", error.message);
@@ -546,7 +539,7 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                             </div>
                         </div>
                         <div className='w-full flex justify-end space-x-4'>
-                            <button
+                            {/* <button
                                 type='button'
                                 onClick={() => {
                                     const currentValues = watch();
@@ -555,10 +548,9 @@ const TabFourth: React.FC<{ setActiveTab: (id: number) => void }> = ({
                                 className='bg-gray-500 text-white py-2 px-4 rounded-md'
                             >
                                 Debug Form
-                            </button>
+                            </button> */}
                             <button
                                 type='submit'
-                                onClick={() => setActiveTab(3)}
                                 className=' Button text-white py-2 px-4 rounded-md'
                             >
                                 {orderLoading ? "Kaydediliyor..." : "Tamamla"}

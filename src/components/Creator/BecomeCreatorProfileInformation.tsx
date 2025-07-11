@@ -35,11 +35,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                 toast.error("Profil bilgileri kaydedilemedi");
             }
         } catch (error) {
-<<<<<<< HEAD
-            toast.error("An error occurred while saving profile information");
-=======
             toast.error("Profil bilgileri kaydedilirken bir hata oluştu");
->>>>>>> efbfa6d434c73d36dd5c10255316c6148390d4fc
         }
     };
 
