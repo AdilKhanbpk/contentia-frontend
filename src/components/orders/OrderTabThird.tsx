@@ -77,11 +77,7 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
 
     console.log("✅ OrderTabThird - Data dispatched to Redux");
     toast.success("Order Brief Saved Successfully!");
-<<<<<<< HEAD
     setActiveTab(3); // Go to OrderTabFourth (Preferences)
-=======
-    setActiveTab(2); // Go to OrderTabFourth (Preferences)
->>>>>>> efbfa6d434c73d36dd5c10255316c6148390d4fc
   };
 
   const openModal = () => setIsModalOpen(true);
@@ -304,10 +300,7 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
           <div className="text-right">
             <button
               type="submit"
-<<<<<<< HEAD
               onClick={() => setActiveTab(2)}
-=======
->>>>>>> efbfa6d434c73d36dd5c10255316c6148390d4fc
               className="py-2 px-4 Button font-semibold text-white rounded-md focus:outline-none"
             >
               İleri

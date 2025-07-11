@@ -270,7 +270,17 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
     // Process payment
     await processPayment(data);
 
-    // Create order after successful payment processing
+    try {
+      await dispatch(createOrder({ selectedFiles })).unwrap();
+      setSelectedFiles([]);
+      setIsOrderSuccessFullyPlaced(true);
+      toast.success("Sipariş başarıyla oluşturuldu!");
+    } catch (error: any) {
+      setIsOrderFailed(true);
+      toast.error(error.message || "Sipariş oluşturulurken bir hata oluştu.");
+      setSelectedFiles([]);
+      console.error("Error creating order:", error.message);
+    }
 
   };
 
