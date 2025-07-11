@@ -156,13 +156,28 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
   // Payment processing
   
    const handleApplyCoupon = async () => {
+        console.log("🚀 handleApplyCoupon button clicked!");
+        console.log("🚀 Current couponCode:", couponCode);
+
+        // Validate coupon code input
+        if (!couponCode.trim()) {
+            console.log("🚀 Coupon code is empty");
+            toast.error("Lütfen bir kupon kodu girin.");
+            return;
+        }
+
+        console.log("🚀 Applying coupon:", couponCode);
         setIsCouponAppliedLoading(true);
+        setCouponError("");
+
         try {
             const result = await dispatch(
                 validateCoupon({
                     code: couponCode,
                 })
             ).unwrap();
+
+            console.log("🚀 Coupon validation result:", result);
 
             let discountAmount = 0;
 
@@ -180,29 +195,24 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
 
             // Store coupon code (not ObjectId) and update totalPrice in Redux orderFormData
             if (result._id) {
-                // Calculate new basePrice per video if needed
-                // let newBasePrice = basePrice;
-                // if (result.discountPercentage) {
-                //     newBasePrice = basePrice - (basePrice * result.discountPercentage) / 100;
-                // } else if (result.discountTl) {
-                //     // If TL discount, you may want to subtract per video or just from platform, see your business logic
-                //     newBasePrice = basePrice; // Usually TL discount is not per video, so keep as is
-                // }
                 dispatch(setOrderFormData({
                     coupon: couponCode, // Send the actual coupon code, not the ObjectId
                     totalPrice: updatedFinalPrice,
                 }));
-                console.log("this is the updated totalPrice:", updatedFinalPrice);
+                console.log("🚀 Updated totalPrice:", updatedFinalPrice);
                 console.log("🚀 Coupon code being stored:", couponCode);
                 console.log("🚀 Coupon ObjectId from API:", result._id);
-                console.log("🚀 User typed coupon code:", couponCode);
 
+                toast.success("Kupon başarıyla uygulandı!");
             }
         } catch (error: any) {
-          setIsOrderFailed(true);
-          setSelectedFiles([]);
-          toast.error(error.message || "Sipariş oluşturulurken bir hata oluştu.");
-          console.error("Error creating order:", error.message);
+            console.error("🚀 Coupon validation error:", error);
+            setCouponError(error.message || "Kupon kodu geçersiz");
+            setDiscount(0);
+            setFinalPrice(totalPrice);
+            toast.error(error.message || "Kupon kodu geçersiz");
+        } finally {
+            setIsCouponAppliedLoading(false);
         }
     };
   const processPayment = async (formData: PaymentFormData) => {
