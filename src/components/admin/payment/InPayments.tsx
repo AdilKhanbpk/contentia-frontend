@@ -55,7 +55,8 @@ const InPayments: React.FC = () => {
     useEffect(() => {
         if (orders.length > 0) {
             const ordersData = orders.map((order: OrderInterface) => ({
-                orderId: order._id,
+                _id: order._id,
+                orderId: order?.orderId,
                 orderName: order.associatedBrands?.brandName || order.briefContent?.brandName || `Order ${order._id.slice(-6)}`,
                 orderOwner: order.orderOwner?.fullName || 'Unknown',
                 orderStatus: order.orderStatus,
@@ -392,21 +393,6 @@ const InPayments: React.FC = () => {
                         />
                     </div>
                 )}
-<<<<<<< HEAD
-
-                {Allorders.length > 0 && (
-                    <div className='shadow-md'>
-                        <CustomTable
-                            columns={orderColumns}
-                            data={filteredOrders}
-                            noDataComponent='No Orders Found'
-                            loading={loading}
-                        />
-                    </div>
-                )}
-            </div>
-=======
->>>>>>> efbfa6d434c73d36dd5c10255316c6148390d4fc
 
                 {Allorders.length > 0 && (
                     <div className='shadow-md'>

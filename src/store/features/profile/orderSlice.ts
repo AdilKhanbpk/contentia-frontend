@@ -61,10 +61,7 @@ export const createOrder = createAsyncThunk(
       }
 
       console.log("🚀 Complete orderData being sent:", orderData);
-<<<<<<< HEAD
-=======
       console.log("🚀 Coupon in orderData:", orderData.coupon);
->>>>>>> efbfa6d434c73d36dd5c10255316c6148390d4fc
 
       // Convert orderData to FormData
       const formData = new FormData();
