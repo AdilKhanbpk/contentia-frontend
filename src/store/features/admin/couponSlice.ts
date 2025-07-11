@@ -153,6 +153,10 @@ export const validateCoupon = createAsyncThunk(
             return response.data.data;
         } catch (error) {
             const axiosError = error as AxiosError;
+            console.error("❌ Coupon validation error:", error);
+            console.error("  - Status:", axiosError.response?.status);
+            console.error("  - Response Data:", axiosError.response?.data);
+
             return rejectWithValue(
                 axiosError.response?.data || 'Failed to validate coupon'
             );

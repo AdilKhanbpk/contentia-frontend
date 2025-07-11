@@ -174,9 +174,18 @@ export const createOrder = createAsyncThunk(
 
       return response.data.data;
     } catch (error) {
-      console.error("Error occurred in createOrder thunk:", error);
+      console.error("❌ Error occurred in createOrder thunk:", error);
 
       const axiosError = error as AxiosError;
+
+      // Log detailed error information
+      console.error("❌ Error details:");
+      console.error("  - Status:", axiosError.response?.status);
+      console.error("  - Status Text:", axiosError.response?.statusText);
+      console.error("  - Response Data:", axiosError.response?.data);
+      console.error("  - Request URL:", axiosError.config?.url);
+      console.error("  - Request Method:", axiosError.config?.method);
+
       const errorMessage =
         axiosError.response?.data || "An unknown error occurred";
 
