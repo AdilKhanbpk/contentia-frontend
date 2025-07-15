@@ -16,7 +16,6 @@ import { toast } from "react-toastify";
 import { useFileContext } from "@/context/FileContext";
 import CustomModalAdmin from "@/components/modal/CustomModelAdmin";
 import { useRouter } from "next/navigation";
-import PayTRForm from "@/app/payments/page";
 import PayTRModal from "../modal/paytrmodal";
 
 // Unified interface for form inputs and payment data
