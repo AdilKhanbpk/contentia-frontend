@@ -16,6 +16,8 @@ import { toast } from "react-toastify";
 import { useFileContext } from "@/context/FileContext";
 import CustomModalAdmin from "@/components/modal/CustomModelAdmin";
 import { useRouter } from "next/navigation";
+import PayTRForm from "@/app/payments/page";
+import PayTRModal from "../modal/paytrmodal";
 
 // Unified interface for form inputs and payment data
 interface PaymentFormData {
@@ -61,13 +63,12 @@ interface TabSecondProps {
 export default function TabSecond({ setActiveTab }: TabSecondProps) {
   // State management
   const [orderDate] = useState<Date>(new Date());
+  const [showPaymentModal, setShowPaymentModal] = useState<boolean>(false);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<PaymentResult | null>(null);
-  const [show3DModal, setShow3DModal] = useState(false);
-  const [iframeHtml, setIframeHtml] = useState("");
-  const [paymentStatus, setPaymentStatus] = useState<"pending" | "success" | "fail">("pending");
+  const [paymentStatus, setPaymentStatus] = useState<"pending" | "paid" | "fail">("pending");
   const [couponCode, setCouponCode] = useState("");
   const [couponError, setCouponError] = useState("");
   const [discount, setDiscount] = useState(0);
@@ -109,8 +110,6 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
   const formatDate = (date: Date) =>
     date.toLocaleDateString("tr-TR", { day: "numeric", month: "long" });
 
-  const formatCardNumber = (value: string) =>
-    value.replace(/\s/g, "").replace(/(.{4})/g, "$1 ").trim();
 
   const generateOrderId = () => `ORDER${Date.now()}`;
   useEffect(() => {
@@ -118,12 +117,7 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
   }, []);
   const handleCalendarClick = () => setIsDatePickerOpen(!isDatePickerOpen);
 
-  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatCardNumber(e.target.value);
-    if (formatted.replace(/\s/g, "").length <= 16) {
-      setValue("cardNumber", formatted, { shouldValidate: true });
-    }
-  };
+
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
@@ -153,86 +147,6 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
     }
   };
 
-  // Payment processing
-  const processPayment = async (formData: PaymentFormData) => {
-    setLoading(true);
-    setResult(null);
-
-    try {
-      const [expiryMonth, expiryYear] = formData.expiryDate.split("/");
-      if (!expiryMonth || !expiryYear) {
-        throw new Error("Geçersiz son kullanma tarihi formatı");
-      }
-
-      const paymentData: PaymentApiData = {
-        amount: finalPrice.toString(),
-        orderId: generateOrderId(),
-        userName: formData.companyName,
-        userEmail: formData.email,
-        userPhone: formData.phoneNumber,
-        cardNumber: formData.cardNumber.replace(/\s/g, ""),
-        expiryMonth,
-        expiryYear,
-        cvv: formData.cvv,
-        nameOnCard: formData.nameOnCard,
-        country: formData.country,
-        whereDidYouHear: formData.whereDidYouHear,
-        companyName: formData.companyName,
-        taxId: formData.taxId,
-        taxOffice: formData.taxOffice,
-        address: formData.address,
-        email: formData.email,
-        phoneNumber: formData.phoneNumber,
-      };
-
-      const response = await fetch("https://contentia-backend-s4pw.onrender.com/api/paytr/direct-payment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(paymentData),
-      });
-
-      const contentType = response.headers.get("content-type");
-      if (contentType?.includes("text/html")) {
-        let html = await response.text();
-        html = html
-          .replace("</body>", `
-            <script>
-              document.querySelector('input[type="button"][value="Cancel"]')?.addEventListener('click', function(e) {
-                window.parent.postMessage({ type: 'CANCEL_3D' }, '*');
-                e.preventDefault();
-              });
-            </script>
-          </body>`)
-          .replace(/target=("|')?_top("|')?/gi, 'target="_self"');
-
-        setIframeHtml(html);
-        setShow3DModal(true);
-        setTimeout(() => {
-          if (show3DModal) {
-            setShow3DModal(false);
-            setResult({ success: false, message: "Oturum zaman aşımına uğradı. Lütfen tekrar deneyin." });
-            toast.error("Oturum zaman aşımına uğradı.");
-          }
-        }, 180000);
-        return;
-      }
-
-      const json: PaymentResult = await response.json();
-      setResult(json);
-      if (json.success) {
-        toast.success("Ödeme başarılı!");
-        setActiveTab(2);
-      } else {
-        toast.error(`Ödeme başarısız: ${json.message}`);
-      }
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Bilinmeyen hata";
-      setResult({ success: false, message: `Ağ hatası: ${message}` });
-      toast.error(`Ödeme başarısız: ${message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // Form submission handler
   const onSubmit = async (data: PaymentFormData) => {
@@ -240,14 +154,14 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
       toast.error("Lütfen mesafeli satış sözleşmesini onaylayın.");
       return;
     }
-
+    const userName = data.email?.split('@')[0] || 'Müşteri';
     // Save to Redux
     const paymentData = {
       paymentInfo: {
-        cardNumber: data.cardNumber,
-        expiryDate: data.expiryDate,
-        cvv: data.cvv,
-        nameOnCard: data.nameOnCard,
+        // cardNumber: data.cardNumber,
+        // expiryDate: data.expiryDate,
+        // cvv: data.cvv,
+        // nameOnCard: data.nameOnCard,
         country: data.country,
         saveCard: data.saveCard,
         agreement: data.agreement,
@@ -266,15 +180,18 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
 
     dispatch(setOrderFormData(paymentData));
     toast.success("Ödeme bilgileri kaydedildi!");
-
+    localStorage.setItem("orderFormData", JSON.stringify(paymentData));
     // Process payment
-    await processPayment(data);
-
     try {
-      await dispatch(createOrder({ selectedFiles })).unwrap();
-      setSelectedFiles([]);
-      setIsOrderSuccessFullyPlaced(true);
-      toast.success("Sipariş başarıyla oluşturuldu!");
+      localStorage.setItem('userdata', JSON.stringify({
+        name: userName,
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+        address: data.address,
+        amount: finalPrice
+      }));
+
+      setShowPaymentModal(true);
     } catch (error: any) {
       setIsOrderFailed(true);
       toast.error(error.message || "Sipariş oluşturulurken bir hata oluştu.");
@@ -289,76 +206,46 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
     setFinalPrice(totalPrice);
   }, [totalPrice]);
 
-  useEffect(() => {
-    if (show3DModal && iframeRef.current && iframeHtml) {
-      const doc = iframeRef.current.contentDocument || iframeRef.current.contentWindow?.document;
-      if (doc) {
-        doc.open();
-        doc.write(iframeHtml);
-        doc.close();
-      }
-    }
-  }, [iframeHtml, show3DModal]);
 
- useEffect(() => {
-  const handleMessage = (event: MessageEvent) => {
-    if (event.data?.paymentStatus === "success") {
-      setPaymentStatus("success");
-      setShow3DModal(false);
-      toast.success("Ödeme başarılı!");
+  // call back events
+  // useEffect(() => {
+  //   const handleMessage = (event: MessageEvent) => {
+  //     if (event.data?.paymentStatus === "success") {
+  //       setPaymentStatus("success");
+  //       setShow3DModal(false);
+  //       toast.success("Ödeme başarılı!");
 
-      // ✅ Wrap async logic in a self-invoking function
-      (async () => {
-        try {
-          await dispatch(createOrder({ selectedFiles})).unwrap();
-          setSelectedFiles([]);
-          setIsOrderSuccessFullyPlaced(true);
-          toast.success("Sipariş başarıyla oluşturuldu!");
-          router.push('/siparislerim')
-        } catch (error: any) {
-          setIsOrderFailed(true);
-          setSelectedFiles([]);
-          toast.error(error.message || "Sipariş oluşturulurken bir hata oluştu.");
-          console.error("Error creating order:", error.message);
-        }
-      })();
-    } else if (event.data?.paymentStatus === "fail") {
-      setPaymentStatus("fail");
-      setShow3DModal(false);
-      toast.error("Ödeme başarısız.");
-    } else if (event.data?.type === "CANCEL_3D") {
-      setShow3DModal(false);
-      setResult({ success: false, message: "Ödeme işlemi iptal edildi." });
-      toast.error("Ödeme işlemi iptal edildi.");
-    }
-  };
+  //       // ✅ Wrap async logic in a self-invoking function
+  //       (async () => {
+  //         try {
+  //           await dispatch(createOrder({ selectedFiles })).unwrap();
+  //           setSelectedFiles([]);
+  //           setIsOrderSuccessFullyPlaced(true);
+  //           toast.success("Sipariş başarıyla oluşturuldu!");
+  //           router.push('/siparislerim')
+  //         } catch (error: any) {
+  //           setIsOrderFailed(true);
+  //           setSelectedFiles([]);
+  //           toast.error(error.message || "Sipariş oluşturulurken bir hata oluştu.");
+  //           console.error("Error creating order:", error.message);
+  //         }
+  //       })();
+  //     } else if (event.data?.paymentStatus === "fail") {
+  //       setPaymentStatus("fail");
+  //       setShow3DModal(false);
+  //       toast.error("Ödeme başarısız.");
+  //     } else if (event.data?.type === "CANCEL_3D") {
+  //       setShow3DModal(false);
+  //       setResult({ success: false, message: "Ödeme işlemi iptal edildi." });
+  //       toast.error("Ödeme işlemi iptal edildi.");
+  //     }
+  //   };
 
-  window.addEventListener("message", handleMessage);
-  return () => window.removeEventListener("message", handleMessage);
-}, [dispatch, selectedFiles, setActiveTab, orderId]);
+  //   window.addEventListener("message", handleMessage);
+  //   return () => window.removeEventListener("message", handleMessage);
+  // }, [dispatch, selectedFiles, setActiveTab, orderId]);
 
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const iframe = iframeRef.current;
-      if (iframe && iframe.contentWindow?.location.href) {
-        if (iframe.contentWindow.location.href.includes("/payment/success")) {
-          setPaymentStatus("success");
-          setShow3DModal(false);
-          setActiveTab(2);
-          toast.success("Ödeme başarılı!");
-          clearInterval(interval);
-        } else if (iframe.contentWindow.location.href.includes("/payment/Failed")) {
-          setPaymentStatus("fail");
-          setShow3DModal(false);
-          toast.error("Ödeme başarısız.");
-          clearInterval(interval);
-        }
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [show3DModal, setActiveTab]);
 
   // Render helper for additional services
   const renderAdditionalService = (
@@ -546,93 +433,6 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
 
           <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">Kart Bilgileri</h3>
-              <div>
-                <label className="block text-sm font-semibold mb-1">
-                  Kart Numarası <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="1111 2222 3333 4444"
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  {...register("cardNumber", {
-                    required: "Kart numarası gerekli",
-                    pattern: {
-                      value: /^\d{4}\s\d{4}\s\d{4}\s\d{4}$/,
-                      message: "Geçersiz kart numarası (16 rakam olmalı)",
-                    },
-                  })}
-                  onChange={handleCardNumberChange}
-                />
-                {errors.cardNumber && <span className="text-red-500 text-sm">{errors.cardNumber.message}</span>}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold mb-1">
-                    Son Kullanma <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="MM/YY"
-                    maxLength={5}
-                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    {...register("expiryDate", {
-                      required: "Son kullanma tarihi gerekli",
-                      pattern: {
-                        value: /^(0[1-9]|1[0-2])\/([0-9]{2})$/,
-                        message: "MM/YY formatında giriniz",
-                      },
-                    })}
-                    onChange={(e) => {
-                      let value = e.target.value.replace(/\D/g, "");
-                      if (value.length >= 2) {
-                        value = value.substring(0, 2) + "/" + value.substring(2, 4);
-                      }
-                      setValue("expiryDate", value, { shouldValidate: true });
-                    }}
-                  />
-                  {errors.expiryDate && <span className="text-red-500 text-sm">{errors.expiryDate.message}</span>}
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-1">
-                    CVV <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="***"
-                    maxLength={4}
-                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    {...register("cvv", {
-                      required: "CVV gerekli",
-                      pattern: {
-                        value: /^\d{3,4}$/,
-                        message: "CVV 3 veya 4 rakam olmalı",
-                      },
-                    })}
-                  />
-                  {errors.cvv && <span className="text-red-500 text-sm">{errors.cvv.message}</span>}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold mb-1">
-                  Kart Üzerindeki İsim <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="Ad Soyad"
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  {...register("nameOnCard", {
-                    required: "Kart üzerindeki isim gerekli",
-                    minLength: { value: 2, message: "En az 2 karakter olmalı" },
-                  })}
-                />
-                {errors.nameOnCard && <span className="text-red-500 text-sm">{errors.nameOnCard.message}</span>}
-              </div>
-            </div>
-
-            <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">Kişisel Bilgiler</h3>
               <div className="grid grid-cols-1 gap-4">
                 <div>
@@ -791,24 +591,6 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
                 </div>
               </div>
             </button>
-
-            {show3DModal && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
-                <div className="relative bg-white rounded shadow-lg w-full max-w-md h-[500px]">
-                  <button
-                    onClick={() => setShow3DModal(false)}
-                    className="absolute top-2 right-2 text-red-600 text-xl font-bold px-3 py-1"
-                  >
-                    ×
-                  </button>
-                  {!iframeHtml ? (
-                    <div className="flex items-center justify-center h-full text-gray-600">Yükleniyor...</div>
-                  ) : (
-                    <iframe ref={iframeRef} title="3D Secure Verification" className="w-full h-full border-0 rounded-b" />
-                  )}
-                </div>
-              </div>
-            )}
           </form>
         </div>
       </div>
@@ -862,6 +644,11 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
           </p>
         </div>
       </CustomModalAdmin>
+
+
+      {showPaymentModal && orderId && (
+        <PayTRModal orderId={orderId} onClose={() => setShowPaymentModal(false)} />
+      )}
     </div>
   );
 }
