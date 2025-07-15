@@ -266,7 +266,7 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row justify-between px-4 sm:px-6 md:px-12 lg:px-24 lg:space-x-16">
+    <div className="flex flex-col lg:flex-row justify-between px-4 sm:px-6 md:px-12 lg:px-24 ">
       {/* Order Summary Section */}
       <div className="w-full lg:w-3/5">
         <div className="bg-white border rounded-lg p-6 shadow-md">
@@ -644,10 +644,11 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
         </div>
       </CustomModalAdmin>
 
-
       {showPaymentModal && orderId && (
         <PayTRModal orderId={orderId} onClose={() => setShowPaymentModal(false)} />
       )}
+
     </div>
+
   );
 }
