@@ -65,7 +65,6 @@ export default function VerifyOtpPage() {
     setError("");
     try {
       const res = await axiosInstance.post("/users/verify-otp", { phoneNumber, verificationCode: otpString });
-      console.log(res.data.statusCode, res)
       if (res.data.statusCode == 200) {
         toast.success("OTP verified successfully!");
         setTimeout(() => {
