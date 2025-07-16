@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { Lock } from 'lucide-react';
+import { useSelector } from 'react-redux';
 
 interface PayTRTokenData {
   merchant_id: string;
@@ -32,14 +33,12 @@ interface LocalUser {
   amount?: string;
 }
 
-interface Props {
-  orderId: string;
-}
 
-export default function PayTRForm({ orderId }: Props) {
+
+export default function PayTRForm() {
   const [tokenData, setTokenData] = useState<PayTRTokenData | null>(null);
   const [user, setUser] = useState<LocalUser | null>(null);
-
+  const orderid = useSelector((state: any) => state.order.orderFormData.paymentInfo.orderId);
   useEffect(() => {
     const stored = localStorage.getItem('user');
     const storedv2 = localStorage.getItem('userdata');
@@ -59,8 +58,8 @@ export default function PayTRForm({ orderId }: Props) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            amount: parsedv2.amount || '10000',
-            orderId,
+            amount: parsedv2.amount,
+            orderId: orderid,
             userEmail: parsed.email,
             userName: parsed.name || 'umair amjad',
             userPhone: parsed.phoneNumber,
@@ -75,7 +74,7 @@ export default function PayTRForm({ orderId }: Props) {
         console.error('Invalid user data in localStorage:', error);
       }
     }
-  }, [orderId]);
+  }, [orderid]);
 
   if (!tokenData) {
     return <p className="text-center mt-10 text-gray-600">Yükleniyor...</p>;

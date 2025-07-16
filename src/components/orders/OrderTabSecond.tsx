@@ -645,7 +645,7 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
       </CustomModalAdmin>
 
       {showPaymentModal && orderId && (
-        <PayTRModal orderId={orderId} onClose={() => setShowPaymentModal(false)} />
+        <PayTRModal  onClose={() => setShowPaymentModal(false)} />
       )}
 
     </div>
