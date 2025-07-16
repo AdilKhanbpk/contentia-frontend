@@ -54,7 +54,7 @@ export default function PayTRForm() {
           amount: parsedv2.amount || '',
         });
 
-        fetch('https://26a9fd7b8d98.ngrok-free.app/api/paytr/direct-payment', {
+        fetch('https://contentia-backend-s4pw.onrender.com/api/paytr/direct-payment', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
