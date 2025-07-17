@@ -55,7 +55,8 @@ const InPayments: React.FC = () => {
     useEffect(() => {
         if (orders.length > 0) {
             const ordersData = orders.map((order: OrderInterface) => ({
-                orderId: order._id,
+                _id: order._id,
+                orderId: order?.orderId,
                 orderName: order.associatedBrands?.brandName || order.briefContent?.brandName || `Order ${order._id.slice(-6)}`,
                 orderOwner: order.orderOwner?.fullName || 'Unknown',
                 orderStatus: order.orderStatus,
@@ -142,8 +143,8 @@ const InPayments: React.FC = () => {
             "Refund Status",
         ];
         const data = payments.map((payment: any) => ({
-            "Order ID": payment.orderId,
-            "Payment ID": payment._id,
+            "Order ID": payment._id,
+            "Payment ID": payment.orderId,
             "Payment Date": new Date(payment.paymentDate).toLocaleString(),
             "Amount Paid": payment.paymentAmount,
             "Payment Status": payment.paymentStatus,
@@ -209,14 +210,15 @@ const InPayments: React.FC = () => {
         () => [
             {
                 name: "Order ID",
-                selector: (row: any) => row.orderId,
+                selector: (row: any) => row._id,
                 sortable: true,
             },
             {
                 name: "Payment ID",
-                selector: (row: any) => row._id,
+                selector: (row: any) => row.orderId,
                 sortable: true,
             },
+            
             {
                 name: "Payment Date",
                 selector: (row: any) =>
@@ -256,8 +258,15 @@ const InPayments: React.FC = () => {
 
     const orderColumns = useMemo(
         () => [
-            {
+             {
                 name: "Order ID",
+                selector: (row: any) => row._id,
+                sortable: true,
+                grow: 1,
+                wrap: true,
+            },
+            {
+                name: "Payement ID",
                 selector: (row: any) => row.orderId,
                 sortable: true,
                 grow: 1,

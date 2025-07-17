@@ -46,7 +46,10 @@ const initialState: OrderState = {
 interface OrderData {
 
   selectedFiles: File[];
-  // Optional for createOrder, required for updateOrder
+  customerInfo?: object; // Optional for createOrder, required for updateOrder
+  paymentInfo?: object;
+  coupon?: string | null; // Optional for createOrder, required for updateOrder 
+  paymentStatus?: 'pending' | 'paid' | 'failed';
 }
 
 export const createOrder = createAsyncThunk(
@@ -54,12 +57,14 @@ export const createOrder = createAsyncThunk(
   async ({ selectedFiles }: OrderData, { getState, rejectWithValue }) => {
     try {
       const state = getState() as RootState;
-      const orderData: Partial<OrderInterface> = state.order.orderFormData;
+      const baseData: Partial<OrderInterface> = state.order.orderFormData;
 
-      if (!orderData) {
+      if (!baseData) {
         return rejectWithValue("Order data is missing");
       }
-
+      const orderData = {
+        ...baseData,
+      };
       console.log("🚀 Complete orderData being sent:", orderData);
       console.log("🔍 briefContent specifically:", orderData.briefContent);
       console.log("🔍 Does briefContent exist?", !!orderData.briefContent);
@@ -127,7 +132,6 @@ export const createOrder = createAsyncThunk(
       } else {
         console.log("⚠️ No briefContent found in orderData");
       }
-
       // Append customer info if available
       if (orderData.customerInfo) {
         console.log("📋 Customer info from Redux:", orderData.customerInfo);
@@ -170,7 +174,7 @@ export const createOrder = createAsyncThunk(
       // Make API request
       const response = await axiosInstance.postForm("/orders", formData);
       console.log("✅ Order created successfully:", response.data);
-      
+
 
       return response.data.data;
     } catch (error) {

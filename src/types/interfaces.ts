@@ -147,6 +147,7 @@ export interface OrderInterface {
         fullName: string;
         email: string;
     };
+    orderId: string; // Unique identifier for the order
     assignedCreators: any[]; // Standardized to CreatorInterface[]
     appliedCreators: string[] | CreatorInterface[];
     associatedBrands?: {
@@ -225,7 +226,7 @@ export interface OrderInterface {
         whereDidYouHear?: string;
     };
     paymentInfo?: {
-        orderId?: string; 
+        orderId?: string;
         cardNumber?: string;
         expiryDate?: string;
         cvv?: string;

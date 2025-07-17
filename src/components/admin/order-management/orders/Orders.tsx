@@ -273,7 +273,8 @@ const Orders: React.FC = () => {
         ];
 
         const data = orders.map((order) => ({
-            "# Order Id": order._id,
+            "Order Id": order._id, // it refers to the order document  id in db
+            "# Payment Id": order.orderId, // it refers to paytr payment id
             "Order Title": order.associatedBrands?.brandName,
             "No of UGC": order.noOfUgc,
             "Total Price": order.totalPriceForCustomer,
@@ -299,6 +300,11 @@ const Orders: React.FC = () => {
             {
                 name: "#Order Id",
                 selector: (row: OrderInterface) => row._id,
+                sortable: true,
+            },
+            {
+                name: "#Payemnt Id",
+                selector: (row: OrderInterface) => row.orderId,
                 sortable: true,
             },
             {

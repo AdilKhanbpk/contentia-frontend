@@ -77,7 +77,7 @@ const TabThird: React.FC<{ setActiveTab: (id: number) => void }> = ({
 
     console.log("✅ OrderTabThird - Data dispatched to Redux");
     toast.success("Order Brief Saved Successfully!");
-    setActiveTab(2); // Go to OrderTabFourth (Preferences)
+    setActiveTab(3); // Go to OrderTabFourth (Preferences)
   };
 
   const openModal = () => setIsModalOpen(true);
