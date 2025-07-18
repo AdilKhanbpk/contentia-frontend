@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 export default function PaymentSuccess() {
   const router = useRouter();
@@ -13,10 +14,29 @@ export default function PaymentSuccess() {
     if (typeof window !== 'undefined' && window.parent !== window) {
       console.log('✅ [iframe] Payment success page loaded, sending postMessage to parent');
       window.parent.postMessage({ paymentStatus: 'success', merchant_oid }, '*');
-    } else {
-      console.log('ℹ️ [iframe] Not in iframe or window undefined');
+    }
+    
+    // Create invoice after successful payment
+    if (merchant_oid) {
+      createInvoice(merchant_oid);
     }
   }, [merchant_oid]);
+
+  const createInvoice = async (orderId: string) => {
+    try {
+      const response = await fetch(`https://contentia-backend-s4pw.onrender.com/api/create-invoice/${orderId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      
+      if (response.ok) {
+        console.log('Invoice created successfully for order:', orderId);
+        toast.success("Fatura oluşturuldu!");
+      }
+    } catch (error) {
+      console.error('Failed to create invoice:', error);
+    }
+  };
 
   return (
     <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-md text-center">
