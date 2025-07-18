@@ -164,7 +164,7 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
         country: data.country,
         saveCard: data.saveCard,
         agreement: data.agreement,
-        orderId: orderId, // Include orderId if available 
+        orderId: orderId, // Include orderId if available
       },
       customerInfo: {
         companyName: data.companyName,
@@ -175,7 +175,13 @@ export default function TabSecond({ setActiveTab }: TabSecondProps) {
         phoneNumber: data.phoneNumber,
         whereDidYouHear: data.whereDidYouHear,
       },
+      // Include coupon code if it exists and discount was applied
+      coupon: discount > 0 && couponCode.trim() ? couponCode.trim() : null,
     };
+
+    console.log("🎫 Coupon Debug - couponCode:", couponCode);
+    console.log("🎫 Coupon Debug - discount:", discount);
+    console.log("🎫 Coupon Debug - paymentData.coupon:", paymentData.coupon);
 
     dispatch(setOrderFormData(paymentData));
     toast.success("Ödeme bilgileri kaydedildi!");

@@ -16,7 +16,7 @@ export default function TabFirst({
 }) {
     const dispatch = useDispatch();
 
-    // State
+    // Stat
     const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
     const [selectedCard, setSelectedCard] = useState<number | string>("");
     const [selectedServices, setSelectedServices] = useState<{
