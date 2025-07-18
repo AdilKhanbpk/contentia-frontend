@@ -32,19 +32,19 @@ const ViewModal = ({ order }: ViewModalProps) => {
                     </h2>
 
                     {/* Two-column Layout */}
-                    <div className='grid grid-cols-2 gap-8 text-sm'>
+                    <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 text-sm'>
                         {/* Left Column - Basic & Additional Services */}
-                        <div>
+                        <div className='space-y-6'>
                             {/* Order Basic Details */}
                             <h3 className='text-lg font-bold mb-3 BlueText'>
                                 Basic Details
                             </h3>
-                            <div className='grid grid-cols-2 gap-4'>
+                            <div className='grid grid-cols-2 gap-4 mb-4'>
                                 <div className='text-gray-700 font-semibold'>
                                     Order ID:
                                 </div>
-                                <div className='text-right font-bold BlueText'>
-                                    {order._id}
+                                <div className='text-right font-bold BlueText break-all'>
+                                    {order.orderId || order._id}
                                 </div>
 
                                 <div className='text-gray-700 font-semibold'>
@@ -77,15 +77,15 @@ const ViewModal = ({ order }: ViewModalProps) => {
                             </div>
 
                             {/* Order Summary */}
-                            <div className='flex -mt-0 lg:-mt-44'>
-                                <div className='bg-white rounded-md w-full lg:w-3/6'>
+                            <div className='mt-6'>
+                                <div className='bg-white rounded-md w-full'>
                                     <h2 className='BlueText text-lg font-semibold mb-4'>
-                                    Markalarım Özeti:
+                                        Markalarım Özeti:
                                     </h2>
                                     <div className='flex items-center justify-between'>
                                         <div>
                                             <p className='font-semibold'>
-                                                {quantity} Videos
+                                                {quantity} Videos ({order.additionalServices?.platform || "Platform belirtilmemiş"})
                                             </p>
                                             <p className='text-sm text-gray-500'>
                                                 {basePrice
@@ -292,11 +292,12 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                         </div>
                                     )}
 
-                                    <div className='flex items-center justify-between mt-5'>
-                                        <div className='text-gray-700 font-semibold'>
+                                    <hr className='my-4 border-gray-200' />
+                                    <div className='flex items-center justify-between'>
+                                        <div className='text-gray-700 font-semibold text-lg'>
                                             Total Price:
                                         </div>
-                                        <div className='text-right font-bold BlueText'>
+                                        <div className='text-right font-bold BlueText text-lg'>
                                             {order?.totalPriceForCustomer?.toLocaleString(
                                                 "tr-TR"
                                             )}{" "}
@@ -306,85 +307,36 @@ const ViewModal = ({ order }: ViewModalProps) => {
                                 </div>
                             </div>
 
-                            {/* Additional Services */}
+                            {/* Additional Services Summary */}
                             <h3 className='text-lg font-bold mt-6 mb-3 BlueText'>
                                 Additional Services
                             </h3>
                             <div className='grid grid-cols-2 gap-4'>
-                                <div className='text-gray-700'>Platform:</div>
-                                <div className='text-right font-bold BlueText'>
-                                    {order.additionalServices?.platform ||
-                                        "Not specified"}
-                                </div>
-
                                 <div className='text-gray-700'>Süre:</div>
                                 <div className='text-right font-bold BlueText'>
                                     {order.additionalServices?.duration ||
-                                        "Not specified"}
-                                </div>
-
-                                <div className='text-gray-700'>Editing:</div>
-                                <div className='text-right font-bold BlueText'>
-                                    {order.additionalServices?.edit
-                                        ? "Evet"
-                                        : "Hayır"}
+                                        "15s (Standart)"}
                                 </div>
 
                                 <div className='text-gray-700'>
-                                    En Boy Oranı
+                                    En Boy Oranı:
                                 </div>
                                 <div className='text-right font-bold BlueText'>
                                     {order.additionalServices?.aspectRatio ||
                                         "Not specified"}
                                 </div>
 
-                                <div className='text-gray-700'>Shareable:</div>
-                                <div className='text-right font-bold BlueText'>
-                                    {order.additionalServices?.share
-                                        ? "Evet"
-                                        : "Hayır"}
-                                </div>
-
-                                <div className='text-gray-700'>
-                                    Cover Picture:
-                                </div>
-                                <div className='text-right font-bold BlueText'>
-                                    {order.additionalServices?.coverPicture
-                                        ? "Evet"
-                                        : "Hayır"}
-                                </div>
-
-                                <div className='text-gray-700'>
-                                    Creator Type:
-                                </div>
-                                <div className='text-right font-bold BlueText'>
-                                    {order.additionalServices?.creatorType
-                                        ? "Evet"
-                                        : "Hayır"}
-                                </div>
-
-                                <div className='text-gray-700'>
-                                    Product Shipping:
-                                </div>
-                                <div className='text-right font-bold BlueText'>
-                                    {order.additionalServices?.productShipping
-                                        ? "Evet"
-                                        : "Hayır"}
-                                </div>
-
-
                                 <div className='text-gray-700'>
                                     Revision Note:
                                 </div>
                                 <div className='text-right font-bold BlueText'>
-                                    {(order.revisions ?? [])[0]?.revisionContent || "Hayır"}
+                                    {(order.revisions ?? [])[0]?.revisionContent || "Yok"}
                                 </div>
-
                             </div>
                         </div>
 
                         {/* Right Column - Brief Content & Preferences */}
-                        <div>
+                        <div className='space-y-6'>
                             {/* Brief Content Details */}
                             <h3 className='text-lg font-bold mb-3 BlueText'>
                                 Brief Content

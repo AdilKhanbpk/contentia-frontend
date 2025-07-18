@@ -207,11 +207,13 @@ export default function ViewOrderDetails({ orderData }: ViewOrderDetailsProps) {
             </div>
             <div className="flex flex-row items-start">
               <div className="w-1/2 text-gray-700 text-sm lg:text-base">Ödeme No:</div>
-              <div className="w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words">Nil</div>
+              <div className="w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words">{orderData.orderId}</div>
             </div>
             <div className="flex flex-row items-start">
               <div className="w-1/2 text-gray-700 text-sm lg:text-base">Ödeme Tarihi:</div>
-              <div className="w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words">Nil</div>
+              <div className="w-1/2 text-right BlueText font-bold text-sm lg:text-base break-words">
+                {orderData.createdAt ? new Date(orderData.createdAt).toLocaleDateString() : "N/A"}
+              </div>
             </div>
             <div className="flex flex-row items-start">
               <div className="w-1/2 text-gray-700 text-sm lg:text-base">Fatura:</div>
