@@ -88,10 +88,10 @@ export default function PayTRForm() {
         const data = await res.json();
         setTokenData(data);
 
-        // // 2️⃣ Call createOrder AFTER token is generated
-        // await dispatch(createOrder({ selectedFiles })).unwrap();
-        // setSelectedFiles([]);
-        // toast.success("Sipariş başarıyla oluşturuldu!");
+        // 2️⃣ Call createOrder AFTER token is generated
+        await dispatch(createOrder({ selectedFiles })).unwrap();
+        setSelectedFiles([]);
+        toast.success("Sipariş başarıyla oluşturuldu!");
         // // 3️⃣ Call create invoice API after order is created
         // try {
         //   const invoiceResponse = await fetch(`https://contentia-backend-s4pw.onrender.com/api/create-invoice/${orderId}`, {
