@@ -7,7 +7,7 @@ import { Lock } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 import { useFileContext } from '@/context/FileContext';
-import { createOrder } from '@/store/features/profile/orderSlice';
+import { createOrder, createPaymentToken } from '@/store/features/profile/orderSlice';
 import { AppDispatch } from '@/store/store';
 
 interface PayTRTokenData {
@@ -71,28 +71,23 @@ export default function PayTRForm() {
 
         setUser(localUser);
 
-        // 1️⃣ Call payment API
-        const res = await fetch('https://contentia-backend-s4pw.onrender.com/api/paytr/direct-payment', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            amount: userData.amount,
-            orderId: orderId,
-            userEmail: userData.email,
-            userName: userObj.name || 'umair amjad',
-            userPhone: userData.phoneNumber,
-            installment_count: 0,
-          }),
-        });
+        const paymentData = {
+          amount: userData.amount,
+          orderId: orderId,
+          userEmail: userData.email,
+          userName: userObj.name || 'umair amjad',
+          userPhone: userData.phoneNumber,
+          installment_count: 0,
+        };
 
-        const data = await res.json();
-        setTokenData(data);
+        // 1️⃣ Call payment API using Redux thunk
+        const tokenResult = await dispatch(createPaymentToken({ paymentData })).unwrap();
+        setTokenData(tokenResult);
 
         // 2️⃣ Call createOrder AFTER token is generated
         await dispatch(createOrder({ selectedFiles })).unwrap();
         setSelectedFiles([]);
-        toast.success("Sipariş başarıyla oluşturuldu!");
-       
+        toast.success("Sipariş başarıyla oluşturuldu!");       
         setSelectedFiles([]);
         toast.success("Sipariş başarıyla oluşturuldu!");
       } catch (error: any) {

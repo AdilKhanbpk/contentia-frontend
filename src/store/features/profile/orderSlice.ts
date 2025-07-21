@@ -330,6 +330,36 @@ export const createRevision = createAsyncThunk(
   }
 );
 
+export const createPaymentToken = createAsyncThunk(
+  "order/createPaymentToken",
+  async ({ paymentData }: { paymentData: any }, { rejectWithValue }) => {
+    try {
+      // Try the correct endpoint - it might be under /api instead of /api/v1
+      const response = await axiosInstance.post("../paytr/direct-payment", paymentData);
+      return response.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      return rejectWithValue(axiosError.response?.data || "Failed to create payment token");
+    }
+  }
+);
+
+// Create Invoice
+export const createInvoice = createAsyncThunk(
+  "order/createInvoice",
+  async ({ orderId }: { orderId: string }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(`../create-invoice/${orderId}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error creating invoice:", error);
+      const axiosError = error as AxiosError;
+      const errorMessage = axiosError.response?.data || "Failed to create invoice";
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
 const orderSlice = createSlice({
   name: "order",
   initialState,
@@ -491,6 +521,31 @@ const orderSlice = createSlice({
         }
       })
       .addCase(createRevision.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      .addCase(createPaymentToken.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createPaymentToken.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(createPaymentToken.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // Create Invoice
+      .addCase(createInvoice.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createInvoice.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(createInvoice.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

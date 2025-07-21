@@ -1,35 +1,33 @@
 // components/orders/ordercompletion/OrderSuccess.tsx
 'use client';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { CheckCircle2 } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { createInvoice } from '@/store/features/profile/orderSlice';
+import { AppDispatch } from '@/store/store';
 
 interface OrderSuccessProps {
   order_id: string;
 }
 
 export default function OrderSuccess({ order_id }: OrderSuccessProps) {
+  const dispatch = useDispatch<AppDispatch>();
+
   useEffect(() => {
     if (order_id) {
-      createInvoice(order_id);
+      handleCreateInvoice(order_id);
     }
   }, [order_id]);
 
-  const createInvoice = async (orderId: string) => {
+  const handleCreateInvoice = async (orderId: string) => {
     try {
-      const response = await fetch(`https://contentia-backend-s4pw.onrender.com/api/create-invoice/${orderId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      
-      if (response.ok) {
-        console.log('Invoice created successfully for order:', orderId);
-        toast.success("Fatura oluşturuldu!");
-      } else {
-        console.error('Failed to create invoice');
-      }
-    } catch (error) {
+      await dispatch(createInvoice({ orderId })).unwrap();
+      console.log('Invoice created successfully for order:', orderId);
+      toast.success("Fatura oluşturuldu!");
+    } catch (error: any) {
       console.error('Failed to create invoice:', error);
+      toast.error(error.message || "Fatura oluşturulurken bir hata oluştu.");
     }
   };
 
