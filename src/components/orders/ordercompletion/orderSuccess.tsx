@@ -9,11 +9,6 @@ interface OrderSuccessProps {
 }
 
 export default function OrderSuccess({ order_id }: OrderSuccessProps) {
-  useEffect(() => {
-    if (order_id) {
-      createInvoice(order_id);
-    }
-  }, [order_id]);
 
   const createInvoice = async (orderId: string) => {
     try {
@@ -21,7 +16,7 @@ export default function OrderSuccess({ order_id }: OrderSuccessProps) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
-      
+
       if (response.ok) {
         console.log('Invoice created successfully for order:', orderId);
         toast.success("Fatura oluşturuldu!");
@@ -32,13 +27,17 @@ export default function OrderSuccess({ order_id }: OrderSuccessProps) {
       console.error('Failed to create invoice:', error);
     }
   };
-
+  useEffect(() => {
+    if (order_id) {
+      createInvoice(order_id);
+    }
+  }, [order_id]);
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-white p-6">
       <div className="bg-white rounded-2xl shadow-xl p-8 max-w-lg w-full text-center">
         <div className="flex justify-center mb-4">
           <CheckCircle2 className="text-green-600 w-16 h-16" />
-        </div> 
+        </div>
 
         <h2 className="text-2xl font-bold text-gray-800 mb-2">
           Ödeme Başarılı 🎉
