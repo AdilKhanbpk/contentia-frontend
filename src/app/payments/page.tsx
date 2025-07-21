@@ -92,22 +92,7 @@ export default function PayTRForm() {
         await dispatch(createOrder({ selectedFiles })).unwrap();
         setSelectedFiles([]);
         toast.success("Sipariş başarıyla oluşturuldu!");
-        // // 3️⃣ Call create invoice API after order is created
-        // try {
-        //   const invoiceResponse = await fetch(`https://contentia-backend-s4pw.onrender.com/api/create-invoice/${orderId}`, {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //   });
-
-        //   if (invoiceResponse.ok) {
-        //     console.log('Invoice created successfully');
-        //   } else {
-        //     console.error('Failed to create invoice');
-        //   }
-        // } catch (invoiceError) {
-        //   console.error('Invoice creation error:', invoiceError);
-        // }
-
+       
         setSelectedFiles([]);
         toast.success("Sipariş başarıyla oluşturuldu!");
       } catch (error: any) {
