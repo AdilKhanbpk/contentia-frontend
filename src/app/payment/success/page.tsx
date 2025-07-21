@@ -19,21 +19,6 @@ export default function PaymentSuccess() {
     }
   }, [merchant_oid]);
 
-  // const createInvoice = async (orderId: string) => {
-  //   try {
-  //     const response = await fetch(`https://contentia-backend-s4pw.onrender.com/api/create-invoice/${orderId}`, {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //     });
-      
-  //     if (response.ok) {
-  //       console.log('Invoice created successfully for order:', orderId);
-  //       toast.success("Fatura oluşturuldu!");
-  //     }
-  //   } catch (error) {
-  //     console.error('Failed to create invoice:', error);
-  //   }
-  // };
 
   return (
     <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-md text-center">
