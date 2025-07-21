@@ -1,6 +1,6 @@
 // components/orders/ordercompletion/OrderSuccess.tsx
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { CheckCircle2 } from 'lucide-react';
 import { toast } from 'react-toastify';
@@ -14,13 +14,7 @@ interface OrderSuccessProps {
 export default function OrderSuccess({ order_id }: OrderSuccessProps) {
   const dispatch = useDispatch<AppDispatch>();
 
-  useEffect(() => {
-    if (order_id) {
-      handleCreateInvoice(order_id);
-    }
-  }, [order_id]);
-
-  const handleCreateInvoice = async (orderId: string) => {
+  const handleCreateInvoice = useCallback(async (orderId: string) => {
     try {
       await dispatch(createInvoice({ orderId })).unwrap();
       console.log('Invoice created successfully for order:', orderId);
@@ -29,14 +23,19 @@ export default function OrderSuccess({ order_id }: OrderSuccessProps) {
       console.error('Failed to create invoice:', error);
       toast.error(error.message || "Fatura oluşturulurken bir hata oluştu.");
     }
-  };
+  }, [dispatch]);
 
+  useEffect(() => {
+    if (order_id) {
+      handleCreateInvoice(order_id);
+    }
+  }, [order_id, handleCreateInvoice]);
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-white p-6">
       <div className="bg-white rounded-2xl shadow-xl p-8 max-w-lg w-full text-center">
         <div className="flex justify-center mb-4">
           <CheckCircle2 className="text-green-600 w-16 h-16" />
-        </div> 
+        </div>
 
         <h2 className="text-2xl font-bold text-gray-800 mb-2">
           Ödeme Başarılı 🎉
