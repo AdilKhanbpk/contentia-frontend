@@ -349,7 +349,7 @@ export const createInvoice = createAsyncThunk(
   "order/createInvoice",
   async ({ orderId }: { orderId: string }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post(`../create-invoice/${orderId}`);
+      const response = await axiosInstance.post(`/orders/create-invoice/${orderId}`);
       return response.data;
     } catch (error) {
       console.error("Error creating invoice:", error);
