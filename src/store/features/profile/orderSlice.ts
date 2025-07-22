@@ -171,8 +171,10 @@ export const createOrder = createAsyncThunk(
         console.log(`📤 ${key}: ${value}`);
       }
 
-      // Make API request
-      const response = await axiosInstance.postForm("/orders", formData);
+      // Make API request with extended timeout for order creation
+      const response = await axiosInstance.postForm("/orders", formData, {
+        timeout: 120000, // 2 minutes for order creation (critical operation)
+      });
       console.log("✅ Order created successfully:", response.data);
 
 
@@ -189,6 +191,12 @@ export const createOrder = createAsyncThunk(
       console.error("  - Response Data:", axiosError.response?.data);
       console.error("  - Request URL:", axiosError.config?.url);
       console.error("  - Request Method:", axiosError.config?.method);
+
+      // Handle specific error types
+      if (axiosError.code === 'ECONNABORTED') {
+        console.error("⏰ Request timeout - Order creation took too long");
+        return rejectWithValue("Sipariş oluşturma işlemi zaman aşımına uğradı. Lütfen tekrar deneyin veya destek ile iletişime geçin.");
+      }
 
       const errorMessage =
         axiosError.response?.data || "An unknown error occurred";

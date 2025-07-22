@@ -36,8 +36,8 @@ export const axiosInstance = axios.create({
     headers: {
         "Content-Type": "application/json",
     },
-    // Increase timeout for slower production servers
-    timeout: 15000,
+    // Increase timeout for order creation and other critical operations
+    timeout: 60000, // 60 seconds - better for order creation
 });
 
 axiosInstance.interceptors.request.use(
@@ -171,11 +171,12 @@ export const patchForm = async (url: string, data: FormData) => {
     });
 };
 
-export const postForm = async (url: string, data: FormData) => {
+export const postForm = async (url: string, data: FormData, config?: any) => {
     return axiosInstance.post(url, data, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },
+        ...config, // Allow additional config like timeout
     });
 };
 
